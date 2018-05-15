@@ -9,7 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/stretchr/testify/assert"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/MysteriumNetwork/payments/registry/contract"
+	"github.com/MysteriumNetwork/payments/registry/generated"
 )
 
 var (
@@ -35,7 +35,7 @@ func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 
 	fromBlock := uint64(0)
 	//funny thing with simulated backed - we need subscribe to events BEFORE they are generated - limitation of simulator :)
-	eventChan := make( chan *contract.IdentityRegistryRegistered)
+	eventChan := make( chan *generated.IdentityRegistryRegistered)
 	subscription, err := registry.WatchRegistered( &bind.WatchOpts{ Start: &fromBlock} , eventChan, []common.Address{})
 	assert.NoError(t , err)
 
@@ -57,11 +57,11 @@ func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 	subscription.Unsubscribe()
 }
 
-func deployRegistry(t * testing.T) (*contract.IdentityRegistry , * backends.SimulatedBackend) {
+func deployRegistry(t * testing.T) (*generated.IdentityRegistry , * backends.SimulatedBackend) {
 	simulatedBackend := backends.NewSimulatedBackend(core.GenesisAlloc{
 		deployerAddress: {Balance: big.NewInt(1000000000)},
 	})
-	_ , _, registry, err := contract.DeployIdentityRegistry(deployerTransactor, simulatedBackend)
+	_ , _, registry, err := generated.DeployIdentityRegistry(deployerTransactor, simulatedBackend)
 	simulatedBackend.Commit()
 	if err != nil {
 		assert.FailNow(t, "Unexpected error: %s", err)
