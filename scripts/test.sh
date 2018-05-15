@@ -1,0 +1,3 @@
+#!/bin/bash
+scripts/gen_all.sh
+go test ./...
