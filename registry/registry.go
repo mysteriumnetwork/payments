@@ -1,3 +1,3 @@
 package registry
 
-//go:generate ../scripts/abigen.sh --sol ../contracts/identityregistry.sol --pkg generated --out generated/identityregistry.go
+//go:generate ../scripts/abigen.sh --sol ../contracts/registry.sol --pkg generated --out generated/registry.go

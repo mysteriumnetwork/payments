@@ -39,11 +39,16 @@ func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 	subscription, err := registry.WatchRegistered( &bind.WatchOpts{ Start: &fromBlock} , eventChan, []common.Address{})
 	assert.NoError(t , err)
 
+	registered, err := registry.IsRegistered(nil, identityAddress)
+	assert.NoError(t, err)
+	assert.False(t, registered)
+
+
 	_ , err = registry.RegisterIdentity(deployerTransactor , identityAddress)
 	assert.NoError(t, err)
 	backend.Commit()
 
-	registered, err := registry.IsRegistered(nil, identityAddress)
+	registered, err = registry.IsRegistered(nil, identityAddress)
 	assert.NoError(t, err)
 	assert.True(t, registered)
 
