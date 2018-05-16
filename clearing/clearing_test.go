@@ -29,7 +29,6 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	clearing, backend := deployClearing(t)
 
 	events:=make(chan *generated.ClearingContractPromiseCleared,1000)
-
 	sub , err:= clearing.BindForEvents(events)
 	assert.NoError(t, err)
 
@@ -38,6 +37,10 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 
 	receiver, err := newMystIdentity()
 	assert.NoError(t, err)
+
+	err = clearing.RegisterIdentities(payer.Address , receiver.Address)
+	assert.NoError(t , err)
+	backend.Commit()
 
 	receiverSig , err := crypto.Sign(ethHash("abc"), receiver.PrivateKey )
 	assert.NoError(t , err)

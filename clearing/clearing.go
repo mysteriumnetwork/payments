@@ -31,6 +31,16 @@ func NewPromiseClearer(transactOpts * bind.TransactOpts, contract * generated.Cl
 	}
 }
 
+func (pc * PromiseClearer) RegisterIdentities(addresses ...common.Address) error {
+	for _ , address := range addresses {
+		_ , err := pc.RegisterIdentity(address)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (pc * PromiseClearer) ClearMyPromise(promise Promise) error {
 	seqNo :=big.NewInt(int64(promise.seqNo))
 	amount :=big.NewInt(int64(promise.amount))
