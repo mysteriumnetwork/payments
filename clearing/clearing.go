@@ -6,6 +6,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/event"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/MysteriumNetwork/payments/registry"
 )
 
 //go:generate ../scripts/abigen.sh --sol ../contracts/clearingContract.sol --exc contract/registry.sol:IdentityRegistry --pkg generated --out generated/clearing.go
@@ -31,9 +32,13 @@ func NewPromiseClearer(transactOpts * bind.TransactOpts, contract * generated.Cl
 	}
 }
 
-func (pc * PromiseClearer) RegisterIdentities(addresses ...common.Address) error {
-	for _ , address := range addresses {
-		_ , err := pc.RegisterIdentity(address)
+func (pc * PromiseClearer) RegisterIdentities(identities ...registry.MystIdentity) error {
+	for _ , identity := range identities {
+		proof, err := registry.CreateProofOfIdentity(&identity)
+		if err != nil {
+			return err
+		}
+		_ , err = pc.RegisterIdentity(proof.RandomNumber, proof.Signature)
 		if err != nil {
 			return err
 		}

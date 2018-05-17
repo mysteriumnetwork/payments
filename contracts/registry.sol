@@ -1,7 +1,9 @@
 pragma solidity ^0.4.23;
 
+import "./deps/OpenZeppelin/contracts/ECRecovery.sol";
 
 contract IdentityRegistry {
+    string constant REGISTER_PREFIX="Register prefix:";
 
     event Registered(address indexed identity);
 
@@ -12,7 +14,8 @@ contract IdentityRegistry {
 
     mapping(address => bool)registeredIdentities;
 
-    function RegisterIdentity(address identity) public {
+    function RegisterIdentity(uint64 randomNumber, bytes signature) public {
+        address identity = ECRecovery.recover(keccak256(REGISTER_PREFIX, randomNumber), signature);
         registeredIdentities[identity] = true;
         emit Registered(identity);
     }

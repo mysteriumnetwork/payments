@@ -9,9 +9,8 @@ import (
 	"github.com/MysteriumNetwork/payments/clearing/generated"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
 	"time"
-	"crypto/ecdsa"
+	"github.com/MysteriumNetwork/payments/registry"
 )
 
 var (
@@ -32,13 +31,13 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	sub , err:= clearing.BindForEvents(events)
 	assert.NoError(t, err)
 
-	payer, err := newMystIdentity()
+	payer, err := registry.NewMystIdentity()
 	assert.NoError(t, err)
 
-	receiver, err := newMystIdentity()
+	receiver, err := registry.NewMystIdentity()
 	assert.NoError(t, err)
 
-	err = clearing.RegisterIdentities(payer.Address , receiver.Address)
+	err = clearing.RegisterIdentities(*payer, *receiver)
 	assert.NoError(t , err)
 	backend.Commit()
 
@@ -82,24 +81,6 @@ func deployClearing(t * testing.T) (*PromiseClearer , * backends.SimulatedBacken
 		assert.FailNow(t, "Unexpected error: %s", err)
 	}
 	return NewPromiseClearer( deployerTransactor ,clearing), simulatedBackend
-}
-
-type mystIdentity struct {
-	PrivateKey  *ecdsa.PrivateKey
-	PublicKey * ecdsa.PublicKey
-	Address common.Address
-}
-
-func newMystIdentity() (*mystIdentity , error) {
-	key , err := crypto.GenerateKey()
-	if err != nil {
-		return nil, err
-	}
-	return &mystIdentity{
-		key,
-		&key.PublicKey,
-		crypto.PubkeyToAddress(key.PublicKey),
-	}, nil
 }
 
 const promisePrefix = "Promise prefix:"

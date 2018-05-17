@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/MysteriumNetwork/payments/registry/generated"
+	"fmt"
 )
 
 var (
@@ -29,9 +30,8 @@ func TestRegistryIsDeployable(t *testing.T) {
 func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 	registry, backend := deployRegistry(t)
 
-	identityPrivateKey , err:= crypto.GenerateKey()
-	assert.NoError(t , err)
-	identityAddress := crypto.PubkeyToAddress(identityPrivateKey.PublicKey)
+	mystIdentity, err := NewMystIdentity()
+	assert.NoError(t, err)
 
 	fromBlock := uint64(0)
 	//funny thing with simulated backed - we need subscribe to events BEFORE they are generated - limitation of simulator :)
@@ -39,23 +39,26 @@ func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 	subscription, err := registry.WatchRegistered( &bind.WatchOpts{ Start: &fromBlock} , eventChan, []common.Address{})
 	assert.NoError(t , err)
 
-	registered, err := registry.IsRegistered(nil, identityAddress)
+	registered, err := registry.IsRegistered(nil, mystIdentity.Address)
 	assert.NoError(t, err)
 	assert.False(t, registered)
 
+	proofOfIdentity,err  := CreateProofOfIdentity(mystIdentity)
+	assert.NoError(t, err)
 
-	_ , err = registry.RegisterIdentity(deployerTransactor , identityAddress)
+	tx , err := registry.RegisterIdentity(deployerTransactor , proofOfIdentity.RandomNumber , proofOfIdentity.Signature)
+	fmt.Printf("Transaction: %+v\n" , tx)
 	assert.NoError(t, err)
 	backend.Commit()
 
-	registered, err = registry.IsRegistered(nil, identityAddress)
+	registered, err = registry.IsRegistered(nil, mystIdentity.Address)
 	assert.NoError(t, err)
 	assert.True(t, registered)
 
 
 	select {
 		case event:= <- eventChan :
-			assert.Equal(t , identityAddress, event.Identity)
+			assert.Equal(t , mystIdentity.Address, event.Identity)
 		case err:= <- subscription.Err() :
 			assert.NoError(t , err)
 	}
