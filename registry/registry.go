@@ -7,6 +7,8 @@ import (
 	"math/rand"
 	"time"
 	"encoding/binary"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/MysteriumNetwork/payments/registry/generated"
 )
 
 //go:generate ../scripts/abigen.sh --sol ../contracts/registry.sol --pkg generated --out generated/registry.go
@@ -50,5 +52,27 @@ func CreateProofOfIdentity(identity * MystIdentity) (*ProofOfIdentity , error) {
 	return &ProofOfIdentity{
 		number,
 		signature,
+	}, nil
+}
+
+type Registry struct {
+	generated.IdentityRegistrySession
+	Address common.Address
+}
+
+func DeployRegistry(owner * bind.TransactOpts , erc20address common.Address, backend bind.ContractBackend) (*Registry, error) {
+
+	address , _ , contract , err := generated.DeployIdentityRegistry(owner, backend)
+	if err != nil {
+		return nil , err
+	}
+
+	return &Registry{
+		generated.IdentityRegistrySession{
+			TransactOpts: *owner,
+			CallOpts: bind.CallOpts{},
+			Contract: contract,
+		},
+		address,
 	}, nil
 }
