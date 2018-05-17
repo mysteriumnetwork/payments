@@ -22,6 +22,16 @@ type Promise struct {
 	payerSign []byte
 }
 
+func DeployPromiseClearer(owner * bind.TransactOpts , backend bind.ContractBackend) (*PromiseClearer , error) {
+	_ , _ , clearingContract , err := generated.DeployClearingContract(owner , backend)
+	if err != nil {
+		return nil , err
+	}
+
+	return NewPromiseClearer(owner , clearingContract), nil
+}
+
+
 func NewPromiseClearer(transactOpts * bind.TransactOpts, contract * generated.ClearingContract) *PromiseClearer {
 	return &PromiseClearer{
 		generated.ClearingContractSession{

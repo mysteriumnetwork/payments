@@ -2,30 +2,19 @@ package clearing
 
 import (
 	"testing"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind/backends"
-	"github.com/ethereum/go-ethereum/core"
 	"math/big"
 	"github.com/stretchr/testify/assert"
 	"github.com/MysteriumNetwork/payments/clearing/generated"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"time"
 	"github.com/MysteriumNetwork/payments/registry"
+	"github.com/MysteriumNetwork/payments/test_utils"
 )
-
-var (
-	deployerPrivateKey, _ = crypto.HexToECDSA("b71c71a67e1177ad4e901695e1b4b9ee17ae16c6668d313eac2f96dbcda3f291")
-	deployerAddress       =  crypto.PubkeyToAddress(deployerPrivateKey.PublicKey)
-	deployerTransactor = bind.NewKeyedTransactor(deployerPrivateKey)
-)
-
-
-func TestClearingContractDeploys(t *testing.T) {
-	_ , _ = deployClearing(t)
-}
 
 func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
-	clearing, backend := deployClearing(t)
+	backend := test_utils.NewSimulatedBackend(test_utils.Deployer.Address , 10000000000)
+
+	clearing, err := DeployPromiseClearer(test_utils.Deployer.Transactor , backend)
 
 	events:=make(chan *generated.ClearingContractPromiseCleared,1000)
 	sub , err:= clearing.BindForEvents(events)
@@ -69,18 +58,6 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	}
 
 	sub.Unsubscribe()
-}
-
-func deployClearing(t * testing.T) (*PromiseClearer , * backends.SimulatedBackend) {
-	simulatedBackend := backends.NewSimulatedBackend(core.GenesisAlloc{
-		deployerAddress: {Balance: big.NewInt(1000000000)},
-	})
-	_ , _, clearing, err := generated.DeployClearingContract(deployerTransactor, simulatedBackend)
-	simulatedBackend.Commit()
-	if err != nil {
-		assert.FailNow(t, "Unexpected error: %s", err)
-	}
-	return NewPromiseClearer( deployerTransactor ,clearing), simulatedBackend
 }
 
 const promisePrefix = "Promise prefix:"
