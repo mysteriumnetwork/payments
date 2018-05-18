@@ -9,14 +9,20 @@ import (
 	"time"
 	"github.com/MysteriumNetwork/payments/registry"
 	"github.com/MysteriumNetwork/payments/test_utils"
+	"github.com/MysteriumNetwork/payments/mysttoken"
 )
 
 func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	backend := test_utils.NewSimulatedBackend(test_utils.Deployer.Address , 10000000000)
 
-	clearing, err := DeployPromiseClearer(test_utils.Deployer.Transactor , backend)
+	mystErc20 , err := mysttoken.DeployMystERC20(test_utils.Deployer.Transactor , 1000000, backend)
+	assert.NoError(t , err)
 
-	events:=make(chan *generated.ClearingContractPromiseCleared,1000)
+	clearing, err := DeployPromiseClearer(test_utils.Deployer.Transactor , mystErc20.Address , 1000 , backend)
+	assert.NoError(t ,err)
+	backend.Commit()
+
+	events:=make(chan *generated.ClearingContractPromiseCleared,1)
 	sub , err:= clearing.BindForEvents(events)
 	assert.NoError(t, err)
 

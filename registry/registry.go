@@ -9,6 +9,7 @@ import (
 	"encoding/binary"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/MysteriumNetwork/payments/registry/generated"
+	"math/big"
 )
 
 //go:generate ../scripts/abigen.sh --sol ../contracts/registry.sol --pkg generated --out generated/registry.go
@@ -62,7 +63,7 @@ type Registry struct {
 
 func DeployRegistry(owner * bind.TransactOpts , erc20address common.Address, backend bind.ContractBackend) (*Registry, error) {
 
-	address , _ , contract , err := generated.DeployIdentityRegistry(owner, backend)
+	address , _ , contract , err := generated.DeployIdentityRegistry(owner, backend, erc20address, big.NewInt(1000))
 	if err != nil {
 		return nil , err
 	}

@@ -8,6 +8,10 @@ contract ClearingContract is IdentityRegistry {
 
     event PromiseCleared(address indexed from, address indexed to, uint256 seqNo, uint256 amount);
 
+    function ClearingContract(address erc20address, uint256 registrationFee) public IdentityRegistry(erc20address , registrationFee) {
+
+    }
+
     function clearPromise(uint seqNo, uint amount , bytes receiverSig, bytes payerSig) public returns(bool) {
         address receiver = ECRecovery.recover(keccak256(PROMISE_PREFIX,"abc"), receiverSig);
         address payer = ECRecovery.recover(keccak256(PROMISE_PREFIX,"abc"), payerSig);
