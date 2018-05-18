@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"github.com/MysteriumNetwork/payments/test_utils"
 	"github.com/MysteriumNetwork/payments/mysttoken"
+	"time"
+	"math/big"
 )
 
 func TestRegistryIsDeployable(t *testing.T) {
@@ -34,6 +36,9 @@ func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 	assert.NoError(t ,err)
 	backend.Commit()
 
+	_ , err = mystERC20.Approve(registry.Address , big.NewInt(3000)) // allowance 3000 - fee (1000) = should be left 2000
+	assert.NoError(t , err)
+
 	mystIdentity, err := NewMystIdentity()
 	assert.NoError(t, err)
 
@@ -55,16 +60,31 @@ func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 	assert.NoError(t, err)
 	backend.Commit()
 
+	registryContractBalance , err := mystERC20.BalanceOf(registry.Address)
+	assert.Equal(t, big.NewInt(1000), registryContractBalance) //fee is received for registry contract
+
 	registered, err = registry.IsRegistered(mystIdentity.Address)
 	assert.NoError(t, err)
 	assert.True(t, registered)
 
+	feeReceiver , err := test_utils.NewRandomAccount()
+	assert.NoError(t, err)
+
+	_ , err = registry.TransferCollectedFeeTo(feeReceiver.Address)
+	assert.NoError(t , err)
+	backend.Commit()
+
+	feeReceiverBalance , err := mystERC20.BalanceOf(feeReceiver.Address)
+	assert.NoError(t, err)
+	assert.Equal(t , big.NewInt(1000) , feeReceiverBalance)
 
 	select {
 		case event:= <- eventChan :
 			assert.Equal(t , mystIdentity.Address, event.Identity)
 		case err:= <- subscription.Err() :
 			assert.NoError(t , err)
+		case <- time.After(100 * time.Millisecond):
+			assert.Fail(t, "Identity registered event expected")
 	}
 	subscription.Unsubscribe()
 }

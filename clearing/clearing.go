@@ -12,6 +12,7 @@ import (
 //go:generate ../scripts/abigen.sh --sol ../contracts/clearingContract.sol --exc contract/registry.sol:IdentityRegistry --pkg generated --out generated/clearing.go
 
 type PromiseClearer struct {
+	Address common.Address
 	generated.ClearingContractSession
 }
 
@@ -23,17 +24,18 @@ type Promise struct {
 }
 
 func DeployPromiseClearer(owner * bind.TransactOpts , erc20Token common.Address , fee int64, backend bind.ContractBackend) (*PromiseClearer , error) {
-	_ , _ , clearingContract , err := generated.DeployClearingContract(owner , backend, erc20Token, big.NewInt(fee))
+	address , _ , clearingContract , err := generated.DeployClearingContract(owner , backend, erc20Token, big.NewInt(fee))
 	if err != nil {
 		return nil , err
 	}
 
-	return NewPromiseClearer(owner , clearingContract), nil
+	return NewPromiseClearer(owner , clearingContract, address), nil
 }
 
 
-func NewPromiseClearer(transactOpts * bind.TransactOpts, contract * generated.ClearingContract) *PromiseClearer {
+func NewPromiseClearer(transactOpts * bind.TransactOpts, contract * generated.ClearingContract, address common.Address) *PromiseClearer {
 	return &PromiseClearer{
+		address,
 		generated.ClearingContractSession{
 			Contract: contract,
 			CallOpts: bind.CallOpts{},

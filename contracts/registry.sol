@@ -20,14 +20,15 @@ contract IdentityRegistry is Ownable {
 
     uint256 public registrationFee;
 
-    function IdentityRegistry(address tokenAddress , uint256 regFee) {
-        ERC20Token =ERC20(tokenAddress);
+    constructor(address tokenAddress , uint256 regFee) public {
+        ERC20Token = ERC20(tokenAddress);
         registrationFee = regFee;
     }
 
     function RegisterIdentity(uint64 randomNumber, bytes signature) public {
         address identity = ECRecovery.recover(keccak256(REGISTER_PREFIX, randomNumber), signature);
         registeredIdentities[identity] = true;
+        require(ERC20Token.transferFrom(msg.sender , this, registrationFee));
         emit Registered(identity);
     }
 
@@ -35,7 +36,13 @@ contract IdentityRegistry is Ownable {
         return registeredIdentities[identity];
     }
 
-    function changeRegistrationFee(uint256 newFee) onlyOwner public {
+    function changeRegistrationFee(uint256 newFee) public onlyOwner {
         registrationFee = newFee;
     }
+
+    function transferCollectedFeeTo(address receiver) public onlyOwner {
+        uint256 balance = ERC20Token.balanceOf(this);
+        require(ERC20Token.transfer(receiver , balance));
+    }
+
 }

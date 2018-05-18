@@ -22,6 +22,9 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	assert.NoError(t ,err)
 	backend.Commit()
 
+	_ , err = mystErc20.Approve( clearing.Address , big.NewInt(2000))
+	assert.NoError(t , err)
+
 	events:=make(chan *generated.ClearingContractPromiseCleared,1)
 	sub , err:= clearing.BindForEvents(events)
 	assert.NoError(t, err)

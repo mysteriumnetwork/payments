@@ -8,7 +8,7 @@ contract ClearingContract is IdentityRegistry {
 
     event PromiseCleared(address indexed from, address indexed to, uint256 seqNo, uint256 amount);
 
-    function ClearingContract(address erc20address, uint256 registrationFee) public IdentityRegistry(erc20address , registrationFee) {
+    constructor(address erc20address, uint256 registrationFee) public IdentityRegistry(erc20address , registrationFee) {
 
     }
 
