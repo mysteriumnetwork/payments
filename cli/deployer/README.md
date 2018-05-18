@@ -1,0 +1,1 @@
+testerc20 token deployed at https://rinkeby.etherscan.io/address/0x453c11c058f13b36a35e1aee504b20c1a09667de

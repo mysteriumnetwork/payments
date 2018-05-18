@@ -1,1 +1,4 @@
 **/generated
+**/geth
+**/keystore
+**/geth.ipc
