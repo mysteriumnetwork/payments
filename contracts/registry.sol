@@ -25,8 +25,8 @@ contract IdentityRegistry is Ownable {
         registrationFee = regFee;
     }
 
-    function RegisterIdentity(uint64 randomNumber, bytes signature) public {
-        address identity = ECRecovery.recover(keccak256(REGISTER_PREFIX, randomNumber), signature);
+    function RegisterIdentity(uint64 randomNumber, uint8 v, bytes32 r, bytes32 s) public {
+        address identity = ecrecover(keccak256(REGISTER_PREFIX, randomNumber), v, r, s);
         registeredIdentities[identity] = true;
         require(ERC20Token.transferFrom(msg.sender , this, registrationFee));
         emit Registered(identity);

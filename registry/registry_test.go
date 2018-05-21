@@ -6,7 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/MysteriumNetwork/payments/registry/generated"
-	"fmt"
 	"github.com/MysteriumNetwork/payments/test_utils"
 	"github.com/MysteriumNetwork/payments/mysttoken"
 	"time"
@@ -55,8 +54,7 @@ func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 	proofOfIdentity,err  := CreateProofOfIdentity(mystIdentity)
 	assert.NoError(t, err)
 
-	tx , err := registry.RegisterIdentity(proofOfIdentity.RandomNumber , proofOfIdentity.Signature)
-	fmt.Printf("Transaction: %+v\n" , tx)
+	_ , err = registry.RegisterIdentity(proofOfIdentity)
 	assert.NoError(t, err)
 	backend.Commit()
 

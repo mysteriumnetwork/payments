@@ -10,6 +10,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/MysteriumNetwork/payments/registry/generated"
 	"math/big"
+	"github.com/ethereum/go-ethereum/core/types"
+	"fmt"
 )
 
 //go:generate abigen --sol ../contracts/registry.sol --pkg generated --out generated/registry.go
@@ -38,7 +40,11 @@ func NewMystIdentity() (*MystIdentity, error) {
 
 type ProofOfIdentity struct {
 	RandomNumber uint64
-	Signature    []byte
+	Signature    *DecomposedSignature
+}
+
+func (proof * ProofOfIdentity)String() string {
+	return fmt.Sprintf("Proof: %+v", *proof)
 }
 
 func CreateProofOfIdentity(identity * MystIdentity) (*ProofOfIdentity , error) {
@@ -50,9 +56,14 @@ func CreateProofOfIdentity(identity * MystIdentity) (*ProofOfIdentity , error) {
 		return nil ,err
 	}
 
+	decSig , err := DecomposeSignature(signature)
+	if err != nil {
+		return nil , err
+	}
+
 	return &ProofOfIdentity{
 		number,
-		signature,
+		decSig,
 	}, nil
 }
 
@@ -76,4 +87,9 @@ func DeployRegistry(owner * bind.TransactOpts , erc20address common.Address, bac
 		},
 		address,
 	}, nil
+}
+
+func (registry * Registry) RegisterIdentity(proof * ProofOfIdentity) ( * types.Transaction, error) {
+	signature := proof.Signature
+	return registry.IdentityRegistrySession.RegisterIdentity(proof.RandomNumber , signature.V, signature.R , signature.S)
 }
