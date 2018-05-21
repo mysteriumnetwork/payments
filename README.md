@@ -1,5 +1,16 @@
 # Mysterium network smart contracts for payments
 Requires solc 0.4.23 or later, go 1.9.2 or later
+First we need some external tooling:
+1. Solidity:
+```bash
+brew tap ethereum/ethereum
+brew install solidity
+```
+2. Ethereum:
+```bash
+brew install geth
+```
+
 ### Building
 ```bash
 scripts/deps.sh && scripts/build.sh

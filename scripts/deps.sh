@@ -1,6 +1,7 @@
 #!/bin/bash
 
-#Temporal dep management :)
-go get github.com/ethereum/go-ethereum
-go get github.com/stretchr/testify
-go get github.com/cheggaaa/pb
+depcmd=`which dep`
+
+if [ -z "$depcmd" ]; then echo "You need to install dep - go dependency manager"; exit -1; fi;
+
+$depcmd $@

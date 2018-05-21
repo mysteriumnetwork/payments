@@ -7,7 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-//go:generate ../scripts/abigen.sh --sol ../contracts/mysttoken.sol --pkg generated --out generated/mysttoken.go
+//go:generate abigen --sol ../contracts/mysttoken.sol --pkg generated --out generated/mysttoken.go
 
 type MystERC20 struct {
 	generated.ERC20Session

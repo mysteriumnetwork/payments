@@ -9,7 +9,7 @@ import (
 	"github.com/MysteriumNetwork/payments/registry"
 )
 
-//go:generate ../scripts/abigen.sh --sol ../contracts/clearingContract.sol --exc contract/registry.sol:IdentityRegistry --pkg generated --out generated/clearing.go
+//go:generate abigen --sol ../contracts/clearingContract.sol --exc contract/registry.sol:IdentityRegistry --pkg generated --out generated/clearing.go
 
 type PromiseClearer struct {
 	Address common.Address

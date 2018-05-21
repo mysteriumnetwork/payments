@@ -12,7 +12,7 @@ import (
 	"math/big"
 )
 
-//go:generate ../scripts/abigen.sh --sol ../contracts/registry.sol --pkg generated --out generated/registry.go
+//go:generate abigen --sol ../contracts/registry.sol --pkg generated --out generated/registry.go
 
 func init() {
 	rand.Seed(time.Now().UnixNano())  //don't do this at home kids, use better random generators :)
