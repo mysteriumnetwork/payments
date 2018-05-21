@@ -117,7 +117,7 @@ func lookupBackend() (*ethclient.Client , error) {
 }
 func trackGethProgress(client *ethclient.Client , lastProgress * ethereum.SyncProgress) {
 	bar := pb.New64(int64(lastProgress.HighestBlock)).
-	   Set64(int64(lastProgress.CurrentBlock)).
+	   SetTotal(int64(lastProgress.CurrentBlock)).
 	   Start()
 		defer bar.Finish()
 	for {
@@ -131,8 +131,8 @@ func trackGethProgress(client *ethclient.Client , lastProgress * ethereum.SyncPr
 			fmt.Println("Client in fully synced state. Proceeding...")
 			return
 		}
-		bar.Set64(int64(progress.CurrentBlock))
-		bar.SetTotal64(int64(progress.HighestBlock))
+		bar.SetCurrent(int64(progress.CurrentBlock))
+		bar.SetTotal(int64(progress.HighestBlock))
 		time.Sleep(10 * time.Second)
 	}
 }
