@@ -69,6 +69,10 @@ func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, registered)
 
+	pubKey, err := registry.LookupPublicKey(mystIdentity.Address)
+	assert.NoError(t , err)
+	assert.Equal(t , *(mystIdentity.PublicKey) , *pubKey)
+
 	feeReceiver , err := test_utils.NewRandomAccount()
 	assert.NoError(t, err)
 

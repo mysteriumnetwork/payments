@@ -11,6 +11,7 @@ import (
 	"math/big"
 	"github.com/ethereum/go-ethereum/core/types"
 	"fmt"
+	"errors"
 )
 
 //go:generate abigen --sol ../contracts/registry.sol --pkg generated --out generated/registry.go
@@ -97,4 +98,19 @@ func (registry * Registry) RegisterIdentity(proof * ProofOfIdentity) ( * types.T
 	copy(pubKeyPart1[:] , proof.Data[0:32])
 	copy(pubKeyPart2[:] , proof.Data[32:64])
 	return registry.IdentityRegistrySession.RegisterIdentity(pubKeyPart1 , pubKeyPart2 , signature.V, signature.R , signature.S)
+}
+
+func (registry * Registry) LookupPublicKey(address common.Address) (*ecdsa.PublicKey , error) {
+	part1, part2, err := registry.GetPublicKey(address)
+	if err != nil {
+		return nil , err
+	}
+
+	prefix := []byte{4}
+	fullKey := append(prefix,append(part1[:],part2[:]...)...)
+	pubKey:=crypto.ToECDSAPub(fullKey)
+	if pubKey == nil {
+		return nil , errors.New("unable to deserialize public key")
+	}
+	return pubKey, nil
 }

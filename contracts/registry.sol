@@ -1,39 +1,53 @@
 pragma solidity ^0.4.23;
 
-import "./deps/OpenZeppelin/contracts/token/ERC20/ERC20.sol";
 import "./deps/OpenZeppelin/contracts/ownership/Ownable.sol";
+import "./ERC20Aware.sol";
 
-contract IdentityRegistry is Ownable {
+contract IdentityRegistry is Ownable, ERC20Aware {
     string constant REGISTER_PREFIX="Register prefix:";
 
     event Registered(address indexed identity);
 
     modifier registered(address identity) {
-        require(registeredIdentities[identity]);
+        require(isRegistered(identity));
         _;
     }
 
-    mapping(address => bool)registeredIdentities;
+    struct PublicKey {
+        bytes32 part1;
+        bytes32 part2;
+    }
 
-    ERC20 public ERC20Token;
+    mapping(address => PublicKey)registeredIdentities;
 
     uint256 public registrationFee;
 
-    constructor(address tokenAddress , uint256 regFee) public {
-        ERC20Token = ERC20(tokenAddress);
+    constructor(address tokenAddress , uint256 regFee) public ERC20Aware(tokenAddress) {
         registrationFee = regFee;
     }
 
     function RegisterIdentity(bytes32 pubKeyPart1, bytes32 pubKeyPart2, uint8 v, bytes32 r, bytes32 s) public {
         address identityFromPubKey = address(keccak256(pubKeyPart1 , pubKeyPart2));
         address identity = ecrecover(keccak256(REGISTER_PREFIX, pubKeyPart1 , pubKeyPart2), v, r, s);
-        registeredIdentities[identity] = true;
+
+        require(identity > 0);
+        require(identityFromPubKey == identity);
+        require(!isRegistered(identity));
+
+        registeredIdentities[identity] = PublicKey({ part1: pubKeyPart1 , part2: pubKeyPart2});
         require(ERC20Token.transferFrom(msg.sender , this, registrationFee));
+
         emit Registered(identity);
     }
 
     function isRegistered(address identity) public constant returns (bool) {
-        return registeredIdentities[identity];
+        PublicKey storage pubKey = registeredIdentities[identity];
+        return uint256(pubKey.part1) > 0 && uint256(pubKey.part2) > 0;
+    }
+
+    function getPublicKey(address identity) public constant returns (bytes32,bytes32) {
+        PublicKey storage pubKey = registeredIdentities[identity];
+        return (pubKey.part1 , pubKey.part2);
     }
 
     function changeRegistrationFee(uint256 newFee) public onlyOwner {
