@@ -1,6 +1,5 @@
 pragma solidity ^0.4.23;
 
-import "./deps/OpenZeppelin/contracts/ECRecovery.sol";
 import "./deps/OpenZeppelin/contracts/token/ERC20/ERC20.sol";
 import "./deps/OpenZeppelin/contracts/ownership/Ownable.sol";
 
@@ -25,8 +24,9 @@ contract IdentityRegistry is Ownable {
         registrationFee = regFee;
     }
 
-    function RegisterIdentity(uint64 randomNumber, uint8 v, bytes32 r, bytes32 s) public {
-        address identity = ecrecover(keccak256(REGISTER_PREFIX, randomNumber), v, r, s);
+    function RegisterIdentity(bytes32 pubKeyPart1, bytes32 pubKeyPart2, uint8 v, bytes32 r, bytes32 s) public {
+        address identityFromPubKey = address(keccak256(pubKeyPart1 , pubKeyPart2));
+        address identity = ecrecover(keccak256(REGISTER_PREFIX, pubKeyPart1 , pubKeyPart2), v, r, s);
         registeredIdentities[identity] = true;
         require(ERC20Token.transferFrom(msg.sender , this, registrationFee));
         emit Registered(identity);

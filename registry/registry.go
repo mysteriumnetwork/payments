@@ -6,7 +6,6 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"math/rand"
 	"time"
-	"encoding/binary"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/MysteriumNetwork/payments/registry/generated"
 	"math/big"
@@ -38,8 +37,13 @@ func NewMystIdentity() (*MystIdentity, error) {
 	}, nil
 }
 
+func (identity * MystIdentity)PubKeyToBytes() ([]byte) {
+	pubKeyBytes := crypto.FromECDSAPub(identity.PublicKey)
+	return pubKeyBytes[1:]	//drop first byte as it's encoded curve type - we are not interested in as so does ethereum EVM
+}
+
 type ProofOfIdentity struct {
-	RandomNumber uint64
+	Data []byte
 	Signature    *DecomposedSignature
 }
 
@@ -48,10 +52,7 @@ func (proof * ProofOfIdentity)String() string {
 }
 
 func CreateProofOfIdentity(identity * MystIdentity) (*ProofOfIdentity , error) {
-	number := rand.Uint64()
-	encodedNumber := make([]byte,8,8)
-	binary.BigEndian.PutUint64(encodedNumber, number)
-	signature , err := crypto.Sign(crypto.Keccak256([]byte("Register prefix:"), encodedNumber), identity.PrivateKey )
+	signature , err := crypto.Sign(crypto.Keccak256([]byte("Register prefix:"), identity.PubKeyToBytes()), identity.PrivateKey )
 	if err != nil {
 		return nil ,err
 	}
@@ -62,7 +63,7 @@ func CreateProofOfIdentity(identity * MystIdentity) (*ProofOfIdentity , error) {
 	}
 
 	return &ProofOfIdentity{
-		number,
+		identity.PubKeyToBytes(),
 		decSig,
 	}, nil
 }
@@ -91,5 +92,9 @@ func DeployRegistry(owner * bind.TransactOpts , erc20address common.Address, bac
 
 func (registry * Registry) RegisterIdentity(proof * ProofOfIdentity) ( * types.Transaction, error) {
 	signature := proof.Signature
-	return registry.IdentityRegistrySession.RegisterIdentity(proof.RandomNumber , signature.V, signature.R , signature.S)
+	var pubKeyPart1 [32]byte
+	var pubKeyPart2 [32]byte
+	copy(pubKeyPart1[:] , proof.Data[0:32])
+	copy(pubKeyPart2[:] , proof.Data[32:64])
+	return registry.IdentityRegistrySession.RegisterIdentity(pubKeyPart1 , pubKeyPart2 , signature.V, signature.R , signature.S)
 }

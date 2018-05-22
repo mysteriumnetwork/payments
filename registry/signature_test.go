@@ -17,7 +17,7 @@ func TestSignatureIsDecomposedCorrectly(t *testing.T) {
 	assert.NoError(t , err)
 	assertArrayIsFilledWith(t , decomposed.R , 0x1f)
 	assertArrayIsFilledWith(t, decomposed.S , 0xab)
-	assert.Equal(t , uint8(1) , decomposed.V)
+	assert.Equal(t , uint8(28) , decomposed.V)
 }
 
 func assertArrayIsFilledWith(t * testing.T , arr [32]byte, val uint8) {

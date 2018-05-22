@@ -50,7 +50,12 @@ func (pc * PromiseClearer) RegisterIdentities(identities ...registry.MystIdentit
 		if err != nil {
 			return err
 		}
-		_ , err = pc.RegisterIdentity(proof.RandomNumber, proof.Signature)
+		sig := proof.Signature
+		var pubKeyPart1 [32]byte
+		var pubKeyPart2 [32]byte
+		copy(pubKeyPart1[:] , proof.Data[0:32])
+		copy(pubKeyPart2[:] , proof.Data[32:64])
+		_ , err = pc.RegisterIdentity( pubKeyPart1 , pubKeyPart2 , sig.V , sig.R, sig.S)
 		if err != nil {
 			return err
 		}

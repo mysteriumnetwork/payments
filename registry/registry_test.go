@@ -10,6 +10,7 @@ import (
 	"github.com/MysteriumNetwork/payments/mysttoken"
 	"time"
 	"math/big"
+	"fmt"
 )
 
 func TestRegistryIsDeployable(t *testing.T) {
@@ -54,7 +55,10 @@ func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 	proofOfIdentity,err  := CreateProofOfIdentity(mystIdentity)
 	assert.NoError(t, err)
 
-	_ , err = registry.RegisterIdentity(proofOfIdentity)
+	fmt.Printf("Pub key: %+v\n" , mystIdentity.PubKeyToBytes())
+	tx , err := registry.RegisterIdentity(proofOfIdentity)
+	fmt.Printf("Tx: %+v\n" , tx)
+
 	assert.NoError(t, err)
 	backend.Commit()
 

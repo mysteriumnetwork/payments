@@ -18,7 +18,7 @@ func DecomposeSignature(signature []byte) (*DecomposedSignature, error) {
 	sign := &DecomposedSignature{}
 	copy(sign.R[:],signature[0:32])
 	copy(sign.S[:],signature[32:64])
-	sign.V=signature[64] + 27
+	sign.V=signature[64] + 27  //Ethereum requires sign byte to contain 27 or 28 (essentially val + 27)
 	return sign, nil
 }
 
