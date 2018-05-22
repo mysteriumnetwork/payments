@@ -26,7 +26,7 @@ contract IdentityRegistry is Ownable, ERC20Aware {
         registrationFee = regFee;
     }
 
-    function RegisterIdentity(bytes32 pubKeyPart1, bytes32 pubKeyPart2, uint8 v, bytes32 r, bytes32 s) public {
+    function RegisterIdentity(bytes32 pubKeyPart1, bytes32 pubKeyPart2, uint8 v, bytes32 r, bytes32 s) public returns (bool) {
         address identityFromPubKey = address(keccak256(pubKeyPart1 , pubKeyPart2));
         address identity = ecrecover(keccak256(REGISTER_PREFIX, pubKeyPart1 , pubKeyPart2), v, r, s);
 
@@ -38,6 +38,7 @@ contract IdentityRegistry is Ownable, ERC20Aware {
         require(ERC20Token.transferFrom(msg.sender , this, registrationFee));
 
         emit Registered(identity);
+        return true;
     }
 
     function isRegistered(address identity) public constant returns (bool) {
@@ -54,9 +55,10 @@ contract IdentityRegistry is Ownable, ERC20Aware {
         registrationFee = newFee;
     }
 
-    function transferCollectedFeeTo(address receiver) public onlyOwner {
+    function transferCollectedFeeTo(address receiver) public onlyOwner returns (bool) {
         uint256 balance = ERC20Token.balanceOf(this);
         require(ERC20Token.transfer(receiver , balance));
+        return true;
     }
 
 }

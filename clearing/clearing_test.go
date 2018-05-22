@@ -25,7 +25,7 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	_ , err = mystErc20.Approve( clearing.Address , big.NewInt(2000))
 	assert.NoError(t , err)
 
-	events:=make(chan *generated.ClearingContractPromiseCleared,1)
+	events:=make(chan *generated.IdentityPromisesPromiseCleared,1)
 	sub , err:= clearing.BindForEvents(events)
 	assert.NoError(t, err)
 

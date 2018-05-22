@@ -9,11 +9,11 @@ import (
 	"github.com/MysteriumNetwork/payments/registry"
 )
 
-//go:generate abigen --sol ../contracts/clearingContract.sol --exc contract/registry.sol:IdentityRegistry --pkg generated --out generated/clearing.go
+//go:generate abigen --sol ../contracts/IdentityPromises.sol --exc contract/registry.sol:IdentityRegistry --pkg generated --out generated/promises.go
 
 type PromiseClearer struct {
 	Address common.Address
-	generated.ClearingContractSession
+	generated.IdentityPromisesSession
 }
 
 type Promise struct {
@@ -24,7 +24,7 @@ type Promise struct {
 }
 
 func DeployPromiseClearer(owner * bind.TransactOpts , erc20Token common.Address , fee int64, backend bind.ContractBackend) (*PromiseClearer , error) {
-	address , _ , clearingContract , err := generated.DeployClearingContract(owner , backend, erc20Token, big.NewInt(fee))
+	address , _ , clearingContract , err := generated.DeployIdentityPromises(owner , backend, erc20Token, big.NewInt(fee))
 	if err != nil {
 		return nil , err
 	}
@@ -33,10 +33,10 @@ func DeployPromiseClearer(owner * bind.TransactOpts , erc20Token common.Address 
 }
 
 
-func NewPromiseClearer(transactOpts * bind.TransactOpts, contract * generated.ClearingContract, address common.Address) *PromiseClearer {
+func NewPromiseClearer(transactOpts * bind.TransactOpts, contract * generated.IdentityPromises, address common.Address) *PromiseClearer {
 	return &PromiseClearer{
 		address,
-		generated.ClearingContractSession{
+		generated.IdentityPromisesSession{
 			Contract: contract,
 			CallOpts: bind.CallOpts{},
 			TransactOpts: *transactOpts,
@@ -70,7 +70,7 @@ func (pc * PromiseClearer) ClearMyPromise(promise Promise) error {
 	return err
 }
 
-func (pc * PromiseClearer) BindForEvents(eventChan chan<- *generated.ClearingContractPromiseCleared) (event.Subscription , error) {
+func (pc * PromiseClearer) BindForEvents(eventChan chan<- *generated.IdentityPromisesPromiseCleared) (event.Subscription , error) {
 	start := uint64(0)
 	return pc.Contract.WatchPromiseCleared(&bind.WatchOpts{Start:&start} , eventChan, []common.Address{}, []common.Address{})
 }
