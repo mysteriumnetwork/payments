@@ -1,10 +1,10 @@
-package clearing
+package promises
 
 import (
 	"testing"
 	"math/big"
 	"github.com/stretchr/testify/assert"
-	"github.com/MysteriumNetwork/payments/clearing/generated"
+	"github.com/MysteriumNetwork/payments/promises/generated"
 	"github.com/ethereum/go-ethereum/crypto"
 	"time"
 	"github.com/MysteriumNetwork/payments/registry"

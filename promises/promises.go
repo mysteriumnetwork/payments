@@ -1,7 +1,7 @@
-package clearing
+package promises
 
 import (
-	"github.com/MysteriumNetwork/payments/clearing/generated"
+	"github.com/MysteriumNetwork/payments/promises/generated"
 	"math/big"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/event"
@@ -9,7 +9,7 @@ import (
 	"github.com/MysteriumNetwork/payments/registry"
 )
 
-//go:generate abigen --sol ../contracts/IdentityPromises.sol --exc contract/registry.sol:IdentityRegistry --pkg generated --out generated/promises.go
+//go:generate abigen --sol ../contracts/IdentityPromises.sol --exc contract/registry.sol:IdentityRegistry --pkg generated --out generated/IdentityPromises.go
 
 type PromiseClearer struct {
 	Address common.Address
