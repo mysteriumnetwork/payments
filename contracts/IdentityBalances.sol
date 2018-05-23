@@ -2,7 +2,7 @@ pragma solidity ^0.4.23;
 
 import "./ERC20Aware.sol";
 
-contract IdentityBalance is ERC20Aware {
+contract IdentityBalances is ERC20Aware {
     string constant WITHDRAW_PREFIX = "Withdraw request: ";
 
     event ToppedUp(address indexed identity, uint256 amount, uint256 totalBalance);
