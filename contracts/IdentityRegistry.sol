@@ -59,7 +59,9 @@ contract IdentityRegistry is Ownable, ERC20Aware {
 
     function transferCollectedFeeTo(address receiver) public onlyOwner returns (bool) {
         require(collectedFee > 0);
-        require(ERC20Token.transfer(receiver , collectedFee));
+        uint256 transferAmount = collectedFee;
+        collectedFee = 0;
+        require(ERC20Token.transfer(receiver , transferAmount));
         return true;
     }
 
