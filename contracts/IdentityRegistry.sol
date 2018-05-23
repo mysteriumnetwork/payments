@@ -21,6 +21,7 @@ contract IdentityRegistry is Ownable, ERC20Aware {
     mapping(address => PublicKey)registeredIdentities;
 
     uint256 public registrationFee;
+    uint256 public collectedFee;
 
     constructor(address tokenAddress , uint256 regFee) public ERC20Aware(tokenAddress) {
         registrationFee = regFee;
@@ -34,6 +35,7 @@ contract IdentityRegistry is Ownable, ERC20Aware {
         require(identityFromPubKey == identity);
         require(!isRegistered(identity));
 
+        collectedFee = collectedFee + registrationFee;
         registeredIdentities[identity] = PublicKey({ part1: pubKeyPart1 , part2: pubKeyPart2});
         require(ERC20Token.transferFrom(msg.sender , this, registrationFee));
 
@@ -56,8 +58,8 @@ contract IdentityRegistry is Ownable, ERC20Aware {
     }
 
     function transferCollectedFeeTo(address receiver) public onlyOwner returns (bool) {
-        uint256 balance = ERC20Token.balanceOf(this);
-        require(ERC20Token.transfer(receiver , balance));
+        require(collectedFee > 0);
+        require(ERC20Token.transfer(receiver , collectedFee));
         return true;
     }
 
