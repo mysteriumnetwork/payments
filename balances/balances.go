@@ -7,8 +7,9 @@ import (
 	"github.com/ethereum/go-ethereum/event"
 	"github.com/MysteriumNetwork/payments/registry"
 	"github.com/ethereum/go-ethereum/crypto"
-	"encoding/binary"
 	"fmt"
+	"math/big"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 )
 
 //go:generate abigen --sol ../contracts/IdentityBalances.sol --pkg generated --out generated/IdentityBalances.go
@@ -45,15 +46,15 @@ func (balances * IdentityBalances) BindForWithdrawEvents(sink chan<- * generated
 }
 
 type WithdrawRequest struct {
-	Amount uint64
+	Amount *big.Int
 	Signature * registry.DecomposedSignature
 }
 
 const withDrawPrefix = "Withdraw request:"
 
 func NewWithdrawRequest(identity * registry.MystIdentity , amount int64) (*WithdrawRequest , error) {
-	amountBytes := make([]byte, 8 , 8)
-	binary.BigEndian.PutUint64(amountBytes , uint64(amount))
+	bigAmount := big.NewInt(amount)
+	amountBytes := abi.U256(bigAmount)
 	signature, err := crypto.Sign(crypto.Keccak256([]byte(withDrawPrefix), amountBytes), identity.PrivateKey )
 	if err != nil {
 		return nil , err
@@ -64,7 +65,7 @@ func NewWithdrawRequest(identity * registry.MystIdentity , amount int64) (*Withd
 	}
 	return &WithdrawRequest{
 		//Amount:    big.NewInt(amount),
-		Amount: uint64(amount),
+		Amount: bigAmount,
 		Signature: decomposed,
 	}, nil
 }

@@ -24,7 +24,7 @@ contract IdentityBalances is ERC20Aware {
         return true;
     }
 
-    function withdraw(uint64 amount, uint8 v, bytes32 r, bytes32 s) public returns (bool) {
+    function withdraw(uint256 amount, uint8 v, bytes32 r, bytes32 s) public returns (bool) {
         address identity = ecrecover(keccak256(WITHDRAW_PREFIX, amount) , v , r ,s );
 
         require(identity > 0);
@@ -32,7 +32,7 @@ contract IdentityBalances is ERC20Aware {
         require(balances[identity] >= amount);
 
         balances[identity]-=amount;
-        require(ERC20Token.transfer(msg.sender, uint256(amount)));
+        require(ERC20Token.transfer(msg.sender, amount));
 
         emit Withdrawn(identity, amount, balances[identity]);
         return true;
