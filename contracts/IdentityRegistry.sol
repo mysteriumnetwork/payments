@@ -3,6 +3,7 @@ pragma solidity ^0.4.23;
 import "./deps/OpenZeppelin/contracts/ownership/Ownable.sol";
 import "./ERC20Aware.sol";
 
+
 contract IdentityRegistry is Ownable, ERC20Aware {
     string constant REGISTER_PREFIX="Register prefix:";
 
@@ -23,21 +24,21 @@ contract IdentityRegistry is Ownable, ERC20Aware {
     uint256 public registrationFee;
     uint256 public collectedFee;
 
-    constructor(address tokenAddress , uint256 regFee) public ERC20Aware(tokenAddress) {
+    constructor(address tokenAddress, uint256 regFee) public ERC20Aware(tokenAddress) {
         registrationFee = regFee;
     }
 
     function RegisterIdentity(bytes32 pubKeyPart1, bytes32 pubKeyPart2, uint8 v, bytes32 r, bytes32 s) public returns (bool) {
-        address identityFromPubKey = address(keccak256(pubKeyPart1 , pubKeyPart2));
-        address identity = ecrecover(keccak256(REGISTER_PREFIX, pubKeyPart1 , pubKeyPart2), v, r, s);
+        address identityFromPubKey = address(keccak256(pubKeyPart1, pubKeyPart2));
+        address identity = ecrecover(keccak256(REGISTER_PREFIX, pubKeyPart1, pubKeyPart2), v, r, s);
 
         require(identity > 0);
         require(identityFromPubKey == identity);
         require(!isRegistered(identity));
 
         collectedFee = collectedFee + registrationFee;
-        registeredIdentities[identity] = PublicKey({ part1: pubKeyPart1 , part2: pubKeyPart2});
-        require(ERC20Token.transferFrom(msg.sender , this, registrationFee));
+        registeredIdentities[identity] = PublicKey({ part1: pubKeyPart1, part2: pubKeyPart2});
+        require(ERC20Token.transferFrom(msg.sender, this, registrationFee));
 
         emit Registered(identity);
         return true;
@@ -48,9 +49,9 @@ contract IdentityRegistry is Ownable, ERC20Aware {
         return uint256(pubKey.part1) > 0 && uint256(pubKey.part2) > 0;
     }
 
-    function getPublicKey(address identity) public constant returns (bytes32,bytes32) {
+    function getPublicKey(address identity) public constant returns (bytes32, bytes32) {
         PublicKey storage pubKey = registeredIdentities[identity];
-        return (pubKey.part1 , pubKey.part2);
+        return (pubKey.part1, pubKey.part2);
     }
 
     function changeRegistrationFee(uint256 newFee) public onlyOwner {
@@ -61,7 +62,7 @@ contract IdentityRegistry is Ownable, ERC20Aware {
         require(collectedFee > 0);
         uint256 transferAmount = collectedFee;
         collectedFee = 0;
-        require(ERC20Token.transfer(receiver , transferAmount));
+        require(ERC20Token.transfer(receiver, transferAmount));
         return true;
     }
 
