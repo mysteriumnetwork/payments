@@ -5,6 +5,7 @@ pragma solidity ^0.4.23;
 //but for the sake of demonstrating that any compatible token will do
 import "./deps/OpenZeppelin/contracts/token/ERC20/MintableToken.sol";
 
+
 contract MystToken is MintableToken {
 
 }
