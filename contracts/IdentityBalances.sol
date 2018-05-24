@@ -1,6 +1,7 @@
 pragma solidity ^0.4.23;
 
 import "./ERC20Aware.sol";
+import "./deps/OpenZeppelin/contracts/math/Math.sol";
 
 
 contract IdentityBalances is ERC20Aware {
@@ -9,7 +10,7 @@ contract IdentityBalances is ERC20Aware {
     event ToppedUp(address indexed identity, uint256 amount, uint256 totalBalance);
     event Withdrawn(address indexed identity, uint256 amount, uint256 totalBalance);
 
-    mapping(address => uint256) balances;
+    mapping(address => uint256) public balances;
 
     constructor(address tokenAddress) public ERC20Aware(tokenAddress) {
 
@@ -39,7 +40,12 @@ contract IdentityBalances is ERC20Aware {
         return true;
     }
 
-    function balanceOf(address identity) public constant returns (uint256) {
-        return balances[identity];
+    function internalTransfer(address from, address to, uint256 amount) internal returns(uint256) {
+        require(amount > 0);
+        uint256 maxTransfered = Math.max256(balances[from],amount);
+        balances[from] = balances[from] - maxTransfered;
+        balances[to] = balances[to] + maxTransfered;
+        return maxTransfered;
     }
+
 }

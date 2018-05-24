@@ -30,7 +30,7 @@ func TestTopUpActionAddsMystToBalanceAndEmitsToppedUpEvent(t *testing.T) {
 	mystIdentity , err := registry.NewMystIdentity()
 	assert.NoError(t , err)
 
-	initialBalance , err := identityBalances.BalanceOf(mystIdentity.Address)
+	initialBalance , err := identityBalances.Balances(mystIdentity.Address)
 	assert.NoError(t, err)
 	assert.Equal(t, uint64(0), initialBalance.Uint64())
 
@@ -42,7 +42,7 @@ func TestTopUpActionAddsMystToBalanceAndEmitsToppedUpEvent(t *testing.T) {
 	assert.NoError(t, err)
 	simulator.Commit()
 
-	newBalance , err := identityBalances.BalanceOf(mystIdentity.Address )
+	newBalance , err := identityBalances.Balances(mystIdentity.Address )
 	assert.NoError(t ,err)
 	assert.Equal(t, big.NewInt(500) , newBalance)
 
@@ -97,7 +97,7 @@ func TestWithdrawActionRemovesMystFromBalanceAndEmitsWithdrawnEvent(t *testing.T
 	assert.NoError(t, err)
 	simulator.Commit()
 
-	newBalance , err := identityBalances.BalanceOf(mystIdentity.Address )
+	newBalance , err := identityBalances.Balances(mystIdentity.Address )
 	assert.NoError(t ,err)
 	assert.Equal(t, big.NewInt(200) , newBalance)
 
