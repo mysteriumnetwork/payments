@@ -1,8 +1,9 @@
 pragma solidity ^0.4.23;
 
 import "./IdentityRegistry.sol";
+import "./IdentityBalances.sol";
 
-contract IdentityPromises is IdentityRegistry {
+contract IdentityPromises is IdentityRegistry , IdentityBalances {
     string constant ISSUER_PREFIX = "Issuer prefix:";
     string constant RECEIVER_PREFIX = "Receiver prefix:";
 
@@ -10,7 +11,7 @@ contract IdentityPromises is IdentityRegistry {
 
     mapping(address => mapping(address => uint256)) public clearedPromises;
 
-    constructor(address erc20address, uint256 registrationFee) public IdentityRegistry(erc20address, registrationFee) {
+    constructor(address erc20address, uint256 registrationFee) public IdentityRegistry(erc20address, registrationFee) IdentityBalances(erc20address) {
 
     }
 
@@ -27,9 +28,15 @@ contract IdentityPromises is IdentityRegistry {
         require(recoveredReceiver > 0);
         require(recoveredReceiver == receiver);
         require(amount > 0);
+        return internalClearPromise(receiver , sender , seq, amount);
+    }
+
+    function internalClearPromise(address receiver, address sender, uint256 seq, uint256 amount) private returns (bool) {
         require(seq > clearedPromises[sender][receiver]);
 
         clearedPromises[sender][receiver] = seq;
+        uint256 transfered = internalTransfer(sender, receiver, amount);
+        require(transfered == amount);
 
         emit PromiseCleared(sender, receiver, seq, amount);
         return true;

@@ -21,8 +21,9 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	assert.NoError(t ,err)
 	backend.Commit()
 
-	_ , err = mystErc20.Approve( clearing.Address , big.NewInt(2000))
+	_ , err = mystErc20.Approve( clearing.Address , big.NewInt(3000))
 	assert.NoError(t , err)
+	backend.Commit()
 
 	events:=make(chan *generated.IdentityPromisesPromiseCleared,1)
 	sub , err:= clearing.BindForEvents(events)
@@ -36,6 +37,10 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 
 	err = clearing.RegisterIdentities(*payer, *receiver)
 	assert.NoError(t , err)
+	backend.Commit()
+
+	_, err = clearing.TopUp(payer.Address , big.NewInt(1000))
+	assert.NoError(t, err)
 	backend.Commit()
 
 	promise := Promise{
@@ -56,6 +61,14 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	lastSeqNo , err := clearing.LastClearedPromise(payer.Address, receiver.Address)
 	assert.NoError(t , err)
 	assert.Equal(t, uint64(1) , lastSeqNo)
+
+	balanceOfSender,err := clearing.Balances(payer.Address)
+	assert.NoError(t, err)
+	assert.Equal(t, big.NewInt(900) , balanceOfSender)
+
+	balanceOfReceiver,err := clearing.Balances(receiver.Address)
+	assert.NoError(t, err)
+	assert.Equal(t, big.NewInt(100) , balanceOfReceiver)
 
 	select {
 	case event:= <- events :
