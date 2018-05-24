@@ -1,11 +1,10 @@
 pragma solidity ^0.4.23;
 
 import "./IdentityRegistry.sol";
-import "./deps/OpenZeppelin/contracts/ECRecovery.sol";
-
 
 contract IdentityPromises is IdentityRegistry {
-    string constant PROMISE_PREFIX = "Promise prefix:";
+    string constant ISSUER_PREFIX = "Issuer prefix:";
+    string constant RECEIVER_PREFIX = "Receiver prefix:";
 
     event PromiseCleared(address indexed from, address indexed to, uint256 seqNo, uint256 amount);
 
@@ -13,12 +12,20 @@ contract IdentityPromises is IdentityRegistry {
 
     }
 
-    function clearPromise(uint seqNo, uint amount, bytes receiverSig, bytes payerSig) public returns (bool) {
-        address receiver = ECRecovery.recover(keccak256(PROMISE_PREFIX, "abc"), receiverSig);
-        address payer = ECRecovery.recover(keccak256(PROMISE_PREFIX, "abc"), payerSig);
-        require(super.isRegistered(receiver));
-        require(super.isRegistered(payer));
-        emit PromiseCleared(payer, receiver, seqNo, amount);
+    function clearPromise(address receiver, uint256 seq, uint256 amount,
+        uint8 sender_V , bytes32 sender_R, bytes32 sender_S,
+        uint8 receiver_V, bytes32 receiver_R, bytes32 receiver_S) public returns (bool) {
+
+        bytes32 promiseHash = keccak256(ISSUER_PREFIX, receiver , seq , amount);
+
+        address sender = ecrecover(promiseHash, sender_V , sender_R, sender_S);
+        address recoveredReceiver = ecrecover(keccak256(RECEIVER_PREFIX, promiseHash , sender), receiver_V , receiver_R, receiver_S);
+
+        require(sender > 0);
+        require(recoveredReceiver > 0);
+        require(recoveredReceiver == receiver);
+
+        emit PromiseCleared(sender, receiver, seq, amount);
         return true;
     }
 }

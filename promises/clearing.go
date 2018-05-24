@@ -7,23 +7,17 @@ import (
 	"github.com/ethereum/go-ethereum/event"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/MysteriumNetwork/payments/registry"
+	"fmt"
 )
 
 //go:generate abigen --sol ../contracts/IdentityPromises.sol --exc contract/registry.sol:IdentityRegistry --pkg generated --out generated/IdentityPromises.go
 
-type PromiseClearer struct {
+type PromiseClearing struct {
 	Address common.Address
 	generated.IdentityPromisesSession
 }
 
-type Promise struct {
-	seqNo int
-	amount int
-	receiverSign []byte
-	payerSign []byte
-}
-
-func DeployPromiseClearer(owner * bind.TransactOpts , erc20Token common.Address , fee int64, backend bind.ContractBackend) (*PromiseClearer , error) {
+func DeployPromiseClearer(owner * bind.TransactOpts , erc20Token common.Address , fee int64, backend bind.ContractBackend) (*PromiseClearing, error) {
 	address , _ , clearingContract , err := generated.DeployIdentityPromises(owner , backend, erc20Token, big.NewInt(fee))
 	if err != nil {
 		return nil , err
@@ -33,8 +27,8 @@ func DeployPromiseClearer(owner * bind.TransactOpts , erc20Token common.Address 
 }
 
 
-func NewPromiseClearer(transactOpts * bind.TransactOpts, contract * generated.IdentityPromises, address common.Address) *PromiseClearer {
-	return &PromiseClearer{
+func NewPromiseClearer(transactOpts * bind.TransactOpts, contract * generated.IdentityPromises, address common.Address) *PromiseClearing {
+	return &PromiseClearing{
 		address,
 		generated.IdentityPromisesSession{
 			Contract: contract,
@@ -44,7 +38,7 @@ func NewPromiseClearer(transactOpts * bind.TransactOpts, contract * generated.Id
 	}
 }
 
-func (pc * PromiseClearer) RegisterIdentities(identities ...registry.MystIdentity) error {
+func (pc *PromiseClearing) RegisterIdentities(identities ...registry.MystIdentity) error {
 	for _ , identity := range identities {
 		proof, err := registry.CreateProofOfIdentity(&identity)
 		if err != nil {
@@ -63,14 +57,31 @@ func (pc * PromiseClearer) RegisterIdentities(identities ...registry.MystIdentit
 	return nil
 }
 
-func (pc * PromiseClearer) ClearMyPromise(promise Promise) error {
-	seqNo :=big.NewInt(int64(promise.seqNo))
-	amount :=big.NewInt(int64(promise.amount))
-	_ , err := pc.ClearPromise( seqNo, amount, promise.receiverSign, promise.payerSign)
+func (pc *PromiseClearing) ClearReceivedPromise(promise * ReceivedPromise) error {
+	issuerSig , err := registry.DecomposeSignature(promise.IssuerSignature)
+	if err != nil {
+		return err
+	}
+	receiverSig , err := registry.DecomposeSignature(promise.ReceiverSignature)
+	if err != nil {
+		return err
+	}
+	tx , err := pc.ClearPromise(
+		promise.Receiver,
+		big.NewInt(promise.SeqNo),
+		big.NewInt(promise.Amount),
+		issuerSig.V,
+		issuerSig.R,
+		issuerSig.S,
+		receiverSig.V,
+		receiverSig.R,
+		receiverSig.S,
+	)
+	fmt.Printf("Tx: %+v\n" , tx)
 	return err
 }
 
-func (pc * PromiseClearer) BindForEvents(eventChan chan<- *generated.IdentityPromisesPromiseCleared) (event.Subscription , error) {
+func (pc *PromiseClearing) BindForEvents(eventChan chan<- *generated.IdentityPromisesPromiseCleared) (event.Subscription , error) {
 	start := uint64(0)
 	return pc.Contract.WatchPromiseCleared(&bind.WatchOpts{Start:&start} , eventChan, []common.Address{}, []common.Address{})
 }

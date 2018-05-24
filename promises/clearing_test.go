@@ -39,18 +39,18 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	assert.NoError(t , err)
 	backend.Commit()
 
-	receiverSig , err := crypto.Sign(ethHash("abc"), receiver.PrivateKey )
-	assert.NoError(t , err)
-	payerSig, err := crypto.Sign(ethHash("abc"), payer.PrivateKey )
-	assert.NoError(t , err)
-
 	promise := Promise{
-		seqNo: 1,
-		amount: 100,
-		receiverSign: receiverSig,
-		payerSign: payerSig,
+		Receiver: receiver.Address,
+		SeqNo:    1,
+		Amount:   100,
 	}
-	err = clearing.ClearMyPromise(promise)
+
+	issuedPromise, err := SignByPayer(&promise , payer)
+	assert.NoError(t, err)
+	receivedPromise , err := SignByReceiver(issuedPromise, receiver)
+	assert.NoError(t, err)
+
+	err = clearing.ClearReceivedPromise(receivedPromise)
 	assert.NoError(t, err)
 	backend.Commit()
 
@@ -58,8 +58,8 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	case event:= <- events :
 		assert.Equal(t , big.NewInt(1), event.SeqNo)
 		assert.Equal(t, big.NewInt(100), event.Amount)
-	assert.Equal(t, payer.Address, event.From)
-	assert.Equal(t, receiver.Address, event.To)
+		assert.Equal(t, payer.Address , event.From)
+		assert.Equal(t, receiver.Address , event.To)
 	case err:= <- sub.Err() :
 		assert.NoError(t , err)
 	case <- time.After(100 * time.Millisecond):
