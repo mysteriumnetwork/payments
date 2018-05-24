@@ -85,3 +85,11 @@ func (pc *PromiseClearing) BindForEvents(eventChan chan<- *generated.IdentityPro
 	start := uint64(0)
 	return pc.Contract.WatchPromiseCleared(&bind.WatchOpts{Start:&start} , eventChan, []common.Address{}, []common.Address{})
 }
+
+func (pc * PromiseClearing) LastClearedPromise(sender common.Address, receiver common.Address) (uint64 , error) {
+	seq , err := pc.ClearedPromises(sender , receiver)
+	if err != nil {
+		return 0 , err
+	}
+	return seq.Uint64() , err
+}

@@ -8,6 +8,8 @@ contract IdentityPromises is IdentityRegistry {
 
     event PromiseCleared(address indexed from, address indexed to, uint256 seqNo, uint256 amount);
 
+    mapping(address => mapping(address => uint256)) public clearedPromises;
+
     constructor(address erc20address, uint256 registrationFee) public IdentityRegistry(erc20address, registrationFee) {
 
     }
@@ -24,6 +26,10 @@ contract IdentityPromises is IdentityRegistry {
         require(sender > 0);
         require(recoveredReceiver > 0);
         require(recoveredReceiver == receiver);
+        require(amount > 0);
+        require(seq > clearedPromises[sender][receiver]);
+
+        clearedPromises[sender][receiver] = seq;
 
         emit PromiseCleared(sender, receiver, seq, amount);
         return true;

@@ -5,7 +5,6 @@ import (
 	"math/big"
 	"github.com/stretchr/testify/assert"
 	"github.com/MysteriumNetwork/payments/promises/generated"
-	"github.com/ethereum/go-ethereum/crypto"
 	"time"
 	"github.com/MysteriumNetwork/payments/registry"
 	"github.com/MysteriumNetwork/payments/test_utils"
@@ -54,6 +53,10 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	assert.NoError(t, err)
 	backend.Commit()
 
+	lastSeqNo , err := clearing.LastClearedPromise(payer.Address, receiver.Address)
+	assert.NoError(t , err)
+	assert.Equal(t, uint64(1) , lastSeqNo)
+
 	select {
 	case event:= <- events :
 		assert.Equal(t , big.NewInt(1), event.SeqNo)
@@ -67,9 +70,4 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	}
 
 	sub.Unsubscribe()
-}
-
-const promisePrefix = "Promise prefix:"
-func ethHash(msg string) ([]byte) {
-	return crypto.Keccak256( []byte(promisePrefix) , []byte(msg))
 }
