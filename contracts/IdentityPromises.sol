@@ -27,6 +27,8 @@ contract IdentityPromises is IdentityRegistry , IdentityBalances {
         require(sender > 0);
         require(recoveredReceiver > 0);
         require(recoveredReceiver == receiver);
+        require(isRegistered(sender));
+        require(isRegistered(receiver));
         require(amount > 0);
         return internalClearPromise(receiver , sender , seq, amount);
     }
