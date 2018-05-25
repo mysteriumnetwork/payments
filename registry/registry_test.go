@@ -10,11 +10,18 @@ import (
 	"github.com/MysteriumNetwork/payments/mysttoken"
 	"time"
 	"math/big"
-	"fmt"
+	generated2 "github.com/MysteriumNetwork/payments/mysttoken/generated"
 )
 
+var abiMap = test_utils.AbiMap{
+	"MystToken" : generated2.MystTokenABI,
+	"IdentityRegistry" : generated.IdentityRegistryABI,
+}
+
+var abiList , _ = test_utils.ParseAbis(abiMap)
+
 func TestRegistryIsDeployable(t *testing.T) {
-	backend := test_utils.NewSimulatedBackend(test_utils.Deployer.Address, 1000000)
+	backend := test_utils.LoggingBackend(test_utils.NewSimulatedBackend(test_utils.Deployer.Address, 1000000000) , abiList)
 
 	registry, err := DeployRegistry(test_utils.Deployer.Transactor , common.Address{} , backend)
 	assert.NoError(t ,err)
@@ -26,7 +33,7 @@ func TestRegistryIsDeployable(t *testing.T) {
 }
 
 func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
-	backend := test_utils.NewSimulatedBackend(test_utils.Deployer.Address, 100000000000000)
+	backend := test_utils.LoggingBackend(test_utils.NewSimulatedBackend(test_utils.Deployer.Address, 1000000000) , abiList)
 
 	mystERC20, err := mysttoken.DeployMystERC20(test_utils.Deployer.Transactor , 1000000, backend)
 	assert.NoError(t ,err)
@@ -55,10 +62,7 @@ func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 	proofOfIdentity,err  := CreateProofOfIdentity(mystIdentity)
 	assert.NoError(t, err)
 
-	fmt.Printf("Pub key: %+v\n" , mystIdentity.PubKeyToBytes())
-	tx , err := registry.RegisterIdentity(proofOfIdentity)
-	fmt.Printf("Tx: %+v\n" , tx)
-
+	_ , err = registry.RegisterIdentity(proofOfIdentity)
 	assert.NoError(t, err)
 	backend.Commit()
 

@@ -9,10 +9,16 @@ import (
 	"github.com/MysteriumNetwork/payments/registry"
 	"github.com/MysteriumNetwork/payments/test_utils"
 	"github.com/MysteriumNetwork/payments/mysttoken"
+	generated2 "github.com/MysteriumNetwork/payments/mysttoken/generated"
 )
 
+var abiList , _ = test_utils.ParseAbis(test_utils.AbiMap{
+	"MystToken" : generated2.MystTokenABI,
+	"IdentityPromises" : generated.IdentityPromisesABI,
+})
+
 func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
-	backend := test_utils.NewSimulatedBackend(test_utils.Deployer.Address , 10000000000)
+	backend := test_utils.LoggingBackend(test_utils.NewSimulatedBackend(test_utils.Deployer.Address , 10000000000) , abiList)
 
 	mystErc20 , err := mysttoken.DeployMystERC20(test_utils.Deployer.Transactor , 1000000, backend)
 	assert.NoError(t , err)

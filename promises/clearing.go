@@ -7,7 +7,6 @@ import (
 	"github.com/ethereum/go-ethereum/event"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/MysteriumNetwork/payments/registry"
-	"fmt"
 )
 
 //go:generate abigen --sol ../contracts/IdentityPromises.sol --exc contract/registry.sol:IdentityRegistry --pkg generated --out generated/IdentityPromises.go
@@ -66,7 +65,7 @@ func (pc *PromiseClearing) ClearReceivedPromise(promise * ReceivedPromise) error
 	if err != nil {
 		return err
 	}
-	tx , err := pc.ClearPromise(
+	_ , err = pc.ClearPromise(
 		promise.Receiver,
 		big.NewInt(promise.SeqNo),
 		big.NewInt(promise.Amount),
@@ -77,7 +76,6 @@ func (pc *PromiseClearing) ClearReceivedPromise(promise * ReceivedPromise) error
 		receiverSig.R,
 		receiverSig.S,
 	)
-	fmt.Printf("Tx: %+v\n" , tx)
 	return err
 }
 

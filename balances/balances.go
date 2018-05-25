@@ -7,7 +7,6 @@ import (
 	"github.com/ethereum/go-ethereum/event"
 	"github.com/MysteriumNetwork/payments/registry"
 	"github.com/ethereum/go-ethereum/crypto"
-	"fmt"
 	"math/big"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 )
@@ -72,7 +71,6 @@ func NewWithdrawRequest(identity * registry.MystIdentity , amount int64) (*Withd
 
 func (balances *IdentityBalances) Withdraw(request * WithdrawRequest) (err error) {
 	signature := request.Signature
-	tx , err := balances.IdentityBalancesSession.Withdraw(request.Amount , signature.V , signature.R, signature.S )
-	fmt.Printf("Tx: %+v\n", tx)
+	_ , err = balances.IdentityBalancesSession.Withdraw(request.Amount , signature.V , signature.R, signature.S )
 	return
 }

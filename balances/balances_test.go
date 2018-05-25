@@ -9,11 +9,19 @@ import (
 	"github.com/MysteriumNetwork/payments/registry"
 	"github.com/MysteriumNetwork/payments/balances/generated"
 	"time"
+	generated2 "github.com/MysteriumNetwork/payments/mysttoken/generated"
 )
+
+var abiMap = test_utils.AbiMap{
+	"MystToken" : generated2.MystTokenABI,
+	"IdentityBalances" : generated.IdentityBalancesABI,
+}
+
+var abiList , _ = test_utils.ParseAbis(abiMap)
 
 func TestTopUpActionAddsMystToBalanceAndEmitsToppedUpEvent(t *testing.T) {
 	deployer := test_utils.Deployer
-	simulator := test_utils.NewSimulatedBackend(deployer.Address , 1000000000)  //ether amount in gweis - if you get panics like 'out of gas' increase this
+	simulator := test_utils.LoggingBackend(test_utils.NewSimulatedBackend(deployer.Address , 1000000000) , abiList)  //ether amount in gweis - if you get panics like 'out of gas' increase this
 
 	erc20 , err := mysttoken.DeployMystERC20( deployer.Transactor , 2000 , simulator)
 	assert.NoError(t , err)
@@ -65,7 +73,7 @@ func TestTopUpActionAddsMystToBalanceAndEmitsToppedUpEvent(t *testing.T) {
 
 func TestWithdrawActionRemovesMystFromBalanceAndEmitsWithdrawnEvent(t *testing.T) {
 	deployer := test_utils.Deployer
-	simulator := test_utils.NewSimulatedBackend(deployer.Address , 1000000000)  //ether amount in gweis - if you get panics like 'out of gas' increase this
+	simulator := test_utils.LoggingBackend(test_utils.NewSimulatedBackend(deployer.Address , 1000000000) , abiList)  //ether amount in gweis - if you get panics like 'out of gas' increase this
 
 	erc20 , err := mysttoken.DeployMystERC20( deployer.Transactor , 2000 , simulator)
 	assert.NoError(t , err)

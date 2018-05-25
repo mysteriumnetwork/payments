@@ -5,11 +5,18 @@ import (
 	"math/big"
 	"github.com/stretchr/testify/assert"
 	"github.com/MysteriumNetwork/payments/test_utils"
+	"github.com/MysteriumNetwork/payments/mysttoken/generated"
 )
 
+var abiMap = test_utils.AbiMap{
+	"MystToken" : generated.MystTokenABI,
+}
 
 func TestSampleERC20TokenIsDeployedWithSpecifiedTokenAmount(t *testing.T) {
-	backend := test_utils.NewSimulatedBackend(test_utils.Deployer.Address , 100000000)
+	abiList , err := test_utils.ParseAbis(abiMap)
+	assert.NoError(t, err)
+
+	backend := test_utils.LoggingBackend(test_utils.NewSimulatedBackend(test_utils.Deployer.Address , 100000000) , abiList)
 
 	erc20 , err := DeployMystERC20(test_utils.Deployer.Transactor , 1000000 , backend)
 	backend.Commit() //do we need this?
