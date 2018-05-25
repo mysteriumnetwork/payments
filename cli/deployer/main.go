@@ -20,7 +20,7 @@ import (
 var keyStoreDir = flag.String("keystore.directory" , "testnet" , "specify runtime dir for keystore keys")
 var address = flag.String("ether.address" , "", "Ethereum acc to use for deployment")
 var passphrase = flag.String("keystore.passphrase" , "", "Pashprase to unlock specified key from keystore")
-var cmd = flag.String("cmd" , "deploy" , "Command to execute")
+var cmd = flag.String("cmd" , "help" , "Command to execute")
 var gethUrl = flag.String("geth.url", "", "URL value of started geth to connect")
 var contractName = flag.String("contract.name" , "settlement" , "Name of contract to deply (settlement or testerc20(testnet only!))")
 var tokenCount = flag.Int64("mysttoken.amount" , 1000000 , "Initial token amount to deploy - can always be minted later")
@@ -43,6 +43,12 @@ func executeCommand(cmd string) error {
 		return newAccount()
 	case "listAccounts" :
 		return listAccounts()
+	case "clientStatus" :
+		_ , err := lookupBackend()
+		return err
+	case "help" :
+		flag.Usage()
+		return nil
 	}
 	return errors.New("unknown command: " + cmd)
 }
