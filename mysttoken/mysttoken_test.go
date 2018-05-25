@@ -9,7 +9,10 @@ import (
 )
 
 var abiMap = test_utils.AbiMap{
-	"MystToken" : generated.MystTokenABI,
+	"MystToken" : {
+		generated.MystTokenABI,
+		generated.MystTokenBin,
+	},
 }
 
 func TestSampleERC20TokenIsDeployedWithSpecifiedTokenAmount(t *testing.T) {

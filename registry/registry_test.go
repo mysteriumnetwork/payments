@@ -14,8 +14,14 @@ import (
 )
 
 var abiMap = test_utils.AbiMap{
-	"MystToken" : generated2.MystTokenABI,
-	"IdentityRegistry" : generated.IdentityRegistryABI,
+	"MystToken" : {
+		generated2.MystTokenABI,
+		generated2.MystTokenBin,
+	},
+	"IdentityRegistry" : {
+		generated.IdentityRegistryABI,
+		generated.IdentityRegistryBin,
+	},
 }
 
 var abiList , _ = test_utils.ParseAbis(abiMap)

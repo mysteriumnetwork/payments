@@ -13,8 +13,14 @@ import (
 )
 
 var abiList , _ = test_utils.ParseAbis(test_utils.AbiMap{
-	"MystToken" : generated2.MystTokenABI,
-	"IdentityPromises" : generated.IdentityPromisesABI,
+	"MystToken" : {
+		generated2.MystTokenABI,
+		generated2.MystTokenBin,
+	},
+	"IdentityPromises" : {
+		generated.IdentityPromisesABI,
+		generated.IdentityPromisesBin,
+	},
 })
 
 func TestPromiseClearingEmitsClearedEvent(t *testing.T) {

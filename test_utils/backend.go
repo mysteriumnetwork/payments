@@ -33,10 +33,9 @@ type TxLoggingBackend struct {
 
 
 func (sb * TxLoggingBackend) SendTransaction(ctx context.Context, tx *types.Transaction) error {
-	funcSelector := tx.Data()[0:4]
-	abiName, method, err := sb.abis.Lookup(funcSelector)
+	abiName, method, err := sb.abis.Lookup(tx.Data())
 	if err != nil {
-		fmt.Printf("Error: %v. Selector: %v\n" , err, funcSelector)
+		fmt.Printf("Error: %v. Tx data was: %v\n" , err, common.ToHex(tx.Data()))
 	} else {
 		fmt.Printf("Tx: Contract: %s, Method: %s, Gas: %d\n", abiName, method.String(), tx.Gas())
 	}
