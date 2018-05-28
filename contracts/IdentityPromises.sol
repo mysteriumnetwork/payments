@@ -2,6 +2,7 @@ pragma solidity ^0.4.23;
 
 import "./IdentityRegistry.sol";
 import "./IdentityBalances.sol";
+import "./Utils.sol";
 
 contract IdentityPromises is IdentityRegistry , IdentityBalances {
     string constant ISSUER_PREFIX = "Issuer prefix:";
@@ -15,10 +16,10 @@ contract IdentityPromises is IdentityRegistry , IdentityBalances {
 
     }
 
-    function clearPromise(address receiver, uint256 seq, uint256 amount,
-        uint8 sender_V , bytes32 sender_R, bytes32 sender_S,
-        uint8 receiver_V, bytes32 receiver_R, bytes32 receiver_S) public returns (bool) {
-
+    function clearPromise(bytes32 receiverAndSigns, uint256 seq, uint256 amount,
+        bytes32 sender_R, bytes32 sender_S,
+        bytes32 receiver_R, bytes32 receiver_S) public returns (bool) {
+        (address receiver, uint8 sender_V, uint8 receiver_V) = Utils.unpackSignatureAndSigns(receiverAndSigns);
         bytes32 promiseHash = keccak256(ISSUER_PREFIX, receiver , seq , amount);
 
         address sender = ecrecover(promiseHash, sender_V , sender_R, sender_S);

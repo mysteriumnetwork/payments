@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/core/types"
 )
 
 type AbiData struct {
@@ -45,14 +46,11 @@ func (abis *AbiList) Register(abi NamedABI, codeHash string) {
 	abis.codeHashToAbi[codeHash] = abi
 }
 
-var constructorId = common.ToHex([]byte{96, 128, 96, 64})
-
-func (abis * AbiList) Lookup(payload []byte) ( string , *abi.Method , error ) {
-	methodSignature := payload[0:4]
-	methodSignatureHex := common.ToHex(methodSignature)
-	if methodSignatureHex == constructorId {
-		return abis.lookupByCodeHash(codeToHash(payload))
+func (abis * AbiList) Lookup(tx * types.Transaction) ( string , *abi.Method , error ) {
+	if tx.To() == nil {   //contract creation is sending transaction to "0x00" account address (nil in this case)
+		return abis.lookupByCodeHash(codeToHash(tx.Data()))
 	}
+	methodSignature := tx.Data()[0:4]
 	for _ , val := range abis.abiList {
 		method , err := val.Abi.MethodById(methodSignature)
 		if err != nil {
