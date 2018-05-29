@@ -46,11 +46,9 @@ func (abis *AbiList) Register(abi NamedABI, codeHash string) {
 	abis.codeHashToAbi[codeHash] = abi
 }
 
-func (abis * AbiList) Lookup(tx * types.Transaction) ( string , *abi.Method , error ) {
-	if tx.To() == nil {   //contract creation is sending transaction to "0x00" account address (nil in this case)
-		return abis.lookupByCodeHash(codeToHash(tx.Data()))
-	}
-	methodSignature := tx.Data()[0:4]
+
+func (abis * AbiList) InputLookup(data []byte) (string , * abi.Method , error ) {
+	methodSignature := data[0:4]
 	for _ , val := range abis.abiList {
 		method , err := val.Abi.MethodById(methodSignature)
 		if err != nil {
@@ -59,6 +57,13 @@ func (abis * AbiList) Lookup(tx * types.Transaction) ( string , *abi.Method , er
 		return val.Name, method, nil
 	}
 	return "" , nil , errors.New("no method found")
+}
+
+func (abis * AbiList) LookupByTx(tx * types.Transaction) ( string , *abi.Method , error ) {
+	if tx.To() == nil {   //contract creation is sending transaction to "0x00" account address (nil in this case)
+		return abis.lookupByCodeHash(codeToHash(tx.Data()))
+	}
+	return abis.InputLookup(tx.Data())
 }
 
 func codeToHash(data []byte) string {

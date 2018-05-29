@@ -66,8 +66,8 @@ func (pc *PromiseClearing) ClearReceivedPromise(promise * ReceivedPromise) error
 		return err
 	}
 	var packedAddressAndSigns [32]byte
-	addressAndSigns := append(promise.Receiver.Bytes() , issuerSig.V, receiverSig.V)
-	copy(packedAddressAndSigns[0:22] , addressAndSigns)
+	addressAndSigns := append([]byte{issuerSig.V, receiverSig.V} , promise.Receiver.Bytes()...)
+	copy(packedAddressAndSigns[10:32] , addressAndSigns)
 	_ , err = pc.ClearPromise(
 		packedAddressAndSigns,
 		big.NewInt(promise.SeqNo),

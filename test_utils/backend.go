@@ -34,19 +34,27 @@ type TxLoggingBackend struct {
 
 
 func (sb * TxLoggingBackend) SendTransaction(ctx context.Context, tx *types.Transaction) error {
-	abiName, method, err := sb.abis.Lookup(tx)
+	abiName, method, err := sb.abis.LookupByTx(tx)
 	if err != nil {
 		fmt.Printf("Error: %v. Tx data was: %v\n" , err, common.ToHex(tx.Data()))
 	} else {
 		fmt.Printf("Tx: Contract: %s, Method: %s, Gas: %d\n", abiName, method.Name, tx.Gas())
 	}
-	fmt.Printf("Tx payload: %v \n" , common.ToHex(tx.Data()))
 	return sb.TransactionalBackend.SendTransaction(ctx, tx )
 }
 
 func (sb * TxLoggingBackend) CallContract(ctx context.Context, call ethereum.CallMsg, blockNumber *big.Int) ([]byte , error) {
+	var methodName = ""
+	abiName , method, err := sb.abis.InputLookup(call.Data)
+	if err != nil {
+		fmt.Printf("Uknown method id. Input: %v \n" , call.Data)
+		methodName = "<undefined>"
+		abiName = "<undefined>"
+	} else {
+		methodName = method.String()
+	}
 
-	fmt.Printf("Calling constant function with hash: %v. Payload: %v\n" , common.ToHex(call.Data[0:4]) , common.ToHex(call.Data))
+	fmt.Printf("%v state read:  %v. Payload: %v\n" , abiName , methodName , common.ToHex(call.Data[4:]))
 
 	return sb.TransactionalBackend.CallContract(ctx , call , blockNumber)
 }
