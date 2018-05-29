@@ -24,6 +24,8 @@ var cmd = flag.String("cmd" , "help" , "Command to execute")
 var gethUrl = flag.String("geth.url", "", "URL value of started geth to connect")
 var contractName = flag.String("contract.name" , "settlement" , "Name of contract to deply (settlement or testerc20(testnet only!))")
 var tokenCount = flag.Int64("mysttoken.amount" , 1000000 , "Initial token amount to deploy - can always be minted later")
+var registrationFee = flag.Int64("payments.registrationFee" , 100 , "Registration fee for identity. Can be changed later")
+var erc20address = flag.String("payments.erc20address" , "", "ERC20 token address for payments. In hex (0x...) format")
 
 func main() {
 	flag.Parse()
@@ -86,8 +88,11 @@ func deployContract() (err error) {
 	fmt.Println("Your balance is:" , balance.String() , "wei")
 
 	switch *contractName {
-	case "settlement":
-		return errors.New("not yet dudes")
+	case "payments":
+		if *erc20address == "" {
+			return errors.New("erc20 token address missing")
+		}
+		return DeployPromises(transactor, client , common.HexToAddress(*erc20address), *registrationFee)
 	case "testerc20":
 		return DeployTestErc20(transactor , client, *tokenCount)
 	default:

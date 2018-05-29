@@ -38,7 +38,7 @@ func (sb * TxLoggingBackend) SendTransaction(ctx context.Context, tx *types.Tran
 	if err != nil {
 		fmt.Printf("Error: %v. Tx data was: %v\n" , err, common.ToHex(tx.Data()))
 	} else {
-		fmt.Printf("Tx: Contract: %s, Method: %s, Gas: %d\n", abiName, method.Name, tx.Gas())
+		fmt.Printf("Tx: Contract: %s, Method: %s (%s), Gas: %d\n", abiName, method.Name , common.ToHex(method.Id()), tx.Gas())
 	}
 	return sb.TransactionalBackend.SendTransaction(ctx, tx )
 }
