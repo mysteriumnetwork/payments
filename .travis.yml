@@ -11,4 +11,4 @@ install:
   - scripts/deps.sh ensure
 
 script:
-  - scripts/test.sh
+  - scripts/test.sh -v
