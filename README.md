@@ -8,14 +8,14 @@ First we need some external tooling:
 brew tap ethereum/ethereum
 brew install solidity
 ```
-2. Ethereum:
+2. Ethereum (geth, abigen):
 ```bash
-brew install geth
+brew install ethereum
 ```
 
 ### Building
 ```bash
-scripts/deps.sh && scripts/build.sh
+scripts/deps.sh ensure && scripts/build.sh
 ```
 ### Testing
 ```bash
