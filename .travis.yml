@@ -1,6 +1,13 @@
 language: go
 sudo: false
 
+addons:
+  apt:
+    packages:
+      - geth
+      - solidity
+      - dep
+
 install:
   - scripts/deps.sh
 script:
