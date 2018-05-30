@@ -8,7 +8,7 @@ before_install:
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
 install:
-  - scripts/deps.sh
+  - scripts/deps.sh ensure
 
 script:
   - scripts/test.sh
