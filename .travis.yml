@@ -1,0 +1,7 @@
+language: go
+sudo: false
+
+install:
+  - scripts/deps.sh
+script:
+  - scripts/test.sh
