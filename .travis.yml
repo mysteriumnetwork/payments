@@ -4,7 +4,7 @@ sudo: false
 before_install:
   - sudo add-apt-repository -y ppa:ethereum/ethereum
   - sudo apt-get -y update
-  - sudo apt-get -y install solc geth
+  - sudo apt-get -y install solc ethereum
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
 install:
