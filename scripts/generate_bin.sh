@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-solc --bin contracts/IdentityPromises.sol --optimize --overwrite -o $1
+solc --bin $1 --optimize --overwrite -o $2

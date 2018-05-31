@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-soljitsu combine --src-dir=./contracts --dest-dir=$1
-rm -rf $1/deps.*
+soljitsu combine --src-dir=$1 --dest-dir=$2
+rm -rf $2/deps.*

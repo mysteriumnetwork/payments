@@ -15,10 +15,8 @@ script:
   - scripts/test.sh -v
 
 before_deploy:
-  - scripts/generate_abi.sh build/abi
-  - scripts/generate_bin.sh build/bin
-  - scripts/package_sol.sh build/src
+  - scripts/release.sh
 
 deploy:
   - provider: script
-    script: echo "I will deploy something one day"
+    script: echo "I will deploy something one day" && ls -la build/src build/abi build/bin
