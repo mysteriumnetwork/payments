@@ -29,8 +29,8 @@ contract IdentityRegistry is Ownable, ERC20Aware {
     }
 
     function RegisterIdentity(bytes32 pubKeyPart1, bytes32 pubKeyPart2, uint8 v, bytes32 r, bytes32 s) public returns (bool) {
-        address identityFromPubKey = address(keccak256(pubKeyPart1, pubKeyPart2));
-        address identity = ecrecover(keccak256(REGISTER_PREFIX, pubKeyPart1, pubKeyPart2), v, r, s);
+        address identityFromPubKey = address(keccak256(abi.encodePacked(pubKeyPart1, pubKeyPart2)));
+        address identity = ecrecover(keccak256(abi.encodePacked(REGISTER_PREFIX, pubKeyPart1, pubKeyPart2)), v, r, s);
 
         require(identity > 0);
         require(identityFromPubKey == identity);
