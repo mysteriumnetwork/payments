@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-solc --abi contracts/IdentityPromises.sol -o $1
+solc --abi contracts/IdentityPromises.sol --overwrite -o $1

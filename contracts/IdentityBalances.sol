@@ -27,7 +27,8 @@ contract IdentityBalances is ERC20Aware {
     }
 
     function withdraw(uint256 amount, uint8 v, bytes32 r, bytes32 s) public returns (bool) {
-        address identity = ecrecover(keccak256(WITHDRAW_PREFIX, amount), v, r, s);
+        bytes memory p = abi.encodePacked(WITHDRAW_PREFIX, amount);
+        address identity = ecrecover(keccak256(p), v, r, s);
 
         require(identity > 0);
         require(amount > 0);
