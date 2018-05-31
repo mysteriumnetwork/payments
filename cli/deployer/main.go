@@ -27,6 +27,8 @@ var contractName = flag.String("contract.name" , "settlement" , "Name of contrac
 var tokenCount = flag.Int64("mysttoken.amount" , 1000000 , "Initial token amount to deploy - can always be minted later")
 var registrationFee = flag.Int64("payments.registrationFee" , 100 , "Registration fee for identity. Can be changed later")
 var erc20address = flag.String("payments.erc20address" , "", "ERC20 token address for payments. In hex (0x...) format")
+var contractPath = flag.String("payments.contractPath","","Path to bin file of payments contract")
+var abiPath = flag.String("payments.abiPath", "","Path to ABI file of payments contract")
 
 func main() {
 	flag.Parse()
@@ -112,6 +114,13 @@ func deployContract() (err error) {
 		return DeployPromises(transactor, client , common.HexToAddress(*erc20address), *registrationFee)
 	case "testerc20":
 		return DeployTestErc20(transactor , client, *tokenCount)
+	case "payments2":
+		addr , _, err := DeploySmartContractFile(transactor , *contractPath , *abiPath , client , common.HexToAddress(*erc20address), big.NewInt(*registrationFee))
+		if err != nil {
+			return err
+		}
+		fmt.Println("Address of deployed contract: ",addr.String())
+		return nil
 	default:
 		return errors.New("unknown contract name" + *contractName)
 	}
