@@ -20,10 +20,10 @@ contract IdentityPromises is IdentityRegistry , IdentityBalances {
         bytes32 sender_R, bytes32 sender_S,
         bytes32 receiver_R, bytes32 receiver_S) public returns (bool) {
         (address receiver, uint8 sender_V, uint8 receiver_V) = Utils.unpackSignatureAndSigns(receiverAndSigns);
-        bytes32 promiseHash = keccak256(ISSUER_PREFIX, receiver , seq , amount);
+        bytes32 promiseHash = keccak256(abi.encodePacked(ISSUER_PREFIX, receiver , seq , amount));
 
         address sender = ecrecover(promiseHash, sender_V , sender_R, sender_S);
-        address recoveredReceiver = ecrecover(keccak256(RECEIVER_PREFIX, promiseHash , sender), receiver_V , receiver_R, receiver_S);
+        address recoveredReceiver = ecrecover(keccak256(abi.encodePacked(RECEIVER_PREFIX, promiseHash , sender)), receiver_V , receiver_R, receiver_S);
 
         require(sender > 0);
         require(recoveredReceiver > 0);
