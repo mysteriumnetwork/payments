@@ -18,5 +18,6 @@ before_deploy:
   - scripts/release.sh
 
 deploy:
+  skip_cleanup: true
   - provider: script
     script: echo "I will deploy something one day" && ls -la build/src build/abi build/bin
