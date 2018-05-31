@@ -15,6 +15,7 @@ import (
 	"time"
 	"github.com/cheggaaa/pb"
 	"github.com/ethereum/go-ethereum"
+	"math/big"
 )
 
 var keyStoreDir = flag.String("keystore.directory" , "testnet" , "specify runtime dir for keystore keys")
@@ -46,13 +47,29 @@ func executeCommand(cmd string) error {
 	case "listAccounts" :
 		return listAccounts()
 	case "clientStatus" :
-		_ , err := lookupBackend()
+		_ , completed , err := lookupBackend()
+		<- completed
 		return err
+	case "ethBalance" :
+		return getBalanceOf(*address)
 	case "help" :
 		flag.Usage()
 		return nil
 	}
 	return errors.New("unknown command: " + cmd)
+}
+func getBalanceOf(address string) error {
+	backend , syncCompleted , err := lookupBackend()
+	if err !=  nil {
+		return err
+	}
+	<- syncCompleted
+	balance , err := backend.BalanceAt(context.Background() , common.HexToAddress(address) , nil)
+	if err != nil {
+		return err
+	}
+	fmt.Println("Acc balance:" , balance.Div(balance , big.NewInt(1 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)).String() , "Eth")
+	return nil
 }
 func listAccounts() error {
 	ks := getKeystore()
@@ -77,7 +94,7 @@ func deployContract() (err error) {
 	fmt.Println("Lookedup acc: " , acc.Address.String())
 	transactor := createNewKeystoreTransactor(ks , acc)
 
-	client, err := lookupBackend()
+	client, _ , err := lookupBackend()
 	if err != nil {
 		return err
 	}
@@ -101,36 +118,39 @@ func deployContract() (err error) {
 	return
 }
 
-func lookupBackend() (*ethclient.Client , error) {
+func lookupBackend() (*ethclient.Client , chan bool, error) {
 	ethClient , err := ethclient.Dial(*gethUrl)
 	if err != nil {
-		return nil, err
+		return nil,nil, err
 	}
 
 	block , err := ethClient.BlockByNumber(context.Background() , nil)
 	if err != nil {
-		return nil, err
+		return nil,nil, err
 	}
 	fmt.Println("Latest known block is: " , block.NumberU64())
 
 	progress , err := ethClient.SyncProgress(context.Background())
 	if err != nil {
-		return nil , err
+		return nil ,nil, err
 	}
+	completed := make(chan bool)
 	if progress != nil {
 		fmt.Println("Client is in syncing state - any operations will be delayed until finished")
-		go trackGethProgress(ethClient , progress)
+		go trackGethProgress(ethClient , progress, completed)
 	} else {
 		fmt.Println("Geth process fully synced")
+		close(completed)
 	}
 
-	return ethClient, nil
+	return ethClient, completed, nil
 }
-func trackGethProgress(client *ethclient.Client , lastProgress * ethereum.SyncProgress) {
+func trackGethProgress(client *ethclient.Client , lastProgress * ethereum.SyncProgress, completed chan<- bool ) {
 	bar := pb.New64(int64(lastProgress.HighestBlock)).
 	   SetTotal(int64(lastProgress.CurrentBlock)).
 	   Start()
 		defer bar.Finish()
+		defer close(completed)
 	for {
 		progress, err := client.SyncProgress(context.Background())
 		if err != nil {

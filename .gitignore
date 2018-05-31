@@ -3,3 +3,4 @@
 **/keystore
 **/geth.ipc
 vendor
+build

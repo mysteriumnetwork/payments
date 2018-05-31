@@ -4,11 +4,21 @@ sudo: false
 before_install:
   - sudo add-apt-repository -y ppa:ethereum/ethereum
   - sudo apt-get -y update
-  - sudo apt-get -y install solc ethereum
+  - sudo apt-get -y install solc ethereum nodejs npm
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+  - npm install -g soljitsu
 
 install:
   - scripts/deps.sh ensure
 
 script:
   - scripts/test.sh -v
+
+before_deploy:
+  - scripts/generate_abi.sh build/abi
+  - scripts/generate_bin.sh build/bin
+  - scripts/package_sol.sh build/src
+
+deploy:
+  - provider: script
+    script: echo "I will deploy something one day"
