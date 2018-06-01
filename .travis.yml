@@ -19,7 +19,6 @@ before_deploy:
 
 deploy:
   - provider: releases
-    file_glob: true
     file:
       - "build/src/IdentityPromises.sol"
       - "build/abi/IdentityPromises.abi"
