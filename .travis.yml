@@ -20,7 +20,10 @@ before_deploy:
 deploy:
   - provider: releases
     file_glob: true
-    file: build/*
+    file:
+      - "build/src/IdentityPromises.sol"
+      - "build/abi/IdentityPromises.abi"
+      - "build/bin/IdentityPromises.bin"
     skip_cleanup: true
     api_key: "$GIT_RELEASES_API_KEY"
     on:
