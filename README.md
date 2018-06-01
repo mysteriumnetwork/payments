@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.com/MysteriumNetwork/payments.svg?token=t9FwiYsxwDxkJWnSMpfr&branch=master)](https://travis-ci.com/MysteriumNetwork/payments)
 
 Requires solc 0.4.23 or later, go 1.9.2 or later
+
 First we need some external tooling:
 1. Solidity:
 ```bash
@@ -21,3 +22,8 @@ scripts/deps.sh ensure && scripts/build.sh
 ```bash
 scripts/test.sh
 ```
+
+### Current deployment (ethereum Ropsten testnet)
+ERC20 Token (Mintable a la myst token): [https://ropsten.etherscan.io/address/0x453c11c058f13b36a35e1aee504b20c1a09667de](https://ropsten.etherscan.io/address/0x453c11c058f13b36a35e1aee504b20c1a09667de)
+
+Payments: [https://ropsten.etherscan.io/address/0x617ad5e514e8117bb6f18e68fa65cc479483df88](https://ropsten.etherscan.io/address/0x617ad5e514e8117bb6f18e68fa65cc479483df88)
