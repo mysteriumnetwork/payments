@@ -26,4 +26,4 @@ scripts/test.sh
 ### Current deployment (ethereum Ropsten testnet)
 ERC20 Token (Mintable a la myst token): [https://ropsten.etherscan.io/address/0x453c11c058f13b36a35e1aee504b20c1a09667de](https://ropsten.etherscan.io/address/0x453c11c058f13b36a35e1aee504b20c1a09667de)
 
-Payments: [https://ropsten.etherscan.io/address/0x617ad5e514e8117bb6f18e68fa65cc479483df88](https://ropsten.etherscan.io/address/0x617ad5e514e8117bb6f18e68fa65cc479483df88)
+Payments: [https://ropsten.etherscan.io/address/0xbe5F9CCea12Df756bF4a5Baf4c29A10c3ee7C83B](https://ropsten.etherscan.io/address/0xbe5F9CCea12Df756bF4a5Baf4c29A10c3ee7C83B)
