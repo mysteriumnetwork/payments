@@ -9,6 +9,7 @@ import (
 )
 
 type Promise struct {
+	ServiceConsumer common.Address
 	Receiver common.Address
 	SeqNo    int64
 	Amount   int64
@@ -16,8 +17,12 @@ type Promise struct {
 
 const issuerPrefix = "Issuer prefix:"
 
+func (p * Promise) ConsumerHash() []byte {
+	return crypto.Keccak256(p.ServiceConsumer.Bytes())
+}
+
 func (p * Promise) HashBytes() []byte {
-	return crypto.Keccak256([]byte(issuerPrefix) , p.Receiver.Bytes(), abi.U256(big.NewInt(p.SeqNo)), abi.U256(big.NewInt(p.Amount)))
+	return crypto.Keccak256([]byte(issuerPrefix) , p.ConsumerHash(), p.Receiver.Bytes(), abi.U256(big.NewInt(p.SeqNo)), abi.U256(big.NewInt(p.Amount)))
 }
 
 

@@ -68,8 +68,13 @@ func (pc *PromiseClearing) ClearReceivedPromise(promise * ReceivedPromise) error
 	var packedAddressAndSigns [32]byte
 	addressAndSigns := append([]byte{issuerSig.V, receiverSig.V} , promise.Receiver.Bytes()...)
 	copy(packedAddressAndSigns[10:32] , addressAndSigns)
+
+	var extraDataHash[32]byte
+	copy(extraDataHash[:], promise.ConsumerHash())
+
 	_ , err = pc.ClearPromise(
 		packedAddressAndSigns,
+		extraDataHash,
 		big.NewInt(promise.SeqNo),
 		big.NewInt(promise.Amount),
 		issuerSig.R,
