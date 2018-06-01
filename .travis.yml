@@ -18,6 +18,11 @@ before_deploy:
   - scripts/release.sh
 
 deploy:
-  - provider: script
+  - provider: releases
+    file_glob: true
+    file: build/*
     skip_cleanup: true
-    script: echo "I will deploy something one day" && ls -la build/src build/abi build/bin
+    api_key: "$GIT_RELEASES_API_KEY"
+    on:
+      tags: true
+      branch: master
