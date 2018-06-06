@@ -1,29 +1,29 @@
 package main
 
 import (
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"io/ioutil"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/accounts/abi"
-	"strings"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+	"io/ioutil"
+	"strings"
 )
 
-func DeploySmartContractFile(opts * bind.TransactOpts , path string, abiPath string , backend bind.ContractBackend, params ...interface{}) ( common.Address, * types.Transaction ,  error ) {
+func DeploySmartContractFile(opts *bind.TransactOpts, path string, abiPath string, backend bind.ContractBackend, params ...interface{}) (common.Address, *types.Transaction, error) {
 	contractContent, err := ioutil.ReadFile(path)
 	if err != nil {
-		return common.Address{} , nil, err
+		return common.Address{}, nil, err
 	}
-	abiContent , err := ioutil.ReadFile(abiPath)
+	abiContent, err := ioutil.ReadFile(abiPath)
 	if err != nil {
-		return common.Address{} , nil, err
+		return common.Address{}, nil, err
 	}
 	contractAbi, err := abi.JSON(strings.NewReader(string(abiContent)))
 	if err != nil {
-		return common.Address{} , nil, err
+		return common.Address{}, nil, err
 	}
 
 	binBytes := common.FromHex(string(contractContent))
-	addr , tx , _ , err := bind.DeployContract(opts , contractAbi , binBytes , backend, params...)
-	return addr , tx, err
+	addr, tx, _, err := bind.DeployContract(opts, contractAbi, binBytes, backend, params...)
+	return addr, tx, err
 }

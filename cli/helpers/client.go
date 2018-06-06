@@ -1,38 +1,37 @@
 package helpers
 
 import (
-	"github.com/ethereum/go-ethereum/ethclient"
-	"fmt"
-	"github.com/ethereum/go-ethereum"
-	"time"
 	"context"
 	"flag"
+	"fmt"
 	"github.com/cheggaaa/pb"
+	"github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"time"
 )
 
 var GethUrl = flag.String("geth.url", "", "URL value of started geth to connect")
 
-
-func LookupBackend() (*ethclient.Client , chan bool, error) {
-	ethClient , err := ethclient.Dial(*GethUrl)
+func LookupBackend() (*ethclient.Client, chan bool, error) {
+	ethClient, err := ethclient.Dial(*GethUrl)
 	if err != nil {
-		return nil,nil, err
+		return nil, nil, err
 	}
 
-	block , err := ethClient.BlockByNumber(context.Background() , nil)
+	block, err := ethClient.BlockByNumber(context.Background(), nil)
 	if err != nil {
-		return nil,nil, err
+		return nil, nil, err
 	}
-	fmt.Println("Latest known block is: " , block.NumberU64())
+	fmt.Println("Latest known block is: ", block.NumberU64())
 
-	progress , err := ethClient.SyncProgress(context.Background())
+	progress, err := ethClient.SyncProgress(context.Background())
 	if err != nil {
-		return nil ,nil, err
+		return nil, nil, err
 	}
 	completed := make(chan bool)
 	if progress != nil {
 		fmt.Println("Client is in syncing state - any operations will be delayed until finished")
-		go trackGethProgress(ethClient , progress, completed)
+		go trackGethProgress(ethClient, progress, completed)
 	} else {
 		fmt.Println("Geth process fully synced")
 		close(completed)
@@ -40,7 +39,7 @@ func LookupBackend() (*ethclient.Client , chan bool, error) {
 
 	return ethClient, completed, nil
 }
-func trackGethProgress(client *ethclient.Client , lastProgress * ethereum.SyncProgress, completed chan<- bool ) {
+func trackGethProgress(client *ethclient.Client, lastProgress *ethereum.SyncProgress, completed chan<- bool) {
 	bar := pb.New64(int64(lastProgress.HighestBlock)).
 		SetTotal(int64(lastProgress.CurrentBlock)).
 		Start()
@@ -62,4 +61,3 @@ func trackGethProgress(client *ethclient.Client , lastProgress * ethereum.SyncPr
 		time.Sleep(10 * time.Second)
 	}
 }
-
