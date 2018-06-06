@@ -10,10 +10,10 @@ before_install:
 
 install:
   - scripts/deps.sh ensure
-  - scripts/check_go_fmt.sh
 
 script:
   - scripts/test.sh -v
+  - scripts/check_go_fmt.sh
 
 before_deploy:
   - scripts/release.sh
