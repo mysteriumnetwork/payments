@@ -21,6 +21,11 @@ before_deploy:
 deploy:
   - provider: releases
     file:
+      #MystToken for testnet
+      - "build/src/MystToken.sol"
+      - "build/abi/MystToken.abi"
+      - "build/bin/MystToken.bin"
+      #Payments
       - "build/src/IdentityPromises.sol"
       - "build/abi/IdentityPromises.abi"
       - "build/bin/IdentityPromises.bin"

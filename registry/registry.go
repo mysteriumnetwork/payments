@@ -3,7 +3,6 @@ package registry
 import (
 	"crypto/ecdsa"
 	"errors"
-	"fmt"
 	"github.com/MysteriumNetwork/payments/registry/generated"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -21,6 +20,7 @@ func init() {
 }
 
 type MystIdentity struct {
+	*privateKeyHolder
 	PrivateKey *ecdsa.PrivateKey
 	PublicKey  *ecdsa.PublicKey
 	Address    common.Address
@@ -32,40 +32,12 @@ func NewMystIdentity() (*MystIdentity, error) {
 		return nil, err
 	}
 	return &MystIdentity{
+		&privateKeyHolder{
+			privateKey: key,
+		},
 		key,
 		&key.PublicKey,
 		crypto.PubkeyToAddress(key.PublicKey),
-	}, nil
-}
-
-func (identity *MystIdentity) PubKeyToBytes() []byte {
-	pubKeyBytes := crypto.FromECDSAPub(identity.PublicKey)
-	return pubKeyBytes[1:] //drop first byte as it's encoded curve type - we are not interested in as so does ethereum EVM
-}
-
-type ProofOfIdentity struct {
-	Data      []byte
-	Signature *DecomposedSignature
-}
-
-func (proof *ProofOfIdentity) String() string {
-	return fmt.Sprintf("Proof: %+v", *proof)
-}
-
-func CreateProofOfIdentity(identity *MystIdentity) (*ProofOfIdentity, error) {
-	signature, err := crypto.Sign(crypto.Keccak256([]byte("Register prefix:"), identity.PubKeyToBytes()), identity.PrivateKey)
-	if err != nil {
-		return nil, err
-	}
-
-	decSig, err := DecomposeSignature(signature)
-	if err != nil {
-		return nil, err
-	}
-
-	return &ProofOfIdentity{
-		identity.PubKeyToBytes(),
-		decSig,
 	}, nil
 }
 
