@@ -7,11 +7,11 @@ import (
 const registerPrefix = "Register prefix:"
 
 type Signer interface {
-	Sign(data ...[]byte) ([]byte , error)
+	Sign(data ...[]byte) ([]byte, error)
 }
 
 type PublicKeyHolder interface {
-	GetPublicKey() ([]byte , error)
+	GetPublicKey() ([]byte, error)
 }
 
 type IdentityHolder interface {
@@ -20,28 +20,28 @@ type IdentityHolder interface {
 }
 
 type ProofOfIdentity struct {
-	Data []byte
-	Signature    *DecomposedSignature
+	Data      []byte
+	Signature *DecomposedSignature
 }
 
-func (proof * ProofOfIdentity)String() string {
+func (proof *ProofOfIdentity) String() string {
 	return fmt.Sprintf("Proof: %+v", *proof)
 }
 
-func CreateProofOfIdentity(identityHolder IdentityHolder) (*ProofOfIdentity , error) {
+func CreateProofOfIdentity(identityHolder IdentityHolder) (*ProofOfIdentity, error) {
 	pubKeyBytes, err := identityHolder.GetPublicKey()
 	if err != nil {
 		return nil, err
 	}
 
-	signature , err := identityHolder.Sign([]byte(registerPrefix), pubKeyBytes)
+	signature, err := identityHolder.Sign([]byte(registerPrefix), pubKeyBytes)
 	if err != nil {
-		return nil ,err
+		return nil, err
 	}
 
-	decSig , err := DecomposeSignature(signature)
+	decSig, err := DecomposeSignature(signature)
 	if err != nil {
-		return nil , err
+		return nil, err
 	}
 
 	return &ProofOfIdentity{
@@ -49,4 +49,3 @@ func CreateProofOfIdentity(identityHolder IdentityHolder) (*ProofOfIdentity , er
 		decSig,
 	}, nil
 }
-
