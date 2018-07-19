@@ -9,15 +9,9 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"math/big"
-	"math/rand"
-	"time"
 )
 
 //go:generate abigen --sol ../contracts/IdentityRegistry.sol --pkg generated --out generated/registry.go
-
-func init() {
-	rand.Seed(time.Now().UnixNano()) //don't do this at home kids, use better random generators :)
-}
 
 type MystIdentity struct {
 	*privateKeyHolder
