@@ -51,7 +51,7 @@ type WithdrawRequest struct {
 
 const withDrawPrefix = "Withdraw request:"
 
-func NewWithdrawRequest(identity registry.IdentityHolder, amount int64) (*WithdrawRequest, error) {
+func NewWithdrawRequest(identity registry.Signer, amount int64) (*WithdrawRequest, error) {
 	bigAmount := big.NewInt(amount)
 	amountBytes := abi.U256(bigAmount)
 	signature, err := identity.Sign([]byte(withDrawPrefix), amountBytes)
