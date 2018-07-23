@@ -3,43 +3,16 @@ package registry
 import (
 	"crypto/ecdsa"
 	"errors"
+	"math/big"
+
 	"github.com/MysteriumNetwork/payments/registry/generated"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
-	"math/big"
-	"math/rand"
-	"time"
 )
 
 //go:generate abigen --sol ../contracts/IdentityRegistry.sol --pkg generated --out generated/registry.go
-
-func init() {
-	rand.Seed(time.Now().UnixNano()) //don't do this at home kids, use better random generators :)
-}
-
-type MystIdentity struct {
-	*privateKeyHolder
-	PrivateKey *ecdsa.PrivateKey
-	PublicKey  *ecdsa.PublicKey
-	Address    common.Address
-}
-
-func NewMystIdentity() (*MystIdentity, error) {
-	key, err := crypto.GenerateKey()
-	if err != nil {
-		return nil, err
-	}
-	return &MystIdentity{
-		&privateKeyHolder{
-			privateKey: key,
-		},
-		key,
-		&key.PublicKey,
-		crypto.PubkeyToAddress(key.PublicKey),
-	}, nil
-}
 
 type Registry struct {
 	generated.IdentityRegistrySession
@@ -63,12 +36,12 @@ func DeployRegistry(owner *bind.TransactOpts, erc20address common.Address, backe
 	}, nil
 }
 
-func (registry *Registry) RegisterIdentity(proof *ProofOfIdentity) (*types.Transaction, error) {
-	signature := proof.Signature
+func (registry *Registry) RegisterIdentity(data *RegistrationData) (*types.Transaction, error) {
+	signature := data.Signature
 	var pubKeyPart1 [32]byte
 	var pubKeyPart2 [32]byte
-	copy(pubKeyPart1[:], proof.Data[0:32])
-	copy(pubKeyPart2[:], proof.Data[32:64])
+	copy(pubKeyPart1[:], data.PublicKey.Part1)
+	copy(pubKeyPart2[:], data.PublicKey.Part2)
 	return registry.IdentityRegistrySession.RegisterIdentity(pubKeyPart1, pubKeyPart2, signature.V, signature.R, signature.S)
 }
 

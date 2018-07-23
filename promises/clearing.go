@@ -1,12 +1,14 @@
 package promises
 
 import (
+	"math/big"
+
+	"github.com/MysteriumNetwork/payments/identity"
 	"github.com/MysteriumNetwork/payments/promises/generated"
 	"github.com/MysteriumNetwork/payments/registry"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/event"
-	"math/big"
 )
 
 //go:generate abigen --sol ../contracts/IdentityPromises.sol --exc contract/registry.sol:IdentityRegistry --pkg generated --out generated/IdentityPromises.go
@@ -36,17 +38,17 @@ func NewPromiseClearer(transactOpts *bind.TransactOpts, contract *generated.Iden
 	}
 }
 
-func (pc *PromiseClearing) RegisterIdentities(identities ...registry.MystIdentity) error {
+func (pc *PromiseClearing) RegisterIdentities(identities ...registry.IdentityHolder) error {
 	for _, identity := range identities {
-		proof, err := registry.CreateProofOfIdentity(&identity)
+		registrationData, err := registry.CreateRegistrationData(identity)
 		if err != nil {
 			return err
 		}
-		sig := proof.Signature
+		sig := registrationData.Signature
 		var pubKeyPart1 [32]byte
 		var pubKeyPart2 [32]byte
-		copy(pubKeyPart1[:], proof.Data[0:32])
-		copy(pubKeyPart2[:], proof.Data[32:64])
+		copy(pubKeyPart1[:], registrationData.PublicKey.Part1)
+		copy(pubKeyPart2[:], registrationData.PublicKey.Part2)
 		_, err = pc.RegisterIdentity(pubKeyPart1, pubKeyPart2, sig.V, sig.R, sig.S)
 		if err != nil {
 			return err
@@ -56,11 +58,11 @@ func (pc *PromiseClearing) RegisterIdentities(identities ...registry.MystIdentit
 }
 
 func (pc *PromiseClearing) ClearReceivedPromise(promise *ReceivedPromise) error {
-	issuerSig, err := registry.DecomposeSignature(promise.IssuerSignature)
+	issuerSig, err := identity.DecomposeSignature(promise.IssuerSignature)
 	if err != nil {
 		return err
 	}
-	receiverSig, err := registry.DecomposeSignature(promise.ReceiverSignature)
+	receiverSig, err := identity.DecomposeSignature(promise.ReceiverSignature)
 	if err != nil {
 		return err
 	}

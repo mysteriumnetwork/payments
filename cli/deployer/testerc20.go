@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/MysteriumNetwork/payments/mysttoken"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )

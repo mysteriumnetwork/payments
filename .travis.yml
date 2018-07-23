@@ -7,13 +7,14 @@ before_install:
   - sudo apt-get -y install solc ethereum nodejs npm
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
   - npm install -g soljitsu
+  - go get golang.org/x/tools/cmd/goimports
 
 install:
   - scripts/deps.sh ensure
 
 script:
   - scripts/test.sh -v
-  - scripts/check_go_fmt.sh
+  - scripts/check_goimports.sh
 
 before_deploy:
   - scripts/release.sh

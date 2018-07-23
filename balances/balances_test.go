@@ -1,15 +1,15 @@
 package balances
 
 import (
-	"github.com/MysteriumNetwork/payments/balances/generated"
-	"github.com/MysteriumNetwork/payments/mysttoken"
-	generated2 "github.com/MysteriumNetwork/payments/mysttoken/generated"
-	"github.com/MysteriumNetwork/payments/registry"
-	"github.com/MysteriumNetwork/payments/test_utils"
-	"github.com/stretchr/testify/assert"
 	"math/big"
 	"testing"
 	"time"
+
+	"github.com/MysteriumNetwork/payments/balances/generated"
+	"github.com/MysteriumNetwork/payments/mysttoken"
+	generated2 "github.com/MysteriumNetwork/payments/mysttoken/generated"
+	"github.com/MysteriumNetwork/payments/test_utils"
+	"github.com/stretchr/testify/assert"
 )
 
 var abiMap = test_utils.AbiMap{
@@ -41,7 +41,7 @@ func TestTopUpActionAddsMystToBalanceAndEmitsToppedUpEvent(t *testing.T) {
 	assert.NoError(t, err)
 	simulator.Commit()
 
-	mystIdentity, err := registry.NewMystIdentity()
+	mystIdentity, err := test_utils.NewMystIdentity()
 	assert.NoError(t, err)
 
 	initialBalance, err := identityBalances.Balances(mystIdentity.Address)
@@ -93,7 +93,7 @@ func TestWithdrawActionRemovesMystFromBalanceAndEmitsWithdrawnEvent(t *testing.T
 	assert.NoError(t, err)
 	simulator.Commit()
 
-	mystIdentity, err := registry.NewMystIdentity()
+	mystIdentity, err := test_utils.NewMystIdentity()
 	assert.NoError(t, err)
 
 	withdrawChan := make(chan *generated.IdentityBalancesWithdrawn, 10)

@@ -4,10 +4,11 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"time"
+
 	"github.com/cheggaaa/pb"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"time"
 )
 
 var GethUrl = flag.String("geth.url", "", "URL value of started geth to connect")

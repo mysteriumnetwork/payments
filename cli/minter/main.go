@@ -4,11 +4,12 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"math/big"
+	"os"
+
 	"github.com/MysteriumNetwork/payments/cli/helpers"
 	"github.com/MysteriumNetwork/payments/mysttoken/generated"
 	"github.com/ethereum/go-ethereum/common"
-	"math/big"
-	"os"
 )
 
 var erc20contract = flag.String("erc20.address", "", "Address of ERC20 mintable token")

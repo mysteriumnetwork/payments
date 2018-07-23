@@ -1,15 +1,15 @@
 package promises
 
 import (
-	"github.com/MysteriumNetwork/payments/mysttoken"
-	generated2 "github.com/MysteriumNetwork/payments/mysttoken/generated"
-	"github.com/MysteriumNetwork/payments/promises/generated"
-	"github.com/MysteriumNetwork/payments/registry"
-	"github.com/MysteriumNetwork/payments/test_utils"
-	"github.com/stretchr/testify/assert"
 	"math/big"
 	"testing"
 	"time"
+
+	"github.com/MysteriumNetwork/payments/mysttoken"
+	generated2 "github.com/MysteriumNetwork/payments/mysttoken/generated"
+	"github.com/MysteriumNetwork/payments/promises/generated"
+	"github.com/MysteriumNetwork/payments/test_utils"
+	"github.com/stretchr/testify/assert"
 )
 
 var abiList, _ = test_utils.ParseAbis(test_utils.AbiMap{
@@ -41,10 +41,10 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	sub, err := clearing.BindForEvents(events)
 	assert.NoError(t, err)
 
-	payer, err := registry.NewMystIdentity()
+	payer, err := test_utils.NewMystIdentity()
 	assert.NoError(t, err)
 
-	receiver, err := registry.NewMystIdentity()
+	receiver, err := test_utils.NewMystIdentity()
 	assert.NoError(t, err)
 
 	err = clearing.RegisterIdentities(*payer, *receiver)
