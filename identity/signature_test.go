@@ -1,4 +1,4 @@
-package registry
+package identity
 
 import (
 	"testing"

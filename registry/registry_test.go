@@ -53,7 +53,7 @@ func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 	_, err = mystERC20.Approve(registry.Address, big.NewInt(3000)) // allowance 3000 - fee (1000) = should be left 2000
 	assert.NoError(t, err)
 
-	mystIdentity, err := NewMystIdentity()
+	mystIdentity, err := test_utils.NewMystIdentity()
 	assert.NoError(t, err)
 
 	fromBlock := uint64(0)

@@ -4,7 +4,7 @@ import (
 	"math/big"
 
 	"github.com/MysteriumNetwork/payments/balances/generated"
-	"github.com/MysteriumNetwork/payments/registry"
+	"github.com/MysteriumNetwork/payments/identity"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -46,19 +46,19 @@ func (balances *IdentityBalances) BindForWithdrawEvents(sink chan<- *generated.I
 
 type WithdrawRequest struct {
 	Amount    *big.Int
-	Signature *registry.DecomposedSignature
+	Signature *identity.DecomposedSignature
 }
 
 const withDrawPrefix = "Withdraw request:"
 
-func NewWithdrawRequest(identity registry.Signer, amount int64) (*WithdrawRequest, error) {
+func NewWithdrawRequest(signer identity.Signer, amount int64) (*WithdrawRequest, error) {
 	bigAmount := big.NewInt(amount)
 	amountBytes := abi.U256(bigAmount)
-	signature, err := identity.Sign([]byte(withDrawPrefix), amountBytes)
+	signature, err := signer.Sign([]byte(withDrawPrefix), amountBytes)
 	if err != nil {
 		return nil, err
 	}
-	decomposed, err := registry.DecomposeSignature(signature)
+	decomposed, err := identity.DecomposeSignature(signature)
 	if err != nil {
 		return nil, err
 	}
