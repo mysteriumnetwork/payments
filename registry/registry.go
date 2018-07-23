@@ -3,12 +3,13 @@ package registry
 import (
 	"crypto/ecdsa"
 	"errors"
+	"math/big"
+
 	"github.com/MysteriumNetwork/payments/registry/generated"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
-	"math/big"
 )
 
 //go:generate abigen --sol ../contracts/IdentityRegistry.sol --pkg generated --out generated/registry.go
@@ -57,7 +58,7 @@ func DeployRegistry(owner *bind.TransactOpts, erc20address common.Address, backe
 	}, nil
 }
 
-func (registry *Registry) RegisterIdentity(proof *ProofOfIdentity) (*types.Transaction, error) {
+func (registry *Registry) RegisterIdentity(proof *RegistrationData) (*types.Transaction, error) {
 	signature := proof.Signature
 	var pubKeyPart1 [32]byte
 	var pubKeyPart2 [32]byte

@@ -1,12 +1,13 @@
 package utils
 
 import (
+	"testing"
+
 	"github.com/MysteriumNetwork/payments/test_utils"
 	"github.com/MysteriumNetwork/payments/utils/generated"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 var abiList, _ = test_utils.ParseAbis(test_utils.AbiMap{
@@ -17,7 +18,7 @@ var abiList, _ = test_utils.ParseAbis(test_utils.AbiMap{
 },
 )
 
-func TestSignle32BytesParamIsUnpackedCorrectly(t *testing.T) {
+func TestSignsAndAddressAreUnpackedCorrectly(t *testing.T) {
 	deployer := test_utils.Deployer
 	backend := test_utils.NewSimulatedBackend(deployer.Address, 1*1000*1000*1000)
 	loggingBackend := test_utils.LoggingBackend(backend, abiList)

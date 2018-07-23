@@ -1,14 +1,14 @@
 package balances
 
 import (
+	"math/big"
+
 	"github.com/MysteriumNetwork/payments/balances/generated"
 	"github.com/MysteriumNetwork/payments/registry"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/event"
-	"math/big"
 )
 
 //go:generate abigen --sol ../contracts/IdentityBalances.sol --pkg generated --out generated/IdentityBalances.go
@@ -51,10 +51,10 @@ type WithdrawRequest struct {
 
 const withDrawPrefix = "Withdraw request:"
 
-func NewWithdrawRequest(identity *registry.MystIdentity, amount int64) (*WithdrawRequest, error) {
+func NewWithdrawRequest(identity registry.IdentityHolder, amount int64) (*WithdrawRequest, error) {
 	bigAmount := big.NewInt(amount)
 	amountBytes := abi.U256(bigAmount)
-	signature, err := crypto.Sign(crypto.Keccak256([]byte(withDrawPrefix), amountBytes), identity.PrivateKey)
+	signature, err := identity.Sign([]byte(withDrawPrefix), amountBytes)
 	if err != nil {
 		return nil, err
 	}

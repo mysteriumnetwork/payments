@@ -1,6 +1,10 @@
 package registry
 
 import (
+	"math/big"
+	"testing"
+	"time"
+
 	"github.com/MysteriumNetwork/payments/mysttoken"
 	generated2 "github.com/MysteriumNetwork/payments/mysttoken/generated"
 	"github.com/MysteriumNetwork/payments/registry/generated"
@@ -8,9 +12,6 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/stretchr/testify/assert"
-	"math/big"
-	"testing"
-	"time"
 )
 
 var abiMap = test_utils.AbiMap{
@@ -65,7 +66,7 @@ func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 	assert.NoError(t, err)
 	assert.False(t, registered)
 
-	proofOfIdentity, err := CreateProofOfIdentity(mystIdentity)
+	proofOfIdentity, err := CreateRegistrationData(mystIdentity)
 	assert.NoError(t, err)
 
 	_, err = registry.RegisterIdentity(proofOfIdentity)

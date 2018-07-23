@@ -19,16 +19,16 @@ type IdentityHolder interface {
 	PublicKeyHolder
 }
 
-type ProofOfIdentity struct {
+type RegistrationData struct {
 	Data      []byte
 	Signature *DecomposedSignature
 }
 
-func (proof *ProofOfIdentity) String() string {
+func (proof *RegistrationData) String() string {
 	return fmt.Sprintf("Proof: %+v", *proof)
 }
 
-func CreateProofOfIdentity(identityHolder IdentityHolder) (*ProofOfIdentity, error) {
+func CreateRegistrationData(identityHolder IdentityHolder) (*RegistrationData, error) {
 	pubKeyBytes, err := identityHolder.GetPublicKey()
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func CreateProofOfIdentity(identityHolder IdentityHolder) (*ProofOfIdentity, err
 		return nil, err
 	}
 
-	return &ProofOfIdentity{
+	return &RegistrationData{
 		pubKeyBytes,
 		decSig,
 	}, nil

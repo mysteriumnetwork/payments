@@ -1,12 +1,13 @@
 package promises
 
 import (
+	"math/big"
+
 	"github.com/MysteriumNetwork/payments/promises/generated"
 	"github.com/MysteriumNetwork/payments/registry"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/event"
-	"math/big"
 )
 
 //go:generate abigen --sol ../contracts/IdentityPromises.sol --exc contract/registry.sol:IdentityRegistry --pkg generated --out generated/IdentityPromises.go
@@ -36,9 +37,9 @@ func NewPromiseClearer(transactOpts *bind.TransactOpts, contract *generated.Iden
 	}
 }
 
-func (pc *PromiseClearing) RegisterIdentities(identities ...registry.MystIdentity) error {
+func (pc *PromiseClearing) RegisterIdentities(identities ...registry.IdentityHolder) error {
 	for _, identity := range identities {
-		proof, err := registry.CreateProofOfIdentity(&identity)
+		proof, err := registry.CreateRegistrationData(identity)
 		if err != nil {
 			return err
 		}
