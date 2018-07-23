@@ -13,7 +13,7 @@ install:
 
 script:
   - scripts/test.sh -v
-  - scripts/check_go_fmt.sh
+  - scripts/check_goimports.sh
 
 before_deploy:
   - scripts/release.sh
