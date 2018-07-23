@@ -1,11 +1,12 @@
 package mysttoken
 
 import (
+	"math/big"
+	"testing"
+
 	"github.com/MysteriumNetwork/payments/mysttoken/generated"
 	"github.com/MysteriumNetwork/payments/test_utils"
 	"github.com/stretchr/testify/assert"
-	"math/big"
-	"testing"
 )
 
 var abiMap = test_utils.AbiMap{

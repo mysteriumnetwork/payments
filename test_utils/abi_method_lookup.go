@@ -2,11 +2,12 @@ package test_utils
 
 import (
 	"errors"
+	"strings"
+
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
-	"strings"
 )
 
 type AbiData struct {

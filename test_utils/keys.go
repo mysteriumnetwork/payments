@@ -2,6 +2,7 @@ package test_utils
 
 import (
 	"crypto/ecdsa"
+
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"

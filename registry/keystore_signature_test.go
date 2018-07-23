@@ -1,11 +1,12 @@
 package registry
 
 import (
+	"os"
+	"testing"
+
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/stretchr/testify/assert"
-	"os"
-	"testing"
 )
 
 func TestKeystoreSignerProvidesValidPublicKey(t *testing.T) {

@@ -2,6 +2,7 @@ package registry
 
 import (
 	"crypto/ecdsa"
+
 	"github.com/ethereum/go-ethereum/crypto"
 )
 

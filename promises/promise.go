@@ -1,11 +1,12 @@
 package promises
 
 import (
+	"math/big"
+
 	"github.com/MysteriumNetwork/payments/registry"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
-	"math/big"
 )
 
 type Promise struct {

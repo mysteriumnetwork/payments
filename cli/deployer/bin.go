@@ -1,12 +1,13 @@
 package main
 
 import (
+	"io/ioutil"
+	"strings"
+
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"io/ioutil"
-	"strings"
 )
 
 func DeploySmartContractFile(opts *bind.TransactOpts, path string, abiPath string, backend bind.ContractBackend, params ...interface{}) (common.Address, *types.Transaction, error) {

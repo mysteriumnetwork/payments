@@ -1,15 +1,16 @@
 package promises
 
 import (
+	"math/big"
+	"testing"
+	"time"
+
 	"github.com/MysteriumNetwork/payments/mysttoken"
 	generated2 "github.com/MysteriumNetwork/payments/mysttoken/generated"
 	"github.com/MysteriumNetwork/payments/promises/generated"
 	"github.com/MysteriumNetwork/payments/registry"
 	"github.com/MysteriumNetwork/payments/test_utils"
 	"github.com/stretchr/testify/assert"
-	"math/big"
-	"testing"
-	"time"
 )
 
 var abiList, _ = test_utils.ParseAbis(test_utils.AbiMap{
