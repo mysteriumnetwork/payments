@@ -15,7 +15,8 @@ import (
 
 type TransactionalBackend interface {
 	bind.ContractBackend
-	Commit() //taken from Simulated backend
+	Commit()                                                                            //taken from Simulated backend
+	TransactionReceipt(ctx context.Context, txHash common.Hash) (*types.Receipt, error) //taken from Simulated backend
 }
 
 // Keep in mind that initial amount is actually in Gwei - you need really HUGE
