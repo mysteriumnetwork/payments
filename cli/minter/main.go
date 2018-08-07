@@ -15,6 +15,10 @@ import (
 var erc20contract = flag.String("erc20.address", "", "Address of ERC20 mintable token")
 var whom = flag.String("forAddress", "", "Address for which tokens to mint")
 var amount = flag.Int64("amount", 1000000, "Amount of tokens to mint")
+var gethUrl = flag.String("geth.url", "", "URL value of started geth to connect")
+var keystoreDir = flag.String("keystore.directory", "testnet", "specify runtime dir for keystore keys")
+var passphrase = flag.String("keystore.passphrase", "", "Pashprase to unlock specified key from keystore")
+var etherAddress = flag.String("ether.address", "", "Ethereum acc to use for deployment")
 
 func main() {
 	flag.Parse()
@@ -28,15 +32,15 @@ func main() {
 }
 
 func mintToken() (err error) {
-	ks := helpers.GetKeystore()
-	acc, err := helpers.GetUnlockedAcc(ks)
+	ks := helpers.GetKeystore(*keystoreDir)
+	acc, err := helpers.GetUnlockedAcc(*etherAddress, *passphrase, ks)
 	if err != nil {
 		return
 	}
 	fmt.Println("Lookedup acc: ", acc.Address.String())
 	transactor := helpers.CreateNewKeystoreTransactor(ks, acc)
 
-	client, _, err := helpers.LookupBackend()
+	client, _, err := helpers.LookupBackend(*gethUrl)
 	if err != nil {
 		return err
 	}

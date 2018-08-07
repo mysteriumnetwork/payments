@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"time"
 
@@ -11,10 +10,8 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-var GethUrl = flag.String("geth.url", "", "URL value of started geth to connect")
-
-func LookupBackend() (*ethclient.Client, chan bool, error) {
-	ethClient, err := ethclient.Dial(*GethUrl)
+func LookupBackend(rpcUrl string) (*ethclient.Client, chan bool, error) {
+	ethClient, err := ethclient.Dial(rpcUrl)
 	if err != nil {
 		return nil, nil, err
 	}
