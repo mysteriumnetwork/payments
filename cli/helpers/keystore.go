@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 
 	"github.com/ethereum/go-ethereum/accounts"
@@ -12,35 +11,29 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 )
 
-var KeyStoreDir = flag.String("keystore.directory", "testnet", "specify runtime dir for keystore keys")
-var Passphrase = flag.String("keystore.passphrase", "", "Pashprase to unlock specified key from keystore")
-var Address = flag.String("ether.address", "", "Ethereum acc to use for deployment")
-
-func GetKeystore() *keystore.KeyStore {
-	return keystore.NewKeyStore(*KeyStoreDir, keystore.StandardScryptN, keystore.StandardScryptP)
+func GetKeystore(keystoreDir string) *keystore.KeyStore {
+	return keystore.NewKeyStore(keystoreDir, keystore.StandardScryptN, keystore.StandardScryptP)
 }
 
-func ListAccounts() error {
-	ks := GetKeystore()
+func ListAccounts(ks *keystore.KeyStore) error {
 	for i, acc := range ks.Accounts() {
 		fmt.Printf("%d: Address: %s\n", i, acc.Address.String())
 	}
 	return nil
 }
 
-func NewAccount() (err error) {
-	ks := GetKeystore()
-	_, err = ks.NewAccount(*Passphrase)
+func NewAccount(passphrase string, ks *keystore.KeyStore) (err error) {
+	_, err = ks.NewAccount(passphrase)
 	return
 }
 
-func GetUnlockedAcc(ks *keystore.KeyStore) (*accounts.Account, error) {
-	searchAcc := accounts.Account{Address: common.HexToAddress(*Address)}
+func GetUnlockedAcc(address, passphrase string, ks *keystore.KeyStore) (*accounts.Account, error) {
+	searchAcc := accounts.Account{Address: common.HexToAddress(address)}
 	foundAcc, err := ks.Find(searchAcc)
 	if err != nil {
 		return nil, err
 	}
-	err = ks.Unlock(foundAcc, *Passphrase)
+	err = ks.Unlock(foundAcc, passphrase)
 	if err != nil {
 		return nil, err
 	}

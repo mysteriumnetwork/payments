@@ -17,11 +17,14 @@ type EthAccount struct {
 
 func NewAccountFromKey(privateKey *ecdsa.PrivateKey) *EthAccount {
 
+	transactor := bind.NewKeyedTransactor(privateKey)
+	transactor.GasLimit = 0
+
 	return &EthAccount{
 		PrivateKey: privateKey,
 		PublicKey:  privateKey.PublicKey,
 		Address:    crypto.PubkeyToAddress(privateKey.PublicKey),
-		Transactor: bind.NewKeyedTransactor(privateKey),
+		Transactor: transactor,
 	}
 }
 

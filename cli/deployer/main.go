@@ -19,6 +19,10 @@ var registrationFee = flag.Int64("payments.registrationFee", 100, "Registration 
 var erc20address = flag.String("payments.erc20address", "", "ERC20 token address for payments. In hex (0x...) format")
 var contractPath = flag.String("contract.binPath", "", "Path to bin file of payments contract")
 var abiPath = flag.String("contract.abiPath", "", "Path to ABI file of payments contract")
+var gethUrl = flag.String("geth.url", "", "URL value of started geth to connect")
+var keystoreDir = flag.String("keystore.directory", "testnet", "specify runtime dir for keystore keys")
+var passphrase = flag.String("keystore.passphrase", "", "Pashprase to unlock specified key from keystore")
+var etherAddress = flag.String("ether.address", "", "Ethereum acc to use for deployment")
 
 func main() {
 	flag.Parse()
@@ -35,15 +39,17 @@ func executeCommand(cmd string) error {
 	case "deploy":
 		return deployContract()
 	case "newAccount":
-		return helpers.NewAccount()
+		ks := helpers.GetKeystore(*keystoreDir)
+		return helpers.NewAccount(*passphrase, ks)
 	case "listAccounts":
-		return helpers.ListAccounts()
+		ks := helpers.GetKeystore(*keystoreDir)
+		return helpers.ListAccounts(ks)
 	case "clientStatus":
-		_, completed, err := helpers.LookupBackend()
+		_, completed, err := helpers.LookupBackend(*gethUrl)
 		<-completed
 		return err
 	case "ethBalance":
-		return getBalanceOf(*helpers.Address)
+		return getBalanceOf(*etherAddress)
 	case "help":
 		flag.Usage()
 		return nil
@@ -51,7 +57,7 @@ func executeCommand(cmd string) error {
 	return errors.New("unknown command: " + cmd)
 }
 func getBalanceOf(address string) error {
-	backend, syncCompleted, err := helpers.LookupBackend()
+	backend, syncCompleted, err := helpers.LookupBackend(*gethUrl)
 	if err != nil {
 		return err
 	}
@@ -65,15 +71,15 @@ func getBalanceOf(address string) error {
 }
 
 func deployContract() (err error) {
-	ks := helpers.GetKeystore()
-	acc, err := helpers.GetUnlockedAcc(ks)
+	ks := helpers.GetKeystore(*keystoreDir)
+	acc, err := helpers.GetUnlockedAcc(*etherAddress, *passphrase, ks)
 	if err != nil {
 		return
 	}
 	fmt.Println("Lookedup acc: ", acc.Address.String())
 	transactor := helpers.CreateNewKeystoreTransactor(ks, acc)
 
-	client, _, err := helpers.LookupBackend()
+	client, _, err := helpers.LookupBackend(*gethUrl)
 	if err != nil {
 		return err
 	}
