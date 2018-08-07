@@ -13,11 +13,12 @@ import (
 
 var paymentsContract = flag.String("payments.contract", "", "Address of payments contract")
 var identity = flag.String("payments.identity", "", "Identity for balance checking")
+var gethUrl = flag.String("geth.url", "", "URL value of started geth to connect")
 
 func main() {
 	flag.Parse()
 
-	client, syncCompleted, err := helpers.LookupBackend()
+	client, syncCompleted, err := helpers.LookupBackend(*gethUrl)
 	checkError(err)
 	<-syncCompleted
 
