@@ -24,7 +24,7 @@ type TransactionalBackend interface {
 func NewSimulatedBackend(genesisAddress common.Address, initialAmmount int64) TransactionalBackend {
 	sb := backends.NewSimulatedBackend(core.GenesisAlloc{
 		genesisAddress: {Balance: big.NewInt(initialAmmount)},
-	})
+	}, 10000000)
 	return sb
 }
 

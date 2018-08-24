@@ -2,7 +2,6 @@ package registry
 
 import (
 	"crypto/ecdsa"
-	"errors"
 	"math/big"
 
 	"github.com/MysteriumNetwork/payments/registry/generated"
@@ -53,9 +52,5 @@ func (registry *Registry) LookupPublicKey(address common.Address) (*ecdsa.Public
 
 	prefix := []byte{4}
 	fullKey := append(prefix, append(part1[:], part2[:]...)...)
-	pubKey := crypto.ToECDSAPub(fullKey)
-	if pubKey == nil {
-		return nil, errors.New("unable to deserialize public key")
-	}
-	return pubKey, nil
+	return crypto.UnmarshalPubkey(fullKey)
 }

@@ -66,7 +66,10 @@ func SignByReceiver(promise *IssuedPromise, receiver identity.Signer) (*Received
 	if err != nil {
 		return nil, err
 	}
-	pubKey := crypto.ToECDSAPub(publicKey)
+	pubKey, err := crypto.UnmarshalPubkey(publicKey)
+	if err != nil {
+		return nil, err
+	}
 	payerAddr := crypto.PubkeyToAddress(*pubKey)
 	sig, err := receiver.Sign([]byte(receiverPrefix), crypto.Keccak256(promise.Bytes()), payerAddr.Bytes())
 	return &ReceivedPromise{

@@ -31,7 +31,10 @@ func TestKeyStoreSignerProvidesValidSignature(t *testing.T) {
 	pubKeyBytes, err := crypto.Ecrecover(crypto.Keccak256(signData), extractedSignature)
 	assert.NoError(t, err)
 
-	recoveredIdentity := crypto.PubkeyToAddress(*crypto.ToECDSAPub(pubKeyBytes))
+	key, err := crypto.UnmarshalPubkey(pubKeyBytes)
+	assert.NoError(t, err)
+
+	recoveredIdentity := crypto.PubkeyToAddress(*key)
 
 	assert.Equal(t, acc.Address, recoveredIdentity)
 
