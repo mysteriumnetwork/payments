@@ -26,7 +26,8 @@ func (ki *keystoreIdentityHolder) GetPublicKey() (ecdsa.PublicKey, error) {
 	if err != nil {
 		return ecdsa.PublicKey{}, err
 	}
-	return *crypto.ToECDSAPub(pubKeyBytes), nil
+	key, err := crypto.UnmarshalPubkey(pubKeyBytes)
+	return *key, err
 }
 
 func FromKeystore(keystore *keystore.KeyStore, address common.Address) IdentityHolder {
