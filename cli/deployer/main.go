@@ -8,8 +8,8 @@ import (
 	"math/big"
 	"os"
 
-	"github.com/MysteriumNetwork/payments/cli/helpers"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/mysteriumnetwork/payments/cli/helpers"
 )
 
 var cmd = flag.String("cmd", "help", "Command to execute")

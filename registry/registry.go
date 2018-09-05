@@ -4,11 +4,11 @@ import (
 	"crypto/ecdsa"
 	"math/big"
 
-	"github.com/MysteriumNetwork/payments/registry/generated"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/mysteriumnetwork/payments/registry/generated"
 )
 
 //go:generate abigen --sol ../contracts/IdentityRegistry.sol --pkg generated --out generated/registry.go

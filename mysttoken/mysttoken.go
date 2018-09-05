@@ -3,9 +3,9 @@ package mysttoken
 import (
 	"math/big"
 
-	"github.com/MysteriumNetwork/payments/mysttoken/generated"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/mysteriumnetwork/payments/mysttoken/generated"
 )
 
 //go:generate abigen --sol ../contracts/MystToken.sol --pkg generated --out generated/mysttoken.go

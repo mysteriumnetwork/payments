@@ -3,11 +3,11 @@ package registry
 import (
 	"crypto/ecdsa"
 
-	"github.com/MysteriumNetwork/payments/identity"
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/mysteriumnetwork/payments/identity"
 )
 
 type keystoreIdentityHolder struct {

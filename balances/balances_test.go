@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/MysteriumNetwork/payments/balances/generated"
-	"github.com/MysteriumNetwork/payments/mysttoken"
-	generated2 "github.com/MysteriumNetwork/payments/mysttoken/generated"
-	"github.com/MysteriumNetwork/payments/test_utils"
+	"github.com/mysteriumnetwork/payments/balances/generated"
+	"github.com/mysteriumnetwork/payments/mysttoken"
+	generated2 "github.com/mysteriumnetwork/payments/mysttoken/generated"
+	"github.com/mysteriumnetwork/payments/test_utils"
 	"github.com/stretchr/testify/assert"
 )
 

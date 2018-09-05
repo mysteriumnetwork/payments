@@ -3,12 +3,12 @@ package balances
 import (
 	"math/big"
 
-	"github.com/MysteriumNetwork/payments/balances/generated"
-	"github.com/MysteriumNetwork/payments/identity"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/event"
+	"github.com/mysteriumnetwork/payments/balances/generated"
+	"github.com/mysteriumnetwork/payments/identity"
 )
 
 //go:generate abigen --sol ../contracts/IdentityBalances.sol --pkg generated --out generated/IdentityBalances.go
