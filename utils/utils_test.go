@@ -3,10 +3,10 @@ package utils
 import (
 	"testing"
 
-	"github.com/MysteriumNetwork/payments/test_utils"
-	"github.com/MysteriumNetwork/payments/utils/generated"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/mysteriumnetwork/payments/test_utils"
+	"github.com/mysteriumnetwork/payments/utils/generated"
 	"github.com/stretchr/testify/assert"
 )
 

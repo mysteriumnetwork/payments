@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/MysteriumNetwork/payments/cli/helpers"
-	"github.com/MysteriumNetwork/payments/promises/generated"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/mysteriumnetwork/payments/cli/helpers"
+	"github.com/mysteriumnetwork/payments/promises/generated"
 )
 
 var paymentsContract = flag.String("payments.contract", "", "Address of payments contract")

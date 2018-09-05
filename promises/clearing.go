@@ -3,12 +3,12 @@ package promises
 import (
 	"math/big"
 
-	"github.com/MysteriumNetwork/payments/identity"
-	"github.com/MysteriumNetwork/payments/promises/generated"
-	"github.com/MysteriumNetwork/payments/registry"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/event"
+	"github.com/mysteriumnetwork/payments/identity"
+	"github.com/mysteriumnetwork/payments/promises/generated"
+	"github.com/mysteriumnetwork/payments/registry"
 )
 
 //go:generate abigen --sol ../contracts/IdentityPromises.sol --exc contract/registry.sol:IdentityRegistry --pkg generated --out generated/IdentityPromises.go

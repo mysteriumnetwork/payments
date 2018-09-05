@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/MysteriumNetwork/payments/mysttoken/generated"
-	"github.com/MysteriumNetwork/payments/promises"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/mysteriumnetwork/payments/mysttoken/generated"
+	"github.com/mysteriumnetwork/payments/promises"
 )
 
 func DeployPromises(transactor *bind.TransactOpts, client bind.ContractBackend, erc20tokenAddress common.Address, registrationFee int64) error {

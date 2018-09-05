@@ -5,8 +5,8 @@ import (
 
 	"crypto/ecdsa"
 
-	"github.com/MysteriumNetwork/payments/identity"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/mysteriumnetwork/payments/identity"
 )
 
 const registerPrefix = "Register prefix:"

@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/MysteriumNetwork/payments/mysttoken"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/mysteriumnetwork/payments/mysttoken"
 )
 
 func DeployTestErc20(transactor *bind.TransactOpts, backend bind.ContractBackend, initialTokenAmount int64) error {

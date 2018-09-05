@@ -4,8 +4,8 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/MysteriumNetwork/payments/mysttoken/generated"
-	"github.com/MysteriumNetwork/payments/test_utils"
+	"github.com/mysteriumnetwork/payments/mysttoken/generated"
+	"github.com/mysteriumnetwork/payments/test_utils"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -5,12 +5,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/MysteriumNetwork/payments/mysttoken"
-	generated2 "github.com/MysteriumNetwork/payments/mysttoken/generated"
-	"github.com/MysteriumNetwork/payments/registry/generated"
-	"github.com/MysteriumNetwork/payments/test_utils"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/mysteriumnetwork/payments/mysttoken"
+	generated2 "github.com/mysteriumnetwork/payments/mysttoken/generated"
+	"github.com/mysteriumnetwork/payments/registry/generated"
+	"github.com/mysteriumnetwork/payments/test_utils"
 	"github.com/stretchr/testify/assert"
 )
 
