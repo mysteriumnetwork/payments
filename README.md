@@ -4,15 +4,18 @@
 Requires solc 0.4.23 or later, go 1.9.2 or later
 
 First we need some external tooling:
+
 1. Solidity:
-```bash
-brew tap ethereum/ethereum
-brew install solidity
-```
+
+See the Solidity docs for installation instructions:
+
+ https://solidity.readthedocs.io/en/v0.4.24/installing-solidity.html
+
 2. Ethereum (geth, abigen):
-```bash
-brew install ethereum
-```
+
+See the Ethereum docs for installation instructions:
+
+ https://github.com/ethereum/go-ethereum/wiki/Building-Ethereum
 
 ### Building
 ```bash
