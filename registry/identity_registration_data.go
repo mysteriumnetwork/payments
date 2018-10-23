@@ -1,9 +1,8 @@
 package registry
 
 import (
-	"fmt"
-
 	"crypto/ecdsa"
+	"fmt"
 
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/mysteriumnetwork/payments/identity"
