@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 source scripts/helpers/output.sh
 
 scripts/gen_all.sh

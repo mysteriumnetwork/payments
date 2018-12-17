@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/cheggaaa/pb"
-	"github.com/ethereum/go-ethereum"
+	ethereum "github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 

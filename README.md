@@ -1,5 +1,5 @@
 # Mysterium network smart contracts for payments
-[![Build Status](https://travis-ci.com/MysteriumNetwork/payments.svg?token=t9FwiYsxwDxkJWnSMpfr&branch=master)](https://travis-ci.com/MysteriumNetwork/payments)
+[![Build Status](https://travis-ci.com/mysteriumnetwork/payments.svg?token=t9FwiYsxwDxkJWnSMpfr&branch=master)](https://travis-ci.com/mysteriumnetwork/payments)
 
 Requires solc 0.4.23 or later, go 1.9.2 or later
 

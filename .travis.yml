@@ -2,12 +2,15 @@ language: go
 sudo: false
 
 before_install:
-  - sudo add-apt-repository -y ppa:ethereum/ethereum
   - sudo apt-get -y update
-  - sudo apt-get -y install solc ethereum nodejs npm
+  - sudo apt-get -y install nodejs npm
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
   - npm install -g soljitsu
   - go get golang.org/x/tools/cmd/goimports
+  - scripts/helpers/setup-geth-tools.sh /home/travis/bin
+  - scripts/helpers/setup-solc.sh /home/travis/bin
+  - solc --version
+  - abigen --sol contracts/UtilsTest.sol --pkg check --out /dev/null
 
 install:
   - scripts/deps.sh ensure
