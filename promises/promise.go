@@ -9,23 +9,33 @@ import (
 	"github.com/mysteriumnetwork/payments/identity"
 )
 
+type ExtraData interface {
+	Hash() []byte
+}
+
+const emptyExtra = "emptyextra"
+
+type EmptyExtra struct {
+}
+
+func (EmptyExtra) Hash() []byte {
+	return crypto.Keccak256([]byte(emptyExtra))
+}
+
+var _ ExtraData = EmptyExtra{}
+
 type Promise struct {
-	ServiceConsumer common.Address
-	Receiver        common.Address
-	SeqNo           int64
-	Amount          int64
+	Extra    ExtraData
+	Receiver common.Address
+	SeqNo    int64
+	Amount   int64
 }
 
 const issuerPrefix = "Issuer prefix:"
 
-func (p *Promise) ConsumerHash() []byte {
-	return crypto.Keccak256(p.ServiceConsumer.Bytes())
-}
-
 func (p *Promise) Bytes() []byte {
 	slices := [][]byte{
-		[]byte(issuerPrefix),
-		p.ConsumerHash(),
+		p.Extra.Hash(),
 		p.Receiver.Bytes(),
 		abi.U256(big.NewInt(p.SeqNo)),
 		abi.U256(big.NewInt(p.Amount)),
@@ -42,13 +52,29 @@ type IssuedPromise struct {
 	IssuerSignature []byte
 }
 
+func (ip *IssuedPromise) Bytes() []byte {
+	return append([]byte(issuerPrefix), ip.Promise.Bytes()...)
+}
+
+func (ip *IssuedPromise) IssuerAddress() (common.Address, error) {
+	publicKey, err := crypto.Ecrecover(crypto.Keccak256(ip.Bytes()), ip.IssuerSignature)
+	if err != nil {
+		return common.Address{}, err
+	}
+	pubKey, err := crypto.UnmarshalPubkey(publicKey)
+	if err != nil {
+		return common.Address{}, err
+	}
+	return crypto.PubkeyToAddress(*pubKey), nil
+}
+
 type ReceivedPromise struct {
 	IssuedPromise
 	ReceiverSignature []byte
 }
 
 func SignByPayer(promise *Promise, payer identity.Signer) (*IssuedPromise, error) {
-	signature, err := payer.Sign(promise.Bytes())
+	signature, err := payer.Sign([]byte(issuerPrefix), promise.Bytes())
 	if err != nil {
 		return nil, err
 	}
@@ -62,15 +88,10 @@ func SignByPayer(promise *Promise, payer identity.Signer) (*IssuedPromise, error
 const receiverPrefix = "Receiver prefix:"
 
 func SignByReceiver(promise *IssuedPromise, receiver identity.Signer) (*ReceivedPromise, error) {
-	publicKey, err := crypto.Ecrecover(crypto.Keccak256(promise.Bytes()), promise.IssuerSignature)
+	payerAddr, err := promise.IssuerAddress()
 	if err != nil {
 		return nil, err
 	}
-	pubKey, err := crypto.UnmarshalPubkey(publicKey)
-	if err != nil {
-		return nil, err
-	}
-	payerAddr := crypto.PubkeyToAddress(*pubKey)
 	sig, err := receiver.Sign([]byte(receiverPrefix), crypto.Keccak256(promise.Bytes()), payerAddr.Bytes())
 	return &ReceivedPromise{
 		*promise,

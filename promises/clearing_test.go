@@ -55,6 +55,7 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	backend.Commit()
 
 	promise := Promise{
+		Extra:    EmptyExtra{},
 		Receiver: receiver.Address,
 		SeqNo:    1,
 		Amount:   100,

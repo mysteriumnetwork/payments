@@ -69,7 +69,7 @@ func (pc *PromiseClearing) ClearReceivedPromise(promise *ReceivedPromise) error 
 	copy(packedAddressAndSigns[10:32], addressAndSigns)
 
 	var extraDataHash [32]byte
-	copy(extraDataHash[:], promise.ConsumerHash())
+	copy(extraDataHash[:], promise.Extra.Hash())
 
 	_, err = pc.ClearPromise(
 		packedAddressAndSigns,
