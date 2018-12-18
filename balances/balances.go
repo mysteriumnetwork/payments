@@ -7,26 +7,25 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/event"
-	"github.com/mysteriumnetwork/payments/balances/generated"
 	"github.com/mysteriumnetwork/payments/identity"
 )
 
-//go:generate abigen --sol ../contracts/IdentityBalances.sol --pkg generated --out generated/IdentityBalances.go
+//go:generate abigen --sol ../contracts/IdentityBalances.sol --pkg balances --out abigen_balances.go
 
-type IdentityBalances struct {
+type IdentityBalance struct {
 	Address common.Address
-	generated.IdentityBalancesSession
+	IdentityBalancesSession
 }
 
-func DeployIdentityBalances(transactorOpts *bind.TransactOpts, erc20Address common.Address, backend bind.ContractBackend) (*IdentityBalances, error) {
-	identityBalancesAddress, _, identityBalances, err := generated.DeployIdentityBalances(transactorOpts, backend, erc20Address)
+func DeployIdentityBalance(transactorOpts *bind.TransactOpts, erc20Address common.Address, backend bind.ContractBackend) (*IdentityBalance, error) {
+	identityBalancesAddress, _, identityBalances, err := DeployIdentityBalances(transactorOpts, backend, erc20Address)
 	if err != nil {
 		return nil, err
 	}
 
-	return &IdentityBalances{
+	return &IdentityBalance{
 		Address: identityBalancesAddress,
-		IdentityBalancesSession: generated.IdentityBalancesSession{
+		IdentityBalancesSession: IdentityBalancesSession{
 			Contract:     identityBalances,
 			TransactOpts: *transactorOpts,
 			CallOpts:     bind.CallOpts{},
@@ -34,12 +33,12 @@ func DeployIdentityBalances(transactorOpts *bind.TransactOpts, erc20Address comm
 	}, nil
 }
 
-func (balances *IdentityBalances) BindForTopUpEvents(sink chan<- *generated.IdentityBalancesToppedUp) (event.Subscription, error) {
+func (balances *IdentityBalance) BindForTopUpEvents(sink chan<- *IdentityBalancesToppedUp) (event.Subscription, error) {
 	blockStart := uint64(0)
 	return balances.Contract.WatchToppedUp(&bind.WatchOpts{Start: &blockStart}, sink, []common.Address{})
 }
 
-func (balances *IdentityBalances) BindForWithdrawEvents(sink chan<- *generated.IdentityBalancesWithdrawn) (event.Subscription, error) {
+func (balances *IdentityBalance) BindForWithdrawEvents(sink chan<- *IdentityBalancesWithdrawn) (event.Subscription, error) {
 	blockStart := uint64(0)
 	return balances.Contract.WatchWithdrawn(&bind.WatchOpts{Start: &blockStart}, sink, []common.Address{})
 }
@@ -69,7 +68,7 @@ func NewWithdrawRequest(signer identity.Signer, amount int64) (*WithdrawRequest,
 	}, nil
 }
 
-func (balances *IdentityBalances) Withdraw(request *WithdrawRequest) (err error) {
+func (balances *IdentityBalance) Withdraw(request *WithdrawRequest) (err error) {
 	signature := request.Signature
 	_, err = balances.IdentityBalancesSession.Withdraw(request.Amount, signature.V, signature.R, signature.S)
 	return

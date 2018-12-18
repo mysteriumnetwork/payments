@@ -4,15 +4,14 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/mysteriumnetwork/payments/mysttoken/generated"
 	"github.com/mysteriumnetwork/payments/test_utils"
 	"github.com/stretchr/testify/assert"
 )
 
 var abiMap = test_utils.AbiMap{
 	"MystToken": {
-		generated.MystTokenABI,
-		generated.MystTokenBin,
+		MystTokenABI,
+		MystTokenBin,
 	},
 }
 

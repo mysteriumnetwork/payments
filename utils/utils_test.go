@@ -6,14 +6,13 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/mysteriumnetwork/payments/test_utils"
-	"github.com/mysteriumnetwork/payments/utils/generated"
 	"github.com/stretchr/testify/assert"
 )
 
 var abiList, _ = test_utils.ParseAbis(test_utils.AbiMap{
 	"TestUtilsContract": {
-		generated.TestUtilsContractABI,
-		generated.TestUtilsContractBin,
+		TestUtilsContractABI,
+		TestUtilsContractBin,
 	},
 },
 )
@@ -23,7 +22,7 @@ func TestSignsAndAddressAreUnpackedCorrectly(t *testing.T) {
 	backend := test_utils.NewSimulatedBackend(deployer.Address, 1*1000*1000*1000)
 	loggingBackend := test_utils.LoggingBackend(backend, abiList)
 
-	_, _, testUtilsC, err := generated.DeployTestUtilsContract(deployer.Transactor, loggingBackend)
+	_, _, testUtilsC, err := DeployTestUtilsContract(deployer.Transactor, loggingBackend)
 	assert.NoError(t, err)
 	loggingBackend.Commit()
 

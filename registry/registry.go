@@ -8,25 +8,24 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/mysteriumnetwork/payments/registry/generated"
 )
 
-//go:generate abigen --sol ../contracts/IdentityRegistry.sol --pkg generated --out generated/registry.go
+//go:generate abigen --sol ../contracts/IdentityRegistry.sol --pkg registry --out abigen_registry.go
 
 type Registry struct {
-	generated.IdentityRegistrySession
+	IdentityRegistrySession
 	Address common.Address
 }
 
 func DeployRegistry(owner *bind.TransactOpts, erc20address common.Address, backend bind.ContractBackend) (*Registry, error) {
 
-	address, _, contract, err := generated.DeployIdentityRegistry(owner, backend, erc20address, big.NewInt(1000))
+	address, _, contract, err := DeployIdentityRegistry(owner, backend, erc20address, big.NewInt(1000))
 	if err != nil {
 		return nil, err
 	}
 
 	return &Registry{
-		generated.IdentityRegistrySession{
+		IdentityRegistrySession{
 			TransactOpts: *owner,
 			CallOpts:     bind.CallOpts{},
 			Contract:     contract,
