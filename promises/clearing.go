@@ -6,19 +6,18 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/event"
+	"github.com/mysteriumnetwork/payments/contracts/abigen"
 	"github.com/mysteriumnetwork/payments/identity"
 	"github.com/mysteriumnetwork/payments/registry"
 )
 
-//go:generate abigen --sol ../contracts/IdentityPromises.sol --pkg promises --out abigen_promises.go -exc ../contracts/Utils.sol:Utils,../contracts/deps/OpenZeppelin/contracts/ownership/Ownable.sol:Ownable,../contracts/deps/OpenZeppelin/contracts/math/Math.sol:Math,../contracts/deps/OpenZeppelin/contracts/token/ERC20/ERC20Basic.sol:ERC20Basic,../contracts/ERC20Aware.sol:ERC20Aware,../contracts/deps/OpenZeppelin/contracts/token/ERC20/ERC20.sol:ERC20,../contracts/IdentityRegistry.sol:IdentityRegistry,../contracts/IdentityBalances.sol:IdentityBalances
-
 type PromiseClearing struct {
 	Address common.Address
-	IdentityPromisesSession
+	abigen.IdentityPromisesSession
 }
 
 func DeployPromiseClearer(owner *bind.TransactOpts, erc20Token common.Address, fee int64, backend bind.ContractBackend) (*PromiseClearing, error) {
-	address, _, clearingContract, err := DeployIdentityPromises(owner, backend, erc20Token, big.NewInt(fee))
+	address, _, clearingContract, err := abigen.DeployIdentityPromises(owner, backend, erc20Token, big.NewInt(fee))
 	if err != nil {
 		return nil, err
 	}
@@ -26,10 +25,10 @@ func DeployPromiseClearer(owner *bind.TransactOpts, erc20Token common.Address, f
 	return NewPromiseClearer(owner, clearingContract, address), nil
 }
 
-func NewPromiseClearer(transactOpts *bind.TransactOpts, contract *IdentityPromises, address common.Address) *PromiseClearing {
+func NewPromiseClearer(transactOpts *bind.TransactOpts, contract *abigen.IdentityPromises, address common.Address) *PromiseClearing {
 	return &PromiseClearing{
 		address,
-		IdentityPromisesSession{
+		abigen.IdentityPromisesSession{
 			Contract:     contract,
 			CallOpts:     bind.CallOpts{},
 			TransactOpts: *transactOpts,
@@ -85,7 +84,7 @@ func (pc *PromiseClearing) ClearReceivedPromise(promise *ReceivedPromise) error 
 	return err
 }
 
-func (pc *PromiseClearing) BindForEvents(eventChan chan<- *IdentityPromisesPromiseCleared) (event.Subscription, error) {
+func (pc *PromiseClearing) BindForEvents(eventChan chan<- *abigen.IdentityPromisesPromiseCleared) (event.Subscription, error) {
 	start := uint64(0)
 	return pc.Contract.WatchPromiseCleared(&bind.WatchOpts{Start: &start}, eventChan, []common.Address{}, []common.Address{})
 }

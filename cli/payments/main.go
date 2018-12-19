@@ -8,7 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/mysteriumnetwork/payments/cli/helpers"
-	"github.com/mysteriumnetwork/payments/promises"
+	"github.com/mysteriumnetwork/payments/contracts/abigen"
 )
 
 var paymentsContract = flag.String("payments.contract", "", "Address of payments contract")
@@ -22,10 +22,10 @@ func main() {
 	checkError(err)
 	<-syncCompleted
 
-	contractCaller, err := promises.NewIdentityPromisesCaller(common.HexToAddress(*paymentsContract), client)
+	contractCaller, err := abigen.NewIdentityPromisesCaller(common.HexToAddress(*paymentsContract), client)
 	checkError(err)
 
-	paymentsContract := promises.IdentityPromisesCallerSession{
+	paymentsContract := abigen.IdentityPromisesCallerSession{
 		Contract: contractCaller,
 		CallOpts: bind.CallOpts{},
 	}

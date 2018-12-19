@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mysteriumnetwork/payments/contracts/abigen"
 	"github.com/mysteriumnetwork/payments/mysttoken"
 	"github.com/mysteriumnetwork/payments/test_utils"
 	"github.com/stretchr/testify/assert"
@@ -16,8 +17,8 @@ var abiList, _ = test_utils.ParseAbis(test_utils.AbiMap{
 		mysttoken.MystTokenBin,
 	},
 	"IdentityPromises": {
-		IdentityPromisesABI,
-		IdentityPromisesBin,
+		abigen.IdentityPromisesABI,
+		abigen.IdentityPromisesBin,
 	},
 })
 
@@ -35,7 +36,7 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	assert.NoError(t, err)
 	backend.Commit()
 
-	events := make(chan *IdentityPromisesPromiseCleared, 1)
+	events := make(chan *abigen.IdentityPromisesPromiseCleared, 1)
 	sub, err := clearing.BindForEvents(events)
 	assert.NoError(t, err)
 
