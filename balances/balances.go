@@ -10,7 +10,7 @@ import (
 	"github.com/mysteriumnetwork/payments/identity"
 )
 
-//go:generate abigen --sol ../contracts/IdentityBalances.sol --pkg balances --out abigen_balances.go
+//go:generate abigen --sol ../contracts/IdentityBalances.sol --exc contracts/deps/OpenZeppelin/contracts/token/ERC20/ERC20.sol:ERC20  --pkg balances --out abigen_balances.go
 
 type IdentityBalance struct {
 	Address common.Address

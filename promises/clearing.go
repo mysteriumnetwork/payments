@@ -10,7 +10,7 @@ import (
 	"github.com/mysteriumnetwork/payments/registry"
 )
 
-//go:generate abigen --sol ../contracts/IdentityPromises.sol --exc contract/registry.sol:IdentityRegistry --pkg promises --out abigen_promises.go
+//go:generate abigen --sol ../contracts/IdentityPromises.sol --pkg promises --out abigen_promises.go -exc ../contracts/Utils.sol:Utils,../contracts/deps/OpenZeppelin/contracts/ownership/Ownable.sol:Ownable,../contracts/deps/OpenZeppelin/contracts/math/Math.sol:Math,../contracts/deps/OpenZeppelin/contracts/token/ERC20/ERC20Basic.sol:ERC20Basic,../contracts/ERC20Aware.sol:ERC20Aware,../contracts/deps/OpenZeppelin/contracts/token/ERC20/ERC20.sol:ERC20,../contracts/IdentityRegistry.sol:IdentityRegistry,../contracts/IdentityBalances.sol:IdentityBalances
 
 type PromiseClearing struct {
 	Address common.Address
