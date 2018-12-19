@@ -8,7 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/mysteriumnetwork/payments/cli/helpers"
-	"github.com/mysteriumnetwork/payments/promises"
+	"github.com/mysteriumnetwork/payments/contracts/abigen"
 )
 
 var paymentsContract = flag.String("payments.contract", "", "Address of payments contract")
@@ -22,15 +22,15 @@ func main() {
 	checkError(err)
 	<-syncCompleted
 
-	contract, err := promises.NewIdentityRegistryCaller(common.HexToAddress(*paymentsContract), client)
+	contractCaller, err := abigen.NewIdentityPromisesCaller(common.HexToAddress(*paymentsContract), client)
 	checkError(err)
 
-	paymentsSession := promises.IdentityRegistryCallerSession{
-		Contract: contract,
+	paymentsContract := abigen.IdentityPromisesCallerSession{
+		Contract: contractCaller,
 		CallOpts: bind.CallOpts{},
 	}
 
-	registered, err := paymentsSession.IsRegistered(common.HexToAddress(*identity))
+	registered, err := paymentsContract.IsRegistered(common.HexToAddress(*identity))
 	checkError(err)
 	fmt.Println("Identity: ", *identity, "registration status: ", registered)
 }
