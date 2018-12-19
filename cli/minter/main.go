@@ -9,7 +9,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/mysteriumnetwork/payments/cli/helpers"
-	"github.com/mysteriumnetwork/payments/mysttoken/generated"
+	"github.com/mysteriumnetwork/payments/mysttoken"
 )
 
 var erc20contract = flag.String("erc20.address", "", "Address of ERC20 mintable token")
@@ -50,7 +50,7 @@ func mintToken() (err error) {
 	}
 	fmt.Println("Your balance is:", balance.String(), "wei")
 
-	erc20token, err := generated.NewMystTokenTransactor(common.HexToAddress(*erc20contract), client)
+	erc20token, err := mysttoken.NewMystTokenTransactor(common.HexToAddress(*erc20contract), client)
 	if err != nil {
 		return
 	}

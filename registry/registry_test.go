@@ -8,20 +8,18 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/mysteriumnetwork/payments/mysttoken"
-	generated2 "github.com/mysteriumnetwork/payments/mysttoken/generated"
-	"github.com/mysteriumnetwork/payments/registry/generated"
 	"github.com/mysteriumnetwork/payments/test_utils"
 	"github.com/stretchr/testify/assert"
 )
 
 var abiMap = test_utils.AbiMap{
 	"MystToken": {
-		generated2.MystTokenABI,
-		generated2.MystTokenBin,
+		mysttoken.MystTokenABI,
+		mysttoken.MystTokenBin,
 	},
 	"IdentityRegistry": {
-		generated.IdentityRegistryABI,
-		generated.IdentityRegistryBin,
+		IdentityRegistryABI,
+		IdentityRegistryBin,
 	},
 }
 
@@ -58,7 +56,7 @@ func TestRegisterIdentityEmitsIdentityRegisteredEvent(t *testing.T) {
 
 	fromBlock := uint64(0)
 	//funny thing with simulated backed - we need subscribe to events BEFORE they are generated - limitation of simulator :)
-	eventChan := make(chan *generated.IdentityRegistryRegistered)
+	eventChan := make(chan *IdentityRegistryRegistered)
 	subscription, err := registry.Contract.WatchRegistered(&bind.WatchOpts{Start: &fromBlock}, eventChan, []common.Address{})
 	assert.NoError(t, err)
 

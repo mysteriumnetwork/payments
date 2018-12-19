@@ -5,21 +5,19 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mysteriumnetwork/payments/balances/generated"
 	"github.com/mysteriumnetwork/payments/mysttoken"
-	generated2 "github.com/mysteriumnetwork/payments/mysttoken/generated"
 	"github.com/mysteriumnetwork/payments/test_utils"
 	"github.com/stretchr/testify/assert"
 )
 
 var abiMap = test_utils.AbiMap{
 	"MystToken": {
-		generated2.MystTokenABI,
-		generated2.MystTokenBin,
+		mysttoken.MystTokenABI,
+		mysttoken.MystTokenBin,
 	},
 	"IdentityBalances": {
-		generated.IdentityBalancesABI,
-		generated.IdentityBalancesBin,
+		IdentityBalancesABI,
+		IdentityBalancesBin,
 	},
 }
 
@@ -33,7 +31,7 @@ func TestTopUpActionAddsMystToBalanceAndEmitsToppedUpEvent(t *testing.T) {
 	assert.NoError(t, err)
 	simulator.Commit()
 
-	identityBalances, err := DeployIdentityBalances(deployer.Transactor, erc20.Address, simulator)
+	identityBalances, err := DeployIdentityBalance(deployer.Transactor, erc20.Address, simulator)
 	assert.NoError(t, err)
 	simulator.Commit()
 
@@ -48,7 +46,7 @@ func TestTopUpActionAddsMystToBalanceAndEmitsToppedUpEvent(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, uint64(0), initialBalance.Uint64())
 
-	topupChan := make(chan *generated.IdentityBalancesToppedUp, 10)
+	topupChan := make(chan *IdentityBalancesToppedUp, 10)
 	subscription, err := identityBalances.BindForTopUpEvents(topupChan)
 	assert.NoError(t, err)
 
@@ -85,7 +83,7 @@ func TestWithdrawActionRemovesMystFromBalanceAndEmitsWithdrawnEvent(t *testing.T
 	assert.NoError(t, err)
 	simulator.Commit()
 
-	identityBalances, err := DeployIdentityBalances(deployer.Transactor, erc20.Address, simulator)
+	identityBalances, err := DeployIdentityBalance(deployer.Transactor, erc20.Address, simulator)
 	assert.NoError(t, err)
 	simulator.Commit()
 
@@ -96,7 +94,7 @@ func TestWithdrawActionRemovesMystFromBalanceAndEmitsWithdrawnEvent(t *testing.T
 	mystIdentity, err := test_utils.NewMystIdentity()
 	assert.NoError(t, err)
 
-	withdrawChan := make(chan *generated.IdentityBalancesWithdrawn, 10)
+	withdrawChan := make(chan *IdentityBalancesWithdrawn, 10)
 	subscription, err := identityBalances.BindForWithdrawEvents(withdrawChan)
 	assert.NoError(t, err)
 

@@ -6,20 +6,18 @@ import (
 	"time"
 
 	"github.com/mysteriumnetwork/payments/mysttoken"
-	generated2 "github.com/mysteriumnetwork/payments/mysttoken/generated"
-	"github.com/mysteriumnetwork/payments/promises/generated"
 	"github.com/mysteriumnetwork/payments/test_utils"
 	"github.com/stretchr/testify/assert"
 )
 
 var abiList, _ = test_utils.ParseAbis(test_utils.AbiMap{
 	"MystToken": {
-		generated2.MystTokenABI,
-		generated2.MystTokenBin,
+		mysttoken.MystTokenABI,
+		mysttoken.MystTokenBin,
 	},
 	"IdentityPromises": {
-		generated.IdentityPromisesABI,
-		generated.IdentityPromisesBin,
+		IdentityPromisesABI,
+		IdentityPromisesBin,
 	},
 })
 
@@ -37,7 +35,7 @@ func TestPromiseClearingEmitsClearedEvent(t *testing.T) {
 	assert.NoError(t, err)
 	backend.Commit()
 
-	events := make(chan *generated.IdentityPromisesPromiseCleared, 1)
+	events := make(chan *IdentityPromisesPromiseCleared, 1)
 	sub, err := clearing.BindForEvents(events)
 	assert.NoError(t, err)
 
