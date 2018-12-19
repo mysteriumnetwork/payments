@@ -22,15 +22,15 @@ func main() {
 	checkError(err)
 	<-syncCompleted
 
-	contract, err := promises.NewIdentityPromisesCaller(common.HexToAddress(*paymentsContract), client)
+	contractCaller, err := promises.NewIdentityPromisesCaller(common.HexToAddress(*paymentsContract), client)
 	checkError(err)
 
-	paymentsSession := promises.IdentityPromisesCallerSession{
-		Contract: contract,
+	paymentsContract := promises.IdentityPromisesCallerSession{
+		Contract: contractCaller,
 		CallOpts: bind.CallOpts{},
 	}
 
-	registered, err := paymentsSession.IsRegistered(common.HexToAddress(*identity))
+	registered, err := paymentsContract.IsRegistered(common.HexToAddress(*identity))
 	checkError(err)
 	fmt.Println("Identity: ", *identity, "registration status: ", registered)
 }

@@ -50,11 +50,11 @@ func mintToken() (err error) {
 	}
 	fmt.Println("Your balance is:", balance.String(), "wei")
 
-	erc20token, err := mysttoken.NewMystTokenTransactor(common.HexToAddress(*erc20contract), client)
+	mystToken, err := mysttoken.NewMystTokenTransactor(common.HexToAddress(*erc20contract), client)
 	if err != nil {
 		return
 	}
-	tx, err := erc20token.Mint(transactor, common.HexToAddress(*whom), big.NewInt(*amount))
+	tx, err := mystToken.Mint(transactor, common.HexToAddress(*whom), big.NewInt(*amount))
 	fmt.Println("Tx id:", tx.Hash())
 	return err
 }
