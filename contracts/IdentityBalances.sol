@@ -43,7 +43,7 @@ contract IdentityBalances is ERC20Aware {
 
     function internalTransfer(address from, address to, uint256 amount) internal returns(uint256) {
         require(amount > 0);
-        uint256 minAvailable = Math.min256(balances[from],amount);
+        uint256 minAvailable = Math.min(balances[from],amount);
         balances[from] = balances[from] - minAvailable;
         balances[to] = balances[to] + minAvailable;
         return minAvailable;

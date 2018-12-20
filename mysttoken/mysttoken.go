@@ -15,12 +15,12 @@ type MystERC20 struct {
 }
 
 func DeployMystERC20(owner *bind.TransactOpts, amount int64, backend bind.ContractBackend) (*MystERC20, error) {
-	address, _, mintableToken, err := DeployMintableToken(owner, backend)
+	address, _, mintableToken, err := DeployMystToken(owner, backend)
 	if err != nil {
 		return nil, err
 	}
 
-	mintableTokenSession := MintableTokenSession{
+	mintableTokenSession := MystTokenSession{
 		TransactOpts: *owner,
 		CallOpts:     bind.CallOpts{},
 		Contract:     mintableToken,
