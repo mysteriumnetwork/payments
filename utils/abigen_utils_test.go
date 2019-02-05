@@ -31,7 +31,7 @@ var (
 const TestUtilsContractABI = "[{\"constant\":true,\"inputs\":[{\"name\":\"param\",\"type\":\"bytes32\"}],\"name\":\"GiveMeData\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"},{\"name\":\"\",\"type\":\"uint8\"},{\"name\":\"\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}]"
 
 // TestUtilsContractBin is the compiled bytecode used for deploying new contracts.
-const TestUtilsContractBin = `0x608060405234801561001057600080fd5b50610111806100206000396000f300608060405260043610603e5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416635aaa775e81146043575b600080fd5b348015604e57600080fd5b5060586004356091565b6040805173ffffffffffffffffffffffffffffffffffffffff909416845260ff9283166020850152911682820152519081900360600190f35b6000806000609d8460aa565b9250925092509193909250565b907f0100000000000000000000000000000000000000000000000000000000000000600a83901a810281900491600b84901a820291909104905600a165627a7a72305820a7f9663a7c161da55d464d8854af862c7fe9201e52dee860357cd451b74080fc0029`
+const TestUtilsContractBin = `0x608060405234801561001057600080fd5b50610122806100206000396000f3fe608060405260043610603e5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416635aaa775e81146043575b600080fd5b348015604e57600080fd5b50606960048036036020811015606357600080fd5b503560a2565b6040805173ffffffffffffffffffffffffffffffffffffffff909416845260ff9283166020850152911682820152519081900360600190f35b600080600060ae8460bb565b9250925092509193909250565b907f0100000000000000000000000000000000000000000000000000000000000000600a83901a810281900491600b84901a8202919091049056fea165627a7a723058207d90fdfd4ffe3218c3196c562ee638703fc162a72b83ca15d261af76f3b0a0850029`
 
 // DeployTestUtilsContract deploys a new Ethereum contract, binding an instance of TestUtilsContract to it.
 func DeployTestUtilsContract(auth *bind.TransactOpts, backend bind.ContractBackend) (common.Address, *types.Transaction, *TestUtilsContract, error) {
@@ -190,7 +190,7 @@ func (_TestUtilsContract *TestUtilsContractTransactorRaw) Transact(opts *bind.Tr
 
 // GiveMeData is a free data retrieval call binding the contract method 0x5aaa775e.
 //
-// Solidity: function GiveMeData(param bytes32) constant returns(address, uint8, uint8)
+// Solidity: function GiveMeData(bytes32 param) constant returns(address, uint8, uint8)
 func (_TestUtilsContract *TestUtilsContractCaller) GiveMeData(opts *bind.CallOpts, param [32]byte) (common.Address, uint8, uint8, error) {
 	var (
 		ret0 = new(common.Address)
@@ -208,14 +208,14 @@ func (_TestUtilsContract *TestUtilsContractCaller) GiveMeData(opts *bind.CallOpt
 
 // GiveMeData is a free data retrieval call binding the contract method 0x5aaa775e.
 //
-// Solidity: function GiveMeData(param bytes32) constant returns(address, uint8, uint8)
+// Solidity: function GiveMeData(bytes32 param) constant returns(address, uint8, uint8)
 func (_TestUtilsContract *TestUtilsContractSession) GiveMeData(param [32]byte) (common.Address, uint8, uint8, error) {
 	return _TestUtilsContract.Contract.GiveMeData(&_TestUtilsContract.CallOpts, param)
 }
 
 // GiveMeData is a free data retrieval call binding the contract method 0x5aaa775e.
 //
-// Solidity: function GiveMeData(param bytes32) constant returns(address, uint8, uint8)
+// Solidity: function GiveMeData(bytes32 param) constant returns(address, uint8, uint8)
 func (_TestUtilsContract *TestUtilsContractCallerSession) GiveMeData(param [32]byte) (common.Address, uint8, uint8, error) {
 	return _TestUtilsContract.Contract.GiveMeData(&_TestUtilsContract.CallOpts, param)
 }
@@ -224,7 +224,7 @@ func (_TestUtilsContract *TestUtilsContractCallerSession) GiveMeData(param [32]b
 const UtilsABI = "[]"
 
 // UtilsBin is the compiled bytecode used for deploying new contracts.
-const UtilsBin = `0x604c602c600b82828239805160001a60731460008114601c57601e565bfe5b5030600052607381538281f30073000000000000000000000000000000000000000030146080604052600080fd00a165627a7a72305820c232048537555b7e051e77aa2a4d096e5c271d87135a1f904651e9c48b5f6bbf0029`
+const UtilsBin = `0x604c602c600b82828239805160001a60731460008114601c57601e565bfe5b5030600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea165627a7a72305820c70d71ccb7600d934d27e45e141f5c4cf9a145c01b90acfbd06ed4f2c264877a0029`
 
 // DeployUtils deploys a new Ethereum contract, binding an instance of Utils to it.
 func DeployUtils(auth *bind.TransactOpts, backend bind.ContractBackend) (common.Address, *types.Transaction, *Utils, error) {
