@@ -74,8 +74,8 @@ func (pc *PromiseClearing) ClearReceivedPromise(promise *ReceivedPromise) error 
 	_, err = pc.ClearPromise(
 		packedAddressAndSigns,
 		extraDataHash,
-		big.NewInt(promise.SeqNo),
-		big.NewInt(promise.Amount),
+		big.NewInt(0).SetUint64(promise.SeqNo),
+		big.NewInt(0).SetUint64(promise.Amount),
 		issuerSig.R,
 		issuerSig.S,
 		receiverSig.R,

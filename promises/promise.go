@@ -27,8 +27,8 @@ var _ ExtraData = EmptyExtra{}
 type Promise struct {
 	Extra    ExtraData
 	Receiver common.Address
-	SeqNo    int64
-	Amount   int64
+	SeqNo    uint64
+	Amount   uint64
 }
 
 const issuerPrefix = "Issuer prefix:"
@@ -37,8 +37,8 @@ func (p *Promise) Bytes() []byte {
 	slices := [][]byte{
 		p.Extra.Hash(),
 		p.Receiver.Bytes(),
-		abi.U256(big.NewInt(p.SeqNo)),
-		abi.U256(big.NewInt(p.Amount)),
+		abi.U256(big.NewInt(0).SetUint64(p.SeqNo)),
+		abi.U256(big.NewInt(0).SetUint64(p.Amount)),
 	}
 	var res []byte
 	for _, slice := range slices {
