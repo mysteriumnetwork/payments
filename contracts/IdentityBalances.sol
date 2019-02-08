@@ -1,10 +1,10 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.5.0;
 
 import "./ERC20Aware.sol";
 import "./deps/OpenZeppelin/contracts/math/Math.sol";
 
 
-contract IdentityBalances is ERC20Aware {
+contract IdentityBalances is ERC20AwareBalance {
     string constant WITHDRAW_PREFIX = "Withdraw request:";
 
     event ToppedUp(address indexed identity, uint256 amount, uint256 totalBalance);
@@ -12,7 +12,7 @@ contract IdentityBalances is ERC20Aware {
 
     mapping(address => uint256) public balances;
 
-    constructor(address tokenAddress) public ERC20Aware(tokenAddress) {
+    constructor(address tokenAddress) public ERC20AwareBalance(tokenAddress) {
 
     }
 
@@ -20,7 +20,7 @@ contract IdentityBalances is ERC20Aware {
         require(amount > 0);
 
         balances[identity] += amount;
-        require(ERC20Token.transferFrom(msg.sender, this, amount));
+        require(ERC20Token.transferFrom(msg.sender, address(this), amount));
 
         emit ToppedUp(identity, amount, balances[identity]);
         return true;
@@ -30,7 +30,7 @@ contract IdentityBalances is ERC20Aware {
         bytes memory p = abi.encodePacked(WITHDRAW_PREFIX, amount);
         address identity = ecrecover(keccak256(p), v, r, s);
 
-        require(identity > 0);
+        require(identity != address(0));
         require(amount > 0);
         require(balances[identity] >= amount);
 

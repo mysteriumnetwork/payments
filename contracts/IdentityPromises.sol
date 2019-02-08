@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.5.0;
 
 import "./IdentityRegistry.sol";
 import "./IdentityBalances.sol";
@@ -25,8 +25,8 @@ contract IdentityPromises is IdentityRegistry , IdentityBalances {
         address sender = ecrecover(promiseHash, sender_V , sender_R, sender_S);
         address recoveredReceiver = ecrecover(keccak256(abi.encodePacked(RECEIVER_PREFIX, promiseHash , sender)), receiver_V , receiver_R, receiver_S);
 
-        require(sender > 0);
-        require(recoveredReceiver > 0);
+        require(sender != address(0));
+        require(recoveredReceiver != address(0));
         require(recoveredReceiver == receiver);
         require(isRegistered(sender));
         require(isRegistered(receiver));
