@@ -1,0 +1,17 @@
+{
+  "name": "myst-registration",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "erc820a": "0.0.26",
+    "ganache-cli": "^6.3.0",
+    "openzeppelin-solidity": "^2.0.0",
+    "truffle": "^4.1.15"
+  }
+}
