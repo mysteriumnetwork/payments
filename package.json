@@ -4,14 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "truffle compile",
+    "test": "truffle test",
+    "migrate": "truffle migrate"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "erc820a": "0.0.26",
     "ganache-cli": "^6.3.0",
-    "openzeppelin-solidity": "^2.0.0",
-    "truffle": "^4.1.15"
+    "openzeppelin-solidity": "^2.1.2",
+    "solc": "^0.5.4",
+    "truffle": "^5.0.5"
   }
 }
