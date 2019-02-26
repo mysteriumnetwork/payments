@@ -15,7 +15,7 @@ contract ERC777ERC20BaseToken is IERC20, ERC777BaseToken {
 
     mapping(address => mapping(address => uint256)) internal mAllowed;
 
-    constructor(address _defaultOperator) internal ERC777BaseToken(_defaultOperator) {
+    constructor() internal ERC777BaseToken() {
         mErc20compatible = true;
         setInterfaceImplementation("ERC20Token", address(this));
     }

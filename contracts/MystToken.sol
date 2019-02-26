@@ -11,16 +11,11 @@ contract MystToken is ERC777ERC20BaseToken, Ownable {
 	address private mBurnOperator;
 	
 	// NOTE: IdentityRegistry should be set as default operator.
-	constructor(
-        address _defaultOperator,
-        address _burnOperator
-    ) public ERC777ERC20BaseToken(_defaultOperator) {
+	constructor() public ERC777ERC20BaseToken() {
     	mName = "Myst Credit";
         mSymbol = "MYSTC";
         mGranularity = 1;
         mTotalSupply = 0;
-
-        mBurnOperator = _burnOperator;
     }
 
     function mint(address _tokenHolder, uint256 _amount, bytes memory _operatorData) public onlyOwner {

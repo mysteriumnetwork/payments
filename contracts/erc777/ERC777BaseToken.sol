@@ -30,9 +30,7 @@ contract ERC777BaseToken is ERC777Token, ERC820aClient {
     /* -- Constructor -- */
     //
     /// @notice Constructor to create a ReferenceToken
-    constructor(address _defaultOperator) internal {
-        mDefaultOperators.push(_defaultOperator);
-        mIsDefaultOperator[_defaultOperator] = true;
+    constructor() internal {
         setInterfaceImplementation("ERC777Token", address(this));
     }
 
