@@ -2,6 +2,17 @@
 
 
 [[projects]]
+  digest = "1:c731e64b230aaf9b4693baa56c3337921189b802652ee3401cd4aedc1a2d2d16"
+  name = "github.com/allegro/bigcache"
+  packages = [
+    ".",
+    "queue",
+  ]
+  pruneopts = "T"
+  revision = "84a0ff3f153cbd7e280a19029a864bb04b504e62"
+  version = "v1.2.0"
+
+[[projects]]
   branch = "master"
   digest = "1:fbb8c82b4d5bc426c256238efe545c5ef3ac55ade99264d19148da0548ad5101"
   name = "github.com/aristanetworks/goarista"
@@ -50,7 +61,7 @@
   revision = "0bce6a6887123b67a60366d2c9fe2dfb74289d2e"
 
 [[projects]]
-  digest = "1:d670c508dc01984c721d0d968936412e3edcd8ca58caf82fcfd0df9044013a0f"
+  digest = "1:1530d06761f464b62ab3dfc2fa5b16303901d87ff219100a1447ba216d2e52be"
   name = "github.com/ethereum/go-ethereum"
   packages = [
     ".",
@@ -64,6 +75,7 @@
     "common/hexutil",
     "common/math",
     "common/mclock",
+    "common/prque",
     "consensus",
     "consensus/ethash",
     "consensus/misc",
@@ -78,7 +90,6 @@
     "crypto/bn256/cloudflare",
     "crypto/bn256/google",
     "crypto/secp256k1",
-    "crypto/sha3",
     "eth/filters",
     "ethclient",
     "ethdb",
@@ -92,8 +103,8 @@
     "trie",
   ]
   pruneopts = "T"
-  revision = "316fc7ecfc10d06603f1358c1f4c1020ec36dd2a"
-  version = "v1.8.14"
+  revision = "c942700427557e3ff6de3aaf6b916e2f056c1ec2"
+  version = "v1.8.23"
 
 [[projects]]
   digest = "1:c4a2528ccbcabf90f9f3c464a5fc9e302d592861bbfd0b7135a7de8a943d0406"
@@ -201,15 +212,16 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ef4a3af686c4b47f6170b98dfe8962ee138ed3a0b5e309d1567061dd3250a8e7"
+  digest = "1:214dc62bc053a6f4f7e4cb6c6393920fcc213c80994a7725fcb35974992d7ccd"
   name = "golang.org/x/crypto"
   packages = [
     "pbkdf2",
     "ripemd160",
     "scrypt",
+    "sha3",
   ]
   pruneopts = "T"
-  revision = "1a580b3eff7814fc9b40602fd35256c63b50f491"
+  revision = "7f87c0fbb88b590338857bcb720678c2583d4dea"
 
 [[projects]]
   branch = "master"
@@ -229,18 +241,6 @@
   ]
   pruneopts = "T"
   revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
-
-[[projects]]
-  branch = "master"
-  digest = "1:76a2e6cebe399f56b8313b0f12d7a5b3a5f8248107ac8f5969e485ea53f5adf4"
-  name = "golang.org/x/tools"
-  packages = [
-    "go/ast/astutil",
-    "imports",
-    "internal/fastwalk",
-  ]
-  pruneopts = "T"
-  revision = "28aef64757f4d432485ab970b094e1af8b301e84"
 
 [[projects]]
   digest = "1:15eb06ede732b6de69b8bfa51b29960b352934a602f3a6470c2b04cda9ca6ad4"
@@ -265,14 +265,6 @@
   pruneopts = "T"
   revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
   version = "v1.7.0"
-
-[[projects]]
-  branch = "v2"
-  digest = "1:dae137be246befa42ce4b48c0feff2c5796b8a5027139a283f31a21173744410"
-  name = "gopkg.in/karalabe/cookiejar.v2"
-  packages = ["collections/prque"]
-  pruneopts = "T"
-  revision = "8dcd6a7f4951f6ff3ee9cbb919a06d8925822e57"
 
 [[projects]]
   digest = "1:b168836ecd85a2d138391dbc464d2442ea9400c29cc0636f2c6056b996692e29"
