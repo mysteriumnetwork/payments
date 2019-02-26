@@ -15,6 +15,7 @@
     "ganache-cli": "^6.3.0",
     "openzeppelin-solidity": "^2.1.2",
     "solc": "^0.5.4",
-    "truffle": "^5.0.5"
+    "truffle": "^5.0.5",
+    "web3": "^1.0.0-beta.46"
   }
 }
