@@ -1,3 +1,5 @@
+> This repo is **deprecated**. All current development related to payments is happening here: https://github.com/mysteriumnetwork/payments-smart-contracts
+
 # Mysterium network smart contracts for payments
 [![Build Status](https://travis-ci.com/mysteriumnetwork/payments.svg?token=t9FwiYsxwDxkJWnSMpfr&branch=master)](https://travis-ci.com/mysteriumnetwork/payments)
 
