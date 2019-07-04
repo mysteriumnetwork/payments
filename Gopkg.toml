@@ -24,11 +24,6 @@
 #   go-tests = true
 #   unused-packages = true
 
-
-[[constraint]]
-  name = "github.com/cheggaaa/pb"
-  version = "2.0.6"
-
 [[constraint]]
   name = "github.com/ethereum/go-ethereum"
   version = "=1.8.23"
@@ -39,5 +34,9 @@
 
 [prune]
   go-tests = true
-  #unused-packages = true
+  unused-packages = true
+
+  [[prune.project]]
+    name = "github.com/ethereum/go-ethereum"
+    unused-packages = false
 

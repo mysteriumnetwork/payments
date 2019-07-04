@@ -2,45 +2,37 @@
 
 
 [[projects]]
-  digest = "1:c731e64b230aaf9b4693baa56c3337921189b802652ee3401cd4aedc1a2d2d16"
+  digest = "1:f96ba6ecca7ba87b1dddd70ae38cfc4ce5ea844f58d1f728e121d2e29cdfb8a2"
   name = "github.com/allegro/bigcache"
   packages = [
     ".",
     "queue",
   ]
-  pruneopts = "T"
+  pruneopts = "UT"
   revision = "84a0ff3f153cbd7e280a19029a864bb04b504e62"
   version = "v1.2.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:fbb8c82b4d5bc426c256238efe545c5ef3ac55ade99264d19148da0548ad5101"
+  digest = "1:7d191fd0c54ff370eaf6116a14dafe2a328df487baea280699f597aae858d00d"
   name = "github.com/aristanetworks/goarista"
   packages = ["monotime"]
-  pruneopts = "T"
+  pruneopts = "UT"
   revision = "b9cf994f4e477e9851834c5a9f05dd96df7439d8"
 
 [[projects]]
   branch = "master"
-  digest = "1:02768f57a24efa1a38b401788e9624c8c226bc2547b6611b2ffd4232284b6405"
+  digest = "1:1f119122026d2fc746c30ff1fc564c6074b2f0e4449d4230146a3deec986bf43"
   name = "github.com/btcsuite/btcd"
   packages = ["btcec"]
-  pruneopts = "T"
+  pruneopts = "UT"
   revision = "1432d294a5b055c297457c25434efbf13384cc46"
 
 [[projects]]
-  digest = "1:495f9b42208e426f00d10b5bdaf4f7af2d0f56c20483136caca6ef5e2531e801"
-  name = "github.com/cheggaaa/pb"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "c112833d014c77e8bde723fd0158e3156951639f"
-  version = "v2.0.6"
-
-[[projects]]
-  digest = "1:52f195ad0e20a92d8604c1ba3cd246c61644c03eaa454b5acd41be89841e0d10"
+  digest = "1:a2c1d0e43bd3baaa071d1b9ed72c27d78169b2b269f71c105ac4ba34b1be4a39"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
-  pruneopts = "T"
+  pruneopts = "UT"
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
   version = "v1.1.0"
 
@@ -48,17 +40,9 @@
   digest = "1:c166378e8ab0f794f293dfb941d250dd70b035b05dec58879f717621d0fe1714"
   name = "github.com/deckarep/golang-set"
   packages = ["."]
-  pruneopts = "T"
+  pruneopts = "UT"
   revision = "1d4478f51bed434f1dadf96dcd9b43aabac66795"
   version = "v1.7"
-
-[[projects]]
-  branch = "master"
-  digest = "1:67d0b50be0549e610017cb91e0b0b745ec0cad7c613bc8e18ff2d1c1fc8825a7"
-  name = "github.com/edsrzf/mmap-go"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "0bce6a6887123b67a60366d2c9fe2dfb74289d2e"
 
 [[projects]]
   digest = "1:1530d06761f464b62ab3dfc2fa5b16303901d87ff219100a1447ba216d2e52be"
@@ -68,38 +52,21 @@
     "accounts",
     "accounts/abi",
     "accounts/abi/bind",
-    "accounts/abi/bind/backends",
     "accounts/keystore",
     "common",
-    "common/bitutil",
     "common/hexutil",
     "common/math",
     "common/mclock",
     "common/prque",
-    "consensus",
-    "consensus/ethash",
-    "consensus/misc",
-    "core",
-    "core/bloombits",
-    "core/rawdb",
-    "core/state",
     "core/types",
-    "core/vm",
     "crypto",
-    "crypto/bn256",
-    "crypto/bn256/cloudflare",
-    "crypto/bn256/google",
     "crypto/secp256k1",
-    "eth/filters",
-    "ethclient",
     "ethdb",
     "event",
     "log",
     "metrics",
-    "p2p/netutil",
     "params",
     "rlp",
-    "rpc",
     "trie",
   ]
   pruneopts = "T"
@@ -110,88 +77,61 @@
   digest = "1:c4a2528ccbcabf90f9f3c464a5fc9e302d592861bbfd0b7135a7de8a943d0406"
   name = "github.com/go-stack/stack"
   packages = ["."]
-  pruneopts = "T"
+  pruneopts = "UT"
   revision = "259ab82a6cad3992b4e21ff5cac294ccb06474bc"
   version = "v1.7.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:6027b20c168728321bd99ad01f35118eded457b01c03e647a84833ab331f2f5b"
+  digest = "1:4a0c6bb4805508a6287675fac876be2ac1182539ca8a32468d8128882e9d5009"
   name = "github.com/golang/snappy"
   packages = ["."]
-  pruneopts = "T"
+  pruneopts = "UT"
   revision = "2e65f85255dbc3072edf28d6b5b8efc472979f5a"
-
-[[projects]]
-  branch = "master"
-  digest = "1:cf296baa185baae04a9a7004efee8511d08e2f5f51d4cbe5375da89722d681db"
-  name = "github.com/hashicorp/golang-lru"
-  packages = [
-    ".",
-    "simplelru",
-  ]
-  pruneopts = "T"
-  revision = "0fb14efe8c47ae851c0034ed7a448854d3d34cf3"
-
-[[projects]]
-  digest = "1:b168836ecd85a2d138391dbc464d2442ea9400c29cc0636f2c6056b996692e29"
-  name = "github.com/mattn/go-colorable"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
-  version = "v0.0.9"
-
-[[projects]]
-  digest = "1:d4d17353dbd05cb52a2a52b7fe1771883b682806f68db442b436294926bbfafb"
-  name = "github.com/mattn/go-isatty"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
-  version = "v0.0.3"
 
 [[projects]]
   digest = "1:361de06aa7ae272616cbe71c3994a654cc6316324e30998e650f7765b20c5b33"
   name = "github.com/pborman/uuid"
   packages = ["."]
-  pruneopts = "T"
+  pruneopts = "UT"
   revision = "e790cca94e6cc75c7064b1332e63811d4aae1a53"
   version = "v1.1"
 
 [[projects]]
-  digest = "1:22aa691fe0213cb5c07d103f9effebcb7ad04bee45a0ce5fe5369d0ca2ec3a1f"
+  digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
+
+[[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
-  pruneopts = "T"
+  pruneopts = "UT"
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:9787d2d3220cbfd444596afd03ab0abcf391df169b789fbe3eae27fa2e426cf6"
+  digest = "1:31d83d1b1c288073c91abadee3caec87de2a1fb5dbe589039264a802e67a26b8"
   name = "github.com/rjeczalik/notify"
   packages = ["."]
-  pruneopts = "T"
+  pruneopts = "UT"
   revision = "69d839f37b13a8cb7a78366f7633a4071cb43be7"
   version = "v0.9.2"
 
 [[projects]]
-  digest = "1:1401e01c949948034a12d9e8723c46ce6b40d9c39ec097fb30bd9df73b9dd7d4"
-  name = "github.com/rs/cors"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "feef513b9575b32f84bafa580aad89b011259019"
-  version = "v1.3.0"
-
-[[projects]]
-  digest = "1:8f39978e4fb2a11d43cc954f2ab458cb38995d4c1557b6d3a7c8cafe0ec2277c"
+  digest = "1:f85e109eda8f6080877185d1c39e98dd8795e1780c08beca28304b87fd855a1c"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
-  pruneopts = "T"
+  pruneopts = "UT"
   revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
   version = "v1.2.1"
 
 [[projects]]
   branch = "master"
-  digest = "1:c5f0c336276111385d59da17b4ecdf178ffb7268a2e8b11a7b3c509e6a8d9a2c"
+  digest = "1:b18d044774f6ba5930c3fbf9958b2a9256c21f31dc50ecfa0622fe2a46608974"
   name = "github.com/syndtr/goleveldb"
   packages = [
     "leveldb",
@@ -207,114 +147,41 @@
     "leveldb/table",
     "leveldb/util",
   ]
-  pruneopts = "T"
+  pruneopts = "UT"
   revision = "5d6fca44a948d2be89a9702de7717f0168403d3d"
 
 [[projects]]
   branch = "master"
-  digest = "1:214dc62bc053a6f4f7e4cb6c6393920fcc213c80994a7725fcb35974992d7ccd"
+  digest = "1:8b4dcdf3822c1407fd4546d05d3883f825834171b4e974ec9df0a897a16e2a56"
   name = "golang.org/x/crypto"
   packages = [
     "pbkdf2",
-    "ripemd160",
     "scrypt",
     "sha3",
   ]
-  pruneopts = "T"
+  pruneopts = "UT"
   revision = "7f87c0fbb88b590338857bcb720678c2583d4dea"
 
 [[projects]]
   branch = "master"
-  digest = "1:a4c08315d0756c19f20bc4eb5c2edd835da473a51644d7ff7ec0d596809b0a14"
-  name = "golang.org/x/net"
-  packages = ["websocket"]
-  pruneopts = "T"
-  revision = "57065200b4b034a1c8ad54ff77069408c2218ae6"
-
-[[projects]]
-  branch = "master"
-  digest = "1:932a068cd79b552e256ecae157d5bd8987088138f5079fd70cff5128d7cc42d5"
+  digest = "1:38d86cb18bfc409c9f5667962e89395b2a01f1dfc0a1df01b5706f329e06d093"
   name = "golang.org/x/sys"
-  packages = [
-    "cpu",
-    "unix",
-  ]
-  pruneopts = "T"
+  packages = ["unix"]
+  pruneopts = "UT"
   revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
-
-[[projects]]
-  digest = "1:15eb06ede732b6de69b8bfa51b29960b352934a602f3a6470c2b04cda9ca6ad4"
-  name = "gopkg.in/VividCortex/ewma.v1"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "b24eb346a94c3ba12c1da1e564dbac1b498a77ce"
-  version = "v1.1.1"
-
-[[projects]]
-  digest = "1:495f9b42208e426f00d10b5bdaf4f7af2d0f56c20483136caca6ef5e2531e801"
-  name = "gopkg.in/cheggaaa/pb.v2"
-  packages = ["termutil"]
-  pruneopts = "T"
-  revision = "c112833d014c77e8bde723fd0158e3156951639f"
-  version = "v2.0.6"
-
-[[projects]]
-  digest = "1:865079840386857c809b72ce300be7580cb50d3d3129ce11bf9aa6ca2bc1934a"
-  name = "gopkg.in/fatih/color.v1"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
-  version = "v1.7.0"
-
-[[projects]]
-  digest = "1:b168836ecd85a2d138391dbc464d2442ea9400c29cc0636f2c6056b996692e29"
-  name = "gopkg.in/mattn/go-colorable.v0"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
-  version = "v0.0.9"
-
-[[projects]]
-  digest = "1:d4d17353dbd05cb52a2a52b7fe1771883b682806f68db442b436294926bbfafb"
-  name = "gopkg.in/mattn/go-isatty.v0"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
-  version = "v0.0.3"
-
-[[projects]]
-  digest = "1:e2d1d410fb367567c2b53ed9e2d719d3c1f0891397bb2fa49afd747cfbf1e8e4"
-  name = "gopkg.in/mattn/go-runewidth.v0"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "9e777a8366cce605130a531d2cd6363d07ad7317"
-  version = "v0.0.2"
-
-[[projects]]
-  branch = "v2"
-  digest = "1:3d3f9391ab615be8655ae0d686a1564f3fec413979bb1aaf018bac1ec1bb1cc7"
-  name = "gopkg.in/natefinch/npipe.v2"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "c1b8fa8bdccecb0b8db834ee0b92fdbcfa606dd6"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/cheggaaa/pb",
     "github.com/ethereum/go-ethereum",
-    "github.com/ethereum/go-ethereum/accounts",
     "github.com/ethereum/go-ethereum/accounts/abi",
     "github.com/ethereum/go-ethereum/accounts/abi/bind",
-    "github.com/ethereum/go-ethereum/accounts/abi/bind/backends",
-    "github.com/ethereum/go-ethereum/accounts/keystore",
     "github.com/ethereum/go-ethereum/common",
-    "github.com/ethereum/go-ethereum/core",
     "github.com/ethereum/go-ethereum/core/types",
     "github.com/ethereum/go-ethereum/crypto",
-    "github.com/ethereum/go-ethereum/ethclient",
     "github.com/ethereum/go-ethereum/event",
+    "github.com/pkg/errors",
     "github.com/stretchr/testify/assert",
   ]
   solver-name = "gps-cdcl"
