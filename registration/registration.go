@@ -34,7 +34,6 @@ type Request struct {
 	Beneficiary     string
 	Signature       string
 	RegistryAddress string
-	Identity        string
 }
 
 // GetLoanAmount retursn a big int representation for the loan amount
