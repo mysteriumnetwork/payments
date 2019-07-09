@@ -23,6 +23,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestDeriveCreate2Address(t *testing.T) {
+	salt := "000000000000000000000000265B4A774A5CE7A975CA8401A43440EFEE58EB15"
+	registry := "0x6bb8345c9d996be4fab652f4a15813303d630b66"
+	implementation := "0x99a73d53959a8fcbe6e67631d39de3cffd3ac9a2"
+	expectedChannelAddress := "0x777516c36ceef01ff12f954f7b4a0ea4be4abc0a"
+
+	_, err := deriveCreate2Address("", "", "")
+	assert.EqualError(t, err, "msgSender and implementation have to be hex addresses")
+
+	channelAddress, err := deriveCreate2Address(salt, registry, implementation)
+	assert.Equal(t, expectedChannelAddress, channelAddress)
+	assert.Nil(t, err)
+}
+
 func TestGenerateChannelAddress(t *testing.T) {
 	identity := "0x265B4A774A5CE7A975CA8401A43440EFEE58EB15"
 	registry := "0x6bb8345c9d996be4fab652f4a15813303d630b66"
@@ -30,7 +44,7 @@ func TestGenerateChannelAddress(t *testing.T) {
 	expectedChannelAddress := "0x777516c36ceef01ff12f954f7b4a0ea4be4abc0a"
 
 	_, err := GenerateChannelAddress("", "", "")
-	assert.EqualError(t, err, "Given identity, registry and implementation params have to be hex addresses")
+	assert.EqualError(t, err, "Given identity, registry and channelImplementation params have to be hex addresses")
 
 	channelAddress, err := GenerateChannelAddress(identity, registry, channelImplementation)
 	assert.Equal(t, expectedChannelAddress, channelAddress)
