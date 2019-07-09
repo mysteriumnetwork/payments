@@ -23,8 +23,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-//
-
 func TestDeriveCreate2Address(t *testing.T) {
 	salt := "000000000000000000000000265B4A774A5CE7A975CA8401A43440EFEE58EB15"
 	registry := "0x6bb8345c9d996be4fab652f4a15813303d630b66"
