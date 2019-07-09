@@ -45,19 +45,44 @@ func GetProxyCode(destinationAddress string) ([]byte, error) {
 	return hex.DecodeString("3d602d80600a3d3981f3363d3d373d3d3d363d73" + destinationAddress + "5af43d82803e903d91602b57fd5bf3")
 }
 
-// GenerateChannelAddress generate channel address from given identity hash
 // keccak("0xff++msg.sender++salt++keccak(byteCode)")
-func GenerateChannelAddress(identity string, registry string, implementation string) (address string, err error) {
-	if !isHexAddress(identity) || !isHexAddress(registry) || !isHexAddress(implementation) {
-		return "", errors.New("Given identity, registry and implementation params have to be hex addresses")
+func deriveCreate2Address(salt string, msgSender string, implementation string) (address string, err error) {
+	if !isHexAddress(msgSender) || !isHexAddress(implementation) {
+		return "", errors.New("msgSender and implementation have to be hex addresses")
 	}
 
-	msgSender := ensureNoPrefix(registry)
-	salt, _ := toBytes32(identity)
 	bytecode, _ := GetProxyCode(ensureNoPrefix(implementation))
 
-	input, _ := hex.DecodeString("ff" + msgSender + salt + common.Bytes2Hex(crypto.Keccak256(bytecode)))
+	input, _ := hex.DecodeString("ff" + ensureNoPrefix(msgSender) + salt + common.Bytes2Hex(crypto.Keccak256(bytecode)))
 	return "0x" + common.Bytes2Hex(crypto.Keccak256(input))[24:], nil
+}
+
+// GenerateChannelAddress generate channel address from given identity hash
+func GenerateChannelAddress(identity string, registry string, channelImplementation string) (address string, err error) {
+	if !isHexAddress(identity) || !isHexAddress(registry) || !isHexAddress(channelImplementation) {
+		return "", errors.New("Given identity, registry and channelImplementation params have to be hex addresses")
+	}
+
+	salt, err := toBytes32(identity)
+	if err != nil {
+		return "", err
+	}
+
+	return deriveCreate2Address(salt, registry, channelImplementation)
+}
+
+// GenerateAccountantAddress generate accountant address from given accountant operator address
+func GenerateAccountantAddress(operator string, registry string, accountantImplementation string) (address string, err error) {
+	if !isHexAddress(operator) || !isHexAddress(registry) || !isHexAddress(accountantImplementation) {
+		return "", errors.New("Given operator, registry and accountantImplementation params have to be hex addresses")
+	}
+
+	salt, err := toBytes32(operator)
+	if err != nil {
+		return "", err
+	}
+
+	return deriveCreate2Address(salt, registry, accountantImplementation)
 }
 
 // ReformatSignatureVForBC takes in the signature and modifies its last byte to correspond to the format required for SC
