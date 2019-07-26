@@ -48,7 +48,7 @@ func TestCreateSignature(t *testing.T) {
 	pk, err := getPrivKey()
 	assert.Nil(t, err)
 
-	signature, err := promise.CreateSignature(pk)
+	signature, err := promise.CreateSignature2(pk)
 	assert.Nil(t, err)
 
 	ReformatSignatureVForBC(signature)
