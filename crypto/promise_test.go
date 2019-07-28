@@ -12,17 +12,17 @@ import (
 )
 
 func getPrivKey() (*ecdsa.PrivateKey, error) {
-	privateKey := "4ce370439d91a8ebdad9d5210ce2e44e423ca4c29ca558024d9535874b4c9b0c"
+	privateKey := "dbabf174189c2243a45ad6cf42ab6edda35b7488e72dfd340ecf2207cda9ece6"
 	privateKeyBytes, _ := hex.DecodeString(privateKey)
 	return crypto.ToECDSA(privateKeyBytes)
 }
 
 func getPromise() Promise {
-	channelID := "0x9ED0b24549200F4a887126C44bC0a643c26F8253"
+	channelID := "0xb014B75485fE0771647AF208C95254Fc25e79fD3"
 	amount := uint64(10)
 	fee := uint64(0)
-	hashlock := "46b6ad53754e9f0cb132c24933fb82c62c43285991778582350ff598af9ad515"
-	signature := "61e563bca6e18e669b582599291bcc2352a86b3a76df525fb9b0bfaa883d3ee1737ad93feebcfa711f79fdf775244f5a94d151c91223d3a2ca16fff069292d451c"
+	hashlock := "9997bf5efa5c135d1f97b522858ce7b3b88091595409179b3b5a8d703d22f233"
+	signature := "d8692923462e081339ffd303ca50cbf43df74837aeabe220e3aff4912c6b333a69d2f48094bf58635a224daf5eb09aeb4b1913bb985ec8beca03cd6c957ad27e1b"
 
 	promise := Promise{
 		ChannelID: channelID,
@@ -37,7 +37,7 @@ func getPromise() Promise {
 
 func TestGetHash(t *testing.T) {
 	promise := getPromise()
-	expectedHash, _ := hex.DecodeString("fb19a309c101782b340eaeb5293b2517d30ba077c257de7c333a19658b4b91bd")
+	expectedHash, _ := hex.DecodeString("3596062bb6d147a8ccc8d3eef230bbd104750f0f289a47badb26bab6f4539170")
 	assert.Equal(t, expectedHash, promise.GetHash())
 }
 
@@ -57,13 +57,13 @@ func TestCreateSignature(t *testing.T) {
 
 func TestValidatePromise(t *testing.T) {
 	promise := getPromise()
-	expectedSigner := common.HexToAddress("0xbd908c8eda0ebc327c3a032d98ce541bb80a7d79")
+	expectedSigner := common.HexToAddress("0x5270e411ece9fc12d5ff1022d1ddb64397ca18e3")
 	assert.True(t, promise.ValidatePromise(expectedSigner))
 }
 
 func TestRecoverSigner(t *testing.T) {
 	promise := getPromise()
-	expectedSigner := common.HexToAddress("0xbd908c8eda0ebc327c3a032d98ce541bb80a7d79")
+	expectedSigner := common.HexToAddress("0x5270e411ece9fc12d5ff1022d1ddb64397ca18e3")
 	recoveredSigner, err := promise.RecoverSigner()
 	assert.Nil(t, err)
 	assert.Equal(t, expectedSigner, recoveredSigner)
