@@ -13,20 +13,20 @@ func getExchangeMessage() ExchangeMessage {
 		Promise:         getPromise(),
 		AgreementID:     uint64(1),
 		AgreementAmount: uint64(10),
-		Provider:        "0x4b7c32c57576894807ff388c903a9592dcf4239b",
-		Signature:       "c5da6209c8daa1314737c53dc68bc4505a2fc500e359f02a85d51fc0d46b826651009df0395d5d1101c39d3532ed8571629a58244a43083f9d420d122452f56e1c",
+		Provider:        "0x4d55a65fa8516487d7d33aaa3ebbdb08539f547d",
+		Signature:       "215aad021cc417f8b072eb574b3d22db41998fa5542b3bee5e05c64d6ae1afdc0560360c66a9cf9517367829dce5c68fd54b751a82de5c2c83e23bc8d94ae1dd1c",
 	}
 }
 
 func TestGetMessageHash(t *testing.T) {
 	message := getExchangeMessage()
-	expectedHash, _ := hex.DecodeString("3a6015813e24267493cc76944e4c55f73cba118165979d0273230601bdb957de")
+	expectedHash, _ := hex.DecodeString("f7e072ae6f9b72790997abfcf6f3b71e6d667b4ff0696ea2a1f794fb3c93c7f1")
 	assert.Equal(t, expectedHash, message.GetMessageHash())
 }
 
 func TestRecoverConsumerIdentity(t *testing.T) {
 	message := getExchangeMessage()
-	expectedSigner := common.HexToAddress("0x5270e411ece9fc12d5ff1022d1ddb64397ca18e3")
+	expectedSigner := common.HexToAddress("0x90a17343eab4d298d811c734a9572c1f494f487a")
 	recoveredSigner, err := message.RecoverConsumerIdentity()
 	assert.Nil(t, err)
 	assert.Equal(t, expectedSigner, recoveredSigner)
@@ -34,6 +34,6 @@ func TestRecoverConsumerIdentity(t *testing.T) {
 
 func TestValidateExchangeMessage(t *testing.T) {
 	message := getExchangeMessage()
-	expectedSigner := common.HexToAddress("0x5270e411ece9fc12d5ff1022d1ddb64397ca18e3")
+	expectedSigner := common.HexToAddress("0x90a17343eab4d298d811c734a9572c1f494f487a")
 	assert.True(t, message.ValidateExchangeMessage(expectedSigner))
 }
