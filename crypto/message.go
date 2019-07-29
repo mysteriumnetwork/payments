@@ -18,26 +18,54 @@
 package crypto
 
 import (
+	"encoding/hex"
 	"math/big"
 	"strings"
 
+	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
 // ExchangeMessage represent a promise exchange message
 type ExchangeMessage struct {
-	Promise         Promise
-	AgreementID     uint64
-	AgreementAmount uint64
-	Provider        string
-	Signature       string
+	Promise        Promise
+	AgreementID    uint64
+	AgreementTotal uint64
+	Provider       string
+	Signature      string
 }
 
-// GetAgreementAmount returns a big int representation for the loan amount
-func (m ExchangeMessage) GetAgreementAmount() *big.Int {
-	return big.NewInt(0).SetUint64(m.AgreementAmount)
+// CreateExchangeMessage creates new exchange message with it's promise
+func CreateExchangeMessage(invoice Invoice, promiseAmount uint64, channelID string, ks *keystore.KeyStore, signer common.Address) (ExchangeMessage, error) {
+	promise, err := CreatePromise(channelID, promiseAmount, invoice.Fee, invoice.Hashlock, ks, signer)
+	if err != nil {
+		return ExchangeMessage{}, err
+	}
+
+	message := ExchangeMessage{
+		Promise:        promise,
+		AgreementID:    invoice.AgreementID,
+		AgreementTotal: invoice.AgreementTotal,
+		Provider:       invoice.Provider,
+	}
+
+	signature, err := message.CreateSignature(ks, signer)
+	if err != nil {
+		return ExchangeMessage{}, err
+	}
+
+	ReformatSignatureVForBC(signature)
+	message.Signature = hex.EncodeToString(signature)
+
+	return message, nil
+}
+
+// GetAgreementTotal returns a big int representation for the agreement total amount
+func (m ExchangeMessage) GetAgreementTotal() *big.Int {
+	return big.NewInt(0).SetUint64(m.AgreementTotal)
 }
 
 // GetFee returns the big int representation for the promise settling transaction fee
@@ -57,7 +85,7 @@ func (m ExchangeMessage) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, m.Promise.GetHash()...)
 	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(m.AgreementID)), 32)...)
-	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(m.AgreementAmount)), 32)...)
+	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(m.AgreementTotal)), 32)...)
 	message = append(message, common.HexToAddress(m.Provider).Bytes()...)
 	return message
 }
@@ -65,6 +93,14 @@ func (m ExchangeMessage) GetMessage() []byte {
 // GetMessageHash returns a keccak of exchange message params
 func (m ExchangeMessage) GetMessageHash() []byte {
 	return crypto.Keccak256(m.GetMessage())
+}
+
+// CreateSignature signs promise using keystore
+func (m ExchangeMessage) CreateSignature(ks *keystore.KeyStore, signer common.Address) ([]byte, error) {
+	return ks.SignHash(
+		accounts.Account{Address: signer},
+		m.GetMessageHash(),
+	)
 }
 
 // RecoverConsumerIdentity recovers the identity from the given request

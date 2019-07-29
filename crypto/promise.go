@@ -18,7 +18,6 @@
 package crypto
 
 import (
-	"crypto/rand"
 	"encoding/hex"
 	"math/big"
 	"strings"
@@ -36,25 +35,18 @@ type Promise struct {
 	Amount    uint64
 	Fee       uint64
 	Hashlock  string
-	R         string
 	Signature string
 }
 
 // CreatePromise creates new promise
-func CreatePromise(channelID string, amount uint64, fee uint64, r []byte, ks *keystore.KeyStore, signer common.Address) (Promise, error) {
+func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string, ks *keystore.KeyStore, signer common.Address) (Promise, error) {
 	// TODO validate channelID, it have top be proper address, or request here address already
-
-	if r == nil {
-		r = make([]byte, 64)
-		rand.Read(r)
-	}
 
 	promise := Promise{
 		ChannelID: channelID,
 		Amount:    amount,
 		Fee:       fee,
-		Hashlock:  hex.EncodeToString(crypto.Keccak256(r)),
-		R:         hex.EncodeToString(r),
+		Hashlock:  hashlock,
 	}
 
 	signature, _ := promise.CreateSignature(ks, signer)

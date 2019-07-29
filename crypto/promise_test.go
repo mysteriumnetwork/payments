@@ -16,7 +16,7 @@ import (
 
 func TestGetHash(t *testing.T) {
 	promise := getPromise()
-	expectedHash, _ := hex.DecodeString("3c740a97b1ed8bb99ec2d865391367ba0e0b7107b7feed3b2e4993534adbc7ff")
+	expectedHash, _ := hex.DecodeString("8595953ff94b9c0d60c98448971b86dfb9bd83ec0d8a701d72363380fadf2f16")
 	assert.Equal(t, expectedHash, promise.GetHash())
 }
 
@@ -42,13 +42,13 @@ func TestCreateSignature(t *testing.T) {
 
 func TestValidatePromise(t *testing.T) {
 	promise := getPromise()
-	expectedSigner := common.HexToAddress("0x90a17343eab4d298d811c734a9572c1f494f487a")
+	expectedSigner := common.HexToAddress("0x0d71535454f4fc153e545c3fc7cfc412ad7782c8")
 	assert.True(t, promise.ValidatePromise(expectedSigner))
 }
 
 func TestRecoverSigner(t *testing.T) {
 	promise := getPromise()
-	expectedSigner := common.HexToAddress("0x90a17343eab4d298d811c734a9572c1f494f487a")
+	expectedSigner := common.HexToAddress("0x0d71535454f4fc153e545c3fc7cfc412ad7782c8")
 	recoveredSigner, err := promise.RecoverSigner()
 	assert.Nil(t, err)
 	assert.Equal(t, expectedSigner, recoveredSigner)
@@ -64,13 +64,11 @@ func TestCreatePromise(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	channelID, amount, fee, hashlock, signature := getParams()
-	r, _ := hex.DecodeString("d33f40690a6cc98e301d7d20a380d3b379372bba7cdac9801fd7752db77664ab")
+	channelID, amount, fee, hashlock, signature, _, _ := getParams()
 
-	promise, err := CreatePromise(channelID, amount, fee, r, ks, account.Address)
+	promise, err := CreatePromise(channelID, amount, fee, hashlock, ks, account.Address)
 	assert.Nil(t, err)
 	assert.Equal(t, signature, promise.Signature)
-	assert.Equal(t, hashlock, promise.Hashlock)
 }
 
 const (
@@ -93,14 +91,14 @@ func tmpKeyStore(t *testing.T, encrypted bool) (string, *keystore.KeyStore) {
 }
 
 func getPrivKey() *ecdsa.PrivateKey {
-	privateKey := "acad3cafd077d07f9c8d643bca3fa6a435c5569ed3acae3418890a0ee0faebe3"
+	privateKey := "d112a9bc923053f9dc2e91c49d109458eba7f5620f827ae07193cc58018e27e9"
 	privateKeyBytes, _ := hex.DecodeString(privateKey)
 	pk, _ := crypto.ToECDSA(privateKeyBytes)
 	return pk
 }
 
 func getPromise() Promise {
-	channelID, amount, fee, hashlock, signature := getParams()
+	channelID, amount, fee, hashlock, signature, _, _ := getParams()
 
 	promise := Promise{
 		ChannelID: channelID,
@@ -113,11 +111,13 @@ func getPromise() Promise {
 	return promise
 }
 
-// channelID, amount, fee, hashlock, signature
-func getParams() (string, uint64, uint64, string, string) {
-	return "0x349d0C31a29a33687479490E75Cf93ba8D662482",
+// channelID, amount, fee, hashlock, promise signature, exchange message signature, provider
+func getParams() (string, uint64, uint64, string, string, string, string) {
+	return "0xe64eD307C0a90751923094337C2423BeF874598b",
 		uint64(10),
 		uint64(0),
-		"e0931113784fb1ac168b8873a2be4f54f45521e9c3d60389911dd9cd966f5ef0",
-		"c80721445cabd68ddf725355125020fda81e09f0a49db95315267979724eff3238750072a22e7247f946b64198b42f886d2674a3dbadfd327b41e1158efbe16c1b"
+		"6606c733283a2350e549d4148543959b21d1c1bdb2b3040621b8b444b43348b2",
+		"48eeaf5d3373d946435263a33a414a3a35099fb69f69338a955ad326eb7a4d3b61764a69b285d40651ed5c9e5d4365bba0f08caacd03742c63d51d2da4372dc61c",
+		"1b6412d22cd2322408fa1f55506c99a6b2901e2f1e9605685c1cc6a4dfb32f0e6c9aceac46bf1447f22e3b7a596a90d464a0fc9d56d9a6ba83e93521793493df1c",
+		"0x1a9fab9aba871ed0f5bff28f9f9e52d374376611"
 }
