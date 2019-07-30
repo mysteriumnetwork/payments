@@ -35,6 +35,7 @@ type Promise struct {
 	Amount    uint64
 	Fee       uint64
 	Hashlock  string
+	R         string
 	Signature string
 }
 
