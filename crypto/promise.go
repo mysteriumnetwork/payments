@@ -18,12 +18,13 @@
 package crypto
 
 import (
-	"crypto/ecdsa"
 	"encoding/hex"
 	"math/big"
 	"strings"
 
+	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 )
@@ -34,7 +35,30 @@ type Promise struct {
 	Amount    uint64
 	Fee       uint64
 	Hashlock  string
+	R         string
 	Signature string
+}
+
+// CreatePromise creates new promise
+func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string, ks *keystore.KeyStore, signer common.Address) (*Promise, error) {
+	// TODO validate channelID, it have top be proper address, or request here address already
+
+	promise := Promise{
+		ChannelID: channelID,
+		Amount:    amount,
+		Fee:       fee,
+		Hashlock:  hashlock,
+	}
+
+	signature, err := promise.CreateSignature(ks, signer)
+	if err != nil {
+		return nil, err
+	}
+
+	ReformatSignatureVForBC(signature)
+	promise.Signature = hex.EncodeToString(signature)
+
+	return &promise, nil
 }
 
 // GetMessage forms the message of payment promise
@@ -54,16 +78,14 @@ func (p Promise) GetHash() []byte {
 	return crypto.Keccak256(p.GetMessage())
 }
 
-// CreateSignature signs promise with given params
-func (p Promise) CreateSignature(pk *ecdsa.PrivateKey) ([]byte, error) {
+// CreateSignature signs promise using keystore
+func (p Promise) CreateSignature(ks *keystore.KeyStore, signer common.Address) ([]byte, error) {
 	message := p.GetMessage()
-	hash := crypto.Keccak256Hash(message)
-	signature, err := crypto.Sign(hash.Bytes(), pk)
-	if err != nil {
-		return nil, err
-	}
-
-	return signature, nil
+	hash := crypto.Keccak256(message)
+	return ks.SignHash(
+		accounts.Account{Address: signer},
+		hash,
+	)
 }
 
 // GetSignatureBytesRaw returns the unadulterated bytes of the signature
