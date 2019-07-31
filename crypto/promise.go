@@ -40,7 +40,7 @@ type Promise struct {
 }
 
 // CreatePromise creates new promise
-func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string, ks *keystore.KeyStore, signer common.Address) (Promise, error) {
+func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string, ks *keystore.KeyStore, signer common.Address) (*Promise, error) {
 	// TODO validate channelID, it have top be proper address, or request here address already
 
 	promise := Promise{
@@ -50,11 +50,15 @@ func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string,
 		Hashlock:  hashlock,
 	}
 
-	signature, _ := promise.CreateSignature(ks, signer)
+	signature, err := promise.CreateSignature(ks, signer)
+	if err != nil {
+		return nil, err
+	}
+
 	ReformatSignatureVForBC(signature)
 	promise.Signature = hex.EncodeToString(signature)
 
-	return promise, nil
+	return &promise, nil
 }
 
 // GetMessage forms the message of payment promise

@@ -39,14 +39,14 @@ type ExchangeMessage struct {
 }
 
 // CreateExchangeMessage creates new exchange message with it's promise
-func CreateExchangeMessage(invoice Invoice, promiseAmount uint64, channelID string, ks *keystore.KeyStore, signer common.Address) (ExchangeMessage, error) {
+func CreateExchangeMessage(invoice Invoice, promiseAmount uint64, channelID string, ks *keystore.KeyStore, signer common.Address) (*ExchangeMessage, error) {
 	promise, err := CreatePromise(channelID, promiseAmount, invoice.Fee, invoice.Hashlock, ks, signer)
 	if err != nil {
-		return ExchangeMessage{}, err
+		return nil, err
 	}
 
 	message := ExchangeMessage{
-		Promise:        promise,
+		Promise:        *promise,
 		AgreementID:    invoice.AgreementID,
 		AgreementTotal: invoice.AgreementTotal,
 		Provider:       invoice.Provider,
@@ -54,13 +54,13 @@ func CreateExchangeMessage(invoice Invoice, promiseAmount uint64, channelID stri
 
 	signature, err := message.CreateSignature(ks, signer)
 	if err != nil {
-		return ExchangeMessage{}, err
+		return nil, err
 	}
 
 	ReformatSignatureVForBC(signature)
 	message.Signature = hex.EncodeToString(signature)
 
-	return message, nil
+	return &message, nil
 }
 
 // GetAgreementTotal returns a big int representation for the agreement total amount
