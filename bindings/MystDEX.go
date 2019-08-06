@@ -358,42 +358,42 @@ func (_MystDEX *MystDEXTransactorSession) ClaimEthers() (*types.Transaction, err
 
 // ClaimTokens is a paid mutator transaction binding the contract method 0xdf8de3e7.
 //
-// Solidity: function claimTokens(_token address) returns()
+// Solidity: function claimTokens(address _token) returns()
 func (_MystDEX *MystDEXTransactor) ClaimTokens(opts *bind.TransactOpts, _token common.Address) (*types.Transaction, error) {
 	return _MystDEX.contract.Transact(opts, "claimTokens", _token)
 }
 
 // ClaimTokens is a paid mutator transaction binding the contract method 0xdf8de3e7.
 //
-// Solidity: function claimTokens(_token address) returns()
+// Solidity: function claimTokens(address _token) returns()
 func (_MystDEX *MystDEXSession) ClaimTokens(_token common.Address) (*types.Transaction, error) {
 	return _MystDEX.Contract.ClaimTokens(&_MystDEX.TransactOpts, _token)
 }
 
 // ClaimTokens is a paid mutator transaction binding the contract method 0xdf8de3e7.
 //
-// Solidity: function claimTokens(_token address) returns()
+// Solidity: function claimTokens(address _token) returns()
 func (_MystDEX *MystDEXTransactorSession) ClaimTokens(_token common.Address) (*types.Transaction, error) {
 	return _MystDEX.Contract.ClaimTokens(&_MystDEX.TransactOpts, _token)
 }
 
 // Initialise is a paid mutator transaction binding the contract method 0x8595d149.
 //
-// Solidity: function initialise(_dexOwner address, _token address, _rate uint256) returns()
+// Solidity: function initialise(address _dexOwner, address _token, uint256 _rate) returns()
 func (_MystDEX *MystDEXTransactor) Initialise(opts *bind.TransactOpts, _dexOwner common.Address, _token common.Address, _rate *big.Int) (*types.Transaction, error) {
 	return _MystDEX.contract.Transact(opts, "initialise", _dexOwner, _token, _rate)
 }
 
 // Initialise is a paid mutator transaction binding the contract method 0x8595d149.
 //
-// Solidity: function initialise(_dexOwner address, _token address, _rate uint256) returns()
+// Solidity: function initialise(address _dexOwner, address _token, uint256 _rate) returns()
 func (_MystDEX *MystDEXSession) Initialise(_dexOwner common.Address, _token common.Address, _rate *big.Int) (*types.Transaction, error) {
 	return _MystDEX.Contract.Initialise(&_MystDEX.TransactOpts, _dexOwner, _token, _rate)
 }
 
 // Initialise is a paid mutator transaction binding the contract method 0x8595d149.
 //
-// Solidity: function initialise(_dexOwner address, _token address, _rate uint256) returns()
+// Solidity: function initialise(address _dexOwner, address _token, uint256 _rate) returns()
 func (_MystDEX *MystDEXTransactorSession) Initialise(_dexOwner common.Address, _token common.Address, _rate *big.Int) (*types.Transaction, error) {
 	return _MystDEX.Contract.Initialise(&_MystDEX.TransactOpts, _dexOwner, _token, _rate)
 }
@@ -421,105 +421,105 @@ func (_MystDEX *MystDEXTransactorSession) RenounceOwnership() (*types.Transactio
 
 // SetFundsDestination is a paid mutator transaction binding the contract method 0x238e130a.
 //
-// Solidity: function setFundsDestination(_newDestination address) returns()
+// Solidity: function setFundsDestination(address _newDestination) returns()
 func (_MystDEX *MystDEXTransactor) SetFundsDestination(opts *bind.TransactOpts, _newDestination common.Address) (*types.Transaction, error) {
 	return _MystDEX.contract.Transact(opts, "setFundsDestination", _newDestination)
 }
 
 // SetFundsDestination is a paid mutator transaction binding the contract method 0x238e130a.
 //
-// Solidity: function setFundsDestination(_newDestination address) returns()
+// Solidity: function setFundsDestination(address _newDestination) returns()
 func (_MystDEX *MystDEXSession) SetFundsDestination(_newDestination common.Address) (*types.Transaction, error) {
 	return _MystDEX.Contract.SetFundsDestination(&_MystDEX.TransactOpts, _newDestination)
 }
 
 // SetFundsDestination is a paid mutator transaction binding the contract method 0x238e130a.
 //
-// Solidity: function setFundsDestination(_newDestination address) returns()
+// Solidity: function setFundsDestination(address _newDestination) returns()
 func (_MystDEX *MystDEXTransactorSession) SetFundsDestination(_newDestination common.Address) (*types.Transaction, error) {
 	return _MystDEX.Contract.SetFundsDestination(&_MystDEX.TransactOpts, _newDestination)
 }
 
 // SetRate is a paid mutator transaction binding the contract method 0x34fcf437.
 //
-// Solidity: function setRate(_newRate uint256) returns()
+// Solidity: function setRate(uint256 _newRate) returns()
 func (_MystDEX *MystDEXTransactor) SetRate(opts *bind.TransactOpts, _newRate *big.Int) (*types.Transaction, error) {
 	return _MystDEX.contract.Transact(opts, "setRate", _newRate)
 }
 
 // SetRate is a paid mutator transaction binding the contract method 0x34fcf437.
 //
-// Solidity: function setRate(_newRate uint256) returns()
+// Solidity: function setRate(uint256 _newRate) returns()
 func (_MystDEX *MystDEXSession) SetRate(_newRate *big.Int) (*types.Transaction, error) {
 	return _MystDEX.Contract.SetRate(&_MystDEX.TransactOpts, _newRate)
 }
 
 // SetRate is a paid mutator transaction binding the contract method 0x34fcf437.
 //
-// Solidity: function setRate(_newRate uint256) returns()
+// Solidity: function setRate(uint256 _newRate) returns()
 func (_MystDEX *MystDEXTransactorSession) SetRate(_newRate *big.Int) (*types.Transaction, error) {
 	return _MystDEX.Contract.SetRate(&_MystDEX.TransactOpts, _newRate)
 }
 
 // TransferEthers is a paid mutator transaction binding the contract method 0x1254e64d.
 //
-// Solidity: function transferEthers(_to address, _amount uint256) returns()
+// Solidity: function transferEthers(address _to, uint256 _amount) returns()
 func (_MystDEX *MystDEXTransactor) TransferEthers(opts *bind.TransactOpts, _to common.Address, _amount *big.Int) (*types.Transaction, error) {
 	return _MystDEX.contract.Transact(opts, "transferEthers", _to, _amount)
 }
 
 // TransferEthers is a paid mutator transaction binding the contract method 0x1254e64d.
 //
-// Solidity: function transferEthers(_to address, _amount uint256) returns()
+// Solidity: function transferEthers(address _to, uint256 _amount) returns()
 func (_MystDEX *MystDEXSession) TransferEthers(_to common.Address, _amount *big.Int) (*types.Transaction, error) {
 	return _MystDEX.Contract.TransferEthers(&_MystDEX.TransactOpts, _to, _amount)
 }
 
 // TransferEthers is a paid mutator transaction binding the contract method 0x1254e64d.
 //
-// Solidity: function transferEthers(_to address, _amount uint256) returns()
+// Solidity: function transferEthers(address _to, uint256 _amount) returns()
 func (_MystDEX *MystDEXTransactorSession) TransferEthers(_to common.Address, _amount *big.Int) (*types.Transaction, error) {
 	return _MystDEX.Contract.TransferEthers(&_MystDEX.TransactOpts, _to, _amount)
 }
 
 // TransferMyst is a paid mutator transaction binding the contract method 0x38d2e411.
 //
-// Solidity: function transferMyst(_to address, _amount uint256) returns()
+// Solidity: function transferMyst(address _to, uint256 _amount) returns()
 func (_MystDEX *MystDEXTransactor) TransferMyst(opts *bind.TransactOpts, _to common.Address, _amount *big.Int) (*types.Transaction, error) {
 	return _MystDEX.contract.Transact(opts, "transferMyst", _to, _amount)
 }
 
 // TransferMyst is a paid mutator transaction binding the contract method 0x38d2e411.
 //
-// Solidity: function transferMyst(_to address, _amount uint256) returns()
+// Solidity: function transferMyst(address _to, uint256 _amount) returns()
 func (_MystDEX *MystDEXSession) TransferMyst(_to common.Address, _amount *big.Int) (*types.Transaction, error) {
 	return _MystDEX.Contract.TransferMyst(&_MystDEX.TransactOpts, _to, _amount)
 }
 
 // TransferMyst is a paid mutator transaction binding the contract method 0x38d2e411.
 //
-// Solidity: function transferMyst(_to address, _amount uint256) returns()
+// Solidity: function transferMyst(address _to, uint256 _amount) returns()
 func (_MystDEX *MystDEXTransactorSession) TransferMyst(_to common.Address, _amount *big.Int) (*types.Transaction, error) {
 	return _MystDEX.Contract.TransferMyst(&_MystDEX.TransactOpts, _to, _amount)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
-// Solidity: function transferOwnership(newOwner address) returns()
+// Solidity: function transferOwnership(address newOwner) returns()
 func (_MystDEX *MystDEXTransactor) TransferOwnership(opts *bind.TransactOpts, newOwner common.Address) (*types.Transaction, error) {
 	return _MystDEX.contract.Transact(opts, "transferOwnership", newOwner)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
-// Solidity: function transferOwnership(newOwner address) returns()
+// Solidity: function transferOwnership(address newOwner) returns()
 func (_MystDEX *MystDEXSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
 	return _MystDEX.Contract.TransferOwnership(&_MystDEX.TransactOpts, newOwner)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
-// Solidity: function transferOwnership(newOwner address) returns()
+// Solidity: function transferOwnership(address newOwner) returns()
 func (_MystDEX *MystDEXTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
 	return _MystDEX.Contract.TransferOwnership(&_MystDEX.TransactOpts, newOwner)
 }
@@ -600,7 +600,7 @@ type MystDEXDestinationChanged struct {
 
 // FilterDestinationChanged is a free log retrieval operation binding the contract event 0xe1a66d77649cf0a57b9937073549f30f1c82bb865aaf066d2f299e37a62c6aad.
 //
-// Solidity: e DestinationChanged(previousDestination indexed address, newDestination indexed address)
+// Solidity: event DestinationChanged(address indexed previousDestination, address indexed newDestination)
 func (_MystDEX *MystDEXFilterer) FilterDestinationChanged(opts *bind.FilterOpts, previousDestination []common.Address, newDestination []common.Address) (*MystDEXDestinationChangedIterator, error) {
 
 	var previousDestinationRule []interface{}
@@ -621,7 +621,7 @@ func (_MystDEX *MystDEXFilterer) FilterDestinationChanged(opts *bind.FilterOpts,
 
 // WatchDestinationChanged is a free log subscription operation binding the contract event 0xe1a66d77649cf0a57b9937073549f30f1c82bb865aaf066d2f299e37a62c6aad.
 //
-// Solidity: e DestinationChanged(previousDestination indexed address, newDestination indexed address)
+// Solidity: event DestinationChanged(address indexed previousDestination, address indexed newDestination)
 func (_MystDEX *MystDEXFilterer) WatchDestinationChanged(opts *bind.WatchOpts, sink chan<- *MystDEXDestinationChanged, previousDestination []common.Address, newDestination []common.Address) (event.Subscription, error) {
 
 	var previousDestinationRule []interface{}
@@ -741,7 +741,7 @@ type MystDEXOwnershipTransferred struct {
 
 // FilterOwnershipTransferred is a free log retrieval operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
 //
-// Solidity: e OwnershipTransferred(previousOwner indexed address, newOwner indexed address)
+// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
 func (_MystDEX *MystDEXFilterer) FilterOwnershipTransferred(opts *bind.FilterOpts, previousOwner []common.Address, newOwner []common.Address) (*MystDEXOwnershipTransferredIterator, error) {
 
 	var previousOwnerRule []interface{}
@@ -762,7 +762,7 @@ func (_MystDEX *MystDEXFilterer) FilterOwnershipTransferred(opts *bind.FilterOpt
 
 // WatchOwnershipTransferred is a free log subscription operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
 //
-// Solidity: e OwnershipTransferred(previousOwner indexed address, newOwner indexed address)
+// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
 func (_MystDEX *MystDEXFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, sink chan<- *MystDEXOwnershipTransferred, previousOwner []common.Address, newOwner []common.Address) (event.Subscription, error) {
 
 	var previousOwnerRule []interface{}

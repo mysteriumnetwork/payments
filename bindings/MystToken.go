@@ -207,7 +207,7 @@ func (_MystToken *MystTokenTransactorRaw) Transact(opts *bind.TransactOpts, meth
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(owner address, spender address) constant returns(uint256)
+// Solidity: function allowance(address owner, address spender) constant returns(uint256)
 func (_MystToken *MystTokenCaller) Allowance(opts *bind.CallOpts, owner common.Address, spender common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -219,21 +219,21 @@ func (_MystToken *MystTokenCaller) Allowance(opts *bind.CallOpts, owner common.A
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(owner address, spender address) constant returns(uint256)
+// Solidity: function allowance(address owner, address spender) constant returns(uint256)
 func (_MystToken *MystTokenSession) Allowance(owner common.Address, spender common.Address) (*big.Int, error) {
 	return _MystToken.Contract.Allowance(&_MystToken.CallOpts, owner, spender)
 }
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(owner address, spender address) constant returns(uint256)
+// Solidity: function allowance(address owner, address spender) constant returns(uint256)
 func (_MystToken *MystTokenCallerSession) Allowance(owner common.Address, spender common.Address) (*big.Int, error) {
 	return _MystToken.Contract.Allowance(&_MystToken.CallOpts, owner, spender)
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(account address) constant returns(uint256)
+// Solidity: function balanceOf(address account) constant returns(uint256)
 func (_MystToken *MystTokenCaller) BalanceOf(opts *bind.CallOpts, account common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -245,14 +245,14 @@ func (_MystToken *MystTokenCaller) BalanceOf(opts *bind.CallOpts, account common
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(account address) constant returns(uint256)
+// Solidity: function balanceOf(address account) constant returns(uint256)
 func (_MystToken *MystTokenSession) BalanceOf(account common.Address) (*big.Int, error) {
 	return _MystToken.Contract.BalanceOf(&_MystToken.CallOpts, account)
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(account address) constant returns(uint256)
+// Solidity: function balanceOf(address account) constant returns(uint256)
 func (_MystToken *MystTokenCallerSession) BalanceOf(account common.Address) (*big.Int, error) {
 	return _MystToken.Contract.BalanceOf(&_MystToken.CallOpts, account)
 }
@@ -285,7 +285,7 @@ func (_MystToken *MystTokenCallerSession) Decimals() (uint8, error) {
 
 // IsMinter is a free data retrieval call binding the contract method 0xaa271e1a.
 //
-// Solidity: function isMinter(account address) constant returns(bool)
+// Solidity: function isMinter(address account) constant returns(bool)
 func (_MystToken *MystTokenCaller) IsMinter(opts *bind.CallOpts, account common.Address) (bool, error) {
 	var (
 		ret0 = new(bool)
@@ -297,14 +297,14 @@ func (_MystToken *MystTokenCaller) IsMinter(opts *bind.CallOpts, account common.
 
 // IsMinter is a free data retrieval call binding the contract method 0xaa271e1a.
 //
-// Solidity: function isMinter(account address) constant returns(bool)
+// Solidity: function isMinter(address account) constant returns(bool)
 func (_MystToken *MystTokenSession) IsMinter(account common.Address) (bool, error) {
 	return _MystToken.Contract.IsMinter(&_MystToken.CallOpts, account)
 }
 
 // IsMinter is a free data retrieval call binding the contract method 0xaa271e1a.
 //
-// Solidity: function isMinter(account address) constant returns(bool)
+// Solidity: function isMinter(address account) constant returns(bool)
 func (_MystToken *MystTokenCallerSession) IsMinter(account common.Address) (bool, error) {
 	return _MystToken.Contract.IsMinter(&_MystToken.CallOpts, account)
 }
@@ -441,105 +441,105 @@ func (_MystToken *MystTokenCallerSession) TotalSupply() (*big.Int, error) {
 
 // AddMinter is a paid mutator transaction binding the contract method 0x983b2d56.
 //
-// Solidity: function addMinter(account address) returns()
+// Solidity: function addMinter(address account) returns()
 func (_MystToken *MystTokenTransactor) AddMinter(opts *bind.TransactOpts, account common.Address) (*types.Transaction, error) {
 	return _MystToken.contract.Transact(opts, "addMinter", account)
 }
 
 // AddMinter is a paid mutator transaction binding the contract method 0x983b2d56.
 //
-// Solidity: function addMinter(account address) returns()
+// Solidity: function addMinter(address account) returns()
 func (_MystToken *MystTokenSession) AddMinter(account common.Address) (*types.Transaction, error) {
 	return _MystToken.Contract.AddMinter(&_MystToken.TransactOpts, account)
 }
 
 // AddMinter is a paid mutator transaction binding the contract method 0x983b2d56.
 //
-// Solidity: function addMinter(account address) returns()
+// Solidity: function addMinter(address account) returns()
 func (_MystToken *MystTokenTransactorSession) AddMinter(account common.Address) (*types.Transaction, error) {
 	return _MystToken.Contract.AddMinter(&_MystToken.TransactOpts, account)
 }
 
 // Approve is a paid mutator transaction binding the contract method 0x095ea7b3.
 //
-// Solidity: function approve(spender address, value uint256) returns(bool)
+// Solidity: function approve(address spender, uint256 value) returns(bool)
 func (_MystToken *MystTokenTransactor) Approve(opts *bind.TransactOpts, spender common.Address, value *big.Int) (*types.Transaction, error) {
 	return _MystToken.contract.Transact(opts, "approve", spender, value)
 }
 
 // Approve is a paid mutator transaction binding the contract method 0x095ea7b3.
 //
-// Solidity: function approve(spender address, value uint256) returns(bool)
+// Solidity: function approve(address spender, uint256 value) returns(bool)
 func (_MystToken *MystTokenSession) Approve(spender common.Address, value *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.Approve(&_MystToken.TransactOpts, spender, value)
 }
 
 // Approve is a paid mutator transaction binding the contract method 0x095ea7b3.
 //
-// Solidity: function approve(spender address, value uint256) returns(bool)
+// Solidity: function approve(address spender, uint256 value) returns(bool)
 func (_MystToken *MystTokenTransactorSession) Approve(spender common.Address, value *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.Approve(&_MystToken.TransactOpts, spender, value)
 }
 
 // DecreaseAllowance is a paid mutator transaction binding the contract method 0xa457c2d7.
 //
-// Solidity: function decreaseAllowance(spender address, subtractedValue uint256) returns(bool)
+// Solidity: function decreaseAllowance(address spender, uint256 subtractedValue) returns(bool)
 func (_MystToken *MystTokenTransactor) DecreaseAllowance(opts *bind.TransactOpts, spender common.Address, subtractedValue *big.Int) (*types.Transaction, error) {
 	return _MystToken.contract.Transact(opts, "decreaseAllowance", spender, subtractedValue)
 }
 
 // DecreaseAllowance is a paid mutator transaction binding the contract method 0xa457c2d7.
 //
-// Solidity: function decreaseAllowance(spender address, subtractedValue uint256) returns(bool)
+// Solidity: function decreaseAllowance(address spender, uint256 subtractedValue) returns(bool)
 func (_MystToken *MystTokenSession) DecreaseAllowance(spender common.Address, subtractedValue *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.DecreaseAllowance(&_MystToken.TransactOpts, spender, subtractedValue)
 }
 
 // DecreaseAllowance is a paid mutator transaction binding the contract method 0xa457c2d7.
 //
-// Solidity: function decreaseAllowance(spender address, subtractedValue uint256) returns(bool)
+// Solidity: function decreaseAllowance(address spender, uint256 subtractedValue) returns(bool)
 func (_MystToken *MystTokenTransactorSession) DecreaseAllowance(spender common.Address, subtractedValue *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.DecreaseAllowance(&_MystToken.TransactOpts, spender, subtractedValue)
 }
 
 // IncreaseAllowance is a paid mutator transaction binding the contract method 0x39509351.
 //
-// Solidity: function increaseAllowance(spender address, addedValue uint256) returns(bool)
+// Solidity: function increaseAllowance(address spender, uint256 addedValue) returns(bool)
 func (_MystToken *MystTokenTransactor) IncreaseAllowance(opts *bind.TransactOpts, spender common.Address, addedValue *big.Int) (*types.Transaction, error) {
 	return _MystToken.contract.Transact(opts, "increaseAllowance", spender, addedValue)
 }
 
 // IncreaseAllowance is a paid mutator transaction binding the contract method 0x39509351.
 //
-// Solidity: function increaseAllowance(spender address, addedValue uint256) returns(bool)
+// Solidity: function increaseAllowance(address spender, uint256 addedValue) returns(bool)
 func (_MystToken *MystTokenSession) IncreaseAllowance(spender common.Address, addedValue *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.IncreaseAllowance(&_MystToken.TransactOpts, spender, addedValue)
 }
 
 // IncreaseAllowance is a paid mutator transaction binding the contract method 0x39509351.
 //
-// Solidity: function increaseAllowance(spender address, addedValue uint256) returns(bool)
+// Solidity: function increaseAllowance(address spender, uint256 addedValue) returns(bool)
 func (_MystToken *MystTokenTransactorSession) IncreaseAllowance(spender common.Address, addedValue *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.IncreaseAllowance(&_MystToken.TransactOpts, spender, addedValue)
 }
 
 // Mint is a paid mutator transaction binding the contract method 0x40c10f19.
 //
-// Solidity: function mint(account address, amount uint256) returns(bool)
+// Solidity: function mint(address account, uint256 amount) returns(bool)
 func (_MystToken *MystTokenTransactor) Mint(opts *bind.TransactOpts, account common.Address, amount *big.Int) (*types.Transaction, error) {
 	return _MystToken.contract.Transact(opts, "mint", account, amount)
 }
 
 // Mint is a paid mutator transaction binding the contract method 0x40c10f19.
 //
-// Solidity: function mint(account address, amount uint256) returns(bool)
+// Solidity: function mint(address account, uint256 amount) returns(bool)
 func (_MystToken *MystTokenSession) Mint(account common.Address, amount *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.Mint(&_MystToken.TransactOpts, account, amount)
 }
 
 // Mint is a paid mutator transaction binding the contract method 0x40c10f19.
 //
-// Solidity: function mint(account address, amount uint256) returns(bool)
+// Solidity: function mint(address account, uint256 amount) returns(bool)
 func (_MystToken *MystTokenTransactorSession) Mint(account common.Address, amount *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.Mint(&_MystToken.TransactOpts, account, amount)
 }
@@ -588,63 +588,63 @@ func (_MystToken *MystTokenTransactorSession) RenounceOwnership() (*types.Transa
 
 // Transfer is a paid mutator transaction binding the contract method 0xa9059cbb.
 //
-// Solidity: function transfer(recipient address, amount uint256) returns(bool)
+// Solidity: function transfer(address recipient, uint256 amount) returns(bool)
 func (_MystToken *MystTokenTransactor) Transfer(opts *bind.TransactOpts, recipient common.Address, amount *big.Int) (*types.Transaction, error) {
 	return _MystToken.contract.Transact(opts, "transfer", recipient, amount)
 }
 
 // Transfer is a paid mutator transaction binding the contract method 0xa9059cbb.
 //
-// Solidity: function transfer(recipient address, amount uint256) returns(bool)
+// Solidity: function transfer(address recipient, uint256 amount) returns(bool)
 func (_MystToken *MystTokenSession) Transfer(recipient common.Address, amount *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.Transfer(&_MystToken.TransactOpts, recipient, amount)
 }
 
 // Transfer is a paid mutator transaction binding the contract method 0xa9059cbb.
 //
-// Solidity: function transfer(recipient address, amount uint256) returns(bool)
+// Solidity: function transfer(address recipient, uint256 amount) returns(bool)
 func (_MystToken *MystTokenTransactorSession) Transfer(recipient common.Address, amount *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.Transfer(&_MystToken.TransactOpts, recipient, amount)
 }
 
 // TransferFrom is a paid mutator transaction binding the contract method 0x23b872dd.
 //
-// Solidity: function transferFrom(sender address, recipient address, amount uint256) returns(bool)
+// Solidity: function transferFrom(address sender, address recipient, uint256 amount) returns(bool)
 func (_MystToken *MystTokenTransactor) TransferFrom(opts *bind.TransactOpts, sender common.Address, recipient common.Address, amount *big.Int) (*types.Transaction, error) {
 	return _MystToken.contract.Transact(opts, "transferFrom", sender, recipient, amount)
 }
 
 // TransferFrom is a paid mutator transaction binding the contract method 0x23b872dd.
 //
-// Solidity: function transferFrom(sender address, recipient address, amount uint256) returns(bool)
+// Solidity: function transferFrom(address sender, address recipient, uint256 amount) returns(bool)
 func (_MystToken *MystTokenSession) TransferFrom(sender common.Address, recipient common.Address, amount *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.TransferFrom(&_MystToken.TransactOpts, sender, recipient, amount)
 }
 
 // TransferFrom is a paid mutator transaction binding the contract method 0x23b872dd.
 //
-// Solidity: function transferFrom(sender address, recipient address, amount uint256) returns(bool)
+// Solidity: function transferFrom(address sender, address recipient, uint256 amount) returns(bool)
 func (_MystToken *MystTokenTransactorSession) TransferFrom(sender common.Address, recipient common.Address, amount *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.TransferFrom(&_MystToken.TransactOpts, sender, recipient, amount)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
-// Solidity: function transferOwnership(newOwner address) returns()
+// Solidity: function transferOwnership(address newOwner) returns()
 func (_MystToken *MystTokenTransactor) TransferOwnership(opts *bind.TransactOpts, newOwner common.Address) (*types.Transaction, error) {
 	return _MystToken.contract.Transact(opts, "transferOwnership", newOwner)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
-// Solidity: function transferOwnership(newOwner address) returns()
+// Solidity: function transferOwnership(address newOwner) returns()
 func (_MystToken *MystTokenSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
 	return _MystToken.Contract.TransferOwnership(&_MystToken.TransactOpts, newOwner)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
-// Solidity: function transferOwnership(newOwner address) returns()
+// Solidity: function transferOwnership(address newOwner) returns()
 func (_MystToken *MystTokenTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
 	return _MystToken.Contract.TransferOwnership(&_MystToken.TransactOpts, newOwner)
 }
@@ -726,7 +726,7 @@ type MystTokenApproval struct {
 
 // FilterApproval is a free log retrieval operation binding the contract event 0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925.
 //
-// Solidity: e Approval(owner indexed address, spender indexed address, value uint256)
+// Solidity: event Approval(address indexed owner, address indexed spender, uint256 value)
 func (_MystToken *MystTokenFilterer) FilterApproval(opts *bind.FilterOpts, owner []common.Address, spender []common.Address) (*MystTokenApprovalIterator, error) {
 
 	var ownerRule []interface{}
@@ -747,7 +747,7 @@ func (_MystToken *MystTokenFilterer) FilterApproval(opts *bind.FilterOpts, owner
 
 // WatchApproval is a free log subscription operation binding the contract event 0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925.
 //
-// Solidity: e Approval(owner indexed address, spender indexed address, value uint256)
+// Solidity: event Approval(address indexed owner, address indexed spender, uint256 value)
 func (_MystToken *MystTokenFilterer) WatchApproval(opts *bind.WatchOpts, sink chan<- *MystTokenApproval, owner []common.Address, spender []common.Address) (event.Subscription, error) {
 
 	var ownerRule []interface{}
@@ -866,7 +866,7 @@ type MystTokenMinterAdded struct {
 
 // FilterMinterAdded is a free log retrieval operation binding the contract event 0x6ae172837ea30b801fbfcdd4108aa1d5bf8ff775444fd70256b44e6bf3dfc3f6.
 //
-// Solidity: e MinterAdded(account indexed address)
+// Solidity: event MinterAdded(address indexed account)
 func (_MystToken *MystTokenFilterer) FilterMinterAdded(opts *bind.FilterOpts, account []common.Address) (*MystTokenMinterAddedIterator, error) {
 
 	var accountRule []interface{}
@@ -883,7 +883,7 @@ func (_MystToken *MystTokenFilterer) FilterMinterAdded(opts *bind.FilterOpts, ac
 
 // WatchMinterAdded is a free log subscription operation binding the contract event 0x6ae172837ea30b801fbfcdd4108aa1d5bf8ff775444fd70256b44e6bf3dfc3f6.
 //
-// Solidity: e MinterAdded(account indexed address)
+// Solidity: event MinterAdded(address indexed account)
 func (_MystToken *MystTokenFilterer) WatchMinterAdded(opts *bind.WatchOpts, sink chan<- *MystTokenMinterAdded, account []common.Address) (event.Subscription, error) {
 
 	var accountRule []interface{}
@@ -998,7 +998,7 @@ type MystTokenMinterRemoved struct {
 
 // FilterMinterRemoved is a free log retrieval operation binding the contract event 0xe94479a9f7e1952cc78f2d6baab678adc1b772d936c6583def489e524cb66692.
 //
-// Solidity: e MinterRemoved(account indexed address)
+// Solidity: event MinterRemoved(address indexed account)
 func (_MystToken *MystTokenFilterer) FilterMinterRemoved(opts *bind.FilterOpts, account []common.Address) (*MystTokenMinterRemovedIterator, error) {
 
 	var accountRule []interface{}
@@ -1015,7 +1015,7 @@ func (_MystToken *MystTokenFilterer) FilterMinterRemoved(opts *bind.FilterOpts, 
 
 // WatchMinterRemoved is a free log subscription operation binding the contract event 0xe94479a9f7e1952cc78f2d6baab678adc1b772d936c6583def489e524cb66692.
 //
-// Solidity: e MinterRemoved(account indexed address)
+// Solidity: event MinterRemoved(address indexed account)
 func (_MystToken *MystTokenFilterer) WatchMinterRemoved(opts *bind.WatchOpts, sink chan<- *MystTokenMinterRemoved, account []common.Address) (event.Subscription, error) {
 
 	var accountRule []interface{}
@@ -1131,7 +1131,7 @@ type MystTokenOwnershipTransferred struct {
 
 // FilterOwnershipTransferred is a free log retrieval operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
 //
-// Solidity: e OwnershipTransferred(previousOwner indexed address, newOwner indexed address)
+// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
 func (_MystToken *MystTokenFilterer) FilterOwnershipTransferred(opts *bind.FilterOpts, previousOwner []common.Address, newOwner []common.Address) (*MystTokenOwnershipTransferredIterator, error) {
 
 	var previousOwnerRule []interface{}
@@ -1152,7 +1152,7 @@ func (_MystToken *MystTokenFilterer) FilterOwnershipTransferred(opts *bind.Filte
 
 // WatchOwnershipTransferred is a free log subscription operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
 //
-// Solidity: e OwnershipTransferred(previousOwner indexed address, newOwner indexed address)
+// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
 func (_MystToken *MystTokenFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, sink chan<- *MystTokenOwnershipTransferred, previousOwner []common.Address, newOwner []common.Address) (event.Subscription, error) {
 
 	var previousOwnerRule []interface{}
@@ -1273,7 +1273,7 @@ type MystTokenTransfer struct {
 
 // FilterTransfer is a free log retrieval operation binding the contract event 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef.
 //
-// Solidity: e Transfer(from indexed address, to indexed address, value uint256)
+// Solidity: event Transfer(address indexed from, address indexed to, uint256 value)
 func (_MystToken *MystTokenFilterer) FilterTransfer(opts *bind.FilterOpts, from []common.Address, to []common.Address) (*MystTokenTransferIterator, error) {
 
 	var fromRule []interface{}
@@ -1294,7 +1294,7 @@ func (_MystToken *MystTokenFilterer) FilterTransfer(opts *bind.FilterOpts, from 
 
 // WatchTransfer is a free log subscription operation binding the contract event 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef.
 //
-// Solidity: e Transfer(from indexed address, to indexed address, value uint256)
+// Solidity: event Transfer(address indexed from, address indexed to, uint256 value)
 func (_MystToken *MystTokenFilterer) WatchTransfer(opts *bind.WatchOpts, sink chan<- *MystTokenTransfer, from []common.Address, to []common.Address) (event.Subscription, error) {
 
 	var fromRule []interface{}
