@@ -233,7 +233,7 @@ func (_AccountantImplementation *AccountantImplementationCallerSession) Availabl
 
 // Channels is a free data retrieval call binding the contract method 0x7a7ebd7b.
 //
-// Solidity: function channels(bytes32 ) constant returns(address beneficiary, uint256 balance, uint256 settled, uint256 loan, uint256 loanTimelock, uint256 lastUsedNonce)
+// Solidity: function channels( bytes32) constant returns(beneficiary address, balance uint256, settled uint256, loan uint256, loanTimelock uint256, lastUsedNonce uint256)
 func (_AccountantImplementation *AccountantImplementationCaller) Channels(opts *bind.CallOpts, arg0 [32]byte) (struct {
 	Beneficiary   common.Address
 	Balance       *big.Int
@@ -257,7 +257,7 @@ func (_AccountantImplementation *AccountantImplementationCaller) Channels(opts *
 
 // Channels is a free data retrieval call binding the contract method 0x7a7ebd7b.
 //
-// Solidity: function channels(bytes32 ) constant returns(address beneficiary, uint256 balance, uint256 settled, uint256 loan, uint256 loanTimelock, uint256 lastUsedNonce)
+// Solidity: function channels( bytes32) constant returns(beneficiary address, balance uint256, settled uint256, loan uint256, loanTimelock uint256, lastUsedNonce uint256)
 func (_AccountantImplementation *AccountantImplementationSession) Channels(arg0 [32]byte) (struct {
 	Beneficiary   common.Address
 	Balance       *big.Int
@@ -271,7 +271,7 @@ func (_AccountantImplementation *AccountantImplementationSession) Channels(arg0 
 
 // Channels is a free data retrieval call binding the contract method 0x7a7ebd7b.
 //
-// Solidity: function channels(bytes32 ) constant returns(address beneficiary, uint256 balance, uint256 settled, uint256 loan, uint256 loanTimelock, uint256 lastUsedNonce)
+// Solidity: function channels( bytes32) constant returns(beneficiary address, balance uint256, settled uint256, loan uint256, loanTimelock uint256, lastUsedNonce uint256)
 func (_AccountantImplementation *AccountantImplementationCallerSession) Channels(arg0 [32]byte) (struct {
 	Beneficiary   common.Address
 	Balance       *big.Int
@@ -285,7 +285,7 @@ func (_AccountantImplementation *AccountantImplementationCallerSession) Channels
 
 // GetChannelId is a free data retrieval call binding the contract method 0xeb295b27.
 //
-// Solidity: function getChannelId(address _party) constant returns(bytes32)
+// Solidity: function getChannelId(_party address) constant returns(bytes32)
 func (_AccountantImplementation *AccountantImplementationCaller) GetChannelId(opts *bind.CallOpts, _party common.Address) ([32]byte, error) {
 	var (
 		ret0 = new([32]byte)
@@ -297,14 +297,14 @@ func (_AccountantImplementation *AccountantImplementationCaller) GetChannelId(op
 
 // GetChannelId is a free data retrieval call binding the contract method 0xeb295b27.
 //
-// Solidity: function getChannelId(address _party) constant returns(bytes32)
+// Solidity: function getChannelId(_party address) constant returns(bytes32)
 func (_AccountantImplementation *AccountantImplementationSession) GetChannelId(_party common.Address) ([32]byte, error) {
 	return _AccountantImplementation.Contract.GetChannelId(&_AccountantImplementation.CallOpts, _party)
 }
 
 // GetChannelId is a free data retrieval call binding the contract method 0xeb295b27.
 //
-// Solidity: function getChannelId(address _party) constant returns(bytes32)
+// Solidity: function getChannelId(_party address) constant returns(bytes32)
 func (_AccountantImplementation *AccountantImplementationCallerSession) GetChannelId(_party common.Address) ([32]byte, error) {
 	return _AccountantImplementation.Contract.GetChannelId(&_AccountantImplementation.CallOpts, _party)
 }
@@ -415,7 +415,7 @@ func (_AccountantImplementation *AccountantImplementationCallerSession) IsInitia
 
 // IsOpened is a free data retrieval call binding the contract method 0x5f5794f1.
 //
-// Solidity: function isOpened(bytes32 _channelId) constant returns(bool)
+// Solidity: function isOpened(_channelId bytes32) constant returns(bool)
 func (_AccountantImplementation *AccountantImplementationCaller) IsOpened(opts *bind.CallOpts, _channelId [32]byte) (bool, error) {
 	var (
 		ret0 = new(bool)
@@ -427,14 +427,14 @@ func (_AccountantImplementation *AccountantImplementationCaller) IsOpened(opts *
 
 // IsOpened is a free data retrieval call binding the contract method 0x5f5794f1.
 //
-// Solidity: function isOpened(bytes32 _channelId) constant returns(bool)
+// Solidity: function isOpened(_channelId bytes32) constant returns(bool)
 func (_AccountantImplementation *AccountantImplementationSession) IsOpened(_channelId [32]byte) (bool, error) {
 	return _AccountantImplementation.Contract.IsOpened(&_AccountantImplementation.CallOpts, _channelId)
 }
 
 // IsOpened is a free data retrieval call binding the contract method 0x5f5794f1.
 //
-// Solidity: function isOpened(bytes32 _channelId) constant returns(bool)
+// Solidity: function isOpened(_channelId bytes32) constant returns(bool)
 func (_AccountantImplementation *AccountantImplementationCallerSession) IsOpened(_channelId [32]byte) (bool, error) {
 	return _AccountantImplementation.Contract.IsOpened(&_AccountantImplementation.CallOpts, _channelId)
 }
@@ -566,126 +566,126 @@ func (_AccountantImplementation *AccountantImplementationTransactorSession) Clai
 
 // ClaimTokens is a paid mutator transaction binding the contract method 0xdf8de3e7.
 //
-// Solidity: function claimTokens(address _token) returns()
+// Solidity: function claimTokens(_token address) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) ClaimTokens(opts *bind.TransactOpts, _token common.Address) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "claimTokens", _token)
 }
 
 // ClaimTokens is a paid mutator transaction binding the contract method 0xdf8de3e7.
 //
-// Solidity: function claimTokens(address _token) returns()
+// Solidity: function claimTokens(_token address) returns()
 func (_AccountantImplementation *AccountantImplementationSession) ClaimTokens(_token common.Address) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.ClaimTokens(&_AccountantImplementation.TransactOpts, _token)
 }
 
 // ClaimTokens is a paid mutator transaction binding the contract method 0xdf8de3e7.
 //
-// Solidity: function claimTokens(address _token) returns()
+// Solidity: function claimTokens(_token address) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) ClaimTokens(_token common.Address) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.ClaimTokens(&_AccountantImplementation.TransactOpts, _token)
 }
 
 // FinalizeLoanReturn is a paid mutator transaction binding the contract method 0x2c86751f.
 //
-// Solidity: function finalizeLoanReturn(bytes32 _channelId) returns()
+// Solidity: function finalizeLoanReturn(_channelId bytes32) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) FinalizeLoanReturn(opts *bind.TransactOpts, _channelId [32]byte) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "finalizeLoanReturn", _channelId)
 }
 
 // FinalizeLoanReturn is a paid mutator transaction binding the contract method 0x2c86751f.
 //
-// Solidity: function finalizeLoanReturn(bytes32 _channelId) returns()
+// Solidity: function finalizeLoanReturn(_channelId bytes32) returns()
 func (_AccountantImplementation *AccountantImplementationSession) FinalizeLoanReturn(_channelId [32]byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.FinalizeLoanReturn(&_AccountantImplementation.TransactOpts, _channelId)
 }
 
 // FinalizeLoanReturn is a paid mutator transaction binding the contract method 0x2c86751f.
 //
-// Solidity: function finalizeLoanReturn(bytes32 _channelId) returns()
+// Solidity: function finalizeLoanReturn(_channelId bytes32) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) FinalizeLoanReturn(_channelId [32]byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.FinalizeLoanReturn(&_AccountantImplementation.TransactOpts, _channelId)
 }
 
 // IncreaseLoan is a paid mutator transaction binding the contract method 0x6e17b0d7.
 //
-// Solidity: function increaseLoan(bytes32 _channelId, uint256 _amount) returns()
+// Solidity: function increaseLoan(_channelId bytes32, _amount uint256) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) IncreaseLoan(opts *bind.TransactOpts, _channelId [32]byte, _amount *big.Int) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "increaseLoan", _channelId, _amount)
 }
 
 // IncreaseLoan is a paid mutator transaction binding the contract method 0x6e17b0d7.
 //
-// Solidity: function increaseLoan(bytes32 _channelId, uint256 _amount) returns()
+// Solidity: function increaseLoan(_channelId bytes32, _amount uint256) returns()
 func (_AccountantImplementation *AccountantImplementationSession) IncreaseLoan(_channelId [32]byte, _amount *big.Int) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.IncreaseLoan(&_AccountantImplementation.TransactOpts, _channelId, _amount)
 }
 
 // IncreaseLoan is a paid mutator transaction binding the contract method 0x6e17b0d7.
 //
-// Solidity: function increaseLoan(bytes32 _channelId, uint256 _amount) returns()
+// Solidity: function increaseLoan(_channelId bytes32, _amount uint256) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) IncreaseLoan(_channelId [32]byte, _amount *big.Int) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.IncreaseLoan(&_AccountantImplementation.TransactOpts, _channelId, _amount)
 }
 
 // Initialize is a paid mutator transaction binding the contract method 0x485cc955.
 //
-// Solidity: function initialize(address _token, address _operator) returns()
+// Solidity: function initialize(_token address, _operator address) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) Initialize(opts *bind.TransactOpts, _token common.Address, _operator common.Address) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "initialize", _token, _operator)
 }
 
 // Initialize is a paid mutator transaction binding the contract method 0x485cc955.
 //
-// Solidity: function initialize(address _token, address _operator) returns()
+// Solidity: function initialize(_token address, _operator address) returns()
 func (_AccountantImplementation *AccountantImplementationSession) Initialize(_token common.Address, _operator common.Address) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.Initialize(&_AccountantImplementation.TransactOpts, _token, _operator)
 }
 
 // Initialize is a paid mutator transaction binding the contract method 0x485cc955.
 //
-// Solidity: function initialize(address _token, address _operator) returns()
+// Solidity: function initialize(_token address, _operator address) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) Initialize(_token common.Address, _operator common.Address) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.Initialize(&_AccountantImplementation.TransactOpts, _token, _operator)
 }
 
 // OpenChannel is a paid mutator transaction binding the contract method 0x0a798f24.
 //
-// Solidity: function openChannel(address _party, address _beneficiary, uint256 _amountToLend) returns()
+// Solidity: function openChannel(_party address, _beneficiary address, _amountToLend uint256) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) OpenChannel(opts *bind.TransactOpts, _party common.Address, _beneficiary common.Address, _amountToLend *big.Int) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "openChannel", _party, _beneficiary, _amountToLend)
 }
 
 // OpenChannel is a paid mutator transaction binding the contract method 0x0a798f24.
 //
-// Solidity: function openChannel(address _party, address _beneficiary, uint256 _amountToLend) returns()
+// Solidity: function openChannel(_party address, _beneficiary address, _amountToLend uint256) returns()
 func (_AccountantImplementation *AccountantImplementationSession) OpenChannel(_party common.Address, _beneficiary common.Address, _amountToLend *big.Int) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.OpenChannel(&_AccountantImplementation.TransactOpts, _party, _beneficiary, _amountToLend)
 }
 
 // OpenChannel is a paid mutator transaction binding the contract method 0x0a798f24.
 //
-// Solidity: function openChannel(address _party, address _beneficiary, uint256 _amountToLend) returns()
+// Solidity: function openChannel(_party address, _beneficiary address, _amountToLend uint256) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) OpenChannel(_party common.Address, _beneficiary common.Address, _amountToLend *big.Int) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.OpenChannel(&_AccountantImplementation.TransactOpts, _party, _beneficiary, _amountToLend)
 }
 
 // RebalanceChannel is a paid mutator transaction binding the contract method 0xefde05ec.
 //
-// Solidity: function rebalanceChannel(bytes32 _channelId) returns()
+// Solidity: function rebalanceChannel(_channelId bytes32) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) RebalanceChannel(opts *bind.TransactOpts, _channelId [32]byte) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "rebalanceChannel", _channelId)
 }
 
 // RebalanceChannel is a paid mutator transaction binding the contract method 0xefde05ec.
 //
-// Solidity: function rebalanceChannel(bytes32 _channelId) returns()
+// Solidity: function rebalanceChannel(_channelId bytes32) returns()
 func (_AccountantImplementation *AccountantImplementationSession) RebalanceChannel(_channelId [32]byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.RebalanceChannel(&_AccountantImplementation.TransactOpts, _channelId)
 }
 
 // RebalanceChannel is a paid mutator transaction binding the contract method 0xefde05ec.
 //
-// Solidity: function rebalanceChannel(bytes32 _channelId) returns()
+// Solidity: function rebalanceChannel(_channelId bytes32) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) RebalanceChannel(_channelId [32]byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.RebalanceChannel(&_AccountantImplementation.TransactOpts, _channelId)
 }
@@ -713,168 +713,168 @@ func (_AccountantImplementation *AccountantImplementationTransactorSession) Reno
 
 // RequestLoanReturn is a paid mutator transaction binding the contract method 0x8f0550cf.
 //
-// Solidity: function requestLoanReturn(address _party, uint256 _nonce, bytes _signature) returns()
+// Solidity: function requestLoanReturn(_party address, _nonce uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) RequestLoanReturn(opts *bind.TransactOpts, _party common.Address, _nonce *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "requestLoanReturn", _party, _nonce, _signature)
 }
 
 // RequestLoanReturn is a paid mutator transaction binding the contract method 0x8f0550cf.
 //
-// Solidity: function requestLoanReturn(address _party, uint256 _nonce, bytes _signature) returns()
+// Solidity: function requestLoanReturn(_party address, _nonce uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationSession) RequestLoanReturn(_party common.Address, _nonce *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.RequestLoanReturn(&_AccountantImplementation.TransactOpts, _party, _nonce, _signature)
 }
 
 // RequestLoanReturn is a paid mutator transaction binding the contract method 0x8f0550cf.
 //
-// Solidity: function requestLoanReturn(address _party, uint256 _nonce, bytes _signature) returns()
+// Solidity: function requestLoanReturn(_party address, _nonce uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) RequestLoanReturn(_party common.Address, _nonce *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.RequestLoanReturn(&_AccountantImplementation.TransactOpts, _party, _nonce, _signature)
 }
 
 // SetBeneficiary is a paid mutator transaction binding the contract method 0x0b3834ea.
 //
-// Solidity: function setBeneficiary(address _party, address _newBeneficiary, uint256 _nonce, bytes _signature) returns()
+// Solidity: function setBeneficiary(_party address, _newBeneficiary address, _nonce uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) SetBeneficiary(opts *bind.TransactOpts, _party common.Address, _newBeneficiary common.Address, _nonce *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "setBeneficiary", _party, _newBeneficiary, _nonce, _signature)
 }
 
 // SetBeneficiary is a paid mutator transaction binding the contract method 0x0b3834ea.
 //
-// Solidity: function setBeneficiary(address _party, address _newBeneficiary, uint256 _nonce, bytes _signature) returns()
+// Solidity: function setBeneficiary(_party address, _newBeneficiary address, _nonce uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationSession) SetBeneficiary(_party common.Address, _newBeneficiary common.Address, _nonce *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.SetBeneficiary(&_AccountantImplementation.TransactOpts, _party, _newBeneficiary, _nonce, _signature)
 }
 
 // SetBeneficiary is a paid mutator transaction binding the contract method 0x0b3834ea.
 //
-// Solidity: function setBeneficiary(address _party, address _newBeneficiary, uint256 _nonce, bytes _signature) returns()
+// Solidity: function setBeneficiary(_party address, _newBeneficiary address, _nonce uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) SetBeneficiary(_party common.Address, _newBeneficiary common.Address, _nonce *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.SetBeneficiary(&_AccountantImplementation.TransactOpts, _party, _newBeneficiary, _nonce, _signature)
 }
 
 // SetFundsDestination is a paid mutator transaction binding the contract method 0x238e130a.
 //
-// Solidity: function setFundsDestination(address _newDestination) returns()
+// Solidity: function setFundsDestination(_newDestination address) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) SetFundsDestination(opts *bind.TransactOpts, _newDestination common.Address) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "setFundsDestination", _newDestination)
 }
 
 // SetFundsDestination is a paid mutator transaction binding the contract method 0x238e130a.
 //
-// Solidity: function setFundsDestination(address _newDestination) returns()
+// Solidity: function setFundsDestination(_newDestination address) returns()
 func (_AccountantImplementation *AccountantImplementationSession) SetFundsDestination(_newDestination common.Address) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.SetFundsDestination(&_AccountantImplementation.TransactOpts, _newDestination)
 }
 
 // SetFundsDestination is a paid mutator transaction binding the contract method 0x238e130a.
 //
-// Solidity: function setFundsDestination(address _newDestination) returns()
+// Solidity: function setFundsDestination(_newDestination address) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) SetFundsDestination(_newDestination common.Address) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.SetFundsDestination(&_AccountantImplementation.TransactOpts, _newDestination)
 }
 
 // SetFundsDestinationByCheque is a paid mutator transaction binding the contract method 0x7c3e6105.
 //
-// Solidity: function setFundsDestinationByCheque(address _newDestination, uint256 _nonce, bytes _signature) returns()
+// Solidity: function setFundsDestinationByCheque(_newDestination address, _nonce uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) SetFundsDestinationByCheque(opts *bind.TransactOpts, _newDestination common.Address, _nonce *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "setFundsDestinationByCheque", _newDestination, _nonce, _signature)
 }
 
 // SetFundsDestinationByCheque is a paid mutator transaction binding the contract method 0x7c3e6105.
 //
-// Solidity: function setFundsDestinationByCheque(address _newDestination, uint256 _nonce, bytes _signature) returns()
+// Solidity: function setFundsDestinationByCheque(_newDestination address, _nonce uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationSession) SetFundsDestinationByCheque(_newDestination common.Address, _nonce *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.SetFundsDestinationByCheque(&_AccountantImplementation.TransactOpts, _newDestination, _nonce, _signature)
 }
 
 // SetFundsDestinationByCheque is a paid mutator transaction binding the contract method 0x7c3e6105.
 //
-// Solidity: function setFundsDestinationByCheque(address _newDestination, uint256 _nonce, bytes _signature) returns()
+// Solidity: function setFundsDestinationByCheque(_newDestination address, _nonce uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) SetFundsDestinationByCheque(_newDestination common.Address, _nonce *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.SetFundsDestinationByCheque(&_AccountantImplementation.TransactOpts, _newDestination, _nonce, _signature)
 }
 
 // SettlePromise is a paid mutator transaction binding the contract method 0xa58b2b71.
 //
-// Solidity: function settlePromise(bytes32 _channelId, uint256 _amount, uint256 _fee, bytes32 _lock, bytes _signature) returns()
+// Solidity: function settlePromise(_channelId bytes32, _amount uint256, _fee uint256, _lock bytes32, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) SettlePromise(opts *bind.TransactOpts, _channelId [32]byte, _amount *big.Int, _fee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "settlePromise", _channelId, _amount, _fee, _lock, _signature)
 }
 
 // SettlePromise is a paid mutator transaction binding the contract method 0xa58b2b71.
 //
-// Solidity: function settlePromise(bytes32 _channelId, uint256 _amount, uint256 _fee, bytes32 _lock, bytes _signature) returns()
+// Solidity: function settlePromise(_channelId bytes32, _amount uint256, _fee uint256, _lock bytes32, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationSession) SettlePromise(_channelId [32]byte, _amount *big.Int, _fee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.SettlePromise(&_AccountantImplementation.TransactOpts, _channelId, _amount, _fee, _lock, _signature)
 }
 
 // SettlePromise is a paid mutator transaction binding the contract method 0xa58b2b71.
 //
-// Solidity: function settlePromise(bytes32 _channelId, uint256 _amount, uint256 _fee, bytes32 _lock, bytes _signature) returns()
+// Solidity: function settlePromise(_channelId bytes32, _amount uint256, _fee uint256, _lock bytes32, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) SettlePromise(_channelId [32]byte, _amount *big.Int, _fee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.SettlePromise(&_AccountantImplementation.TransactOpts, _channelId, _amount, _fee, _lock, _signature)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
-// Solidity: function transferOwnership(address newOwner) returns()
+// Solidity: function transferOwnership(newOwner address) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) TransferOwnership(opts *bind.TransactOpts, newOwner common.Address) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "transferOwnership", newOwner)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
-// Solidity: function transferOwnership(address newOwner) returns()
+// Solidity: function transferOwnership(newOwner address) returns()
 func (_AccountantImplementation *AccountantImplementationSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.TransferOwnership(&_AccountantImplementation.TransactOpts, newOwner)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
-// Solidity: function transferOwnership(address newOwner) returns()
+// Solidity: function transferOwnership(newOwner address) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.TransferOwnership(&_AccountantImplementation.TransactOpts, newOwner)
 }
 
 // UpdateChannelBalance is a paid mutator transaction binding the contract method 0x4e3877c0.
 //
-// Solidity: function updateChannelBalance(bytes32 _channelId, uint256 _nonce, uint256 _newBalance, bytes _signature) returns()
+// Solidity: function updateChannelBalance(_channelId bytes32, _nonce uint256, _newBalance uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) UpdateChannelBalance(opts *bind.TransactOpts, _channelId [32]byte, _nonce *big.Int, _newBalance *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "updateChannelBalance", _channelId, _nonce, _newBalance, _signature)
 }
 
 // UpdateChannelBalance is a paid mutator transaction binding the contract method 0x4e3877c0.
 //
-// Solidity: function updateChannelBalance(bytes32 _channelId, uint256 _nonce, uint256 _newBalance, bytes _signature) returns()
+// Solidity: function updateChannelBalance(_channelId bytes32, _nonce uint256, _newBalance uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationSession) UpdateChannelBalance(_channelId [32]byte, _nonce *big.Int, _newBalance *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.UpdateChannelBalance(&_AccountantImplementation.TransactOpts, _channelId, _nonce, _newBalance, _signature)
 }
 
 // UpdateChannelBalance is a paid mutator transaction binding the contract method 0x4e3877c0.
 //
-// Solidity: function updateChannelBalance(bytes32 _channelId, uint256 _nonce, uint256 _newBalance, bytes _signature) returns()
+// Solidity: function updateChannelBalance(_channelId bytes32, _nonce uint256, _newBalance uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) UpdateChannelBalance(_channelId [32]byte, _nonce *big.Int, _newBalance *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.UpdateChannelBalance(&_AccountantImplementation.TransactOpts, _channelId, _nonce, _newBalance, _signature)
 }
 
 // Withdraw is a paid mutator transaction binding the contract method 0x0bd0ca9a.
 //
-// Solidity: function withdraw(address _beneficiary, uint256 _amount, uint256 _nonce, bytes _signature) returns()
+// Solidity: function withdraw(_beneficiary address, _amount uint256, _nonce uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationTransactor) Withdraw(opts *bind.TransactOpts, _beneficiary common.Address, _amount *big.Int, _nonce *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.contract.Transact(opts, "withdraw", _beneficiary, _amount, _nonce, _signature)
 }
 
 // Withdraw is a paid mutator transaction binding the contract method 0x0bd0ca9a.
 //
-// Solidity: function withdraw(address _beneficiary, uint256 _amount, uint256 _nonce, bytes _signature) returns()
+// Solidity: function withdraw(_beneficiary address, _amount uint256, _nonce uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationSession) Withdraw(_beneficiary common.Address, _amount *big.Int, _nonce *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.Withdraw(&_AccountantImplementation.TransactOpts, _beneficiary, _amount, _nonce, _signature)
 }
 
 // Withdraw is a paid mutator transaction binding the contract method 0x0bd0ca9a.
 //
-// Solidity: function withdraw(address _beneficiary, uint256 _amount, uint256 _nonce, bytes _signature) returns()
+// Solidity: function withdraw(_beneficiary address, _amount uint256, _nonce uint256, _signature bytes) returns()
 func (_AccountantImplementation *AccountantImplementationTransactorSession) Withdraw(_beneficiary common.Address, _amount *big.Int, _nonce *big.Int, _signature []byte) (*types.Transaction, error) {
 	return _AccountantImplementation.Contract.Withdraw(&_AccountantImplementation.TransactOpts, _beneficiary, _amount, _nonce, _signature)
 }
@@ -956,7 +956,7 @@ type AccountantImplementationChannelBalanceUpdated struct {
 
 // FilterChannelBalanceUpdated is a free log retrieval operation binding the contract event 0x8ab5ec6289480eafd419cacb40ffe6863d65ac39e5b3c791b334a2f3b450e7b6.
 //
-// Solidity: event ChannelBalanceUpdated(bytes32 indexed channelId, uint256 amount, uint256 newBalance)
+// Solidity: e ChannelBalanceUpdated(channelId indexed bytes32, amount uint256, newBalance uint256)
 func (_AccountantImplementation *AccountantImplementationFilterer) FilterChannelBalanceUpdated(opts *bind.FilterOpts, channelId [][32]byte) (*AccountantImplementationChannelBalanceUpdatedIterator, error) {
 
 	var channelIdRule []interface{}
@@ -973,7 +973,7 @@ func (_AccountantImplementation *AccountantImplementationFilterer) FilterChannel
 
 // WatchChannelBalanceUpdated is a free log subscription operation binding the contract event 0x8ab5ec6289480eafd419cacb40ffe6863d65ac39e5b3c791b334a2f3b450e7b6.
 //
-// Solidity: event ChannelBalanceUpdated(bytes32 indexed channelId, uint256 amount, uint256 newBalance)
+// Solidity: e ChannelBalanceUpdated(channelId indexed bytes32, amount uint256, newBalance uint256)
 func (_AccountantImplementation *AccountantImplementationFilterer) WatchChannelBalanceUpdated(opts *bind.WatchOpts, sink chan<- *AccountantImplementationChannelBalanceUpdated, channelId [][32]byte) (event.Subscription, error) {
 
 	var channelIdRule []interface{}
@@ -1089,7 +1089,7 @@ type AccountantImplementationChannelBeneficiaryChanged struct {
 
 // FilterChannelBeneficiaryChanged is a free log retrieval operation binding the contract event 0x8756aa559142225f918d7584303ecfe48e75b454f6614d0fae9f0d6ca0a898cc.
 //
-// Solidity: event ChannelBeneficiaryChanged(bytes32 _channelId, address _newBeneficiary)
+// Solidity: e ChannelBeneficiaryChanged(_channelId bytes32, _newBeneficiary address)
 func (_AccountantImplementation *AccountantImplementationFilterer) FilterChannelBeneficiaryChanged(opts *bind.FilterOpts) (*AccountantImplementationChannelBeneficiaryChangedIterator, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.FilterLogs(opts, "ChannelBeneficiaryChanged")
@@ -1101,7 +1101,7 @@ func (_AccountantImplementation *AccountantImplementationFilterer) FilterChannel
 
 // WatchChannelBeneficiaryChanged is a free log subscription operation binding the contract event 0x8756aa559142225f918d7584303ecfe48e75b454f6614d0fae9f0d6ca0a898cc.
 //
-// Solidity: event ChannelBeneficiaryChanged(bytes32 _channelId, address _newBeneficiary)
+// Solidity: e ChannelBeneficiaryChanged(_channelId bytes32, _newBeneficiary address)
 func (_AccountantImplementation *AccountantImplementationFilterer) WatchChannelBeneficiaryChanged(opts *bind.WatchOpts, sink chan<- *AccountantImplementationChannelBeneficiaryChanged) (event.Subscription, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.WatchLogs(opts, "ChannelBeneficiaryChanged")
@@ -1212,7 +1212,7 @@ type AccountantImplementationChannelOpened struct {
 
 // FilterChannelOpened is a free log retrieval operation binding the contract event 0xbe2e1f3a6197dfd16fa6830c4870364b618b8b288c21cbcfa4fdb5d7c6a5e45b.
 //
-// Solidity: event ChannelOpened(bytes32 channelId, uint256 initialBalance)
+// Solidity: e ChannelOpened(channelId bytes32, initialBalance uint256)
 func (_AccountantImplementation *AccountantImplementationFilterer) FilterChannelOpened(opts *bind.FilterOpts) (*AccountantImplementationChannelOpenedIterator, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.FilterLogs(opts, "ChannelOpened")
@@ -1224,7 +1224,7 @@ func (_AccountantImplementation *AccountantImplementationFilterer) FilterChannel
 
 // WatchChannelOpened is a free log subscription operation binding the contract event 0xbe2e1f3a6197dfd16fa6830c4870364b618b8b288c21cbcfa4fdb5d7c6a5e45b.
 //
-// Solidity: event ChannelOpened(bytes32 channelId, uint256 initialBalance)
+// Solidity: e ChannelOpened(channelId bytes32, initialBalance uint256)
 func (_AccountantImplementation *AccountantImplementationFilterer) WatchChannelOpened(opts *bind.WatchOpts, sink chan<- *AccountantImplementationChannelOpened) (event.Subscription, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.WatchLogs(opts, "ChannelOpened")
@@ -1335,7 +1335,7 @@ type AccountantImplementationDestinationChanged struct {
 
 // FilterDestinationChanged is a free log retrieval operation binding the contract event 0xe1a66d77649cf0a57b9937073549f30f1c82bb865aaf066d2f299e37a62c6aad.
 //
-// Solidity: event DestinationChanged(address indexed previousDestination, address indexed newDestination)
+// Solidity: e DestinationChanged(previousDestination indexed address, newDestination indexed address)
 func (_AccountantImplementation *AccountantImplementationFilterer) FilterDestinationChanged(opts *bind.FilterOpts, previousDestination []common.Address, newDestination []common.Address) (*AccountantImplementationDestinationChangedIterator, error) {
 
 	var previousDestinationRule []interface{}
@@ -1356,7 +1356,7 @@ func (_AccountantImplementation *AccountantImplementationFilterer) FilterDestina
 
 // WatchDestinationChanged is a free log subscription operation binding the contract event 0xe1a66d77649cf0a57b9937073549f30f1c82bb865aaf066d2f299e37a62c6aad.
 //
-// Solidity: event DestinationChanged(address indexed previousDestination, address indexed newDestination)
+// Solidity: e DestinationChanged(previousDestination indexed address, newDestination indexed address)
 func (_AccountantImplementation *AccountantImplementationFilterer) WatchDestinationChanged(opts *bind.WatchOpts, sink chan<- *AccountantImplementationDestinationChanged, previousDestination []common.Address, newDestination []common.Address) (event.Subscription, error) {
 
 	var previousDestinationRule []interface{}
@@ -1476,7 +1476,7 @@ type AccountantImplementationFundsWithdrawned struct {
 
 // FilterFundsWithdrawned is a free log retrieval operation binding the contract event 0xa2e147ce2b7cb83d9c07e397bb806f23dd42c42e86ea45e1611d6e50eb1ec8bf.
 //
-// Solidity: event FundsWithdrawned(uint256 amount, address beneficiary)
+// Solidity: e FundsWithdrawned(amount uint256, beneficiary address)
 func (_AccountantImplementation *AccountantImplementationFilterer) FilterFundsWithdrawned(opts *bind.FilterOpts) (*AccountantImplementationFundsWithdrawnedIterator, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.FilterLogs(opts, "FundsWithdrawned")
@@ -1488,7 +1488,7 @@ func (_AccountantImplementation *AccountantImplementationFilterer) FilterFundsWi
 
 // WatchFundsWithdrawned is a free log subscription operation binding the contract event 0xa2e147ce2b7cb83d9c07e397bb806f23dd42c42e86ea45e1611d6e50eb1ec8bf.
 //
-// Solidity: event FundsWithdrawned(uint256 amount, address beneficiary)
+// Solidity: e FundsWithdrawned(amount uint256, beneficiary address)
 func (_AccountantImplementation *AccountantImplementationFilterer) WatchFundsWithdrawned(opts *bind.WatchOpts, sink chan<- *AccountantImplementationFundsWithdrawned) (event.Subscription, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.WatchLogs(opts, "FundsWithdrawned")
@@ -1598,7 +1598,7 @@ type AccountantImplementationLoanReturnRequestInvalidated struct {
 
 // FilterLoanReturnRequestInvalidated is a free log retrieval operation binding the contract event 0x459a082750c4b9482310713592dc048ce1749c5dcc146964c240cab6f118b00c.
 //
-// Solidity: event LoanReturnRequestInvalidated(bytes32 channelId)
+// Solidity: e LoanReturnRequestInvalidated(channelId bytes32)
 func (_AccountantImplementation *AccountantImplementationFilterer) FilterLoanReturnRequestInvalidated(opts *bind.FilterOpts) (*AccountantImplementationLoanReturnRequestInvalidatedIterator, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.FilterLogs(opts, "LoanReturnRequestInvalidated")
@@ -1610,7 +1610,7 @@ func (_AccountantImplementation *AccountantImplementationFilterer) FilterLoanRet
 
 // WatchLoanReturnRequestInvalidated is a free log subscription operation binding the contract event 0x459a082750c4b9482310713592dc048ce1749c5dcc146964c240cab6f118b00c.
 //
-// Solidity: event LoanReturnRequestInvalidated(bytes32 channelId)
+// Solidity: e LoanReturnRequestInvalidated(channelId bytes32)
 func (_AccountantImplementation *AccountantImplementationFilterer) WatchLoanReturnRequestInvalidated(opts *bind.WatchOpts, sink chan<- *AccountantImplementationLoanReturnRequestInvalidated) (event.Subscription, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.WatchLogs(opts, "LoanReturnRequestInvalidated")
@@ -1721,7 +1721,7 @@ type AccountantImplementationLoanReturnRequested struct {
 
 // FilterLoanReturnRequested is a free log retrieval operation binding the contract event 0x4571189cf595bf93c9ed490773e63e0c8f3722da69fe4be240664f18c42e238e.
 //
-// Solidity: event LoanReturnRequested(bytes32 channelId, uint256 timelock)
+// Solidity: e LoanReturnRequested(channelId bytes32, timelock uint256)
 func (_AccountantImplementation *AccountantImplementationFilterer) FilterLoanReturnRequested(opts *bind.FilterOpts) (*AccountantImplementationLoanReturnRequestedIterator, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.FilterLogs(opts, "LoanReturnRequested")
@@ -1733,7 +1733,7 @@ func (_AccountantImplementation *AccountantImplementationFilterer) FilterLoanRet
 
 // WatchLoanReturnRequested is a free log subscription operation binding the contract event 0x4571189cf595bf93c9ed490773e63e0c8f3722da69fe4be240664f18c42e238e.
 //
-// Solidity: event LoanReturnRequested(bytes32 channelId, uint256 timelock)
+// Solidity: e LoanReturnRequested(channelId bytes32, timelock uint256)
 func (_AccountantImplementation *AccountantImplementationFilterer) WatchLoanReturnRequested(opts *bind.WatchOpts, sink chan<- *AccountantImplementationLoanReturnRequested) (event.Subscription, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.WatchLogs(opts, "LoanReturnRequested")
@@ -1845,7 +1845,7 @@ type AccountantImplementationLoanReturned struct {
 
 // FilterLoanReturned is a free log retrieval operation binding the contract event 0xb70dec395fc88ab03e8110ade7250fc34d06b99ceeb91032beb0f8245914ac36.
 //
-// Solidity: event LoanReturned(bytes32 channelId, address beneficiary, uint256 amount)
+// Solidity: e LoanReturned(channelId bytes32, beneficiary address, amount uint256)
 func (_AccountantImplementation *AccountantImplementationFilterer) FilterLoanReturned(opts *bind.FilterOpts) (*AccountantImplementationLoanReturnedIterator, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.FilterLogs(opts, "LoanReturned")
@@ -1857,7 +1857,7 @@ func (_AccountantImplementation *AccountantImplementationFilterer) FilterLoanRet
 
 // WatchLoanReturned is a free log subscription operation binding the contract event 0xb70dec395fc88ab03e8110ade7250fc34d06b99ceeb91032beb0f8245914ac36.
 //
-// Solidity: event LoanReturned(bytes32 channelId, address beneficiary, uint256 amount)
+// Solidity: e LoanReturned(channelId bytes32, beneficiary address, amount uint256)
 func (_AccountantImplementation *AccountantImplementationFilterer) WatchLoanReturned(opts *bind.WatchOpts, sink chan<- *AccountantImplementationLoanReturned) (event.Subscription, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.WatchLogs(opts, "LoanReturned")
@@ -1968,7 +1968,7 @@ type AccountantImplementationNewLoan struct {
 
 // FilterNewLoan is a free log retrieval operation binding the contract event 0x9839fd1896801c6864456fe7cbd098b1e4a81dba19536764cea53a1fb07ed239.
 //
-// Solidity: event NewLoan(bytes32 channelId, uint256 loadAmount)
+// Solidity: e NewLoan(channelId bytes32, loadAmount uint256)
 func (_AccountantImplementation *AccountantImplementationFilterer) FilterNewLoan(opts *bind.FilterOpts) (*AccountantImplementationNewLoanIterator, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.FilterLogs(opts, "NewLoan")
@@ -1980,7 +1980,7 @@ func (_AccountantImplementation *AccountantImplementationFilterer) FilterNewLoan
 
 // WatchNewLoan is a free log subscription operation binding the contract event 0x9839fd1896801c6864456fe7cbd098b1e4a81dba19536764cea53a1fb07ed239.
 //
-// Solidity: event NewLoan(bytes32 channelId, uint256 loadAmount)
+// Solidity: e NewLoan(channelId bytes32, loadAmount uint256)
 func (_AccountantImplementation *AccountantImplementationFilterer) WatchNewLoan(opts *bind.WatchOpts, sink chan<- *AccountantImplementationNewLoan) (event.Subscription, error) {
 
 	logs, sub, err := _AccountantImplementation.contract.WatchLogs(opts, "NewLoan")
@@ -2091,7 +2091,7 @@ type AccountantImplementationOwnershipTransferred struct {
 
 // FilterOwnershipTransferred is a free log retrieval operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
 //
-// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
+// Solidity: e OwnershipTransferred(previousOwner indexed address, newOwner indexed address)
 func (_AccountantImplementation *AccountantImplementationFilterer) FilterOwnershipTransferred(opts *bind.FilterOpts, previousOwner []common.Address, newOwner []common.Address) (*AccountantImplementationOwnershipTransferredIterator, error) {
 
 	var previousOwnerRule []interface{}
@@ -2112,7 +2112,7 @@ func (_AccountantImplementation *AccountantImplementationFilterer) FilterOwnersh
 
 // WatchOwnershipTransferred is a free log subscription operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
 //
-// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
+// Solidity: e OwnershipTransferred(previousOwner indexed address, newOwner indexed address)
 func (_AccountantImplementation *AccountantImplementationFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, sink chan<- *AccountantImplementationOwnershipTransferred, previousOwner []common.Address, newOwner []common.Address) (event.Subscription, error) {
 
 	var previousOwnerRule []interface{}
@@ -2234,7 +2234,7 @@ type AccountantImplementationPromiseSettled struct {
 
 // FilterPromiseSettled is a free log retrieval operation binding the contract event 0xa5a1f05785a942c5f624cee545c68394881a83bcaf21a83f4d76a9e8240a5668.
 //
-// Solidity: event PromiseSettled(bytes32 indexed channelId, address beneficiary, uint256 amount, uint256 totalSettled)
+// Solidity: e PromiseSettled(channelId indexed bytes32, beneficiary address, amount uint256, totalSettled uint256)
 func (_AccountantImplementation *AccountantImplementationFilterer) FilterPromiseSettled(opts *bind.FilterOpts, channelId [][32]byte) (*AccountantImplementationPromiseSettledIterator, error) {
 
 	var channelIdRule []interface{}
@@ -2251,7 +2251,7 @@ func (_AccountantImplementation *AccountantImplementationFilterer) FilterPromise
 
 // WatchPromiseSettled is a free log subscription operation binding the contract event 0xa5a1f05785a942c5f624cee545c68394881a83bcaf21a83f4d76a9e8240a5668.
 //
-// Solidity: event PromiseSettled(bytes32 indexed channelId, address beneficiary, uint256 amount, uint256 totalSettled)
+// Solidity: e PromiseSettled(channelId indexed bytes32, beneficiary address, amount uint256, totalSettled uint256)
 func (_AccountantImplementation *AccountantImplementationFilterer) WatchPromiseSettled(opts *bind.WatchOpts, sink chan<- *AccountantImplementationPromiseSettled, channelId [][32]byte) (event.Subscription, error) {
 
 	var channelIdRule []interface{}
