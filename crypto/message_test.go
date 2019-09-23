@@ -33,10 +33,10 @@ func TestRecoverConsumerIdentity(t *testing.T) {
 	assert.Equal(t, expectedSigner, recoveredSigner)
 }
 
-func TestValidateExchangeMessage(t *testing.T) {
+func TestExchangeMessageValidation(t *testing.T) {
 	message := getExchangeMessage()
 	expectedSigner := common.HexToAddress("0x0d71535454f4fc153e545c3fc7cfc412ad7782c8")
-	assert.True(t, message.ValidateExchangeMessage(expectedSigner))
+	assert.True(t, message.IsMessageValid(expectedSigner))
 }
 
 func TestCreateExchangeMessage(t *testing.T) {

@@ -40,10 +40,10 @@ func TestCreateSignature(t *testing.T) {
 	assert.Equal(t, expectedSignature, signature)
 }
 
-func TestValidatePromise(t *testing.T) {
+func TestPromiseValidation(t *testing.T) {
 	promise := getPromise()
 	expectedSigner := common.HexToAddress("0x0d71535454f4fc153e545c3fc7cfc412ad7782c8")
-	assert.True(t, promise.ValidatePromise(expectedSigner))
+	assert.True(t, promise.IsPromiseValid(expectedSigner))
 }
 
 func TestRecoverSigner(t *testing.T) {
