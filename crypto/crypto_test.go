@@ -20,6 +20,8 @@ package crypto
 import (
 	"testing"
 
+	"github.com/ethereum/go-ethereum/common"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -49,4 +51,26 @@ func TestGenerateChannelAddress(t *testing.T) {
 	channelAddress, err := GenerateChannelAddress(identity, registry, channelImplementation)
 	assert.Equal(t, expectedChannelAddress, channelAddress)
 	assert.Nil(t, err)
+}
+
+func TestGenerateProviderChannelID(t *testing.T) {
+	providerIdentity := "0x761f2bb3e7AD6385a4c7833c5a26a8Ddfdabf9f3"
+	accountantAddress := "0x676b9a084aC11CEeF680AF6FFbE99b24106F47e7"
+	expectedChannelID := "0xfebeba54c56610475ae3432199515146096e2d9c5b7bc2b3865c4b1967cf01cc"
+
+	_, err := GenerateProviderChannelID("Identity", "Accountant")
+	assert.EqualError(t, err, "Given providerIdentity and accountantAddress params have to be hex addresses")
+
+	channelID, err := GenerateProviderChannelID(providerIdentity, accountantAddress)
+	assert.NoError(t, err)
+	assert.Equal(t, expectedChannelID, channelID)
+}
+
+func TestGenerateProviderChannelIDBytes(t *testing.T) {
+	providerIdentity := common.HexToAddress("0x761f2bb3e7AD6385a4c7833c5a26a8Ddfdabf9f3")
+	accountantAddress := common.HexToAddress("0x676b9a084aC11CEeF680AF6FFbE99b24106F47e7")
+	expectedChannelID := []byte{0xfe, 0xbe, 0xba, 0x54, 0xc5, 0x66, 0x10, 0x47, 0x5a, 0xe3, 0x43, 0x21, 0x99, 0x51, 0x51, 0x46, 0x9, 0x6e, 0x2d, 0x9c, 0x5b, 0x7b, 0xc2, 0xb3, 0x86, 0x5c, 0x4b, 0x19, 0x67, 0xcf, 0x1, 0xcc}
+
+	channelID := GenerateProviderChannelIDBytes(providerIdentity, accountantAddress)
+	assert.Equal(t, expectedChannelID, channelID)
 }

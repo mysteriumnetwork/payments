@@ -71,6 +71,28 @@ func GenerateChannelAddress(identity string, registry string, channelImplementat
 	return deriveCreate2Address(salt, registry, channelImplementation)
 }
 
+// GenerateProviderChannelID generated channelID for provider channels from given identity hash
+func GenerateProviderChannelID(providerIdentity, accountantAddress string) (string, error) {
+	if !isHexAddress(providerIdentity) || !isHexAddress(accountantAddress) {
+		return "", errors.New("Given providerIdentity and accountantAddress params have to be hex addresses")
+	}
+
+	channelID := crypto.Keccak256(append(
+		common.HexToAddress(providerIdentity).Bytes(),
+		common.HexToAddress(accountantAddress).Bytes()...,
+	))
+
+	return "0x" + common.Bytes2Hex(channelID), nil
+}
+
+// GenerateProviderChannelIDBytes received provider and accountnat Address
+func GenerateProviderChannelIDBytes(providerIdentity, accountantAddress common.Address) []byte {
+	return crypto.Keccak256(append(
+		providerIdentity.Bytes(),
+		accountantAddress.Bytes()...,
+	))
+}
+
 // GenerateAccountantAddress generate accountant address from given accountant operator address
 func GenerateAccountantAddress(operator string, registry string, accountantImplementation string) (address string, err error) {
 	if !isHexAddress(operator) || !isHexAddress(registry) || !isHexAddress(accountantImplementation) {
