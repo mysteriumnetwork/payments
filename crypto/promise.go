@@ -95,7 +95,7 @@ func (p Promise) GetSignatureBytesRaw() []byte {
 	return signBytes
 }
 
-// ValidatePromise validates if given promise params are properly signed
+// IsPromiseValid validates if given promise params are properly signed
 func (p Promise) IsPromiseValid(expectedSigner common.Address) bool {
 	signature := p.GetSignatureBytesRaw()
 	err := ReformatSignatureVForRecovery(signature)

@@ -115,7 +115,7 @@ func (m ExchangeMessage) RecoverConsumerIdentity() (common.Address, error) {
 	return RecoverAddress(m.GetMessage(), signature)
 }
 
-// ValidateExchangeMessage validates if given exchange message was signed by expected identity
+// IsMessageValid validates if given exchange message was signed by expected identity
 func (m ExchangeMessage) IsMessageValid(expectedSigner common.Address) bool {
 	recoveredSigner, err := m.RecoverConsumerIdentity()
 	if err != nil {
