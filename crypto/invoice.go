@@ -36,7 +36,7 @@ type Invoice struct {
 // CreateInvoice creates new invoice
 func CreateInvoice(agreementID, agreementTotal, fee uint64, r []byte) Invoice {
 	if r == nil {
-		r = make([]byte, 64)
+		r = make([]byte, 32)
 		rand.Read(r)
 	}
 
