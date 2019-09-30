@@ -20,34 +20,50 @@ package crypto
 import (
 	"encoding/hex"
 	"math/big"
-	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/pkg/errors"
 )
 
 // Promise is payment promise object
 type Promise struct {
-	ChannelID string
+	ChannelID []byte
 	Amount    uint64
 	Fee       uint64
-	Hashlock  string
-	R         string
-	Signature string
+	Hashlock  []byte
+	R         []byte
+	Signature []byte
 }
 
-// CreatePromise creates new promise
+// CreatePromise creates new payment promise
 func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string, ks *keystore.KeyStore, signer common.Address) (*Promise, error) {
-	// TODO validate channelID, it have top be proper address, or request here address already
+	if hasHexPrefix(channelID) {
+		channelID = channelID[2:]
+	}
+
+	if !isHex(channelID) || !isHex(hashlock) {
+		return nil, errors.New("channelID and hashlock have to be proper hex strings")
+	}
+
+	chID, err := hex.DecodeString(channelID)
+	if err != nil {
+		return nil, errors.Wrap(err, "Problem in decoding channelID")
+	}
+
+	hl, err := hex.DecodeString(hashlock)
+	if err != nil {
+		return nil, errors.Wrap(err, "Problem in decoding hashlock")
+	}
 
 	promise := Promise{
-		ChannelID: channelID,
+		ChannelID: chID,
 		Amount:    amount,
 		Fee:       fee,
-		Hashlock:  hashlock,
+		Hashlock:  hl,
 	}
 
 	signature, err := promise.CreateSignature(ks, signer)
@@ -56,20 +72,18 @@ func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string,
 	}
 
 	ReformatSignatureVForBC(signature)
-	promise.Signature = hex.EncodeToString(signature)
+	promise.Signature = signature
 
 	return &promise, nil
 }
 
 // GetMessage forms the message of payment promise
 func (p Promise) GetMessage() []byte {
-	hashlock, _ := hex.DecodeString(p.Hashlock)
-
 	message := []byte{}
-	message = append(message, common.HexToAddress(p.ChannelID).Bytes()...)
+	message = append(message, p.ChannelID...)
 	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(p.Amount)), 32)...)
 	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(p.Fee)), 32)...)
-	message = append(message, hashlock...)
+	message = append(message, Pad(p.Hashlock, 32)...)
 	return message
 }
 
@@ -88,22 +102,19 @@ func (p Promise) CreateSignature(ks *keystore.KeyStore, signer common.Address) (
 	)
 }
 
-// GetSignatureBytesRaw returns the unadulterated bytes of the signature
-func (p Promise) GetSignatureBytesRaw() []byte {
-	signature := strings.TrimPrefix(p.Signature, "0x")
-	signBytes := common.Hex2Bytes(signature)
-	return signBytes
+// GetSignatureHexString returns signature in hex sting format
+func (p Promise) GetSignatureHexString() string {
+	return "0x" + hex.EncodeToString(p.Signature)
 }
 
 // IsPromiseValid validates if given promise params are properly signed
 func (p Promise) IsPromiseValid(expectedSigner common.Address) bool {
-	signature := p.GetSignatureBytesRaw()
-	err := ReformatSignatureVForRecovery(signature)
+	err := ReformatSignatureVForRecovery(p.Signature)
 	if err != nil {
 		return false
 	}
 
-	recoveredSigner, err := RecoverAddress(p.GetMessage(), signature)
+	recoveredSigner, err := RecoverAddress(p.GetMessage(), p.Signature)
 	if err != nil {
 		return false
 	}
@@ -113,7 +124,6 @@ func (p Promise) IsPromiseValid(expectedSigner common.Address) bool {
 
 // RecoverSigner recovers signer address out of promise signature
 func (p Promise) RecoverSigner() (common.Address, error) {
-	signature := p.GetSignatureBytesRaw()
-	ReformatSignatureVForRecovery(signature)
-	return RecoverAddress(p.GetMessage(), signature)
+	ReformatSignatureVForRecovery(p.Signature)
+	return RecoverAddress(p.GetMessage(), p.Signature)
 }
