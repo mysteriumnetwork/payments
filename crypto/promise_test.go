@@ -93,6 +93,23 @@ func TestRecoverSigner(t *testing.T) {
 	assert.Equal(t, expectedSigner, recoveredSigner)
 }
 
+// This test ensures that promise validation functions will not mutate original signature
+func TestValidationAndRecoveryImmutability(t *testing.T) {
+	promise := getPromise("consumer")
+
+	originalSignature := make([]byte, 65)
+	copy(originalSignature, promise.Signature)
+
+	// Ensure that IsPromiseValid will not mutate original signature
+	expectedSigner := common.HexToAddress("0xf53acdd584ccb85ee4ec1590007ad3c16fdff057")
+	promise.IsPromiseValid(expectedSigner)
+	assert.Equal(t, originalSignature, promise.Signature)
+
+	// Ensure that RecoverSigner will not mutate original signature
+	promise.RecoverSigner()
+	assert.Equal(t, originalSignature, promise.Signature)
+}
+
 func TestCreatePromise(t *testing.T) {
 	dir, ks := tmpKeyStore(t, false)
 	defer os.RemoveAll(dir)
