@@ -109,12 +109,15 @@ func (p Promise) GetSignatureHexString() string {
 
 // IsPromiseValid validates if given promise params are properly signed
 func (p Promise) IsPromiseValid(expectedSigner common.Address) bool {
-	err := ReformatSignatureVForRecovery(p.Signature)
+	sig := make([]byte, 65)
+	copy(sig, p.Signature)
+
+	err := ReformatSignatureVForRecovery(sig)
 	if err != nil {
 		return false
 	}
 
-	recoveredSigner, err := RecoverAddress(p.GetMessage(), p.Signature)
+	recoveredSigner, err := RecoverAddress(p.GetMessage(), sig)
 	if err != nil {
 		return false
 	}
@@ -124,6 +127,9 @@ func (p Promise) IsPromiseValid(expectedSigner common.Address) bool {
 
 // RecoverSigner recovers signer address out of promise signature
 func (p Promise) RecoverSigner() (common.Address, error) {
-	ReformatSignatureVForRecovery(p.Signature)
-	return RecoverAddress(p.GetMessage(), p.Signature)
+	sig := make([]byte, 65)
+	copy(sig, p.Signature)
+
+	ReformatSignatureVForRecovery(sig)
+	return RecoverAddress(p.GetMessage(), sig)
 }
