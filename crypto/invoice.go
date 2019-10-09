@@ -28,13 +28,13 @@ import (
 type Invoice struct {
 	AgreementID    uint64
 	AgreementTotal uint64
-	Fee            uint64
+	TransactorFee  uint64
 	Hashlock       string
 	Provider       string
 }
 
 // CreateInvoice creates new invoice
-func CreateInvoice(agreementID, agreementTotal, fee uint64, r []byte) Invoice {
+func CreateInvoice(agreementID, agreementTotal, transactorFee uint64, r []byte) Invoice {
 	if r == nil {
 		r = make([]byte, 32)
 		rand.Read(r)
@@ -43,7 +43,7 @@ func CreateInvoice(agreementID, agreementTotal, fee uint64, r []byte) Invoice {
 	return Invoice{
 		AgreementID:    agreementID,
 		AgreementTotal: agreementTotal,
-		Fee:            fee,
+		TransactorFee:  transactorFee,
 		Hashlock:       hex.EncodeToString(crypto.Keccak256(r)),
 	}
 }
