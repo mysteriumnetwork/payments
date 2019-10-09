@@ -40,7 +40,7 @@ type ExchangeMessage struct {
 
 // CreateExchangeMessage creates new exchange message with it's promise
 func CreateExchangeMessage(invoice Invoice, promiseAmount uint64, channelID string, ks *keystore.KeyStore, signer common.Address) (*ExchangeMessage, error) {
-	promise, err := CreatePromise(channelID, promiseAmount, invoice.Fee, invoice.Hashlock, ks, signer)
+	promise, err := CreatePromise(channelID, promiseAmount, invoice.TransactorFee, invoice.Hashlock, ks, signer)
 	if err != nil {
 		return nil, err
 	}

@@ -53,21 +53,22 @@ func deriveCreate2Address(salt string, msgSender string, implementation string) 
 
 	bytecode, _ := GetProxyCode(ensureNoPrefix(implementation))
 
-	input, _ := hex.DecodeString("ff" + ensureNoPrefix(msgSender) + salt + common.Bytes2Hex(crypto.Keccak256(bytecode)))
+	input, _ := hex.DecodeString("ff" + ensureNoPrefix(msgSender) + ensureNoPrefix(salt) + common.Bytes2Hex(crypto.Keccak256(bytecode)))
 	return "0x" + common.Bytes2Hex(crypto.Keccak256(input))[24:], nil
 }
 
 // GenerateChannelAddress generate channel address from given identity hash
-func GenerateChannelAddress(identity string, registry string, channelImplementation string) (address string, err error) {
+func GenerateChannelAddress(identity, accountant, registry, channelImplementation string) (address string, err error) {
 	if !isHexAddress(identity) || !isHexAddress(registry) || !isHexAddress(channelImplementation) {
 		return "", errors.New("Given identity, registry and channelImplementation params have to be hex addresses")
 	}
 
-	salt, err := toBytes32(identity)
+	saltBytes, err := hex.DecodeString(ensureNoPrefix(identity) + ensureNoPrefix(accountant))
 	if err != nil {
 		return "", err
 	}
 
+	salt := hex.EncodeToString(crypto.Keccak256(saltBytes))
 	return deriveCreate2Address(salt, registry, channelImplementation)
 }
 
