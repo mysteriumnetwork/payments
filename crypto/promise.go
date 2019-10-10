@@ -45,6 +45,10 @@ func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string,
 		channelID = channelID[2:]
 	}
 
+	if hasHexPrefix(hashlock) {
+		hashlock = hashlock[2:]
+	}
+
 	if !isHex(channelID) || !isHex(hashlock) {
 		return nil, errors.New("channelID and hashlock have to be proper hex strings")
 	}
