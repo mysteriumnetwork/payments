@@ -15,13 +15,13 @@ func getExchangeMessage() ExchangeMessage {
 		AgreementID:    uint64(1),
 		AgreementTotal: uint64(1401),
 		Provider:       "0xf10021ba3b10d023e671668d20daeff821561d09",
-		Signature:      "a7a201c9ec67d5b627cda20196f80a86e9e03c9dd9e8224a73470605ef40494847dbf5f6d2701c58d9093294fc5cfdbd98e85331c191d49cd1da29d96b0c10f81c",
+		Signature:      "d44920d4e0bcb96e836f0731f168e862a9efcd4e72dd093141a3c95205ba6cc115e23fcbfb8625e219be4255e0f9597ef55699d13a207a21881378329b38d0b31c",
 	}
 }
 
 func TestGetMessageHash(t *testing.T) {
 	message := getExchangeMessage()
-	expectedHash, _ := hex.DecodeString("f0fcbf8b48bd5b10696113c7f51cf5b06f16e89cfb7d3ebae58dfd9612234919")
+	expectedHash, _ := hex.DecodeString("fcfeaa61ec8cc9328725b7829c28389457eb0dc65b4daf8ee1e974f213ce6da1")
 	assert.Equal(t, expectedHash, message.GetMessageHash())
 }
 
