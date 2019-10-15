@@ -84,7 +84,7 @@ func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string,
 // GetMessage forms the message of payment promise
 func (p Promise) GetMessage() []byte {
 	message := []byte{}
-	message = append(message, p.ChannelID...)
+	message = append(message, Pad(p.ChannelID, 32)...)
 	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(p.Amount)), 32)...)
 	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(p.Fee)), 32)...)
 	message = append(message, Pad(p.Hashlock, 32)...)

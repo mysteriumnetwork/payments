@@ -16,11 +16,11 @@ import (
 
 func TestGetHash(t *testing.T) {
 	promise := getPromise("provider")
-	expectedHash, _ := hex.DecodeString("8ca6e18427321051653d12a19cbf9e08a13e20b46e840c2a608603c1a67e3750")
+	expectedHash, _ := hex.DecodeString("ac65e143143128d390418aa4ac6406266a3768e59430c5f649c9f9dda72a36a0")
 	assert.Equal(t, expectedHash, promise.GetHash())
 
 	promise = getPromise("consumer")
-	expectedHash, _ = hex.DecodeString("3aa5d7e7d36677d92c9392df57694477e70875f52ee3a735a8ca9c9954df4e22")
+	expectedHash, _ = hex.DecodeString("9e5ed67e06c3a0ce87b96b57a3a6e7d4b0bde971a066e51d4d5d196a07713d07")
 	assert.Equal(t, expectedHash, promise.GetHash())
 }
 
@@ -28,7 +28,7 @@ func TestGetSignatureHex(t *testing.T) {
 	promise := getPromise("provider")
 	signature := promise.GetSignatureHexString()
 
-	expectedSignature := "0xd893cb1a6e737ab99518811d18c9310c5478100107c35e60e12f673c5e29ea447da5c26a5f5f3dd6560fa77b4b52df66287eb7b90c9d57cdf91fe5270458701f1c"
+	expectedSignature := "0xeb56461cba34ee3447c938b4c267b9a78fd3b5f28e5ff5d3f473e7553ddee6595d2b09e65ba29c5eb77b10e1c888a304a0e14f3ca4fe9970af0602d0bc3d48d51c"
 	assert.Equal(t, expectedSignature, signature)
 }
 
@@ -208,16 +208,16 @@ func getParams(userType string) Params {
 	fee := uint64(0)
 	provider := common.HexToAddress("0xf10021ba3b10d023e671668d20daeff821561d09")
 	hashlock, _ := hex.DecodeString("4e8444e4bd5721ba00ceb2c6c180c21b2ae43e590172f1b39e51f46312243633")
-	messageSig := "a7a201c9ec67d5b627cda20196f80a86e9e03c9dd9e8224a73470605ef40494847dbf5f6d2701c58d9093294fc5cfdbd98e85331c191d49cd1da29d96b0c10f81c"
+	messageSig := "d44920d4e0bcb96e836f0731f168e862a9efcd4e72dd093141a3c95205ba6cc115e23fcbfb8625e219be4255e0f9597ef55699d13a207a21881378329b38d0b31c"
 
 	if userType == "consumer" {
-		channelID, _ = hex.DecodeString("2E9A53c8eECBd8093a079Eb23676eCdeee04D889")
-		promiseSig, _ = hex.DecodeString("94ff709867525f27b6a5bab7b6171cf994f21b7b2ed310c7385f4a49cc88ac9001f19ada1b30a7675c521b425b3c56ec3ea351b6571da2850783876aeffa05b41b")
+		channelID, _ = hex.DecodeString("0000000000000000000000009ec6fd7aa414d26f65a22e333c1bfd02b5208bde")
+		promiseSig, _ = hex.DecodeString("848fae23369a9b97430ca5f908b11b54931b2e51e4ba541134f800a8f396eafb1d05594d262912071584af48e755cef038089a78d8520bd658d85313dd523a091c")
 	}
 
 	if userType == "provider" {
-		channelID, _ = hex.DecodeString("b32af43608878c7169d6973da7f483c934cd455891b13b1a330ead47c57e8213")
-		promiseSig, _ = hex.DecodeString("d893cb1a6e737ab99518811d18c9310c5478100107c35e60e12f673c5e29ea447da5c26a5f5f3dd6560fa77b4b52df66287eb7b90c9d57cdf91fe5270458701f1c")
+		channelID, _ = hex.DecodeString("b583afafc3d2c5b9d5cac0f01212bbd2054c385649ca13f034032563be4381ca")
+		promiseSig, _ = hex.DecodeString("eb56461cba34ee3447c938b4c267b9a78fd3b5f28e5ff5d3f473e7553ddee6595d2b09e65ba29c5eb77b10e1c888a304a0e14f3ca4fe9970af0602d0bc3d48d51c")
 	}
 
 	return Params{
