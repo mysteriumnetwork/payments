@@ -71,6 +71,7 @@
     "accounts",
     "accounts/abi",
     "accounts/abi/bind",
+    "accounts/abi/bind/backends",
     "accounts/external",
     "accounts/keystore",
     "accounts/scwallet",
@@ -100,6 +101,8 @@
     "crypto/ecies",
     "crypto/secp256k1",
     "eth/downloader",
+    "eth/filters",
+    "ethclient",
     "ethdb",
     "ethdb/leveldb",
     "ethdb/memorydb",
@@ -140,6 +143,14 @@
   pruneopts = "UT"
   revision = "259ab82a6cad3992b4e21ff5cac294ccb06474bc"
   version = "v1.7.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:1ba1d79f2810270045c328ae5d674321db34e3aae468eb4233883b473c5c0467"
+  name = "github.com/golang/glog"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "23def4e6c14b4da8ac2ed8007337bc5eb5007998"
 
 [[projects]]
   digest = "1:500eb6e1e42991b51d2cc0c5bc9e47043f7eec8fe4a9b100b85abf49cfb910db"
@@ -202,6 +213,19 @@
   pruneopts = "UT"
   revision = "c9cfead9f2a36ddf3daa40ba269aa7f4bbba6b62"
   version = "v1.0.1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:a70b77747a648d33962db2393796a89708af3b98f5710e15063e7547e0e32dba"
+  name = "github.com/joincivil/go-common"
+  packages = [
+    "pkg/eth",
+    "pkg/generated/contract",
+    "pkg/jobs",
+    "pkg/time",
+  ]
+  pruneopts = "UT"
+  revision = "88ecdf41b6b6318c12974c020b6bf6a3ec602d6b"
 
 [[projects]]
   branch = "master"
@@ -437,6 +461,7 @@
     "github.com/ethereum/go-ethereum/core/types",
     "github.com/ethereum/go-ethereum/crypto",
     "github.com/ethereum/go-ethereum/event",
+    "github.com/joincivil/go-common/pkg/eth",
     "github.com/pkg/errors",
     "github.com/stretchr/testify/assert",
   ]
