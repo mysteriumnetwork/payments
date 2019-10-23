@@ -26,11 +26,15 @@
 
 [[constraint]]
   name = "github.com/ethereum/go-ethereum"
-  version = "=1.8.23"
+  version = "=1.9.6"
 
 [[constraint]]
   name = "github.com/stretchr/testify"
   version = "1.2.1"
+
+[[override]]
+  name = "github.com/syndtr/goleveldb"
+  revision = "758128399b1df3a87e92df6c26c1d2063da8fabe"
 
 [prune]
   go-tests = true

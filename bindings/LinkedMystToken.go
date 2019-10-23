@@ -17,11 +17,15 @@
 
 package bindings
 
-/*
- * Tool for binding smart contract abis/bytecode from github repo to go lang
- * List of smart contracts are json files which are looked up in artifacts attached to github release tag
- * Exact contracts which are needed (and their deployment order) can be
- * looked up in migration script here: https://github.com/mysteriumnetwork/payments-smart-contracts/blob/master/migrations/2_deploy_contracts.js
- */
+import (
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/joincivil/go-common/pkg/eth"
+)
 
-//go:generate go run bindings/abi/abigen.go --githubrepo=mysteriumnetwork/payments-smart-contracts -githubrelease=v0.4.5 --contracts=SafeMathLib.json,MystToken.json,MystDEX.json,ChannelImplementation.json,AccountantImplementation.json,Registry.json --out=bindings --pkg=bindings
+// DeployLinkedMystToken deploys the myst token with the provided links.
+// Links should come in the map, via a format "Name":address.
+func DeployLinkedMystToken(opts *bind.TransactOpts, backend bind.ContractBackend, links map[string]common.Address) (common.Address, *types.Transaction, *bind.BoundContract, error) {
+	return eth.DeployContractWithLinks(opts, backend, MystTokenABI, MystTokenBin, links)
+}
