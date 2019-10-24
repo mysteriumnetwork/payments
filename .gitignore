@@ -4,3 +4,4 @@
 **/geth.ipc
 vendor
 build
+.vendor-new
