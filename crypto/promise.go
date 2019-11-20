@@ -39,7 +39,7 @@ type Promise struct {
 	Signature []byte
 }
 
-// CreatePromise creates new payment promise
+// CreatePromise creates and signs new payment promise
 func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string, ks *keystore.KeyStore, signer common.Address) (*Promise, error) {
 	if hasHexPrefix(channelID) {
 		channelID = channelID[2:]
@@ -79,6 +79,59 @@ func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string,
 	promise.Signature = signature
 
 	return &promise, nil
+}
+
+// NewPromise will create new promise,
+// signature can be empty and be created later using `Sign()` method.
+func NewPromise(channelID string, amount uint64, fee uint64, preimage string, signature string) (*Promise, error) {
+	if hasHexPrefix(channelID) {
+		channelID = channelID[2:]
+	}
+
+	if hasHexPrefix(preimage) {
+		preimage = preimage[2:]
+	}
+
+	chID, err := hex.DecodeString(channelID)
+	if err != nil {
+		return nil, errors.Wrap(err, "Problem in decoding channelID")
+	}
+
+	r, err := hex.DecodeString(preimage)
+	if err != nil {
+		return nil, errors.Wrap(err, "Problem in decoding preimage")
+	}
+
+	sig, err := hex.DecodeString(signature)
+	if err != nil {
+		return nil, errors.Wrap(err, "Problem in decoding signature")
+	}
+
+	// hashlock := crypto.Keccak256(r)
+
+	promise := Promise{
+		ChannelID: chID,
+		Amount:    amount,
+		Fee:       fee,
+		Hashlock:  crypto.Keccak256(r),
+		R:         r,
+		Signature: sig,
+	}
+
+	return &promise, nil
+}
+
+// Sign signs promise with given keystore and signer
+func (p *Promise) Sign(ks *keystore.KeyStore, signer common.Address) error {
+	signature, err := p.CreateSignature(ks, signer)
+	if err != nil {
+		return err
+	}
+
+	ReformatSignatureVForBC(signature)
+	p.Signature = signature
+
+	return nil
 }
 
 // GetMessage forms the message of payment promise

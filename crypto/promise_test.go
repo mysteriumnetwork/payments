@@ -16,11 +16,11 @@ import (
 
 func TestGetHash(t *testing.T) {
 	promise := getPromise("provider")
-	expectedHash, _ := hex.DecodeString("ac65e143143128d390418aa4ac6406266a3768e59430c5f649c9f9dda72a36a0")
+	expectedHash, _ := hex.DecodeString("44ebc179879e8649a4734cd12181da1ab10fa6f1374d9fb021c1b541f9f4eff6")
 	assert.Equal(t, expectedHash, promise.GetHash())
 
 	promise = getPromise("consumer")
-	expectedHash, _ = hex.DecodeString("9e5ed67e06c3a0ce87b96b57a3a6e7d4b0bde971a066e51d4d5d196a07713d07")
+	expectedHash, _ = hex.DecodeString("177adc47f6a0962fc7994d863c0a98a5125f28f336283e0ff58cb5e9ccd18465")
 	assert.Equal(t, expectedHash, promise.GetHash())
 }
 
@@ -28,7 +28,7 @@ func TestGetSignatureHex(t *testing.T) {
 	promise := getPromise("provider")
 	signature := promise.GetSignatureHexString()
 
-	expectedSignature := "0xeb56461cba34ee3447c938b4c267b9a78fd3b5f28e5ff5d3f473e7553ddee6595d2b09e65ba29c5eb77b10e1c888a304a0e14f3ca4fe9970af0602d0bc3d48d51c"
+	expectedSignature := "0x4f9bcffd245718981fdf3997e59e428f0677f3f213af75cc6512f5fe413d053354142446ab0a76fe172328831ee0860e8f544ff478b9827c0bf62e73a0f97d421c"
 	assert.Equal(t, expectedSignature, signature)
 }
 
@@ -142,6 +142,46 @@ func TestCreatePromise(t *testing.T) {
 
 }
 
+func TestNewPromise(t *testing.T) {
+	p := getParams("provider")
+	channelID := hex.EncodeToString(p.ChannelID)
+	amount := p.Amount
+	fee := p.Fee
+	preimage := hex.EncodeToString(p.R)
+	signature := hex.EncodeToString(p.PromiseSignature)
+
+	promise, err := NewPromise(channelID, amount, fee, preimage, signature)
+	assert.NoError(t, err)
+	assert.Equal(t, p.Amount, promise.Amount)
+	assert.Equal(t, p.ChannelID, promise.ChannelID)
+	assert.Equal(t, p.Hashlock, promise.Hashlock)
+	assert.Equal(t, p.PromiseSignature, promise.Signature)
+}
+
+func TestSign(t *testing.T) {
+	dir, ks := tmpKeyStore(t, false)
+	defer os.RemoveAll(dir)
+
+	account, err := ks.ImportECDSA(getPrivKey("provider"), "")
+	assert.Nil(t, err)
+	if err := ks.Unlock(account, ""); err != nil {
+		t.Fatal(err)
+	}
+
+	p := getParams("provider")
+	promise, err := NewPromise(
+		hex.EncodeToString(p.ChannelID),
+		p.Amount,
+		p.Fee,
+		hex.EncodeToString(p.R),
+		"",
+	)
+	assert.NoError(t, err)
+
+	promise.Sign(ks, account.Address)
+	assert.Equal(t, p.PromiseSignature, promise.Signature)
+}
+
 const (
 	veryLightScryptN = 2
 	veryLightScryptP = 1
@@ -194,6 +234,7 @@ type Params struct {
 	ChannelID                []byte
 	Amount                   uint64
 	Fee                      uint64
+	R                        []byte
 	Hashlock                 []byte
 	PromiseSignature         []byte
 	ExchangeMessageSignature string
@@ -207,23 +248,25 @@ func getParams(userType string) Params {
 	amount := uint64(1401)
 	fee := uint64(0)
 	provider := common.HexToAddress("0xf10021ba3b10d023e671668d20daeff821561d09")
+	preimage, _ := hex.DecodeString("5b6b3f31a3acd0e317173d25c8b60503547b741a0e81d6068bb88486967839fa")
 	hashlock, _ := hex.DecodeString("4e8444e4bd5721ba00ceb2c6c180c21b2ae43e590172f1b39e51f46312243633")
-	messageSig := "d44920d4e0bcb96e836f0731f168e862a9efcd4e72dd093141a3c95205ba6cc115e23fcbfb8625e219be4255e0f9597ef55699d13a207a21881378329b38d0b31c"
+	messageSig := "56493421bd2772cca2ba970da27396e103a08027f1ce49de974f789e322b0d7a3f52b9dd745a34bfa2f330ba2d3c442867ebb3753d1f206811ab572ab7d482dc1b"
 
 	if userType == "consumer" {
-		channelID, _ = hex.DecodeString("0000000000000000000000009ec6fd7aa414d26f65a22e333c1bfd02b5208bde")
-		promiseSig, _ = hex.DecodeString("848fae23369a9b97430ca5f908b11b54931b2e51e4ba541134f800a8f396eafb1d05594d262912071584af48e755cef038089a78d8520bd658d85313dd523a091c")
+		channelID, _ = hex.DecodeString("000000000000000000000000d2c94475763fa7e81076ab0bde4dc4b902191498")
+		promiseSig, _ = hex.DecodeString("5b2252c91e1de26b084759cc7b8dd0ae4e2feed97013dd4b8777ed098b295fb81a5357f695717e546eecd07b82ac4e2a58bf6395f7477067cd411cb8c133b5451c")
 	}
 
 	if userType == "provider" {
-		channelID, _ = hex.DecodeString("b583afafc3d2c5b9d5cac0f01212bbd2054c385649ca13f034032563be4381ca")
-		promiseSig, _ = hex.DecodeString("eb56461cba34ee3447c938b4c267b9a78fd3b5f28e5ff5d3f473e7553ddee6595d2b09e65ba29c5eb77b10e1c888a304a0e14f3ca4fe9970af0602d0bc3d48d51c")
+		channelID, _ = hex.DecodeString("40684b7886aa813a04bce9efd1c6d45379178e9248bf1cc926a316e4e4924ae8")
+		promiseSig, _ = hex.DecodeString("4f9bcffd245718981fdf3997e59e428f0677f3f213af75cc6512f5fe413d053354142446ab0a76fe172328831ee0860e8f544ff478b9827c0bf62e73a0f97d421c")
 	}
 
 	return Params{
 		ChannelID:                channelID,
 		Amount:                   amount,
 		Fee:                      fee,
+		R:                        preimage,
 		Hashlock:                 hashlock,
 		PromiseSignature:         promiseSig,
 		ExchangeMessageSignature: messageSig,
