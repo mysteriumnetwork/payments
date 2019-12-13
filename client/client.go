@@ -350,3 +350,19 @@ func toBytes32(arr []byte) (res [32]byte) {
 	copy(res[:], arr)
 	return res
 }
+
+// GetChannel returns the given channel information
+func (bc *Blockchain) GetChannel(acc common.Address, chID []byte) (ProviderChannel, error) {
+	caller, err := bindings.NewAccountantImplementationCaller(acc, bc.client)
+	if err != nil {
+		return ProviderChannel{}, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.Channels(&bind.CallOpts{
+		Pending: false,
+		Context: ctx,
+	}, toBytes32(chID))
+}

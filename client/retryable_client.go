@@ -26,6 +26,7 @@ type blockchain interface {
 	IsAccountantRegistered(registryAddress, acccountantID common.Address) (bool, error)
 	GetAccountantOperator(accountantID common.Address) (common.Address, error)
 	SettleAndRebalance(req SettleAndRebalanceRequest) (*types.Transaction, error)
+	GetChannel(acc common.Address, chID []byte) (ProviderChannel, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -160,7 +161,7 @@ func (bwr *BlockchainWithRetries) IsRegistered(registryAddress, addressToCheck c
 }
 
 // GetMystBalance returns the balance in myst
-func (bwr *BlockchainWithRetries) GetMystBalance(channel, mystSCAddress common.Address) (*big.Int, error) {
+func (bwr *BlockchainWithRetries) GetMystBalance(mystSCAddress, channel common.Address) (*big.Int, error) {
 	var res *big.Int
 	err := bwr.callWithRetry(func() error {
 		result, bcErr := bwr.bc.GetMystBalance(mystSCAddress, channel)
@@ -247,6 +248,20 @@ func (bwr *BlockchainWithRetries) SettleAndRebalance(req SettleAndRebalanceReque
 	var res *types.Transaction
 	err := bwr.callWithRetry(func() error {
 		result, bcErr := bwr.bc.SettleAndRebalance(req)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not register identity")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+// GetChannel returns the given channel information
+func (bwr *BlockchainWithRetries) GetChannel(acc common.Address, chID []byte) (ProviderChannel, error) {
+	var res ProviderChannel
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.GetChannel(acc, chID)
 		if bcErr != nil {
 			return errors.Wrap(bcErr, "could not register identity")
 		}

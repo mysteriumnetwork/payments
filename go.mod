@@ -44,5 +44,3 @@ require (
 	golang.org/x/text v0.3.2
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce
 )
-
-replace github.com/karalabe/usb => /Users/viktoras/GIT/GO/src/github.com/vkuznecovas/usb
