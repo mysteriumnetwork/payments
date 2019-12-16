@@ -14,6 +14,7 @@ import (
 
 type blockchain interface {
 	GetAccountantFee(accountantAddress common.Address) (uint16, error)
+	CalculateAccountantFee(accountantAddress common.Address, value uint64) (*big.Int, error)
 	IsRegisteredAsProvider(accountantAddress, registryAddress, addressToCheck common.Address) (bool, error)
 	GetProviderChannel(accountantAddress common.Address, addressToCheck common.Address) (ProviderChannel, error)
 	IsRegistered(registryAddress, addressToCheck common.Address) (bool, error)
@@ -86,6 +87,20 @@ func (bwr *BlockchainWithRetries) GetAccountantFee(accountantAddress common.Addr
 		r, err := bwr.bc.GetAccountantFee(accountantAddress)
 		if err != nil {
 			return errors.Wrap(err, "could not get accountant fee")
+		}
+		res = r
+		return nil
+	})
+	return res, err
+}
+
+// CalculateAccountantFee fetches the accountant fee from blockchain
+func (bwr *BlockchainWithRetries) CalculateAccountantFee(accountantAddress common.Address, value uint64) (*big.Int, error) {
+	var res *big.Int
+	err := bwr.callWithRetry(func() error {
+		r, err := bwr.bc.CalculateAccountantFee(accountantAddress, value)
+		if err != nil {
+			return errors.Wrap(err, "could not calculate accountant fee")
 		}
 		res = r
 		return nil
