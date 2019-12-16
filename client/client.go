@@ -145,34 +145,11 @@ func (bc *Blockchain) getProviderChannelAddressBytes(accountantAddress, addressT
 
 // SubscribeToPromiseSettledEvent subscribes to promise settled events
 func (bc *Blockchain) SubscribeToPromiseSettledEvent(providerID, accountantID common.Address) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error) {
-	caller, err := bindings.NewAccountantImplementationFilterer(accountantID, bc.client)
-	if err != nil {
-		return sink, cancel, errors.Wrap(err, "could not create accountant caller")
-	}
-	sink = make(chan *bindings.AccountantImplementationPromiseSettled)
 	addr, err := bc.getProviderChannelAddressBytes(accountantID, providerID)
 	if err != nil {
 		return sink, cancel, errors.Wrap(err, "could not get provider channel address")
 	}
-
-	ctx, cancel := context.WithCancel(context.Background())
-	sub, err := caller.WatchPromiseSettled(&bind.WatchOpts{
-		Context: ctx,
-	}, sink, [][32]byte{addr})
-	if err != nil {
-		return sink, cancel, errors.Wrap(err, "could not subscribe to promise settlement events")
-	}
-
-	go func() {
-		subErr := <-sub.Err()
-		if subErr != nil {
-			log.Error().Err(err).Msg("subscription error")
-		}
-		cancel()
-		close(sink)
-	}()
-
-	return sink, sub.Unsubscribe, nil
+	return bc.SubscribeToPromiseSettledEventByChannelID(accountantID, [][32]byte{addr})
 }
 
 // IsRegistered checks wether the given identity is registered or not
@@ -370,4 +347,186 @@ func (bc *Blockchain) GetProviderChannelByID(acc common.Address, chID []byte) (P
 		Pending: false,
 		Context: ctx,
 	}, toBytes32(chID))
+}
+
+// ConsumersAccountant represents the consumers accountant
+type ConsumersAccountant struct {
+	Operator        common.Address
+	ContractAddress common.Address
+	Settled         *big.Int
+}
+
+// GetConsumerChannelsAccountant returns the consumer channels accountant
+func (bc *Blockchain) GetConsumerChannelsAccountant(channelAddress common.Address) (ConsumersAccountant, error) {
+	c, err := bindings.NewChannelImplementationCaller(channelAddress, bc.client)
+	if err != nil {
+		return ConsumersAccountant{}, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	party, err := c.Accountant(&bind.CallOpts{
+		Context: ctx,
+	})
+	return party, err
+}
+
+// SubscribeToIdentityRegistrationEvents subscribes to identity registration events
+func (bc *Blockchain) SubscribeToIdentityRegistrationEvents(registryAddress common.Address, accountantIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
+	filterer, err := bindings.NewRegistryFilterer(registryAddress, bc.client)
+	if err != nil {
+		return sink, cancel, errors.Wrap(err, "could not create registry filterer")
+	}
+	sink = make(chan *bindings.RegistryRegisteredIdentity)
+	ctx, c := context.WithCancel(context.Background())
+	sub, err := filterer.WatchRegisteredIdentity(&bind.WatchOpts{
+		Context: ctx,
+	}, sink, nil, accountantIDs)
+	go func() {
+		subErr := <-sub.Err()
+		if subErr != nil {
+			log.Error().Err(err).Msg("subscription error")
+		}
+		c()
+		close(sink)
+	}()
+	return sink, sub.Unsubscribe, nil
+}
+
+// SubscribeToConsumerChannelBalanceUpdate subscribes to consumer channel balance update events
+func (bc *Blockchain) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error) {
+	filterer, err := bindings.NewMystTokenFilterer(mystSCAddress, bc.client)
+	if err != nil {
+		return sink, cancel, errors.Wrap(err, "could not create myst token filterer")
+	}
+
+	sink = make(chan *bindings.MystTokenTransfer)
+	ctx, c := context.WithCancel(context.Background())
+	sub, err := filterer.WatchTransfer(&bind.WatchOpts{
+		Context: ctx,
+	}, sink, nil, channelAddresses)
+	go func() {
+		subErr := <-sub.Err()
+		if subErr != nil {
+			log.Error().Err(err).Msg("subscription error")
+		}
+		c()
+		close(sink)
+	}()
+	return sink, sub.Unsubscribe, nil
+}
+
+// SubscribeToProviderChannelBalanceUpdate subscribes to provider channel balance update events
+func (bc *Blockchain) SubscribeToProviderChannelBalanceUpdate(accountantAddress common.Address, channelAddresses [][32]byte) (sink chan *bindings.AccountantImplementationChannelBalanceUpdated, cancel func(), err error) {
+	filterer, err := bindings.NewAccountantImplementationFilterer(accountantAddress, bc.client)
+	if err != nil {
+		return sink, cancel, errors.Wrap(err, "could not create accountant implementation filterer")
+	}
+
+	sink = make(chan *bindings.AccountantImplementationChannelBalanceUpdated)
+	ctx, c := context.WithCancel(context.Background())
+	sub, err := filterer.WatchChannelBalanceUpdated(&bind.WatchOpts{
+		Context: ctx,
+	}, sink, channelAddresses)
+	go func() {
+		subErr := <-sub.Err()
+		if subErr != nil {
+			log.Error().Err(err).Msg("subscription error")
+		}
+		c()
+		close(sink)
+	}()
+	return sink, sub.Unsubscribe, nil
+}
+
+// SettleRequest represents all the parameters required for settle
+type SettleRequest struct {
+	WriteRequest
+	ChannelID common.Address
+	Promise   crypto.Promise
+}
+
+// SettlePromise is settling the given consumer issued promise
+func (bc *Blockchain) SettlePromise(req SettleRequest) (*types.Transaction, error) {
+	transactor, err := bindings.NewChannelImplementationTransactor(req.ChannelID, bc.client)
+	if err != nil {
+		return nil, err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	amount := big.NewInt(0).SetUint64(req.Promise.Amount)
+	fee := big.NewInt(0).SetUint64(req.Promise.Fee)
+	rBytes := [32]byte{}
+	copy(rBytes[:], req.Promise.R)
+	lock := rBytes
+
+	return transactor.SettlePromise(&bind.TransactOpts{
+		From:     req.Identity,
+		Signer:   req.Signer,
+		Context:  ctx,
+		GasLimit: req.GasLimit,
+		GasPrice: req.GasPrice,
+	},
+		amount, fee, lock, req.Promise.Signature,
+	)
+}
+
+// SubscribeToChannelOpenedEvents subscribes to provider channel opened events
+func (bc *Blockchain) SubscribeToChannelOpenedEvents(accountantAddress common.Address) (sink chan *bindings.AccountantImplementationChannelOpened, cancel func(), err error) {
+	filterer, err := bindings.NewAccountantImplementationFilterer(accountantAddress, bc.client)
+	if err != nil {
+		return sink, cancel, errors.Wrap(err, "could not create accountant implementation filterer")
+	}
+
+	sink = make(chan *bindings.AccountantImplementationChannelOpened)
+	ctx, c := context.WithCancel(context.Background())
+	sub, err := filterer.WatchChannelOpened(&bind.WatchOpts{
+		Context: ctx,
+	}, sink)
+	go func() {
+		subErr := <-sub.Err()
+		if subErr != nil {
+			log.Error().Err(err).Msg("subscription error")
+		}
+		c()
+		close(sink)
+	}()
+	return sink, sub.Unsubscribe, nil
+}
+
+// SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events
+func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(accountantID common.Address, providerAddresses [][32]byte) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error) {
+	caller, err := bindings.NewAccountantImplementationFilterer(accountantID, bc.client)
+	if err != nil {
+		return sink, cancel, errors.Wrap(err, "could not create accountant caller")
+	}
+	sink = make(chan *bindings.AccountantImplementationPromiseSettled)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	sub, err := caller.WatchPromiseSettled(&bind.WatchOpts{
+		Context: ctx,
+	}, sink, providerAddresses)
+	if err != nil {
+		return sink, cancel, errors.Wrap(err, "could not subscribe to promise settlement events")
+	}
+
+	go func() {
+		subErr := <-sub.Err()
+		if subErr != nil {
+			log.Error().Err(err).Msg("subscription error")
+		}
+		cancel()
+		close(sink)
+	}()
+
+	return sink, sub.Unsubscribe, nil
+}
+
+// NetworkID returns the network id
+func (bc *Blockchain) NetworkID() (*big.Int, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+	return bc.client.NetworkID(ctx)
 }
