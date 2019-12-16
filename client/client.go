@@ -80,13 +80,13 @@ func (bc *Blockchain) IsRegisteredAsProvider(accountantAddress, registryAddress,
 }
 
 // SubscribeToConsumerBalanceEvent subscribes to balance change events in blockchain
-func (bc *Blockchain) SubscribeToConsumerBalanceEvent(channel, mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error) {
+func (bc *Blockchain) SubscribeToConsumerBalanceEvent(channel, mystSCAddress common.Address, timeout time.Duration) (chan *bindings.MystTokenTransfer, func(), error) {
 	sink := make(chan *bindings.MystTokenTransfer)
 	mtc, err := bindings.NewMystTokenFilterer(mystSCAddress, bc.client)
 	if err != nil {
 		return sink, nil, err
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute*60)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	sub, err := mtc.WatchTransfer(&bind.WatchOpts{
 		Context: ctx,
 	}, sink, []common.Address{}, []common.Address{channel})
@@ -154,7 +154,11 @@ func (bc *Blockchain) SubscribeToPromiseSettledEvent(providerID, accountantID co
 	if err != nil {
 		return sink, cancel, errors.Wrap(err, "could not get provider channel address")
 	}
-	sub, err := caller.WatchPromiseSettled(&bind.WatchOpts{}, sink, [][32]byte{addr})
+
+	ctx, cancel := context.WithCancel(context.Background())
+	sub, err := caller.WatchPromiseSettled(&bind.WatchOpts{
+		Context: ctx,
+	}, sink, [][32]byte{addr})
 	if err != nil {
 		return sink, cancel, errors.Wrap(err, "could not subscribe to promise settlement events")
 	}
@@ -164,6 +168,7 @@ func (bc *Blockchain) SubscribeToPromiseSettledEvent(providerID, accountantID co
 		if subErr != nil {
 			log.Error().Err(err).Msg("subscription error")
 		}
+		cancel()
 		close(sink)
 	}()
 
@@ -221,7 +226,7 @@ type RegistrationRequest struct {
 	WriteRequest
 	AccountantID    common.Address
 	Loan            *big.Int
-	Fee             *big.Int
+	TransactorFee   *big.Int
 	Beneficiary     common.Address
 	Signature       []byte
 	RegistryAddress common.Address
@@ -254,7 +259,7 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 	},
 		rr.AccountantID,
 		rr.Loan,
-		rr.Fee,
+		rr.TransactorFee,
 		rr.Beneficiary,
 		rr.Signature,
 	)
@@ -351,8 +356,8 @@ func toBytes32(arr []byte) (res [32]byte) {
 	return res
 }
 
-// GetChannel returns the given channel information
-func (bc *Blockchain) GetChannel(acc common.Address, chID []byte) (ProviderChannel, error) {
+// GetProviderChannelByID returns the given provider channel information
+func (bc *Blockchain) GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error) {
 	caller, err := bindings.NewAccountantImplementationCaller(acc, bc.client)
 	if err != nil {
 		return ProviderChannel{}, err

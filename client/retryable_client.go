@@ -19,14 +19,14 @@ type blockchain interface {
 	IsRegistered(registryAddress, addressToCheck common.Address) (bool, error)
 	SubscribeToPromiseSettledEvent(providerID, accountantID common.Address) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error)
 	GetMystBalance(mystSCAddress, address common.Address) (*big.Int, error)
-	SubscribeToConsumerBalanceEvent(channel, mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error)
+	SubscribeToConsumerBalanceEvent(channel, mystSCAddress common.Address, timeout time.Duration) (chan *bindings.MystTokenTransfer, func(), error)
 	GetRegistrationFee(registryAddress common.Address) (*big.Int, error)
 	RegisterIdentity(rr RegistrationRequest) (*types.Transaction, error)
 	TransferMyst(req TransferRequest) (tx *types.Transaction, err error)
 	IsAccountantRegistered(registryAddress, acccountantID common.Address) (bool, error)
 	GetAccountantOperator(accountantID common.Address) (common.Address, error)
 	SettleAndRebalance(req SettleAndRebalanceRequest) (*types.Transaction, error)
-	GetChannel(acc common.Address, chID []byte) (ProviderChannel, error)
+	GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -52,12 +52,12 @@ func NewBlockchainWithRetries(bc blockchain, delay time.Duration, maxRetries int
 }
 
 func (bwr *BlockchainWithRetries) callWithRetry(f func() error) error {
-	for i := 0; i < bwr.maxRetries; i++ {
+	for i := 1; i <= bwr.maxRetries; i++ {
 		err := f()
 		if err == nil {
 			return nil
 		}
-		if i+1 == bwr.maxRetries {
+		if i == bwr.maxRetries {
 			return err
 		}
 
@@ -131,11 +131,11 @@ func (bwr *BlockchainWithRetries) SubscribeToPromiseSettledEvent(providerID, acc
 }
 
 // SubscribeToConsumerBalanceEvent subscribes to the consumer balance change events
-func (bwr *BlockchainWithRetries) SubscribeToConsumerBalanceEvent(channel, mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error) {
+func (bwr *BlockchainWithRetries) SubscribeToConsumerBalanceEvent(channel, mystSCAddress common.Address, timeout time.Duration) (chan *bindings.MystTokenTransfer, func(), error) {
 	var sink chan *bindings.MystTokenTransfer
 	var cancel func()
 	err := bwr.callWithRetry(func() error {
-		s, c, err := bwr.bc.SubscribeToConsumerBalanceEvent(channel, mystSCAddress)
+		s, c, err := bwr.bc.SubscribeToConsumerBalanceEvent(channel, mystSCAddress, timeout)
 		if err != nil {
 			return errors.Wrap(err, "could not subscribe to settlement events")
 		}
@@ -178,12 +178,9 @@ func (bwr *BlockchainWithRetries) GetMystBalance(mystSCAddress, channel common.A
 func (bwr *BlockchainWithRetries) GetRegistrationFee(registryAddress common.Address) (*big.Int, error) {
 	var res *big.Int
 	err := bwr.callWithRetry(func() error {
-		result, bcErr := bwr.bc.GetRegistrationFee(registryAddress)
-		if bcErr != nil {
-			return errors.Wrap(bcErr, "could not get registration fee")
-		}
-		res = result
-		return nil
+		var bcErr error
+		res, bcErr = bwr.bc.GetRegistrationFee(registryAddress)
+		return bcErr
 	})
 	return res, err
 }
@@ -257,11 +254,11 @@ func (bwr *BlockchainWithRetries) SettleAndRebalance(req SettleAndRebalanceReque
 	return res, err
 }
 
-// GetChannel returns the given channel information
-func (bwr *BlockchainWithRetries) GetChannel(acc common.Address, chID []byte) (ProviderChannel, error) {
+// GetProviderChannelByID returns the given channel information
+func (bwr *BlockchainWithRetries) GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error) {
 	var res ProviderChannel
 	err := bwr.callWithRetry(func() error {
-		result, bcErr := bwr.bc.GetChannel(acc, chID)
+		result, bcErr := bwr.bc.GetProviderChannelByID(acc, chID)
 		if bcErr != nil {
 			return errors.Wrap(bcErr, "could not register identity")
 		}
