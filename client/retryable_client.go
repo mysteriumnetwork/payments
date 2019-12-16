@@ -26,7 +26,15 @@ type blockchain interface {
 	IsAccountantRegistered(registryAddress, acccountantID common.Address) (bool, error)
 	GetAccountantOperator(accountantID common.Address) (common.Address, error)
 	SettleAndRebalance(req SettleAndRebalanceRequest) (*types.Transaction, error)
+	GetConsumerChannelsAccountant(channelAddress common.Address) (ConsumersAccountant, error)
 	GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error)
+	SubscribeToIdentityRegistrationEvents(registryAddress common.Address, accountantIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error)
+	SubscribeToConsumerChannelBalanceUpdate(mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error)
+	SubscribeToProviderChannelBalanceUpdate(accountantAddress common.Address, channelAddresses [][32]byte) (sink chan *bindings.AccountantImplementationChannelBalanceUpdated, cancel func(), err error)
+	SettlePromise(req SettleRequest) (*types.Transaction, error)
+	SubscribeToChannelOpenedEvents(accountantAddress common.Address) (sink chan *bindings.AccountantImplementationChannelOpened, cancel func(), err error)
+	SubscribeToPromiseSettledEventByChannelID(accountantID common.Address, providerAddresses [][32]byte) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error)
+	NetworkID() (*big.Int, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -204,7 +212,7 @@ func (bwr *BlockchainWithRetries) TransferMyst(req TransferRequest) (tx *types.T
 	err = bwr.callWithRetry(func() error {
 		result, bcErr := bwr.bc.TransferMyst(req)
 		if bcErr != nil {
-			return errors.Wrap(bcErr, "could not register identity")
+			return errors.Wrap(bcErr, "could not transfer myst")
 		}
 		tx = result
 		return nil
@@ -218,7 +226,7 @@ func (bwr *BlockchainWithRetries) IsAccountantRegistered(registryAddress, acccou
 	err := bwr.callWithRetry(func() error {
 		result, bcErr := bwr.bc.IsAccountantRegistered(registryAddress, acccountantID)
 		if bcErr != nil {
-			return errors.Wrap(bcErr, "could not register identity")
+			return errors.Wrap(bcErr, "could not check if accountant is registered")
 		}
 		res = result
 		return nil
@@ -232,7 +240,7 @@ func (bwr *BlockchainWithRetries) GetAccountantOperator(accountantID common.Addr
 	err := bwr.callWithRetry(func() error {
 		result, bcErr := bwr.bc.GetAccountantOperator(accountantID)
 		if bcErr != nil {
-			return errors.Wrap(bcErr, "could not register identity")
+			return errors.Wrap(bcErr, "could not get accountant operator")
 		}
 		res = result
 		return nil
@@ -246,7 +254,7 @@ func (bwr *BlockchainWithRetries) SettleAndRebalance(req SettleAndRebalanceReque
 	err := bwr.callWithRetry(func() error {
 		result, bcErr := bwr.bc.SettleAndRebalance(req)
 		if bcErr != nil {
-			return errors.Wrap(bcErr, "could not register identity")
+			return errors.Wrap(bcErr, "could not settle and rebalacne")
 		}
 		res = result
 		return nil
@@ -261,6 +269,128 @@ func (bwr *BlockchainWithRetries) GetProviderChannelByID(acc common.Address, chI
 		result, bcErr := bwr.bc.GetProviderChannelByID(acc, chID)
 		if bcErr != nil {
 			return errors.Wrap(bcErr, "could not register identity")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+// GetConsumerChannelsAccountant returns the consumer channels accountant
+func (bwr *BlockchainWithRetries) GetConsumerChannelsAccountant(channelAddress common.Address) (ConsumersAccountant, error) {
+	var res ConsumersAccountant
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.GetConsumerChannelsAccountant(channelAddress)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not get consumers accountant")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+// SubscribeToIdentityRegistrationEvents subscribes to identity registration events
+func (bwr *BlockchainWithRetries) SubscribeToIdentityRegistrationEvents(registryAddress common.Address, accountantIDs []common.Address) (chan *bindings.RegistryRegisteredIdentity, func(), error) {
+	var sink chan *bindings.RegistryRegisteredIdentity
+	var cancel func()
+	err := bwr.callWithRetry(func() error {
+		s, c, err := bwr.bc.SubscribeToIdentityRegistrationEvents(registryAddress, accountantIDs)
+		if err != nil {
+			return errors.Wrap(err, "could not subscribe to registration events")
+		}
+		sink = s
+		cancel = c
+		return nil
+	})
+	return sink, cancel, err
+}
+
+// SubscribeToConsumerChannelBalanceUpdate subscribes to consumer channel balance update events
+func (bwr *BlockchainWithRetries) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress common.Address, channelAddresses []common.Address) (chan *bindings.MystTokenTransfer, func(), error) {
+	var sink chan *bindings.MystTokenTransfer
+	var cancel func()
+	err := bwr.callWithRetry(func() error {
+		s, c, err := bwr.bc.SubscribeToConsumerChannelBalanceUpdate(mystSCAddress, channelAddresses)
+		if err != nil {
+			return errors.Wrap(err, "could not subscribe to channel balance events")
+		}
+		sink = s
+		cancel = c
+		return nil
+	})
+	return sink, cancel, err
+}
+
+// SubscribeToProviderChannelBalanceUpdate subscribes to provider channel balance update events
+func (bwr *BlockchainWithRetries) SubscribeToProviderChannelBalanceUpdate(accountantAddress common.Address, channelAddresses [][32]byte) (chan *bindings.AccountantImplementationChannelBalanceUpdated, func(), error) {
+	var sink chan *bindings.AccountantImplementationChannelBalanceUpdated
+	var cancel func()
+	err := bwr.callWithRetry(func() error {
+		s, c, err := bwr.bc.SubscribeToProviderChannelBalanceUpdate(accountantAddress, channelAddresses)
+		if err != nil {
+			return errors.Wrap(err, "could not subscribe to channel balance events")
+		}
+		sink = s
+		cancel = c
+		return nil
+	})
+	return sink, cancel, err
+}
+
+// SettlePromise is settling the given consumer issued promise
+func (bwr *BlockchainWithRetries) SettlePromise(req SettleRequest) (*types.Transaction, error) {
+	var res *types.Transaction
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.SettlePromise(req)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not settle promise")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+// SubscribeToChannelOpenedEvents subscribes to provider channel opened events
+func (bwr *BlockchainWithRetries) SubscribeToChannelOpenedEvents(accountantAddress common.Address) (chan *bindings.AccountantImplementationChannelOpened, func(), error) {
+	var sink chan *bindings.AccountantImplementationChannelOpened
+	var cancel func()
+	err := bwr.callWithRetry(func() error {
+		s, c, err := bwr.bc.SubscribeToChannelOpenedEvents(accountantAddress)
+		if err != nil {
+			return errors.Wrap(err, "could not subscribe to channel opened events")
+		}
+		sink = s
+		cancel = c
+		return nil
+	})
+	return sink, cancel, err
+}
+
+// SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events
+func (bwr *BlockchainWithRetries) SubscribeToPromiseSettledEventByChannelID(accountantID common.Address, providerAddresses [][32]byte) (chan *bindings.AccountantImplementationPromiseSettled, func(), error) {
+	var sink chan *bindings.AccountantImplementationPromiseSettled
+	var cancel func()
+	err := bwr.callWithRetry(func() error {
+		s, c, err := bwr.bc.SubscribeToPromiseSettledEventByChannelID(accountantID, providerAddresses)
+		if err != nil {
+			return errors.Wrap(err, "could not subscribe to settlement events")
+		}
+		sink = s
+		cancel = c
+		return nil
+	})
+	return sink, cancel, err
+}
+
+// NetworkID returns the network id
+func (bwr *BlockchainWithRetries) NetworkID() (*big.Int, error) {
+	var res *big.Int
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.NetworkID()
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not get network ID")
 		}
 		res = result
 		return nil
