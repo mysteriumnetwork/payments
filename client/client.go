@@ -60,6 +60,21 @@ func (bc *Blockchain) GetAccountantFee(accountantAddress common.Address) (uint16
 	return res.Value, err
 }
 
+// CalculateAccountantFee calls blockchain for calculation of accountant fee
+func (bc *Blockchain) CalculateAccountantFee(accountantAddress common.Address, value uint64) (*big.Int, error) {
+	caller, err := bindings.NewAccountantImplementationCaller(accountantAddress, bc.client)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not create accountant implementation caller")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	return caller.CalculateAccountantFee(&bind.CallOpts{
+		Context: ctx,
+	}, new(big.Int).SetUint64(value))
+}
+
 // IsRegisteredAsProvider checks if the provider is registered with the accountant properly
 func (bc *Blockchain) IsRegisteredAsProvider(accountantAddress, registryAddress, addressToCheck common.Address) (bool, error) {
 	registered, err := bc.IsRegistered(registryAddress, addressToCheck)
