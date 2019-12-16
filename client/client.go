@@ -227,12 +227,18 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
 	defer cancel()
 
+	nonce, err := bc.getNonce(rr.Identity)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get nonce")
+	}
+
 	tx, err := transactor.RegisterIdentity(&bind.TransactOpts{
 		From:     rr.Identity,
 		Signer:   rr.Signer,
 		Context:  ctx,
 		GasLimit: rr.GasLimit,
 		GasPrice: rr.GasPrice,
+		Nonce:    big.NewInt(0).SetUint64(nonce),
 	},
 		rr.AccountantID,
 		rr.Loan,
@@ -258,11 +264,17 @@ func (bc *Blockchain) TransferMyst(req TransferRequest) (tx *types.Transaction, 
 		return tx, err
 	}
 
+	nonce, err := bc.getNonce(req.Identity)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get nonce")
+	}
+
 	return transactor.Transfer(&bind.TransactOpts{
 		From:     req.Identity,
 		Signer:   req.Signer,
 		GasPrice: req.GasPrice,
 		GasLimit: req.GasLimit,
+		Nonce:    big.NewInt(0).SetUint64(nonce),
 	}, req.Recipient, req.Amount)
 }
 
@@ -313,12 +325,18 @@ func (bc *Blockchain) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
+	nonce, err := bc.getNonce(req.Identity)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get nonce")
+	}
+
 	return transactor.SettleAndRebalance(&bind.TransactOpts{
 		From:     req.Identity,
 		Signer:   req.Signer,
 		Context:  ctx,
 		GasLimit: req.GasLimit,
 		GasPrice: req.GasPrice,
+		Nonce:    big.NewInt(0).SetUint64(nonce),
 	},
 		toBytes32(req.Promise.ChannelID),
 		big.NewInt(0).SetUint64(req.Promise.Amount),
@@ -462,15 +480,27 @@ func (bc *Blockchain) SettlePromise(req SettleRequest) (*types.Transaction, erro
 	copy(rBytes[:], req.Promise.R)
 	lock := rBytes
 
+	nonce, err := bc.getNonce(req.Identity)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get nonce")
+	}
+
 	return transactor.SettlePromise(&bind.TransactOpts{
 		From:     req.Identity,
 		Signer:   req.Signer,
 		Context:  ctx,
 		GasLimit: req.GasLimit,
 		GasPrice: req.GasPrice,
+		Nonce:    big.NewInt(0).SetUint64(nonce),
 	},
 		amount, fee, lock, req.Promise.Signature,
 	)
+}
+
+func (bc *Blockchain) getNonce(identity common.Address) (uint64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+	return bc.client.NonceAt(ctx, identity, nil)
 }
 
 // SubscribeToChannelOpenedEvents subscribes to provider channel opened events
