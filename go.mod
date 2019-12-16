@@ -30,6 +30,7 @@ require (
 	github.com/prometheus/tsdb v0.10.0
 	github.com/rjeczalik/notify v0.9.2
 	github.com/rs/cors v1.7.0
+	github.com/rs/zerolog v1.17.2
 	github.com/status-im/keycard-go v0.0.0-20190424133014-d95853db0f48
 	github.com/steakknife/bloomfilter v0.0.0-20180906043351-99ee86d9200f
 	github.com/steakknife/hamming v0.0.0-20180906055317-003c143a81c2
