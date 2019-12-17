@@ -515,7 +515,7 @@ func (bc *Blockchain) SettlePromise(req SettleRequest) (*types.Transaction, erro
 func (bc *Blockchain) getNonce(identity common.Address) (uint64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
-	return bc.client.NonceAt(ctx, identity, nil)
+	return bc.client.PendingNonceAt(ctx, identity)
 }
 
 // SubscribeToChannelOpenedEvents subscribes to provider channel opened events
