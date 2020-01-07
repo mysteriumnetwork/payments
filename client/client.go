@@ -10,11 +10,15 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ethereum/go-ethereum/event"
 	"github.com/mysteriumnetwork/payments/bindings"
 	"github.com/mysteriumnetwork/payments/crypto"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
+
+// DefaultBackoff is the default backoff for the client
+var DefaultBackoff = time.Second * 3
 
 // ProviderChannel represents the provider channel
 type ProviderChannel struct {
@@ -101,21 +105,25 @@ func (bc *Blockchain) SubscribeToConsumerBalanceEvent(channel, mystSCAddress com
 	if err != nil {
 		return sink, nil, err
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
-	sub, err := mtc.WatchTransfer(&bind.WatchOpts{
-		Context: ctx,
-	}, sink, []common.Address{}, []common.Address{channel})
-	if err != nil {
-		cancel()
-		return sink, nil, err
-	}
+	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
+		return mtc.WatchTransfer(&bind.WatchOpts{
+			Context: ctx,
+		}, sink, []common.Address{}, []common.Address{channel})
+	})
+
+	go func() {
+		select {
+		case <-time.After(timeout):
+			sub.Unsubscribe()
+		}
+	}()
+
 	go func() {
 		subErr := <-sub.Err()
 		if subErr != nil {
 			log.Error().Err(err).Msg("subscription error")
 		}
 		close(sink)
-		cancel()
 	}()
 	return sink, sub.Unsubscribe, nil
 }
@@ -412,10 +420,11 @@ func (bc *Blockchain) SubscribeToIdentityRegistrationEvents(registryAddress comm
 		return sink, cancel, errors.Wrap(err, "could not create registry filterer")
 	}
 	sink = make(chan *bindings.RegistryRegisteredIdentity)
-	ctx, c := context.WithCancel(context.Background())
-	sub, err := filterer.WatchRegisteredIdentity(&bind.WatchOpts{
-		Context: ctx,
-	}, sink, nil, accountantIDs)
+	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
+		return filterer.WatchRegisteredIdentity(&bind.WatchOpts{
+			Context: ctx,
+		}, sink, nil, accountantIDs)
+	})
 	go func() {
 		subErr := <-sub.Err()
 		if subErr != nil {
@@ -435,10 +444,11 @@ func (bc *Blockchain) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress comm
 	}
 
 	sink = make(chan *bindings.MystTokenTransfer)
-	ctx, c := context.WithCancel(context.Background())
-	sub, err := filterer.WatchTransfer(&bind.WatchOpts{
-		Context: ctx,
-	}, sink, nil, channelAddresses)
+	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
+		return filterer.WatchTransfer(&bind.WatchOpts{
+			Context: ctx,
+		}, sink, nil, channelAddresses)
+	})
 	go func() {
 		subErr := <-sub.Err()
 		if subErr != nil {
@@ -458,16 +468,16 @@ func (bc *Blockchain) SubscribeToProviderChannelBalanceUpdate(accountantAddress 
 	}
 
 	sink = make(chan *bindings.AccountantImplementationChannelBalanceUpdated)
-	ctx, c := context.WithCancel(context.Background())
-	sub, err := filterer.WatchChannelBalanceUpdated(&bind.WatchOpts{
-		Context: ctx,
-	}, sink, channelAddresses)
+	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
+		return filterer.WatchChannelBalanceUpdated(&bind.WatchOpts{
+			Context: ctx,
+		}, sink, channelAddresses)
+	})
 	go func() {
 		subErr := <-sub.Err()
 		if subErr != nil {
 			log.Error().Err(err).Msg("subscription error")
 		}
-		c()
 		close(sink)
 	}()
 	return sink, sub.Unsubscribe, nil
@@ -526,16 +536,16 @@ func (bc *Blockchain) SubscribeToChannelOpenedEvents(accountantAddress common.Ad
 	}
 
 	sink = make(chan *bindings.AccountantImplementationChannelOpened)
-	ctx, c := context.WithCancel(context.Background())
-	sub, err := filterer.WatchChannelOpened(&bind.WatchOpts{
-		Context: ctx,
-	}, sink)
+	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
+		return filterer.WatchChannelOpened(&bind.WatchOpts{
+			Context: ctx,
+		}, sink)
+	})
 	go func() {
 		subErr := <-sub.Err()
 		if subErr != nil {
 			log.Error().Err(err).Msg("subscription error")
 		}
-		c()
 		close(sink)
 	}()
 	return sink, sub.Unsubscribe, nil
@@ -549,14 +559,11 @@ func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(accountantID com
 	}
 	sink = make(chan *bindings.AccountantImplementationPromiseSettled)
 
-	ctx, cancel := context.WithCancel(context.Background())
-	sub, err := caller.WatchPromiseSettled(&bind.WatchOpts{
-		Context: ctx,
-	}, sink, providerAddresses)
-	if err != nil {
-		return sink, cancel, errors.Wrap(err, "could not subscribe to promise settlement events")
-	}
-
+	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
+		return caller.WatchPromiseSettled(&bind.WatchOpts{
+			Context: ctx,
+		}, sink, providerAddresses)
+	})
 	go func() {
 		subErr := <-sub.Err()
 		if subErr != nil {
