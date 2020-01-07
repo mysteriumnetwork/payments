@@ -254,7 +254,6 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get nonce")
 	}
-
 	tx, err := transactor.RegisterIdentity(&bind.TransactOpts{
 		From:     rr.Identity,
 		Signer:   rr.Signer,
@@ -430,7 +429,6 @@ func (bc *Blockchain) SubscribeToIdentityRegistrationEvents(registryAddress comm
 		if subErr != nil {
 			log.Error().Err(err).Msg("subscription error")
 		}
-		c()
 		close(sink)
 	}()
 	return sink, sub.Unsubscribe, nil
@@ -454,7 +452,6 @@ func (bc *Blockchain) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress comm
 		if subErr != nil {
 			log.Error().Err(err).Msg("subscription error")
 		}
-		c()
 		close(sink)
 	}()
 	return sink, sub.Unsubscribe, nil
