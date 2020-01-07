@@ -28,6 +28,7 @@ type blockchain interface {
 	GetAccountantOperator(accountantID common.Address) (common.Address, error)
 	SettleAndRebalance(req SettleAndRebalanceRequest) (*types.Transaction, error)
 	GetConsumerChannelsAccountant(channelAddress common.Address) (ConsumersAccountant, error)
+	GetConsumerChannelOperator(channelAddress common.Address) (common.Address, error)
 	GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error)
 	SubscribeToIdentityRegistrationEvents(registryAddress common.Address, accountantIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error)
 	SubscribeToConsumerChannelBalanceUpdate(mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error)
@@ -298,6 +299,20 @@ func (bwr *BlockchainWithRetries) GetConsumerChannelsAccountant(channelAddress c
 		result, bcErr := bwr.bc.GetConsumerChannelsAccountant(channelAddress)
 		if bcErr != nil {
 			return errors.Wrap(bcErr, "could not get consumers accountant")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+// GetConsumerChannelOperator returns the consumer channel operator/identity
+func (bwr *BlockchainWithRetries) GetConsumerChannelOperator(channelAddress common.Address) (common.Address, error) {
+	var res common.Address
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.GetConsumerChannelOperator(channelAddress)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not get consumer's operator")
 		}
 		res = result
 		return nil

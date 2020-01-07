@@ -406,10 +406,20 @@ func (bc *Blockchain) GetConsumerChannelsAccountant(channelAddress common.Addres
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	party, err := c.Accountant(&bind.CallOpts{
-		Context: ctx,
-	})
-	return party, err
+	return c.Accountant(&bind.CallOpts{Context: ctx})
+}
+
+// GetConsumerChannelOperator returns the consumer channel operator/identity
+func (bc *Blockchain) GetConsumerChannelOperator(channelAddress common.Address) (common.Address, error) {
+	c, err := bindings.NewChannelImplementationCaller(channelAddress, bc.client)
+	if err != nil {
+		return common.Address{}, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return c.Operator(&bind.CallOpts{Context: ctx})
 }
 
 // SubscribeToIdentityRegistrationEvents subscribes to identity registration events
