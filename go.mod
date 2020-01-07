@@ -43,4 +43,5 @@ require (
 	golang.org/x/sys v0.0.0-20190922100055-0a153f010e69
 	golang.org/x/text v0.3.2
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce
+	gopkg.in/urfave/cli.v1 v1.20.0 // indirect
 )
