@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/mysteriumnetwork/payments/bindings"
@@ -37,6 +38,7 @@ type blockchain interface {
 	SubscribeToChannelOpenedEvents(accountantAddress common.Address) (sink chan *bindings.AccountantImplementationChannelOpened, cancel func(), err error)
 	SubscribeToPromiseSettledEventByChannelID(accountantID common.Address, providerAddresses [][32]byte) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error)
 	NetworkID() (*big.Int, error)
+	EstimateGas(msg ethereum.CallMsg) (uint64, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -426,6 +428,11 @@ func (bwr *BlockchainWithRetries) NetworkID() (*big.Int, error) {
 		return nil
 	})
 	return res, err
+}
+
+// EstimateGas proxies the estimate gas call to the underlying blockchain since no network calls are performed.
+func (bwr *BlockchainWithRetries) EstimateGas(msg ethereum.CallMsg) (uint64, error) {
+	return bwr.bc.EstimateGas(msg)
 }
 
 // Stop stops the blockhain with retries aborting any waits for retries

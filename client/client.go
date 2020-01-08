@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -238,6 +239,19 @@ type WriteRequest struct {
 	Signer   bind.SignerFn
 	GasLimit uint64
 	GasPrice *big.Int
+}
+
+// GetGasLimit returns the gas limit
+func (wr WriteRequest) GetGasLimit() uint64 {
+	return wr.GasLimit
+}
+
+// EstimateGas exposes the clients internal estimate gas
+func (bc *Blockchain) EstimateGas(msg ethereum.CallMsg) (uint64, error) {
+	parent := context.Background()
+	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
+	defer cancel()
+	return bc.client.EstimateGas(ctx, msg)
 }
 
 // RegisterIdentity registers the given identity on blockchain
@@ -508,9 +522,8 @@ func (bc *Blockchain) SettlePromise(req SettleRequest) (*types.Transaction, erro
 
 	amount := big.NewInt(0).SetUint64(req.Promise.Amount)
 	fee := big.NewInt(0).SetUint64(req.Promise.Fee)
-	rBytes := [32]byte{}
-	copy(rBytes[:], req.Promise.R)
-	lock := rBytes
+	lock := [32]byte{}
+	copy(lock[:], req.Promise.R)
 
 	nonce, err := bc.getNonce(req.Identity)
 	if err != nil {
