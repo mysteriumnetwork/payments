@@ -195,6 +195,11 @@ func (cwdr *WithDryRuns) GetConsumerChannelsAccountant(channelAddress common.Add
 	return cwdr.bc.GetConsumerChannelsAccountant(channelAddress)
 }
 
+// SubscribeToMystTokenTransfers subscribes to myst token transfers
+func (cwdr *WithDryRuns) SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error) {
+	return cwdr.bc.SubscribeToMystTokenTransfers(mystSCAddress)
+}
+
 // GetConsumerChannelOperator returns the consumer channel operator/identity
 func (cwdr *WithDryRuns) GetConsumerChannelOperator(channelAddress common.Address) (common.Address, error) {
 	return cwdr.bc.GetConsumerChannelOperator(channelAddress)

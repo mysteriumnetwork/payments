@@ -99,6 +99,29 @@ func (bc *Blockchain) IsRegisteredAsProvider(accountantAddress, registryAddress,
 	return res.Cmp(big.NewInt(0)) == 1, nil
 }
 
+// SubscribeToMystTokenTransfers subscribes to myst token transfers
+func (bc *Blockchain) SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error) {
+	sink := make(chan *bindings.MystTokenTransfer)
+	mtc, err := bindings.NewMystTokenFilterer(mystSCAddress, bc.client)
+	if err != nil {
+		return sink, nil, err
+	}
+	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
+		return mtc.WatchTransfer(&bind.WatchOpts{
+			Context: ctx,
+		}, sink, []common.Address{}, []common.Address{})
+	})
+	go func() {
+		subErr := <-sub.Err()
+		if subErr != nil {
+			log.Error().Err(err).Msg("subscription error")
+		}
+		close(sink)
+	}()
+
+	return sink, sub.Unsubscribe, nil
+}
+
 // SubscribeToConsumerBalanceEvent subscribes to balance change events in blockchain
 func (bc *Blockchain) SubscribeToConsumerBalanceEvent(channel, mystSCAddress common.Address, timeout time.Duration) (chan *bindings.MystTokenTransfer, func(), error) {
 	sink := make(chan *bindings.MystTokenTransfer)

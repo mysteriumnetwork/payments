@@ -37,6 +37,7 @@ type blockchain interface {
 	SettlePromise(req SettleRequest) (*types.Transaction, error)
 	SubscribeToChannelOpenedEvents(accountantAddress common.Address) (sink chan *bindings.AccountantImplementationChannelOpened, cancel func(), err error)
 	SubscribeToPromiseSettledEventByChannelID(accountantID common.Address, providerAddresses [][32]byte) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error)
+	SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error)
 	NetworkID() (*big.Int, error)
 	EstimateGas(msg ethereum.CallMsg) (uint64, error)
 }
@@ -81,6 +82,22 @@ func (bwr *BlockchainWithRetries) callWithRetry(f func() error) error {
 		}
 	}
 	return nil
+}
+
+// SubscribeToMystTokenTransfers subscribes to myst token transfer events
+func (bwr *BlockchainWithRetries) SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error) {
+	var sink chan *bindings.MystTokenTransfer
+	var cancel func()
+	err := bwr.callWithRetry(func() error {
+		s, c, err := bwr.bc.SubscribeToMystTokenTransfers(mystSCAddress)
+		if err != nil {
+			return errors.Wrap(err, "could not subscribe to settlement events")
+		}
+		sink = s
+		cancel = c
+		return nil
+	})
+	return sink, cancel, err
 }
 
 // GetAccountantFee fetches the accountant fee from blockchain
