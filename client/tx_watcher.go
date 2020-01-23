@@ -44,7 +44,7 @@ type WatchableTransaction func(gasPrice *big.Int) (*types.Transaction, error)
 
 // EnsureTransactionSuccess keeps track of the transaction on blockchain.
 // If it sees that the transaction has not appeared on BC, it will try again and increase the gas price.
-func (tw *TxWatcher) EnsureTransactionSuccess(wt WatchableTransaction, initialGasPrice *big.Int) (chan *types.Transaction, func(), chan error) {
+func (tw *TxWatcher) EnsureTransactionSuccess(wt WatchableTransaction, initialGasPrice *big.Int) (*types.Transaction, func(), error) {
 	stop := make(chan struct{})
 	once := sync.Once{}
 	cancel := func() {
@@ -52,18 +52,8 @@ func (tw *TxWatcher) EnsureTransactionSuccess(wt WatchableTransaction, initialGa
 			close(stop)
 		})
 	}
-	errChan := make(chan error)
-	txChan := make(chan *types.Transaction)
-
-	go func() {
-		defer close(txChan)
-		defer close(errChan)
-		tx, err := tw.watchTx(wt, initialGasPrice, stop)
-		txChan <- tx
-		errChan <- err
-	}()
-
-	return txChan, cancel, errChan
+	tx, err := tw.watchTx(wt, initialGasPrice, stop)
+	return tx, cancel, err
 }
 
 func (tw *TxWatcher) watchTx(wt WatchableTransaction, initialGasPrice *big.Int, stop <-chan struct{}) (*types.Transaction, error) {
