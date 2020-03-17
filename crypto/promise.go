@@ -40,7 +40,7 @@ type Promise struct {
 }
 
 // CreatePromise creates and signs new payment promise
-func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string, ks *keystore.KeyStore, signer common.Address) (*Promise, error) {
+func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string, ks hashSigner, signer common.Address) (*Promise, error) {
 	if hasHexPrefix(channelID) {
 		channelID = channelID[2:]
 	}
@@ -150,7 +150,7 @@ func (p Promise) GetHash() []byte {
 }
 
 // CreateSignature signs promise using keystore
-func (p Promise) CreateSignature(ks *keystore.KeyStore, signer common.Address) ([]byte, error) {
+func (p Promise) CreateSignature(ks hashSigner, signer common.Address) ([]byte, error) {
 	message := p.GetMessage()
 	hash := crypto.Keccak256(message)
 	return ks.SignHash(
