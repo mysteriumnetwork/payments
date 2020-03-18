@@ -24,7 +24,6 @@ import (
 
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 )
@@ -38,8 +37,12 @@ type ExchangeMessage struct {
 	Signature      string
 }
 
+type hashSigner interface {
+	SignHash(a accounts.Account, hash []byte) ([]byte, error)
+}
+
 // CreateExchangeMessage creates new exchange message with it's promise
-func CreateExchangeMessage(invoice Invoice, promiseAmount uint64, channelID string, ks *keystore.KeyStore, signer common.Address) (*ExchangeMessage, error) {
+func CreateExchangeMessage(invoice Invoice, promiseAmount uint64, channelID string, ks hashSigner, signer common.Address) (*ExchangeMessage, error) {
 	promise, err := CreatePromise(channelID, promiseAmount, invoice.TransactorFee, invoice.Hashlock, ks, signer)
 	if err != nil {
 		return nil, err
@@ -96,7 +99,7 @@ func (m ExchangeMessage) GetMessageHash() []byte {
 }
 
 // CreateSignature signs promise using keystore
-func (m ExchangeMessage) CreateSignature(ks *keystore.KeyStore, signer common.Address) ([]byte, error) {
+func (m ExchangeMessage) CreateSignature(ks hashSigner, signer common.Address) ([]byte, error) {
 	return ks.SignHash(
 		accounts.Account{Address: signer},
 		m.GetMessageHash(),
