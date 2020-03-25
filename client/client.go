@@ -625,3 +625,24 @@ func (bc *Blockchain) NetworkID() (*big.Int, error) {
 	defer cancel()
 	return bc.client.NetworkID(ctx)
 }
+
+// ConsumerChannel represents the consumer channel
+type ConsumerChannel struct {
+	Settled *big.Int
+	Balance *big.Int
+}
+
+// GetConsumerChannel returns the consumer channel
+func (bc *Blockchain) GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error) {
+	ad := common.BytesToAddress(addr.Bytes())
+	party, err := bc.GetConsumerChannelsAccountant(ad)
+	if err != nil {
+		return ConsumerChannel{}, err
+	}
+
+	balance, err := bc.GetMystBalance(mystSCAddress, ad)
+	return ConsumerChannel{
+		Settled: party.Settled,
+		Balance: balance,
+	}, err
+}

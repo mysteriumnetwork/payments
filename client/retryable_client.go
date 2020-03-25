@@ -40,6 +40,7 @@ type blockchain interface {
 	SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error)
 	NetworkID() (*big.Int, error)
 	EstimateGas(msg ethereum.CallMsg) (uint64, error)
+	GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -431,6 +432,20 @@ func (bwr *BlockchainWithRetries) SubscribeToPromiseSettledEventByChannelID(acco
 		return nil
 	})
 	return sink, cancel, err
+}
+
+// GetConsumerChannel returns the consumer channel
+func (bwr *BlockchainWithRetries) GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error) {
+	var res ConsumerChannel
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.GetConsumerChannel(addr, mystSCAddress)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not get consumers channel")
+		}
+		res = result
+		return nil
+	})
+	return res, err
 }
 
 // NetworkID returns the network id

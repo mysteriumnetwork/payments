@@ -205,6 +205,11 @@ func (cwdr *WithDryRuns) GetConsumerChannelOperator(channelAddress common.Addres
 	return cwdr.bc.GetConsumerChannelOperator(channelAddress)
 }
 
+// GetConsumerChannel returns the consumer channel
+func (cwdr *WithDryRuns) GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error) {
+	return cwdr.bc.GetConsumerChannel(addr, mystSCAddress)
+}
+
 // GetProviderChannelByID returns the given channel information
 func (cwdr *WithDryRuns) GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error) {
 	return cwdr.bc.GetProviderChannelByID(acc, chID)
