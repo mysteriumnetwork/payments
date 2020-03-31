@@ -187,6 +187,9 @@ func (p Promise) RecoverSigner() (common.Address, error) {
 	sig := make([]byte, 65)
 	copy(sig, p.Signature)
 
-	ReformatSignatureVForRecovery(sig)
+	err := ReformatSignatureVForRecovery(sig)
+	if err != nil {
+		return common.Address{}, err
+	}
 	return RecoverAddress(p.GetMessage(), sig)
 }
