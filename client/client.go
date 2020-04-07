@@ -35,13 +35,26 @@ type ProviderChannel struct {
 type Blockchain struct {
 	client    *ethclient.Client
 	bcTimeout time.Duration
+	nonceFunc nonceFunc
 }
+
+type nonceFunc func(ctx context.Context, account common.Address) (uint64, error)
 
 // NewBlockchain returns a new instance of blockchain
 func NewBlockchain(c *ethclient.Client, timeout time.Duration) *Blockchain {
 	return &Blockchain{
 		client:    c,
 		bcTimeout: timeout,
+		nonceFunc: c.PendingNonceAt,
+	}
+}
+
+// NewBlockchainWithCustomNonceTracker returns a new instance of blockchain with the provided nonce tracking func
+func NewBlockchainWithCustomNonceTracker(c *ethclient.Client, timeout time.Duration, nonceFunc nonceFunc) *Blockchain {
+	return &Blockchain{
+		client:    c,
+		bcTimeout: timeout,
+		nonceFunc: nonceFunc,
 	}
 }
 
@@ -568,7 +581,7 @@ func (bc *Blockchain) SettlePromise(req SettleRequest) (*types.Transaction, erro
 func (bc *Blockchain) getNonce(identity common.Address) (uint64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
-	return bc.client.PendingNonceAt(ctx, identity)
+	return bc.nonceFunc(ctx, identity)
 }
 
 // SubscribeToChannelOpenedEvents subscribes to provider channel opened events
