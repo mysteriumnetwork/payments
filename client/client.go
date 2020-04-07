@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2020 The "MysteriumNetwork/payments" Authors.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package client
 
 import (
@@ -35,13 +52,26 @@ type ProviderChannel struct {
 type Blockchain struct {
 	client    *ethclient.Client
 	bcTimeout time.Duration
+	nonceFunc nonceFunc
 }
+
+type nonceFunc func(ctx context.Context, account common.Address) (uint64, error)
 
 // NewBlockchain returns a new instance of blockchain
 func NewBlockchain(c *ethclient.Client, timeout time.Duration) *Blockchain {
 	return &Blockchain{
 		client:    c,
 		bcTimeout: timeout,
+		nonceFunc: c.PendingNonceAt,
+	}
+}
+
+// NewBlockchainWithCustomNonceTracker returns a new instance of blockchain with the provided nonce tracking func
+func NewBlockchainWithCustomNonceTracker(c *ethclient.Client, timeout time.Duration, nonceFunc nonceFunc) *Blockchain {
+	return &Blockchain{
+		client:    c,
+		bcTimeout: timeout,
+		nonceFunc: nonceFunc,
 	}
 }
 
@@ -568,7 +598,7 @@ func (bc *Blockchain) SettlePromise(req SettleRequest) (*types.Transaction, erro
 func (bc *Blockchain) getNonce(identity common.Address) (uint64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
-	return bc.client.PendingNonceAt(ctx, identity)
+	return bc.nonceFunc(ctx, identity)
 }
 
 // SubscribeToChannelOpenedEvents subscribes to provider channel opened events
