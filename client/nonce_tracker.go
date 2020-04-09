@@ -59,3 +59,10 @@ func (nt *NonceTracker) GetNonce(ctx context.Context, account common.Address) (u
 	nt.nonces[account] = nonce
 	return nonce, nil
 }
+
+// ForceReloadNonce clears the nonce cache. This will force loading from BC next time.
+func (nt *NonceTracker) ForceReloadNonce(account common.Address) {
+	nt.nonceLock.Lock()
+	defer nt.nonceLock.Unlock()
+	delete(nt.nonces, account)
+}
