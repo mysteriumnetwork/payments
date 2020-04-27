@@ -260,3 +260,21 @@ func (cwdr *WithDryRuns) SubscribeToPromiseSettledEventByChannelID(accountantID 
 func (cwdr *WithDryRuns) NetworkID() (*big.Int, error) {
 	return cwdr.bc.NetworkID()
 }
+
+func (cwdr *WithDryRuns) SetBeneficiary(req SetBeneficiaryRequest) (*types.Transaction, error) {
+	_, err := cwdr.dryRun(
+		req,
+		bindings.AccountantImplementationABI,
+		req.Identity,
+		req.AccountantID,
+		"setBeneficiary",
+		toBytes32(req.ChannelID),
+		req.Beneficiary,
+		big.NewInt(0).SetUint64(req.Nonce),
+		req.Signature,
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "transaction dry run failed")
+	}
+	return cwdr.bc.SetBeneficiary(req)
+}

@@ -18,6 +18,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"math/big"
 	"strings"
 	"time"
@@ -680,4 +681,44 @@ func (bc *Blockchain) GetConsumerChannel(addr common.Address, mystSCAddress comm
 		Settled: party.Settled,
 		Balance: balance,
 	}, err
+}
+
+// SetBeneficiaryRequest represents all the parameters required for setting new beneficiary.
+type SetBeneficiaryRequest struct {
+	WriteRequest
+	AccountantID common.Address
+	Beneficiary  common.Address
+	Nonce        uint64
+	ChannelID    []byte
+	Signature    []byte
+}
+
+// SetBeneficiary sets new beneficiary for the provided identity.
+func (bc *Blockchain) SetBeneficiary(req SetBeneficiaryRequest) (*types.Transaction, error) {
+	transactor, err := bindings.NewAccountantImplementationTransactor(req.AccountantID, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	nonce, err := bc.getNonce(req.Identity)
+	if err != nil {
+		return nil, fmt.Errorf("could not get nonce: %w", err)
+	}
+
+	return transactor.SetBeneficiary(&bind.TransactOpts{
+		From:     req.Identity,
+		Signer:   req.Signer,
+		Context:  ctx,
+		GasLimit: req.GasLimit,
+		GasPrice: req.GasPrice,
+		Nonce:    big.NewInt(0).SetUint64(nonce),
+	},
+		toBytes32(req.ChannelID),
+		req.Beneficiary,
+		big.NewInt(0).SetUint64(req.Nonce),
+		req.Signature,
+	)
 }

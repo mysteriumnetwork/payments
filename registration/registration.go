@@ -35,7 +35,7 @@ type Request struct {
 	RegistryAddress string
 }
 
-// GetLoanAmount retursn a big int representation for the loan amount
+// GetLoanAmount returns a big int representation for the loan amount
 func (r Request) GetLoanAmount() *big.Int {
 	return big.NewInt(0).SetUint64(r.Stake)
 }
