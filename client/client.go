@@ -289,6 +289,7 @@ type RegistrationRequest struct {
 	Beneficiary     common.Address
 	Signature       []byte
 	RegistryAddress common.Address
+	Nonce           *big.Int
 }
 
 // WriteRequest contains the required params for a write request
@@ -322,9 +323,13 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
 	defer cancel()
 
-	nonce, err := bc.getNonce(rr.Identity)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not get nonce")
+	nonce := rr.Nonce
+	if nonce == nil {
+		nonceUint, err := bc.getNonce(rr.Identity)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get nonce")
+		}
+		nonce = big.NewInt(0).SetUint64(nonceUint)
 	}
 	tx, err := transactor.RegisterIdentity(&bind.TransactOpts{
 		From:     rr.Identity,
@@ -332,7 +337,7 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 		Context:  ctx,
 		GasLimit: rr.GasLimit,
 		GasPrice: rr.GasPrice,
-		Nonce:    big.NewInt(0).SetUint64(nonce),
+		Nonce:    nonce,
 	},
 		rr.AccountantID,
 		rr.Loan,
