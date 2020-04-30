@@ -33,7 +33,7 @@ type blockchain interface {
 	GetAccountantFee(accountantAddress common.Address) (uint16, error)
 	CalculateAccountantFee(accountantAddress common.Address, value uint64) (*big.Int, error)
 	IsRegisteredAsProvider(accountantAddress, registryAddress, addressToCheck common.Address) (bool, error)
-	GetProviderChannel(accountantAddress common.Address, addressToCheck common.Address) (ProviderChannel, error)
+	GetProviderChannel(accountantAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error)
 	IsRegistered(registryAddress, addressToCheck common.Address) (bool, error)
 	SubscribeToPromiseSettledEvent(providerID, accountantID common.Address) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error)
 	GetMystBalance(mystSCAddress, address common.Address) (*big.Int, error)
@@ -160,10 +160,10 @@ func (bwr *BlockchainWithRetries) IsRegisteredAsProvider(accountantAddress, regi
 }
 
 // GetProviderChannel returns the provider channel
-func (bwr *BlockchainWithRetries) GetProviderChannel(accountantAddress, addressToCheck common.Address) (ProviderChannel, error) {
+func (bwr *BlockchainWithRetries) GetProviderChannel(accountantAddress, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
 	var res ProviderChannel
 	err := bwr.callWithRetry(func() error {
-		r, err := bwr.bc.GetProviderChannel(accountantAddress, addressToCheck)
+		r, err := bwr.bc.GetProviderChannel(accountantAddress, addressToCheck, pending)
 		if err != nil {
 			return errors.Wrap(err, "could not get provider channel")
 		}

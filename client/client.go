@@ -188,7 +188,7 @@ func (bc *Blockchain) SubscribeToConsumerBalanceEvent(channel, mystSCAddress com
 }
 
 // GetProviderChannel returns the provider channel
-func (bc *Blockchain) GetProviderChannel(accountantAddress common.Address, addressToCheck common.Address) (ProviderChannel, error) {
+func (bc *Blockchain) GetProviderChannel(accountantAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
 	addressBytes, err := bc.getProviderChannelAddressBytes(accountantAddress, addressToCheck)
 	if err != nil {
 		return ProviderChannel{}, errors.Wrap(err, "could not calculate provider channel address")
@@ -202,13 +202,14 @@ func (bc *Blockchain) GetProviderChannel(accountantAddress common.Address, addre
 	defer cancel()
 
 	ch, err := caller.Channels(&bind.CallOpts{
+		Pending: pending,
 		Context: ctx,
 	}, addressBytes)
 	return ch, errors.Wrap(err, "could not get provider channel from bc")
 }
 
 func (bc *Blockchain) getProviderChannelLoan(accountantAddress common.Address, addressToCheck common.Address) (*big.Int, error) {
-	ch, err := bc.GetProviderChannel(accountantAddress, addressToCheck)
+	ch, err := bc.GetProviderChannel(accountantAddress, addressToCheck, false)
 	return ch.Loan, errors.Wrap(err, "could not get provider channel from bc")
 }
 
