@@ -167,8 +167,8 @@ func (cwdr *WithDryRuns) IsRegisteredAsProvider(accountantAddress, registryAddre
 }
 
 // GetProviderChannel returns the provider channel
-func (cwdr *WithDryRuns) GetProviderChannel(accountantAddress common.Address, addressToCheck common.Address) (ProviderChannel, error) {
-	return cwdr.bc.GetProviderChannel(accountantAddress, addressToCheck)
+func (cwdr *WithDryRuns) GetProviderChannel(accountantAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+	return cwdr.bc.GetProviderChannel(accountantAddress, addressToCheck, pending)
 }
 
 // IsRegistered checks wether the given identity is registered or not
