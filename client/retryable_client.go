@@ -1,3 +1,19 @@
+/* Mysterium network payment library.
+ *
+ * Copyright (C) 2020 BlockDev AG
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package client
 
 import (
@@ -5,6 +21,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/mysteriumnetwork/payments/bindings"
@@ -16,7 +33,7 @@ type blockchain interface {
 	GetAccountantFee(accountantAddress common.Address) (uint16, error)
 	CalculateAccountantFee(accountantAddress common.Address, value uint64) (*big.Int, error)
 	IsRegisteredAsProvider(accountantAddress, registryAddress, addressToCheck common.Address) (bool, error)
-	GetProviderChannel(accountantAddress common.Address, addressToCheck common.Address) (ProviderChannel, error)
+	GetProviderChannel(accountantAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error)
 	IsRegistered(registryAddress, addressToCheck common.Address) (bool, error)
 	SubscribeToPromiseSettledEvent(providerID, accountantID common.Address) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error)
 	GetMystBalance(mystSCAddress, address common.Address) (*big.Int, error)
@@ -36,7 +53,10 @@ type blockchain interface {
 	SettlePromise(req SettleRequest) (*types.Transaction, error)
 	SubscribeToChannelOpenedEvents(accountantAddress common.Address) (sink chan *bindings.AccountantImplementationChannelOpened, cancel func(), err error)
 	SubscribeToPromiseSettledEventByChannelID(accountantID common.Address, providerAddresses [][32]byte) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error)
+	SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error)
 	NetworkID() (*big.Int, error)
+	EstimateGas(msg ethereum.CallMsg) (uint64, error)
+	GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -79,6 +99,22 @@ func (bwr *BlockchainWithRetries) callWithRetry(f func() error) error {
 		}
 	}
 	return nil
+}
+
+// SubscribeToMystTokenTransfers subscribes to myst token transfer events
+func (bwr *BlockchainWithRetries) SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error) {
+	var sink chan *bindings.MystTokenTransfer
+	var cancel func()
+	err := bwr.callWithRetry(func() error {
+		s, c, err := bwr.bc.SubscribeToMystTokenTransfers(mystSCAddress)
+		if err != nil {
+			return errors.Wrap(err, "could not subscribe to settlement events")
+		}
+		sink = s
+		cancel = c
+		return nil
+	})
+	return sink, cancel, err
 }
 
 // GetAccountantFee fetches the accountant fee from blockchain
@@ -124,10 +160,10 @@ func (bwr *BlockchainWithRetries) IsRegisteredAsProvider(accountantAddress, regi
 }
 
 // GetProviderChannel returns the provider channel
-func (bwr *BlockchainWithRetries) GetProviderChannel(accountantAddress, addressToCheck common.Address) (ProviderChannel, error) {
+func (bwr *BlockchainWithRetries) GetProviderChannel(accountantAddress, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
 	var res ProviderChannel
 	err := bwr.callWithRetry(func() error {
-		r, err := bwr.bc.GetProviderChannel(accountantAddress, addressToCheck)
+		r, err := bwr.bc.GetProviderChannel(accountantAddress, addressToCheck, pending)
 		if err != nil {
 			return errors.Wrap(err, "could not get provider channel")
 		}
@@ -414,6 +450,20 @@ func (bwr *BlockchainWithRetries) SubscribeToPromiseSettledEventByChannelID(acco
 	return sink, cancel, err
 }
 
+// GetConsumerChannel returns the consumer channel
+func (bwr *BlockchainWithRetries) GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error) {
+	var res ConsumerChannel
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.GetConsumerChannel(addr, mystSCAddress)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not get consumers channel")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
 // NetworkID returns the network id
 func (bwr *BlockchainWithRetries) NetworkID() (*big.Int, error) {
 	var res *big.Int
@@ -426,6 +476,11 @@ func (bwr *BlockchainWithRetries) NetworkID() (*big.Int, error) {
 		return nil
 	})
 	return res, err
+}
+
+// EstimateGas proxies the estimate gas call to the underlying blockchain since no network calls are performed.
+func (bwr *BlockchainWithRetries) EstimateGas(msg ethereum.CallMsg) (uint64, error) {
+	return bwr.bc.EstimateGas(msg)
 }
 
 // Stop stops the blockhain with retries aborting any waits for retries

@@ -1,18 +1,17 @@
-/*
- * Copyright (C) 2019 The "MysteriumNetwork/payments" Authors.
+/* Mysterium network payment library.
+ *
+ * Copyright (C) 2020 BlockDev AG
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package crypto
@@ -40,7 +39,7 @@ type Promise struct {
 }
 
 // CreatePromise creates and signs new payment promise
-func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string, ks *keystore.KeyStore, signer common.Address) (*Promise, error) {
+func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string, ks hashSigner, signer common.Address) (*Promise, error) {
 	if hasHexPrefix(channelID) {
 		channelID = channelID[2:]
 	}
@@ -150,7 +149,7 @@ func (p Promise) GetHash() []byte {
 }
 
 // CreateSignature signs promise using keystore
-func (p Promise) CreateSignature(ks *keystore.KeyStore, signer common.Address) ([]byte, error) {
+func (p Promise) CreateSignature(ks hashSigner, signer common.Address) ([]byte, error) {
 	message := p.GetMessage()
 	hash := crypto.Keccak256(message)
 	return ks.SignHash(
@@ -187,6 +186,9 @@ func (p Promise) RecoverSigner() (common.Address, error) {
 	sig := make([]byte, 65)
 	copy(sig, p.Signature)
 
-	ReformatSignatureVForRecovery(sig)
+	err := ReformatSignatureVForRecovery(sig)
+	if err != nil {
+		return common.Address{}, err
+	}
 	return RecoverAddress(p.GetMessage(), sig)
 }
