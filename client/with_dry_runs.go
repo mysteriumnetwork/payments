@@ -260,3 +260,26 @@ func (cwdr *WithDryRuns) SubscribeToPromiseSettledEventByChannelID(accountantID 
 func (cwdr *WithDryRuns) NetworkID() (*big.Int, error) {
 	return cwdr.bc.NetworkID()
 }
+
+// SettleWithBeneficiary sets new beneficiary and settling given accountant issued promise into it.
+func (cwdr *WithDryRuns) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*types.Transaction, error) {
+	_, err := cwdr.dryRun(
+		req,
+		bindings.AccountantImplementationABI,
+		req.Identity,
+		req.AccountantID,
+		"settleWithBeneficiary",
+		toBytes32(req.Promise.ChannelID),
+		big.NewInt(0).SetUint64(req.Promise.Amount),
+		big.NewInt(0).SetUint64(req.Promise.Fee),
+		toBytes32(req.Promise.R),
+		req.Promise.Signature,
+		req.Beneficiary,
+		big.NewInt(0).SetUint64(req.Nonce),
+		req.Signature,
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "transaction dry run failed")
+	}
+	return cwdr.bc.SettleWithBeneficiary(req)
+}
