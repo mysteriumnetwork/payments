@@ -687,3 +687,47 @@ func (bc *Blockchain) GetConsumerChannel(addr common.Address, mystSCAddress comm
 		Balance: balance,
 	}, err
 }
+
+// SettleWithBeneficiaryRequest represents all the parameters required for setting new beneficiary via transactor.
+type SettleWithBeneficiaryRequest struct {
+	WriteRequest
+	Promise      crypto.Promise
+	AccountantID common.Address
+	Beneficiary  common.Address
+	Nonce        uint64
+	Signature    []byte
+}
+
+// SettleWithBeneficiary sets new beneficiary for the provided identity and settles lastest promise into new beneficiary address.
+func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*types.Transaction, error) {
+	transactor, err := bindings.NewAccountantImplementationTransactor(req.AccountantID, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	nonce, err := bc.getNonce(req.Identity)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get nonce")
+	}
+
+	return transactor.SettleWithBeneficiary(&bind.TransactOpts{
+		From:     req.Identity,
+		Signer:   req.Signer,
+		Context:  ctx,
+		GasLimit: req.GasLimit,
+		GasPrice: req.GasPrice,
+		Nonce:    big.NewInt(0).SetUint64(nonce),
+	},
+		toBytes32(req.Promise.ChannelID),
+		big.NewInt(0).SetUint64(req.Promise.Amount),
+		big.NewInt(0).SetUint64(req.Promise.Fee),
+		toBytes32(req.Promise.R),
+		req.Promise.Signature,
+		req.Beneficiary,
+		big.NewInt(0).SetUint64(req.Nonce),
+		req.Signature,
+	)
+}

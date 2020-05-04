@@ -44,6 +44,7 @@ type blockchain interface {
 	IsAccountantRegistered(registryAddress, acccountantID common.Address) (bool, error)
 	GetAccountantOperator(accountantID common.Address) (common.Address, error)
 	SettleAndRebalance(req SettleAndRebalanceRequest) (*types.Transaction, error)
+	SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*types.Transaction, error)
 	GetConsumerChannelsAccountant(channelAddress common.Address) (ConsumersAccountant, error)
 	GetConsumerChannelOperator(channelAddress common.Address) (common.Address, error)
 	GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error)
@@ -306,7 +307,7 @@ func (bwr *BlockchainWithRetries) SettleAndRebalance(req SettleAndRebalanceReque
 	err := bwr.callWithRetry(func() error {
 		result, bcErr := bwr.bc.SettleAndRebalance(req)
 		if bcErr != nil {
-			return errors.Wrap(bcErr, "could not settle and rebalacne")
+			return errors.Wrap(bcErr, "could not settle and rebalance")
 		}
 		res = result
 		return nil
@@ -483,9 +484,23 @@ func (bwr *BlockchainWithRetries) EstimateGas(msg ethereum.CallMsg) (uint64, err
 	return bwr.bc.EstimateGas(msg)
 }
 
-// Stop stops the blockhain with retries aborting any waits for retries
+// Stop stops the blockchain with retries aborting any waits for retries
 func (bwr *BlockchainWithRetries) Stop() {
 	bwr.once.Do(func() {
 		close(bwr.stop)
 	})
+}
+
+// SettleWithBeneficiary is setting new beneficiary and settling latest promise balance into new beneficiary address.
+func (bwr *BlockchainWithRetries) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*types.Transaction, error) {
+	var res *types.Transaction
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.SettleWithBeneficiary(req)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not set beneficiary")
+		}
+		res = result
+		return nil
+	})
+	return res, err
 }
