@@ -18,6 +18,7 @@ package crypto
 
 import (
 	"encoding/hex"
+	"fmt"
 	"math/big"
 	"strings"
 
@@ -59,7 +60,10 @@ func CreateExchangeMessage(invoice Invoice, promiseAmount uint64, channelID stri
 		return nil, err
 	}
 
-	ReformatSignatureVForBC(signature)
+	if err := ReformatSignatureVForBC(signature); err != nil {
+		return nil, fmt.Errorf("failed to reformat signature: %w", err)
+	}
+
 	message.Signature = hex.EncodeToString(signature)
 
 	return &message, nil

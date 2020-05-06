@@ -18,6 +18,7 @@ package crypto
 
 import (
 	"encoding/hex"
+	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts"
@@ -74,7 +75,10 @@ func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string,
 		return nil, err
 	}
 
-	ReformatSignatureVForBC(signature)
+	if err := ReformatSignatureVForBC(signature); err != nil {
+		return nil, fmt.Errorf("failed to reformat signature: %w", err)
+	}
+
 	promise.Signature = signature
 
 	return &promise, nil
@@ -127,7 +131,10 @@ func (p *Promise) Sign(ks *keystore.KeyStore, signer common.Address) error {
 		return err
 	}
 
-	ReformatSignatureVForBC(signature)
+	if err := ReformatSignatureVForBC(signature); err != nil {
+		return fmt.Errorf("failed to reformat signature: %w", err)
+	}
+
 	p.Signature = signature
 
 	return nil

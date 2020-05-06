@@ -155,7 +155,6 @@ func TestCreatePromise(t *testing.T) {
 	_, err = CreatePromise("NotHex", amount, fee, hashlock, ks, account.Address)
 	assert.Error(t, err)
 	assert.Equal(t, "channelID and hashlock have to be proper hex strings", err.Error())
-
 }
 
 func TestNewPromise(t *testing.T) {
