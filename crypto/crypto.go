@@ -59,7 +59,7 @@ func deriveCreate2Address(salt string, msgSender string, implementation string) 
 // GenerateChannelAddress generate channel address from given identity hash
 func GenerateChannelAddress(identity, accountant, registry, channelImplementation string) (address string, err error) {
 	if !isHexAddress(identity) || !isHexAddress(registry) || !isHexAddress(channelImplementation) {
-		return "", errors.New("Given identity, registry and channelImplementation params have to be hex addresses")
+		return "", errors.New("given identity, registry and channelImplementation params have to be hex addresses")
 	}
 
 	saltBytes, err := hex.DecodeString(ensureNoPrefix(identity) + ensureNoPrefix(accountant))
@@ -74,7 +74,7 @@ func GenerateChannelAddress(identity, accountant, registry, channelImplementatio
 // GenerateProviderChannelID generated channelID for provider channels from given identity hash
 func GenerateProviderChannelID(providerIdentity, accountantAddress string) (string, error) {
 	if !isHexAddress(providerIdentity) || !isHexAddress(accountantAddress) {
-		return "", errors.New("Given providerIdentity and accountantAddress params have to be hex addresses")
+		return "", errors.New("given providerIdentity and accountantAddress params have to be hex addresses")
 	}
 
 	channelID := crypto.Keccak256(append(
@@ -96,7 +96,7 @@ func GenerateProviderChannelIDBytes(providerIdentity, accountantAddress common.A
 // GenerateAccountantAddress generate accountant address from given accountant operator address
 func GenerateAccountantAddress(operator string, registry string, accountantImplementation string) (address string, err error) {
 	if !isHexAddress(operator) || !isHexAddress(registry) || !isHexAddress(accountantImplementation) {
-		return "", errors.New("Given operator, registry and accountantImplementation params have to be hex addresses")
+		return "", errors.New("given operator, registry and accountantImplementation params have to be hex addresses")
 	}
 
 	salt, err := toBytes32(operator)

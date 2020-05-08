@@ -19,6 +19,7 @@ package crypto
 import (
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"math/big"
 	"strings"
 
@@ -60,7 +61,10 @@ func CreateBeneficiaryRequest(channelID, beneficiary string, nonce uint64, ks ha
 		return nil, err
 	}
 
-	ReformatSignatureVForBC(signature)
+	if err := ReformatSignatureVForBC(signature); err != nil {
+		return nil, fmt.Errorf("failed to reformat signature: %w", err)
+	}
+
 	request.Signature = hex.EncodeToString(signature)
 
 	return &request, nil
