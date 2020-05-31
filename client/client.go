@@ -18,6 +18,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"math/big"
 	"strings"
 	"time"
@@ -658,6 +659,49 @@ func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(accountantID com
 	}()
 
 	return sink, sub.Unsubscribe, nil
+}
+
+// GetEthBalance gets the current ethereum balance for the address.
+func (bc *Blockchain) GetEthBalance(address common.Address) (*big.Int, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+	return bc.ethClient.Client().BalanceAt(ctx, address, nil)
+}
+
+// EthTransferRequest represents the ethereum transfer request input parameters.
+type EthTransferRequest struct {
+	WriteRequest
+	To     common.Address
+	Amount *big.Int
+}
+
+// TransferEth transfers ethereum to the given address.
+func (bc *Blockchain) TransferEth(etr EthTransferRequest) (*types.Transaction, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	id, err := bc.NetworkID()
+	if err != nil {
+		return nil, fmt.Errorf("could not get network id: %w", err)
+	}
+
+	nonceUint, err := bc.getNonce(etr.Identity)
+	if err != nil {
+		return nil, fmt.Errorf("could not get nonce: %w", err)
+	}
+
+	tx := types.NewTransaction(nonceUint, etr.To, etr.Amount, etr.GasLimit, etr.GasPrice, nil)
+	signedTx, err := etr.Signer(types.NewEIP155Signer(id), etr.Identity, tx)
+	if err != nil {
+		return nil, fmt.Errorf("could not sign tx: %w", err)
+	}
+
+	err = bc.ethClient.Client().SendTransaction(ctx, signedTx)
+	if err != nil {
+		return nil, fmt.Errorf("could not send transaction: %w", err)
+	}
+
+	return signedTx, err
 }
 
 // NetworkID returns the network id
