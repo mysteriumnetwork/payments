@@ -58,6 +58,8 @@ type blockchain interface {
 	NetworkID() (*big.Int, error)
 	EstimateGas(msg ethereum.CallMsg) (uint64, error)
 	GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error)
+	GetEthBalance(address common.Address) (*big.Int, error)
+	TransferEth(etr EthTransferRequest) (*types.Transaction, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -412,6 +414,34 @@ func (bwr *BlockchainWithRetries) SettlePromise(req SettleRequest) (*types.Trans
 		result, bcErr := bwr.bc.SettlePromise(req)
 		if bcErr != nil {
 			return errors.Wrap(bcErr, "could not settle promise")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+// GetEthBalance gets the current ethereum balance for the address.
+func (bwr *BlockchainWithRetries) GetEthBalance(address common.Address) (*big.Int, error) {
+	var res *big.Int
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.GetEthBalance(address)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not get balance")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+// TransferEth transfers ethereum to the given address.
+func (bwr *BlockchainWithRetries) TransferEth(etr EthTransferRequest) (*types.Transaction, error) {
+	var res *types.Transaction
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.TransferEth(etr)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not transfer ethereum")
 		}
 		res = result
 		return nil
