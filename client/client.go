@@ -742,6 +742,26 @@ type SettleWithBeneficiaryRequest struct {
 	Signature    []byte
 }
 
+// GetAccountantsAvailableBalance returns the balance that is available for accountant.
+func (bc *Blockchain) GetAccountantsAvailableBalance(accountantAddress common.Address) (*big.Int, error) {
+	caller, err := bindings.NewAccountantImplementationCaller(accountantAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, errors.Wrap(err, "could not create accountant implementation caller")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	res, err := caller.AvailableBalance(&bind.CallOpts{
+		Context: ctx,
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get accountant available balance")
+	}
+
+	return res, nil
+}
+
 // SettleWithBeneficiary sets new beneficiary for the provided identity and settles lastest promise into new beneficiary address.
 func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*types.Transaction, error) {
 	transactor, err := bindings.NewAccountantImplementationTransactor(req.AccountantID, bc.ethClient.Client())
