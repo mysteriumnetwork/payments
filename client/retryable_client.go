@@ -60,6 +60,7 @@ type blockchain interface {
 	GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error)
 	GetEthBalance(address common.Address) (*big.Int, error)
 	TransferEth(etr EthTransferRequest) (*types.Transaction, error)
+	GetAccountantsAvailableBalance(accountantAddress common.Address) (*big.Int, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -414,6 +415,20 @@ func (bwr *BlockchainWithRetries) SettlePromise(req SettleRequest) (*types.Trans
 		result, bcErr := bwr.bc.SettlePromise(req)
 		if bcErr != nil {
 			return errors.Wrap(bcErr, "could not settle promise")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+// GetAccountantsAvailableBalance returns the balance that is available for accountant.
+func (bwr *BlockchainWithRetries) GetAccountantsAvailableBalance(accountantAddress common.Address) (*big.Int, error) {
+	var res *big.Int
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.GetAccountantsAvailableBalance(accountantAddress)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not get balance")
 		}
 		res = result
 		return nil
