@@ -81,7 +81,7 @@ func TestCreateExchangeMessage(t *testing.T) {
 	invoice := CreateInvoice(agreementID, agreementTotal, fee, r)
 	invoice.Provider = provider
 
-	message, err := CreateExchangeMessage(invoice, amount, channelID, ks, account.Address)
+	message, err := CreateExchangeMessage(invoice, amount, channelID, "", ks, account.Address)
 	assert.Nil(t, err)
 
 	assert.Equal(t, p.PromiseSignature, message.Promise.Signature)
