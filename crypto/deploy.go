@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -46,9 +47,15 @@ func DeployConfigContract(privkey string, client *ethclient.Client) (common.Addr
 		return tx.WithSignature(signer, sig)
 	}
 
-	_, _, _, err = bindings.DeployConfig(auth, client)
+	actualAddress, _, _, err := bindings.DeployConfig(auth, client)
 	if err != nil {
 		return common.Address{}, fmt.Errorf("failed to deploy config contract: %w", err)
+	}
+
+	expectedAddress := staticConfigAddress
+
+	if !strings.EqualFold(actualAddress.Hex(), common.HexToAddress(expectedAddress).Hex()) {
+		return common.Address{}, fmt.Errorf("config deployed to a wrong address. Expected %q, got %q", common.HexToAddress(expectedAddress).Hex(), actualAddress.Hex())
 	}
 
 	return common.HexToAddress(staticConfigAddress), nil
