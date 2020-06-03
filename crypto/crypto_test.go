@@ -46,7 +46,7 @@ func TestGenerateChannelAddress(t *testing.T) {
 	expectedChannelAddress := "0x75bc5ea5f48949032278179132d367f06ab7570e"
 
 	_, err := GenerateChannelAddress("", "", "", "")
-	assert.EqualError(t, err, "Given identity, registry and channelImplementation params have to be hex addresses")
+	assert.EqualError(t, err, "given identity, registry and channelImplementation params have to be hex addresses")
 
 	channelAddress, err := GenerateChannelAddress(identity, accountantAddress, registry, channelImplementation)
 	assert.Nil(t, err)
@@ -59,7 +59,7 @@ func TestGenerateProviderChannelID(t *testing.T) {
 	expectedChannelID := "0xfebeba54c56610475ae3432199515146096e2d9c5b7bc2b3865c4b1967cf01cc"
 
 	_, err := GenerateProviderChannelID("Identity", "Accountant")
-	assert.EqualError(t, err, "Given providerIdentity and accountantAddress params have to be hex addresses")
+	assert.EqualError(t, err, "given providerIdentity and accountantAddress params have to be hex addresses")
 
 	channelID, err := GenerateProviderChannelID(providerIdentity, accountantAddress)
 	assert.NoError(t, err)
