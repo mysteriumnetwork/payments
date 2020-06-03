@@ -35,6 +35,7 @@ type ExchangeMessage struct {
 	AgreementTotal uint64
 	Provider       string
 	Signature      string
+	HermesID       string
 }
 
 type hashSigner interface {
@@ -42,7 +43,7 @@ type hashSigner interface {
 }
 
 // CreateExchangeMessage creates new exchange message with it's promise
-func CreateExchangeMessage(invoice Invoice, promiseAmount uint64, channelID string, ks hashSigner, signer common.Address) (*ExchangeMessage, error) {
+func CreateExchangeMessage(invoice Invoice, promiseAmount uint64, channelID, hermesID string, ks hashSigner, signer common.Address) (*ExchangeMessage, error) {
 	promise, err := CreatePromise(channelID, promiseAmount, invoice.TransactorFee, invoice.Hashlock, ks, signer)
 	if err != nil {
 		return nil, err
@@ -53,6 +54,7 @@ func CreateExchangeMessage(invoice Invoice, promiseAmount uint64, channelID stri
 		AgreementID:    invoice.AgreementID,
 		AgreementTotal: invoice.AgreementTotal,
 		Provider:       invoice.Provider,
+		HermesID:       hermesID,
 	}
 
 	signature, err := message.CreateSignature(ks, signer)
@@ -93,6 +95,12 @@ func (m ExchangeMessage) GetMessage() []byte {
 	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(m.AgreementID)), 32)...)
 	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(m.AgreementTotal)), 32)...)
 	message = append(message, common.HexToAddress(m.Provider).Bytes()...)
+
+	// TODO: once all the consumers upgrade, this check needs to go to
+	if m.HermesID != "" {
+		message = append(message, common.HexToAddress(m.HermesID).Bytes()...)
+	}
+
 	return message
 }
 
