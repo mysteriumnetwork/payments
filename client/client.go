@@ -43,7 +43,8 @@ type ProviderChannel struct {
 	Beneficiary   common.Address
 	Balance       *big.Int
 	Settled       *big.Int
-	Loan          *big.Int
+	Stake         *big.Int
+	StakeGoal     *big.Int
 	LastUsedNonce *big.Int
 	Timelock      *big.Int
 }
@@ -127,7 +128,7 @@ func (bc *Blockchain) IsRegisteredAsProvider(accountantAddress, registryAddress,
 		return false, nil
 	}
 
-	res, err := bc.getProviderChannelLoan(accountantAddress, addressToCheck)
+	res, err := bc.getProviderChannelStake(accountantAddress, addressToCheck)
 	if err != nil {
 		return false, errors.Wrap(err, "could not get provider channel loan amount")
 	}
@@ -209,9 +210,9 @@ func (bc *Blockchain) GetProviderChannel(accountantAddress common.Address, addre
 	return ch, errors.Wrap(err, "could not get provider channel from bc")
 }
 
-func (bc *Blockchain) getProviderChannelLoan(accountantAddress common.Address, addressToCheck common.Address) (*big.Int, error) {
+func (bc *Blockchain) getProviderChannelStake(accountantAddress common.Address, addressToCheck common.Address) (*big.Int, error) {
 	ch, err := bc.GetProviderChannel(accountantAddress, addressToCheck, false)
-	return ch.Loan, errors.Wrap(err, "could not get provider channel from bc")
+	return ch.Stake, errors.Wrap(err, "could not get provider channel from bc")
 }
 
 func (bc *Blockchain) getProviderChannelAddressBytes(accountantAddress, addressToCheck common.Address) ([32]byte, error) {
@@ -439,7 +440,7 @@ func (bc *Blockchain) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.
 		GasPrice: req.GasPrice,
 		Nonce:    big.NewInt(0).SetUint64(nonce),
 	},
-		toBytes32(req.Promise.ChannelID),
+		common.BytesToAddress(req.Promise.ChannelID),
 		big.NewInt(0).SetUint64(req.Promise.Amount),
 		big.NewInt(0).SetUint64(req.Promise.Fee),
 		toBytes32(req.Promise.R),
@@ -785,7 +786,7 @@ func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*
 		GasPrice: req.GasPrice,
 		Nonce:    big.NewInt(0).SetUint64(nonce),
 	},
-		toBytes32(req.Promise.ChannelID),
+		common.BytesToAddress(req.Promise.ChannelID),
 		big.NewInt(0).SetUint64(req.Promise.Amount),
 		big.NewInt(0).SetUint64(req.Promise.Fee),
 		toBytes32(req.Promise.R),
