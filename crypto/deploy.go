@@ -17,20 +17,13 @@ import (
 )
 
 const (
-	staticDeployer      = "0x5B501f5dB54A1652F2f58B4bE7aaDAA117dCE622"
-	staticSignature     = "0xffb2d0383ab970139a7e0fa9263c446199464b5778b92bf9e7936b5a383a8fd00abababababababababababababababababababababababababababababababa00"
-	staticConfigAddress = "0x46e9742C098267122DA466d6b7a3fb844436Ac37"
+	staticSignature = "0xffb2d0383ab970139a7e0fa9263c446199464b5778b92bf9e7936b5a383a8fd00abababababababababababababababababababababababababababababababa00"
 )
 
 // DeployConfigContract deploys config contract.
 // It requires manually transaction build to make sure we are always deploying to the exact address.
 // All the static arguments cannot be changed to allow having the exact address.
 func DeployConfigContract(privkey string, client *ethclient.Client) (common.Address, error) {
-	err := TransferEth(privkey, common.HexToAddress(staticDeployer), big.NewInt(20000000000000000), client)
-	if err != nil {
-		return common.Address{}, fmt.Errorf("failed transfer eth: %w", err)
-	}
-
 	auth := &bind.TransactOpts{
 		Nonce:    big.NewInt(0),
 		GasPrice: big.NewInt(100000000000),
@@ -38,26 +31,43 @@ func DeployConfigContract(privkey string, client *ethclient.Client) (common.Addr
 		Value:    big.NewInt(0),
 	}
 
-	auth.Signer = func(types.Signer, common.Address, *types.Transaction) (*types.Transaction, error) {
-		tx := types.NewContractCreation(0, auth.Value, auth.GasLimit, auth.GasPrice, common.FromHex(bindings.ConfigBin))
-		signer := types.NewEIP155Signer(nil)
-		sig := common.FromHex(staticSignature)
+	tx := types.NewContractCreation(0, auth.Value, auth.GasLimit, auth.GasPrice, common.FromHex(bindings.ConfigBin))
+	signer := types.NewEIP155Signer(nil)
+	sig := common.FromHex(staticSignature)
 
-		return tx.WithSignature(signer, sig)
+	signedTx, err := tx.WithSignature(signer, sig)
+	if err != nil {
+		return common.Address{}, fmt.Errorf("failed to create signed transaction: %w", err)
 	}
 
-	_, _, _, err = bindings.DeployConfig(auth, client)
+	msg, err := signedTx.AsMessage(types.NewEIP155Signer(signedTx.ChainId()))
+	if err != nil {
+		return common.Address{}, fmt.Errorf("failed to get message from transaction: %w", err)
+	}
+
+	auth.From = msg.From()
+
+	auth.Signer = func(types.Signer, common.Address, *types.Transaction) (*types.Transaction, error) {
+		return signedTx, nil
+	}
+
+	err = TransferEth(privkey, auth.From, big.NewInt(20000000000000000), client)
+	if err != nil {
+		return common.Address{}, fmt.Errorf("failed transfer eth: %w", err)
+	}
+
+	configAddress, _, _, err := bindings.DeployConfig(auth, client)
 	if err != nil {
 		return common.Address{}, fmt.Errorf("failed to deploy config contract: %w", err)
 	}
 
-	return common.HexToAddress(staticConfigAddress), nil
+	return configAddress, nil
 }
 
 // SetupConfig adds required configuration options to the deployed config.
 // It sets config owner, channel implementation and accountant implementation addresses.
-func SetupConfig(opts *bind.TransactOpts, client bind.ContractBackend, owner string, channelImplProxyAddress, channelImplAddress, accountantImplAddress, accountantImplProxyAddress common.Address) error {
-	cfg, err := bindings.NewConfig(common.HexToAddress(staticConfigAddress), client)
+func SetupConfig(opts *bind.TransactOpts, client bind.ContractBackend, configAddress common.Address, owner string, channelImplProxyAddress, channelImplAddress, accountantImplAddress, accountantImplProxyAddress common.Address) error {
+	cfg, err := bindings.NewConfig(configAddress, client)
 	if err != nil {
 		return fmt.Errorf("failed to get config by provided address: %w", err)
 	}
