@@ -414,8 +414,9 @@ func (bc *Blockchain) GetHermesOperator(hermesID common.Address) (common.Address
 // SettleAndRebalanceRequest represents all the parameters required for settle and rebalance
 type SettleAndRebalanceRequest struct {
 	WriteRequest
-	HermesID common.Address
-	Promise  crypto.Promise
+	AccountantID common.Address
+	ProviderID   common.Address
+	Promise      crypto.Promise
 }
 
 // SettleAndRebalance is settling given hermes issued promise
@@ -440,7 +441,7 @@ func (bc *Blockchain) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.
 		GasPrice: req.GasPrice,
 		Nonce:    big.NewInt(0).SetUint64(nonce),
 	},
-		req.Promise.Provider,
+		req.ProviderID,
 		big.NewInt(0).SetUint64(req.Promise.Amount),
 		big.NewInt(0).SetUint64(req.Promise.Fee),
 		toBytes32(req.Promise.R),
@@ -736,11 +737,12 @@ func (bc *Blockchain) GetConsumerChannel(addr common.Address, mystSCAddress comm
 // SettleWithBeneficiaryRequest represents all the parameters required for setting new beneficiary via transactor.
 type SettleWithBeneficiaryRequest struct {
 	WriteRequest
-	Promise     crypto.Promise
-	HermesID    common.Address
-	Beneficiary common.Address
-	Nonce       uint64
-	Signature   []byte
+	Promise      crypto.Promise
+	AccountantID common.Address
+	ProviderID   common.Address
+	Beneficiary  common.Address
+	Nonce        uint64
+	Signature    []byte
 }
 
 // GetHermessAvailableBalance returns the balance that is available for hermes.
@@ -786,7 +788,7 @@ func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*
 		GasPrice: req.GasPrice,
 		Nonce:    big.NewInt(0).SetUint64(nonce),
 	},
-		req.Promise.Provider,
+		req.ProviderID,
 		big.NewInt(0).SetUint64(req.Promise.Amount),
 		big.NewInt(0).SetUint64(req.Promise.Fee),
 		toBytes32(req.Promise.R),

@@ -31,7 +31,6 @@ import (
 
 // Promise is payment promise object
 type Promise struct {
-	Provider  common.Address
 	ChannelID []byte
 	Amount    uint64
 	Fee       uint64
