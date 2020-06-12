@@ -130,7 +130,7 @@ func (bc *Blockchain) IsRegisteredAsProvider(accountantAddress, registryAddress,
 
 	res, err := bc.getProviderChannelStake(accountantAddress, addressToCheck)
 	if err != nil {
-		return false, errors.Wrap(err, "could not get provider channel loan amount")
+		return false, errors.Wrap(err, "could not get provider channel stake amount")
 	}
 
 	return res.Cmp(big.NewInt(0)) == 1, nil
@@ -287,7 +287,7 @@ func (bc *Blockchain) GetRegistrationFee(registryAddress common.Address) (*big.I
 type RegistrationRequest struct {
 	WriteRequest
 	AccountantID    common.Address
-	Loan            *big.Int
+	Stake           *big.Int
 	TransactorFee   *big.Int
 	Beneficiary     common.Address
 	Signature       []byte
@@ -343,7 +343,7 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 		Nonce:    nonce,
 	},
 		rr.AccountantID,
-		rr.Loan,
+		rr.Stake,
 		rr.TransactorFee,
 		rr.Beneficiary,
 		rr.Signature,

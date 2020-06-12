@@ -119,7 +119,7 @@ func (cwdr *WithDryRuns) RegisterIdentity(rr RegistrationRequest) (*types.Transa
 		rr.RegistryAddress,
 		"registerIdentity",
 		rr.AccountantID,
-		rr.Loan,
+		rr.Stake,
 		rr.TransactorFee,
 		rr.Beneficiary,
 		rr.Signature,
