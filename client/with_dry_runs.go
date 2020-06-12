@@ -139,7 +139,7 @@ func (cwdr *WithDryRuns) SettleAndRebalance(req SettleAndRebalanceRequest) (*typ
 		req.Identity,
 		req.AccountantID,
 		"settleAndRebalance",
-		toBytes32(req.Promise.ChannelID),
+		req.Promise.Provider,
 		big.NewInt(0).SetUint64(req.Promise.Amount),
 		big.NewInt(0).SetUint64(req.Promise.Fee),
 		toBytes32(req.Promise.R),
