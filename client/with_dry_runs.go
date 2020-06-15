@@ -269,7 +269,7 @@ func (cwdr *WithDryRuns) SettleWithBeneficiary(req SettleWithBeneficiaryRequest)
 		req.Identity,
 		req.AccountantID,
 		"settleWithBeneficiary",
-		toBytes32(req.Promise.ChannelID),
+		req.Promise.Provider,
 		big.NewInt(0).SetUint64(req.Promise.Amount),
 		big.NewInt(0).SetUint64(req.Promise.Fee),
 		toBytes32(req.Promise.R),
