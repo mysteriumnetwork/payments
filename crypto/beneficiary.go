@@ -24,8 +24,8 @@ import (
 	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
@@ -114,7 +114,7 @@ func (r SetBeneficiaryRequest) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, common.Hex2Bytes(strings.TrimPrefix(r.ChannelID, "0x"))...)
 	message = append(message, common.HexToAddress(r.Beneficiary).Bytes()...)
-	message = append(message, Pad(math.U256Bytes(big.NewInt(0).SetUint64(r.Nonce)), 32)...)
+	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(r.Nonce)), 32)...)
 
 	return message
 }

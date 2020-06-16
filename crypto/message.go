@@ -23,8 +23,8 @@ import (
 	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
@@ -92,8 +92,8 @@ func (m ExchangeMessage) GetSignatureBytesRaw() []byte {
 func (m ExchangeMessage) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, m.Promise.GetHash()...)
-	message = append(message, Pad(math.U256Bytes(big.NewInt(0).SetUint64(m.AgreementID)), 32)...)
-	message = append(message, Pad(math.U256Bytes(big.NewInt(0).SetUint64(m.AgreementTotal)), 32)...)
+	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(m.AgreementID)), 32)...)
+	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(m.AgreementTotal)), 32)...)
 	message = append(message, common.HexToAddress(m.Provider).Bytes()...)
 
 	// TODO: once all the consumers upgrade, this check needs to go to
