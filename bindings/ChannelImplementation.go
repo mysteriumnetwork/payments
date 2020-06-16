@@ -36,7 +36,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -205,6 +204,238 @@ func (_ChannelImplementation *ChannelImplementationTransactorRaw) Transact(opts 
 	return _ChannelImplementation.Contract.contract.Transact(opts, method, params...)
 }
 
+// Dex is a free data retrieval call binding the contract method 0x692058c2.
+//
+// Solidity: function dex() view returns(address)
+func (_ChannelImplementation *ChannelImplementationCaller) Dex(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _ChannelImplementation.contract.Call(opts, out, "dex")
+	return *ret0, err
+}
+
+// Dex is a free data retrieval call binding the contract method 0x692058c2.
+//
+// Solidity: function dex() view returns(address)
+func (_ChannelImplementation *ChannelImplementationSession) Dex() (common.Address, error) {
+	return _ChannelImplementation.Contract.Dex(&_ChannelImplementation.CallOpts)
+}
+
+// Dex is a free data retrieval call binding the contract method 0x692058c2.
+//
+// Solidity: function dex() view returns(address)
+func (_ChannelImplementation *ChannelImplementationCallerSession) Dex() (common.Address, error) {
+	return _ChannelImplementation.Contract.Dex(&_ChannelImplementation.CallOpts)
+}
+
+// ExitRequest is a free data retrieval call binding the contract method 0xf4b3a197.
+//
+// Solidity: function exitRequest() view returns(uint256 timelock, address beneficiary)
+func (_ChannelImplementation *ChannelImplementationCaller) ExitRequest(opts *bind.CallOpts) (struct {
+	Timelock    *big.Int
+	Beneficiary common.Address
+}, error) {
+	ret := new(struct {
+		Timelock    *big.Int
+		Beneficiary common.Address
+	})
+	out := ret
+	err := _ChannelImplementation.contract.Call(opts, out, "exitRequest")
+	return *ret, err
+}
+
+// ExitRequest is a free data retrieval call binding the contract method 0xf4b3a197.
+//
+// Solidity: function exitRequest() view returns(uint256 timelock, address beneficiary)
+func (_ChannelImplementation *ChannelImplementationSession) ExitRequest() (struct {
+	Timelock    *big.Int
+	Beneficiary common.Address
+}, error) {
+	return _ChannelImplementation.Contract.ExitRequest(&_ChannelImplementation.CallOpts)
+}
+
+// ExitRequest is a free data retrieval call binding the contract method 0xf4b3a197.
+//
+// Solidity: function exitRequest() view returns(uint256 timelock, address beneficiary)
+func (_ChannelImplementation *ChannelImplementationCallerSession) ExitRequest() (struct {
+	Timelock    *big.Int
+	Beneficiary common.Address
+}, error) {
+	return _ChannelImplementation.Contract.ExitRequest(&_ChannelImplementation.CallOpts)
+}
+
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
+//
+// Solidity: function getFundsDestination() view returns(address)
+func (_ChannelImplementation *ChannelImplementationCaller) GetFundsDestination(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _ChannelImplementation.contract.Call(opts, out, "getFundsDestination")
+	return *ret0, err
+}
+
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
+//
+// Solidity: function getFundsDestination() view returns(address)
+func (_ChannelImplementation *ChannelImplementationSession) GetFundsDestination() (common.Address, error) {
+	return _ChannelImplementation.Contract.GetFundsDestination(&_ChannelImplementation.CallOpts)
+}
+
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
+//
+// Solidity: function getFundsDestination() view returns(address)
+func (_ChannelImplementation *ChannelImplementationCallerSession) GetFundsDestination() (common.Address, error) {
+	return _ChannelImplementation.Contract.GetFundsDestination(&_ChannelImplementation.CallOpts)
+}
+
+// Hermes is a free data retrieval call binding the contract method 0xd8092c92.
+//
+// Solidity: function hermes() view returns(address operator, address contractAddress, uint256 settled)
+func (_ChannelImplementation *ChannelImplementationCaller) Hermes(opts *bind.CallOpts) (struct {
+	Operator        common.Address
+	ContractAddress common.Address
+	Settled         *big.Int
+}, error) {
+	ret := new(struct {
+		Operator        common.Address
+		ContractAddress common.Address
+		Settled         *big.Int
+	})
+	out := ret
+	err := _ChannelImplementation.contract.Call(opts, out, "hermes")
+	return *ret, err
+}
+
+// Hermes is a free data retrieval call binding the contract method 0xd8092c92.
+//
+// Solidity: function hermes() view returns(address operator, address contractAddress, uint256 settled)
+func (_ChannelImplementation *ChannelImplementationSession) Hermes() (struct {
+	Operator        common.Address
+	ContractAddress common.Address
+	Settled         *big.Int
+}, error) {
+	return _ChannelImplementation.Contract.Hermes(&_ChannelImplementation.CallOpts)
+}
+
+// Hermes is a free data retrieval call binding the contract method 0xd8092c92.
+//
+// Solidity: function hermes() view returns(address operator, address contractAddress, uint256 settled)
+func (_ChannelImplementation *ChannelImplementationCallerSession) Hermes() (struct {
+	Operator        common.Address
+	ContractAddress common.Address
+	Settled         *big.Int
+}, error) {
+	return _ChannelImplementation.Contract.Hermes(&_ChannelImplementation.CallOpts)
+}
+
+// IsInitialized is a free data retrieval call binding the contract method 0x392e53cd.
+//
+// Solidity: function isInitialized() view returns(bool)
+func (_ChannelImplementation *ChannelImplementationCaller) IsInitialized(opts *bind.CallOpts) (bool, error) {
+	var (
+		ret0 = new(bool)
+	)
+	out := ret0
+	err := _ChannelImplementation.contract.Call(opts, out, "isInitialized")
+	return *ret0, err
+}
+
+// IsInitialized is a free data retrieval call binding the contract method 0x392e53cd.
+//
+// Solidity: function isInitialized() view returns(bool)
+func (_ChannelImplementation *ChannelImplementationSession) IsInitialized() (bool, error) {
+	return _ChannelImplementation.Contract.IsInitialized(&_ChannelImplementation.CallOpts)
+}
+
+// IsInitialized is a free data retrieval call binding the contract method 0x392e53cd.
+//
+// Solidity: function isInitialized() view returns(bool)
+func (_ChannelImplementation *ChannelImplementationCallerSession) IsInitialized() (bool, error) {
+	return _ChannelImplementation.Contract.IsInitialized(&_ChannelImplementation.CallOpts)
+}
+
+// Operator is a free data retrieval call binding the contract method 0x570ca735.
+//
+// Solidity: function operator() view returns(address)
+func (_ChannelImplementation *ChannelImplementationCaller) Operator(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _ChannelImplementation.contract.Call(opts, out, "operator")
+	return *ret0, err
+}
+
+// Operator is a free data retrieval call binding the contract method 0x570ca735.
+//
+// Solidity: function operator() view returns(address)
+func (_ChannelImplementation *ChannelImplementationSession) Operator() (common.Address, error) {
+	return _ChannelImplementation.Contract.Operator(&_ChannelImplementation.CallOpts)
+}
+
+// Operator is a free data retrieval call binding the contract method 0x570ca735.
+//
+// Solidity: function operator() view returns(address)
+func (_ChannelImplementation *ChannelImplementationCallerSession) Operator() (common.Address, error) {
+	return _ChannelImplementation.Contract.Operator(&_ChannelImplementation.CallOpts)
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_ChannelImplementation *ChannelImplementationCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _ChannelImplementation.contract.Call(opts, out, "owner")
+	return *ret0, err
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_ChannelImplementation *ChannelImplementationSession) Owner() (common.Address, error) {
+	return _ChannelImplementation.Contract.Owner(&_ChannelImplementation.CallOpts)
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_ChannelImplementation *ChannelImplementationCallerSession) Owner() (common.Address, error) {
+	return _ChannelImplementation.Contract.Owner(&_ChannelImplementation.CallOpts)
+}
+
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
+//
+// Solidity: function token() view returns(address)
+func (_ChannelImplementation *ChannelImplementationCaller) Token(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _ChannelImplementation.contract.Call(opts, out, "token")
+	return *ret0, err
+}
+
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
+//
+// Solidity: function token() view returns(address)
+func (_ChannelImplementation *ChannelImplementationSession) Token() (common.Address, error) {
+	return _ChannelImplementation.Contract.Token(&_ChannelImplementation.CallOpts)
+}
+
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
+//
+// Solidity: function token() view returns(address)
+func (_ChannelImplementation *ChannelImplementationCallerSession) Token() (common.Address, error) {
+	return _ChannelImplementation.Contract.Token(&_ChannelImplementation.CallOpts)
+}
+
 // ClaimEthers is a paid mutator transaction binding the contract method 0x6931b550.
 //
 // Solidity: function claimEthers() returns()
@@ -247,48 +478,6 @@ func (_ChannelImplementation *ChannelImplementationTransactorSession) ClaimToken
 	return _ChannelImplementation.Contract.ClaimTokens(&_ChannelImplementation.TransactOpts, _token)
 }
 
-// Dex is a paid mutator transaction binding the contract method 0x692058c2.
-//
-// Solidity: function dex() returns(address)
-func (_ChannelImplementation *ChannelImplementationTransactor) Dex(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _ChannelImplementation.contract.Transact(opts, "dex")
-}
-
-// Dex is a paid mutator transaction binding the contract method 0x692058c2.
-//
-// Solidity: function dex() returns(address)
-func (_ChannelImplementation *ChannelImplementationSession) Dex() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.Dex(&_ChannelImplementation.TransactOpts)
-}
-
-// Dex is a paid mutator transaction binding the contract method 0x692058c2.
-//
-// Solidity: function dex() returns(address)
-func (_ChannelImplementation *ChannelImplementationTransactorSession) Dex() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.Dex(&_ChannelImplementation.TransactOpts)
-}
-
-// ExitRequest is a paid mutator transaction binding the contract method 0xf4b3a197.
-//
-// Solidity: function exitRequest() returns(uint256 timelock, address beneficiary)
-func (_ChannelImplementation *ChannelImplementationTransactor) ExitRequest(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _ChannelImplementation.contract.Transact(opts, "exitRequest")
-}
-
-// ExitRequest is a paid mutator transaction binding the contract method 0xf4b3a197.
-//
-// Solidity: function exitRequest() returns(uint256 timelock, address beneficiary)
-func (_ChannelImplementation *ChannelImplementationSession) ExitRequest() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.ExitRequest(&_ChannelImplementation.TransactOpts)
-}
-
-// ExitRequest is a paid mutator transaction binding the contract method 0xf4b3a197.
-//
-// Solidity: function exitRequest() returns(uint256 timelock, address beneficiary)
-func (_ChannelImplementation *ChannelImplementationTransactorSession) ExitRequest() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.ExitRequest(&_ChannelImplementation.TransactOpts)
-}
-
 // FinalizeExit is a paid mutator transaction binding the contract method 0x07e8ec1f.
 //
 // Solidity: function finalizeExit() returns()
@@ -310,48 +499,6 @@ func (_ChannelImplementation *ChannelImplementationTransactorSession) FinalizeEx
 	return _ChannelImplementation.Contract.FinalizeExit(&_ChannelImplementation.TransactOpts)
 }
 
-// GetFundsDestination is a paid mutator transaction binding the contract method 0xf58c5b6e.
-//
-// Solidity: function getFundsDestination() returns(address)
-func (_ChannelImplementation *ChannelImplementationTransactor) GetFundsDestination(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _ChannelImplementation.contract.Transact(opts, "getFundsDestination")
-}
-
-// GetFundsDestination is a paid mutator transaction binding the contract method 0xf58c5b6e.
-//
-// Solidity: function getFundsDestination() returns(address)
-func (_ChannelImplementation *ChannelImplementationSession) GetFundsDestination() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.GetFundsDestination(&_ChannelImplementation.TransactOpts)
-}
-
-// GetFundsDestination is a paid mutator transaction binding the contract method 0xf58c5b6e.
-//
-// Solidity: function getFundsDestination() returns(address)
-func (_ChannelImplementation *ChannelImplementationTransactorSession) GetFundsDestination() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.GetFundsDestination(&_ChannelImplementation.TransactOpts)
-}
-
-// Hermes is a paid mutator transaction binding the contract method 0xd8092c92.
-//
-// Solidity: function hermes() returns(address operator, address contractAddress, uint256 settled)
-func (_ChannelImplementation *ChannelImplementationTransactor) Hermes(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _ChannelImplementation.contract.Transact(opts, "hermes")
-}
-
-// Hermes is a paid mutator transaction binding the contract method 0xd8092c92.
-//
-// Solidity: function hermes() returns(address operator, address contractAddress, uint256 settled)
-func (_ChannelImplementation *ChannelImplementationSession) Hermes() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.Hermes(&_ChannelImplementation.TransactOpts)
-}
-
-// Hermes is a paid mutator transaction binding the contract method 0xd8092c92.
-//
-// Solidity: function hermes() returns(address operator, address contractAddress, uint256 settled)
-func (_ChannelImplementation *ChannelImplementationTransactorSession) Hermes() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.Hermes(&_ChannelImplementation.TransactOpts)
-}
-
 // Initialize is a paid mutator transaction binding the contract method 0xf7013ef6.
 //
 // Solidity: function initialize(address _token, address _dex, address _identityHash, address _hermesId, uint256 _fee) returns()
@@ -371,69 +518,6 @@ func (_ChannelImplementation *ChannelImplementationSession) Initialize(_token co
 // Solidity: function initialize(address _token, address _dex, address _identityHash, address _hermesId, uint256 _fee) returns()
 func (_ChannelImplementation *ChannelImplementationTransactorSession) Initialize(_token common.Address, _dex common.Address, _identityHash common.Address, _hermesId common.Address, _fee *big.Int) (*types.Transaction, error) {
 	return _ChannelImplementation.Contract.Initialize(&_ChannelImplementation.TransactOpts, _token, _dex, _identityHash, _hermesId, _fee)
-}
-
-// IsInitialized is a paid mutator transaction binding the contract method 0x392e53cd.
-//
-// Solidity: function isInitialized() returns(bool)
-func (_ChannelImplementation *ChannelImplementationTransactor) IsInitialized(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _ChannelImplementation.contract.Transact(opts, "isInitialized")
-}
-
-// IsInitialized is a paid mutator transaction binding the contract method 0x392e53cd.
-//
-// Solidity: function isInitialized() returns(bool)
-func (_ChannelImplementation *ChannelImplementationSession) IsInitialized() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.IsInitialized(&_ChannelImplementation.TransactOpts)
-}
-
-// IsInitialized is a paid mutator transaction binding the contract method 0x392e53cd.
-//
-// Solidity: function isInitialized() returns(bool)
-func (_ChannelImplementation *ChannelImplementationTransactorSession) IsInitialized() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.IsInitialized(&_ChannelImplementation.TransactOpts)
-}
-
-// Operator is a paid mutator transaction binding the contract method 0x570ca735.
-//
-// Solidity: function operator() returns(address)
-func (_ChannelImplementation *ChannelImplementationTransactor) Operator(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _ChannelImplementation.contract.Transact(opts, "operator")
-}
-
-// Operator is a paid mutator transaction binding the contract method 0x570ca735.
-//
-// Solidity: function operator() returns(address)
-func (_ChannelImplementation *ChannelImplementationSession) Operator() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.Operator(&_ChannelImplementation.TransactOpts)
-}
-
-// Operator is a paid mutator transaction binding the contract method 0x570ca735.
-//
-// Solidity: function operator() returns(address)
-func (_ChannelImplementation *ChannelImplementationTransactorSession) Operator() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.Operator(&_ChannelImplementation.TransactOpts)
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_ChannelImplementation *ChannelImplementationTransactor) Owner(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _ChannelImplementation.contract.Transact(opts, "owner")
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_ChannelImplementation *ChannelImplementationSession) Owner() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.Owner(&_ChannelImplementation.TransactOpts)
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_ChannelImplementation *ChannelImplementationTransactorSession) Owner() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.Owner(&_ChannelImplementation.TransactOpts)
 }
 
 // RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
@@ -541,27 +625,6 @@ func (_ChannelImplementation *ChannelImplementationTransactorSession) SettleProm
 	return _ChannelImplementation.Contract.SettlePromise(&_ChannelImplementation.TransactOpts, _amount, _transactorFee, _lock, _signature)
 }
 
-// Token is a paid mutator transaction binding the contract method 0xfc0c546a.
-//
-// Solidity: function token() returns(address)
-func (_ChannelImplementation *ChannelImplementationTransactor) Token(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _ChannelImplementation.contract.Transact(opts, "token")
-}
-
-// Token is a paid mutator transaction binding the contract method 0xfc0c546a.
-//
-// Solidity: function token() returns(address)
-func (_ChannelImplementation *ChannelImplementationSession) Token() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.Token(&_ChannelImplementation.TransactOpts)
-}
-
-// Token is a paid mutator transaction binding the contract method 0xfc0c546a.
-//
-// Solidity: function token() returns(address)
-func (_ChannelImplementation *ChannelImplementationTransactorSession) Token() (*types.Transaction, error) {
-	return _ChannelImplementation.Contract.Token(&_ChannelImplementation.TransactOpts)
-}
-
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
 // Solidity: function transferOwnership(address newOwner) returns()
@@ -581,6 +644,27 @@ func (_ChannelImplementation *ChannelImplementationSession) TransferOwnership(ne
 // Solidity: function transferOwnership(address newOwner) returns()
 func (_ChannelImplementation *ChannelImplementationTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
 	return _ChannelImplementation.Contract.TransferOwnership(&_ChannelImplementation.TransactOpts, newOwner)
+}
+
+// Receive is a paid mutator transaction binding the contract receive function.
+//
+// Solidity: receive() payable returns()
+func (_ChannelImplementation *ChannelImplementationTransactor) Receive(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _ChannelImplementation.contract.RawTransact(opts, nil) // calldata is disallowed for receive function
+}
+
+// Receive is a paid mutator transaction binding the contract receive function.
+//
+// Solidity: receive() payable returns()
+func (_ChannelImplementation *ChannelImplementationSession) Receive() (*types.Transaction, error) {
+	return _ChannelImplementation.Contract.Receive(&_ChannelImplementation.TransactOpts)
+}
+
+// Receive is a paid mutator transaction binding the contract receive function.
+//
+// Solidity: receive() payable returns()
+func (_ChannelImplementation *ChannelImplementationTransactorSession) Receive() (*types.Transaction, error) {
+	return _ChannelImplementation.Contract.Receive(&_ChannelImplementation.TransactOpts)
 }
 
 // ChannelImplementationChannelInitialisedIterator is returned from FilterChannelInitialised and is used to iterate over the raw logs and unpacked data for ChannelInitialised events raised by the ChannelImplementation contract.

@@ -36,7 +36,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -205,6 +204,380 @@ func (_Registry *RegistryTransactorRaw) Transact(opts *bind.TransactOpts, method
 	return _Registry.Contract.contract.Transact(opts, method, params...)
 }
 
+// Dex is a free data retrieval call binding the contract method 0x692058c2.
+//
+// Solidity: function dex() view returns(address)
+func (_Registry *RegistryCaller) Dex(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _Registry.contract.Call(opts, out, "dex")
+	return *ret0, err
+}
+
+// Dex is a free data retrieval call binding the contract method 0x692058c2.
+//
+// Solidity: function dex() view returns(address)
+func (_Registry *RegistrySession) Dex() (common.Address, error) {
+	return _Registry.Contract.Dex(&_Registry.CallOpts)
+}
+
+// Dex is a free data retrieval call binding the contract method 0x692058c2.
+//
+// Solidity: function dex() view returns(address)
+func (_Registry *RegistryCallerSession) Dex() (common.Address, error) {
+	return _Registry.Contract.Dex(&_Registry.CallOpts)
+}
+
+// GetChannelAddress is a free data retrieval call binding the contract method 0xe617aaac.
+//
+// Solidity: function getChannelAddress(address _identity, address _hermesId) view returns(address)
+func (_Registry *RegistryCaller) GetChannelAddress(opts *bind.CallOpts, _identity common.Address, _hermesId common.Address) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _Registry.contract.Call(opts, out, "getChannelAddress", _identity, _hermesId)
+	return *ret0, err
+}
+
+// GetChannelAddress is a free data retrieval call binding the contract method 0xe617aaac.
+//
+// Solidity: function getChannelAddress(address _identity, address _hermesId) view returns(address)
+func (_Registry *RegistrySession) GetChannelAddress(_identity common.Address, _hermesId common.Address) (common.Address, error) {
+	return _Registry.Contract.GetChannelAddress(&_Registry.CallOpts, _identity, _hermesId)
+}
+
+// GetChannelAddress is a free data retrieval call binding the contract method 0xe617aaac.
+//
+// Solidity: function getChannelAddress(address _identity, address _hermesId) view returns(address)
+func (_Registry *RegistryCallerSession) GetChannelAddress(_identity common.Address, _hermesId common.Address) (common.Address, error) {
+	return _Registry.Contract.GetChannelAddress(&_Registry.CallOpts, _identity, _hermesId)
+}
+
+// GetChannelImplementation is a free data retrieval call binding the contract method 0x7c671a21.
+//
+// Solidity: function getChannelImplementation() view returns(address)
+func (_Registry *RegistryCaller) GetChannelImplementation(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _Registry.contract.Call(opts, out, "getChannelImplementation")
+	return *ret0, err
+}
+
+// GetChannelImplementation is a free data retrieval call binding the contract method 0x7c671a21.
+//
+// Solidity: function getChannelImplementation() view returns(address)
+func (_Registry *RegistrySession) GetChannelImplementation() (common.Address, error) {
+	return _Registry.Contract.GetChannelImplementation(&_Registry.CallOpts)
+}
+
+// GetChannelImplementation is a free data retrieval call binding the contract method 0x7c671a21.
+//
+// Solidity: function getChannelImplementation() view returns(address)
+func (_Registry *RegistryCallerSession) GetChannelImplementation() (common.Address, error) {
+	return _Registry.Contract.GetChannelImplementation(&_Registry.CallOpts)
+}
+
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
+//
+// Solidity: function getFundsDestination() view returns(address)
+func (_Registry *RegistryCaller) GetFundsDestination(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _Registry.contract.Call(opts, out, "getFundsDestination")
+	return *ret0, err
+}
+
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
+//
+// Solidity: function getFundsDestination() view returns(address)
+func (_Registry *RegistrySession) GetFundsDestination() (common.Address, error) {
+	return _Registry.Contract.GetFundsDestination(&_Registry.CallOpts)
+}
+
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
+//
+// Solidity: function getFundsDestination() view returns(address)
+func (_Registry *RegistryCallerSession) GetFundsDestination() (common.Address, error) {
+	return _Registry.Contract.GetFundsDestination(&_Registry.CallOpts)
+}
+
+// GetHermesAddress is a free data retrieval call binding the contract method 0xacc831d0.
+//
+// Solidity: function getHermesAddress(address _hermesOperator) view returns(address)
+func (_Registry *RegistryCaller) GetHermesAddress(opts *bind.CallOpts, _hermesOperator common.Address) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _Registry.contract.Call(opts, out, "getHermesAddress", _hermesOperator)
+	return *ret0, err
+}
+
+// GetHermesAddress is a free data retrieval call binding the contract method 0xacc831d0.
+//
+// Solidity: function getHermesAddress(address _hermesOperator) view returns(address)
+func (_Registry *RegistrySession) GetHermesAddress(_hermesOperator common.Address) (common.Address, error) {
+	return _Registry.Contract.GetHermesAddress(&_Registry.CallOpts, _hermesOperator)
+}
+
+// GetHermesAddress is a free data retrieval call binding the contract method 0xacc831d0.
+//
+// Solidity: function getHermesAddress(address _hermesOperator) view returns(address)
+func (_Registry *RegistryCallerSession) GetHermesAddress(_hermesOperator common.Address) (common.Address, error) {
+	return _Registry.Contract.GetHermesAddress(&_Registry.CallOpts, _hermesOperator)
+}
+
+// GetHermesImplementation is a free data retrieval call binding the contract method 0x9936a87b.
+//
+// Solidity: function getHermesImplementation() view returns(address)
+func (_Registry *RegistryCaller) GetHermesImplementation(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _Registry.contract.Call(opts, out, "getHermesImplementation")
+	return *ret0, err
+}
+
+// GetHermesImplementation is a free data retrieval call binding the contract method 0x9936a87b.
+//
+// Solidity: function getHermesImplementation() view returns(address)
+func (_Registry *RegistrySession) GetHermesImplementation() (common.Address, error) {
+	return _Registry.Contract.GetHermesImplementation(&_Registry.CallOpts)
+}
+
+// GetHermesImplementation is a free data retrieval call binding the contract method 0x9936a87b.
+//
+// Solidity: function getHermesImplementation() view returns(address)
+func (_Registry *RegistryCallerSession) GetHermesImplementation() (common.Address, error) {
+	return _Registry.Contract.GetHermesImplementation(&_Registry.CallOpts)
+}
+
+// GetProxyCode is a free data retrieval call binding the contract method 0xab867213.
+//
+// Solidity: function getProxyCode(address _implementation) pure returns(bytes)
+func (_Registry *RegistryCaller) GetProxyCode(opts *bind.CallOpts, _implementation common.Address) ([]byte, error) {
+	var (
+		ret0 = new([]byte)
+	)
+	out := ret0
+	err := _Registry.contract.Call(opts, out, "getProxyCode", _implementation)
+	return *ret0, err
+}
+
+// GetProxyCode is a free data retrieval call binding the contract method 0xab867213.
+//
+// Solidity: function getProxyCode(address _implementation) pure returns(bytes)
+func (_Registry *RegistrySession) GetProxyCode(_implementation common.Address) ([]byte, error) {
+	return _Registry.Contract.GetProxyCode(&_Registry.CallOpts, _implementation)
+}
+
+// GetProxyCode is a free data retrieval call binding the contract method 0xab867213.
+//
+// Solidity: function getProxyCode(address _implementation) pure returns(bytes)
+func (_Registry *RegistryCallerSession) GetProxyCode(_implementation common.Address) ([]byte, error) {
+	return _Registry.Contract.GetProxyCode(&_Registry.CallOpts, _implementation)
+}
+
+// Hermeses is a free data retrieval call binding the contract method 0x03fb422f.
+//
+// Solidity: function hermeses(address ) view returns(address operator, function stake)
+func (_Registry *RegistryCaller) Hermeses(opts *bind.CallOpts, arg0 common.Address) (struct {
+	Operator common.Address
+	Stake    [24]byte
+}, error) {
+	ret := new(struct {
+		Operator common.Address
+		Stake    [24]byte
+	})
+	out := ret
+	err := _Registry.contract.Call(opts, out, "hermeses", arg0)
+	return *ret, err
+}
+
+// Hermeses is a free data retrieval call binding the contract method 0x03fb422f.
+//
+// Solidity: function hermeses(address ) view returns(address operator, function stake)
+func (_Registry *RegistrySession) Hermeses(arg0 common.Address) (struct {
+	Operator common.Address
+	Stake    [24]byte
+}, error) {
+	return _Registry.Contract.Hermeses(&_Registry.CallOpts, arg0)
+}
+
+// Hermeses is a free data retrieval call binding the contract method 0x03fb422f.
+//
+// Solidity: function hermeses(address ) view returns(address operator, function stake)
+func (_Registry *RegistryCallerSession) Hermeses(arg0 common.Address) (struct {
+	Operator common.Address
+	Stake    [24]byte
+}, error) {
+	return _Registry.Contract.Hermeses(&_Registry.CallOpts, arg0)
+}
+
+// IsHermes is a free data retrieval call binding the contract method 0xcdd596e0.
+//
+// Solidity: function isHermes(address _hermesId) view returns(bool)
+func (_Registry *RegistryCaller) IsHermes(opts *bind.CallOpts, _hermesId common.Address) (bool, error) {
+	var (
+		ret0 = new(bool)
+	)
+	out := ret0
+	err := _Registry.contract.Call(opts, out, "isHermes", _hermesId)
+	return *ret0, err
+}
+
+// IsHermes is a free data retrieval call binding the contract method 0xcdd596e0.
+//
+// Solidity: function isHermes(address _hermesId) view returns(bool)
+func (_Registry *RegistrySession) IsHermes(_hermesId common.Address) (bool, error) {
+	return _Registry.Contract.IsHermes(&_Registry.CallOpts, _hermesId)
+}
+
+// IsHermes is a free data retrieval call binding the contract method 0xcdd596e0.
+//
+// Solidity: function isHermes(address _hermesId) view returns(bool)
+func (_Registry *RegistryCallerSession) IsHermes(_hermesId common.Address) (bool, error) {
+	return _Registry.Contract.IsHermes(&_Registry.CallOpts, _hermesId)
+}
+
+// IsRegistered is a free data retrieval call binding the contract method 0xc3c5a547.
+//
+// Solidity: function isRegistered(address _identityHash) view returns(bool)
+func (_Registry *RegistryCaller) IsRegistered(opts *bind.CallOpts, _identityHash common.Address) (bool, error) {
+	var (
+		ret0 = new(bool)
+	)
+	out := ret0
+	err := _Registry.contract.Call(opts, out, "isRegistered", _identityHash)
+	return *ret0, err
+}
+
+// IsRegistered is a free data retrieval call binding the contract method 0xc3c5a547.
+//
+// Solidity: function isRegistered(address _identityHash) view returns(bool)
+func (_Registry *RegistrySession) IsRegistered(_identityHash common.Address) (bool, error) {
+	return _Registry.Contract.IsRegistered(&_Registry.CallOpts, _identityHash)
+}
+
+// IsRegistered is a free data retrieval call binding the contract method 0xc3c5a547.
+//
+// Solidity: function isRegistered(address _identityHash) view returns(bool)
+func (_Registry *RegistryCallerSession) IsRegistered(_identityHash common.Address) (bool, error) {
+	return _Registry.Contract.IsRegistered(&_Registry.CallOpts, _identityHash)
+}
+
+// MinimalHermesStake is a free data retrieval call binding the contract method 0x66cf5875.
+//
+// Solidity: function minimalHermesStake() view returns(uint256)
+func (_Registry *RegistryCaller) MinimalHermesStake(opts *bind.CallOpts) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _Registry.contract.Call(opts, out, "minimalHermesStake")
+	return *ret0, err
+}
+
+// MinimalHermesStake is a free data retrieval call binding the contract method 0x66cf5875.
+//
+// Solidity: function minimalHermesStake() view returns(uint256)
+func (_Registry *RegistrySession) MinimalHermesStake() (*big.Int, error) {
+	return _Registry.Contract.MinimalHermesStake(&_Registry.CallOpts)
+}
+
+// MinimalHermesStake is a free data retrieval call binding the contract method 0x66cf5875.
+//
+// Solidity: function minimalHermesStake() view returns(uint256)
+func (_Registry *RegistryCallerSession) MinimalHermesStake() (*big.Int, error) {
+	return _Registry.Contract.MinimalHermesStake(&_Registry.CallOpts)
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_Registry *RegistryCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _Registry.contract.Call(opts, out, "owner")
+	return *ret0, err
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_Registry *RegistrySession) Owner() (common.Address, error) {
+	return _Registry.Contract.Owner(&_Registry.CallOpts)
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_Registry *RegistryCallerSession) Owner() (common.Address, error) {
+	return _Registry.Contract.Owner(&_Registry.CallOpts)
+}
+
+// RegistrationFee is a free data retrieval call binding the contract method 0x14c44e09.
+//
+// Solidity: function registrationFee() view returns(uint256)
+func (_Registry *RegistryCaller) RegistrationFee(opts *bind.CallOpts) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _Registry.contract.Call(opts, out, "registrationFee")
+	return *ret0, err
+}
+
+// RegistrationFee is a free data retrieval call binding the contract method 0x14c44e09.
+//
+// Solidity: function registrationFee() view returns(uint256)
+func (_Registry *RegistrySession) RegistrationFee() (*big.Int, error) {
+	return _Registry.Contract.RegistrationFee(&_Registry.CallOpts)
+}
+
+// RegistrationFee is a free data retrieval call binding the contract method 0x14c44e09.
+//
+// Solidity: function registrationFee() view returns(uint256)
+func (_Registry *RegistryCallerSession) RegistrationFee() (*big.Int, error) {
+	return _Registry.Contract.RegistrationFee(&_Registry.CallOpts)
+}
+
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
+//
+// Solidity: function token() view returns(address)
+func (_Registry *RegistryCaller) Token(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _Registry.contract.Call(opts, out, "token")
+	return *ret0, err
+}
+
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
+//
+// Solidity: function token() view returns(address)
+func (_Registry *RegistrySession) Token() (common.Address, error) {
+	return _Registry.Contract.Token(&_Registry.CallOpts)
+}
+
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
+//
+// Solidity: function token() view returns(address)
+func (_Registry *RegistryCallerSession) Token() (common.Address, error) {
+	return _Registry.Contract.Token(&_Registry.CallOpts)
+}
+
 // ChangeRegistrationFee is a paid mutator transaction binding the contract method 0x50050769.
 //
 // Solidity: function changeRegistrationFee(uint256 _newFee) returns()
@@ -268,258 +641,6 @@ func (_Registry *RegistryTransactorSession) ClaimTokens(_token common.Address) (
 	return _Registry.Contract.ClaimTokens(&_Registry.TransactOpts, _token)
 }
 
-// Dex is a paid mutator transaction binding the contract method 0x692058c2.
-//
-// Solidity: function dex() returns(address)
-func (_Registry *RegistryTransactor) Dex(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "dex")
-}
-
-// Dex is a paid mutator transaction binding the contract method 0x692058c2.
-//
-// Solidity: function dex() returns(address)
-func (_Registry *RegistrySession) Dex() (*types.Transaction, error) {
-	return _Registry.Contract.Dex(&_Registry.TransactOpts)
-}
-
-// Dex is a paid mutator transaction binding the contract method 0x692058c2.
-//
-// Solidity: function dex() returns(address)
-func (_Registry *RegistryTransactorSession) Dex() (*types.Transaction, error) {
-	return _Registry.Contract.Dex(&_Registry.TransactOpts)
-}
-
-// GetChannelAddress is a paid mutator transaction binding the contract method 0xe617aaac.
-//
-// Solidity: function getChannelAddress(address _identity, address _hermesId) returns(address)
-func (_Registry *RegistryTransactor) GetChannelAddress(opts *bind.TransactOpts, _identity common.Address, _hermesId common.Address) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "getChannelAddress", _identity, _hermesId)
-}
-
-// GetChannelAddress is a paid mutator transaction binding the contract method 0xe617aaac.
-//
-// Solidity: function getChannelAddress(address _identity, address _hermesId) returns(address)
-func (_Registry *RegistrySession) GetChannelAddress(_identity common.Address, _hermesId common.Address) (*types.Transaction, error) {
-	return _Registry.Contract.GetChannelAddress(&_Registry.TransactOpts, _identity, _hermesId)
-}
-
-// GetChannelAddress is a paid mutator transaction binding the contract method 0xe617aaac.
-//
-// Solidity: function getChannelAddress(address _identity, address _hermesId) returns(address)
-func (_Registry *RegistryTransactorSession) GetChannelAddress(_identity common.Address, _hermesId common.Address) (*types.Transaction, error) {
-	return _Registry.Contract.GetChannelAddress(&_Registry.TransactOpts, _identity, _hermesId)
-}
-
-// GetChannelImplementation is a paid mutator transaction binding the contract method 0x7c671a21.
-//
-// Solidity: function getChannelImplementation() returns(address)
-func (_Registry *RegistryTransactor) GetChannelImplementation(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "getChannelImplementation")
-}
-
-// GetChannelImplementation is a paid mutator transaction binding the contract method 0x7c671a21.
-//
-// Solidity: function getChannelImplementation() returns(address)
-func (_Registry *RegistrySession) GetChannelImplementation() (*types.Transaction, error) {
-	return _Registry.Contract.GetChannelImplementation(&_Registry.TransactOpts)
-}
-
-// GetChannelImplementation is a paid mutator transaction binding the contract method 0x7c671a21.
-//
-// Solidity: function getChannelImplementation() returns(address)
-func (_Registry *RegistryTransactorSession) GetChannelImplementation() (*types.Transaction, error) {
-	return _Registry.Contract.GetChannelImplementation(&_Registry.TransactOpts)
-}
-
-// GetFundsDestination is a paid mutator transaction binding the contract method 0xf58c5b6e.
-//
-// Solidity: function getFundsDestination() returns(address)
-func (_Registry *RegistryTransactor) GetFundsDestination(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "getFundsDestination")
-}
-
-// GetFundsDestination is a paid mutator transaction binding the contract method 0xf58c5b6e.
-//
-// Solidity: function getFundsDestination() returns(address)
-func (_Registry *RegistrySession) GetFundsDestination() (*types.Transaction, error) {
-	return _Registry.Contract.GetFundsDestination(&_Registry.TransactOpts)
-}
-
-// GetFundsDestination is a paid mutator transaction binding the contract method 0xf58c5b6e.
-//
-// Solidity: function getFundsDestination() returns(address)
-func (_Registry *RegistryTransactorSession) GetFundsDestination() (*types.Transaction, error) {
-	return _Registry.Contract.GetFundsDestination(&_Registry.TransactOpts)
-}
-
-// GetHermesAddress is a paid mutator transaction binding the contract method 0xacc831d0.
-//
-// Solidity: function getHermesAddress(address _hermesOperator) returns(address)
-func (_Registry *RegistryTransactor) GetHermesAddress(opts *bind.TransactOpts, _hermesOperator common.Address) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "getHermesAddress", _hermesOperator)
-}
-
-// GetHermesAddress is a paid mutator transaction binding the contract method 0xacc831d0.
-//
-// Solidity: function getHermesAddress(address _hermesOperator) returns(address)
-func (_Registry *RegistrySession) GetHermesAddress(_hermesOperator common.Address) (*types.Transaction, error) {
-	return _Registry.Contract.GetHermesAddress(&_Registry.TransactOpts, _hermesOperator)
-}
-
-// GetHermesAddress is a paid mutator transaction binding the contract method 0xacc831d0.
-//
-// Solidity: function getHermesAddress(address _hermesOperator) returns(address)
-func (_Registry *RegistryTransactorSession) GetHermesAddress(_hermesOperator common.Address) (*types.Transaction, error) {
-	return _Registry.Contract.GetHermesAddress(&_Registry.TransactOpts, _hermesOperator)
-}
-
-// GetHermesImplementation is a paid mutator transaction binding the contract method 0x9936a87b.
-//
-// Solidity: function getHermesImplementation() returns(address)
-func (_Registry *RegistryTransactor) GetHermesImplementation(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "getHermesImplementation")
-}
-
-// GetHermesImplementation is a paid mutator transaction binding the contract method 0x9936a87b.
-//
-// Solidity: function getHermesImplementation() returns(address)
-func (_Registry *RegistrySession) GetHermesImplementation() (*types.Transaction, error) {
-	return _Registry.Contract.GetHermesImplementation(&_Registry.TransactOpts)
-}
-
-// GetHermesImplementation is a paid mutator transaction binding the contract method 0x9936a87b.
-//
-// Solidity: function getHermesImplementation() returns(address)
-func (_Registry *RegistryTransactorSession) GetHermesImplementation() (*types.Transaction, error) {
-	return _Registry.Contract.GetHermesImplementation(&_Registry.TransactOpts)
-}
-
-// GetProxyCode is a paid mutator transaction binding the contract method 0xab867213.
-//
-// Solidity: function getProxyCode(address _implementation) returns(bytes)
-func (_Registry *RegistryTransactor) GetProxyCode(opts *bind.TransactOpts, _implementation common.Address) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "getProxyCode", _implementation)
-}
-
-// GetProxyCode is a paid mutator transaction binding the contract method 0xab867213.
-//
-// Solidity: function getProxyCode(address _implementation) returns(bytes)
-func (_Registry *RegistrySession) GetProxyCode(_implementation common.Address) (*types.Transaction, error) {
-	return _Registry.Contract.GetProxyCode(&_Registry.TransactOpts, _implementation)
-}
-
-// GetProxyCode is a paid mutator transaction binding the contract method 0xab867213.
-//
-// Solidity: function getProxyCode(address _implementation) returns(bytes)
-func (_Registry *RegistryTransactorSession) GetProxyCode(_implementation common.Address) (*types.Transaction, error) {
-	return _Registry.Contract.GetProxyCode(&_Registry.TransactOpts, _implementation)
-}
-
-// Hermeses is a paid mutator transaction binding the contract method 0x03fb422f.
-//
-// Solidity: function hermeses(address ) returns(address operator, function stake)
-func (_Registry *RegistryTransactor) Hermeses(opts *bind.TransactOpts, arg0 common.Address) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "hermeses", arg0)
-}
-
-// Hermeses is a paid mutator transaction binding the contract method 0x03fb422f.
-//
-// Solidity: function hermeses(address ) returns(address operator, function stake)
-func (_Registry *RegistrySession) Hermeses(arg0 common.Address) (*types.Transaction, error) {
-	return _Registry.Contract.Hermeses(&_Registry.TransactOpts, arg0)
-}
-
-// Hermeses is a paid mutator transaction binding the contract method 0x03fb422f.
-//
-// Solidity: function hermeses(address ) returns(address operator, function stake)
-func (_Registry *RegistryTransactorSession) Hermeses(arg0 common.Address) (*types.Transaction, error) {
-	return _Registry.Contract.Hermeses(&_Registry.TransactOpts, arg0)
-}
-
-// IsHermes is a paid mutator transaction binding the contract method 0xcdd596e0.
-//
-// Solidity: function isHermes(address _hermesId) returns(bool)
-func (_Registry *RegistryTransactor) IsHermes(opts *bind.TransactOpts, _hermesId common.Address) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "isHermes", _hermesId)
-}
-
-// IsHermes is a paid mutator transaction binding the contract method 0xcdd596e0.
-//
-// Solidity: function isHermes(address _hermesId) returns(bool)
-func (_Registry *RegistrySession) IsHermes(_hermesId common.Address) (*types.Transaction, error) {
-	return _Registry.Contract.IsHermes(&_Registry.TransactOpts, _hermesId)
-}
-
-// IsHermes is a paid mutator transaction binding the contract method 0xcdd596e0.
-//
-// Solidity: function isHermes(address _hermesId) returns(bool)
-func (_Registry *RegistryTransactorSession) IsHermes(_hermesId common.Address) (*types.Transaction, error) {
-	return _Registry.Contract.IsHermes(&_Registry.TransactOpts, _hermesId)
-}
-
-// IsRegistered is a paid mutator transaction binding the contract method 0xc3c5a547.
-//
-// Solidity: function isRegistered(address _identityHash) returns(bool)
-func (_Registry *RegistryTransactor) IsRegistered(opts *bind.TransactOpts, _identityHash common.Address) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "isRegistered", _identityHash)
-}
-
-// IsRegistered is a paid mutator transaction binding the contract method 0xc3c5a547.
-//
-// Solidity: function isRegistered(address _identityHash) returns(bool)
-func (_Registry *RegistrySession) IsRegistered(_identityHash common.Address) (*types.Transaction, error) {
-	return _Registry.Contract.IsRegistered(&_Registry.TransactOpts, _identityHash)
-}
-
-// IsRegistered is a paid mutator transaction binding the contract method 0xc3c5a547.
-//
-// Solidity: function isRegistered(address _identityHash) returns(bool)
-func (_Registry *RegistryTransactorSession) IsRegistered(_identityHash common.Address) (*types.Transaction, error) {
-	return _Registry.Contract.IsRegistered(&_Registry.TransactOpts, _identityHash)
-}
-
-// MinimalHermesStake is a paid mutator transaction binding the contract method 0x66cf5875.
-//
-// Solidity: function minimalHermesStake() returns(uint256)
-func (_Registry *RegistryTransactor) MinimalHermesStake(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "minimalHermesStake")
-}
-
-// MinimalHermesStake is a paid mutator transaction binding the contract method 0x66cf5875.
-//
-// Solidity: function minimalHermesStake() returns(uint256)
-func (_Registry *RegistrySession) MinimalHermesStake() (*types.Transaction, error) {
-	return _Registry.Contract.MinimalHermesStake(&_Registry.TransactOpts)
-}
-
-// MinimalHermesStake is a paid mutator transaction binding the contract method 0x66cf5875.
-//
-// Solidity: function minimalHermesStake() returns(uint256)
-func (_Registry *RegistryTransactorSession) MinimalHermesStake() (*types.Transaction, error) {
-	return _Registry.Contract.MinimalHermesStake(&_Registry.TransactOpts)
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_Registry *RegistryTransactor) Owner(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "owner")
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_Registry *RegistrySession) Owner() (*types.Transaction, error) {
-	return _Registry.Contract.Owner(&_Registry.TransactOpts)
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_Registry *RegistryTransactorSession) Owner() (*types.Transaction, error) {
-	return _Registry.Contract.Owner(&_Registry.TransactOpts)
-}
-
 // RegisterHermes is a paid mutator transaction binding the contract method 0xe64324fd.
 //
 // Solidity: function registerHermes(address _hermesOperator, uint256 _stakeAmount, uint16 _hermesFee, uint256 _maxStake) returns()
@@ -560,27 +681,6 @@ func (_Registry *RegistrySession) RegisterIdentity(_hermesId common.Address, _st
 // Solidity: function registerIdentity(address _hermesId, uint256 _stakeAmount, uint256 _transactorFee, address _beneficiary, bytes _signature) returns()
 func (_Registry *RegistryTransactorSession) RegisterIdentity(_hermesId common.Address, _stakeAmount *big.Int, _transactorFee *big.Int, _beneficiary common.Address, _signature []byte) (*types.Transaction, error) {
 	return _Registry.Contract.RegisterIdentity(&_Registry.TransactOpts, _hermesId, _stakeAmount, _transactorFee, _beneficiary, _signature)
-}
-
-// RegistrationFee is a paid mutator transaction binding the contract method 0x14c44e09.
-//
-// Solidity: function registrationFee() returns(uint256)
-func (_Registry *RegistryTransactor) RegistrationFee(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "registrationFee")
-}
-
-// RegistrationFee is a paid mutator transaction binding the contract method 0x14c44e09.
-//
-// Solidity: function registrationFee() returns(uint256)
-func (_Registry *RegistrySession) RegistrationFee() (*types.Transaction, error) {
-	return _Registry.Contract.RegistrationFee(&_Registry.TransactOpts)
-}
-
-// RegistrationFee is a paid mutator transaction binding the contract method 0x14c44e09.
-//
-// Solidity: function registrationFee() returns(uint256)
-func (_Registry *RegistryTransactorSession) RegistrationFee() (*types.Transaction, error) {
-	return _Registry.Contract.RegistrationFee(&_Registry.TransactOpts)
 }
 
 // RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
@@ -625,27 +725,6 @@ func (_Registry *RegistryTransactorSession) SetFundsDestination(_newDestination 
 	return _Registry.Contract.SetFundsDestination(&_Registry.TransactOpts, _newDestination)
 }
 
-// Token is a paid mutator transaction binding the contract method 0xfc0c546a.
-//
-// Solidity: function token() returns(address)
-func (_Registry *RegistryTransactor) Token(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Registry.contract.Transact(opts, "token")
-}
-
-// Token is a paid mutator transaction binding the contract method 0xfc0c546a.
-//
-// Solidity: function token() returns(address)
-func (_Registry *RegistrySession) Token() (*types.Transaction, error) {
-	return _Registry.Contract.Token(&_Registry.TransactOpts)
-}
-
-// Token is a paid mutator transaction binding the contract method 0xfc0c546a.
-//
-// Solidity: function token() returns(address)
-func (_Registry *RegistryTransactorSession) Token() (*types.Transaction, error) {
-	return _Registry.Contract.Token(&_Registry.TransactOpts)
-}
-
 // TransferCollectedFeeTo is a paid mutator transaction binding the contract method 0xe3252537.
 //
 // Solidity: function transferCollectedFeeTo(address _beneficiary) returns()
@@ -686,6 +765,27 @@ func (_Registry *RegistrySession) TransferOwnership(newOwner common.Address) (*t
 // Solidity: function transferOwnership(address newOwner) returns()
 func (_Registry *RegistryTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
 	return _Registry.Contract.TransferOwnership(&_Registry.TransactOpts, newOwner)
+}
+
+// Receive is a paid mutator transaction binding the contract receive function.
+//
+// Solidity: receive() payable returns()
+func (_Registry *RegistryTransactor) Receive(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _Registry.contract.RawTransact(opts, nil) // calldata is disallowed for receive function
+}
+
+// Receive is a paid mutator transaction binding the contract receive function.
+//
+// Solidity: receive() payable returns()
+func (_Registry *RegistrySession) Receive() (*types.Transaction, error) {
+	return _Registry.Contract.Receive(&_Registry.TransactOpts)
+}
+
+// Receive is a paid mutator transaction binding the contract receive function.
+//
+// Solidity: receive() payable returns()
+func (_Registry *RegistryTransactorSession) Receive() (*types.Transaction, error) {
+	return _Registry.Contract.Receive(&_Registry.TransactOpts)
 }
 
 // RegistryConsumerChannelCreatedIterator is returned from FilterConsumerChannelCreated and is used to iterate over the raw logs and unpacked data for ConsumerChannelCreated events raised by the Registry contract.

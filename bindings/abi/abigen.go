@@ -93,7 +93,7 @@ func writeToOutput(fileName string, genCode, output string) error {
 }
 
 func bindSmartContract(smartContract truffleArtifact, pkgName string) (string, error) {
-	genCode, err := bind.Bind([]string{smartContract.ContractName}, []string{smartContract.AbiString()}, []string{smartContract.Bytecode}, nil, pkgName, bind.LangGo, nil)
+	genCode, err := bind.Bind([]string{smartContract.ContractName}, []string{smartContract.AbiString()}, []string{smartContract.Bytecode}, nil, pkgName, bind.LangGo, nil, nil)
 	if err != nil {
 		return "", err
 	}

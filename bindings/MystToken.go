@@ -36,7 +36,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -205,6 +204,344 @@ func (_MystToken *MystTokenTransactorRaw) Transact(opts *bind.TransactOpts, meth
 	return _MystToken.Contract.contract.Transact(opts, method, params...)
 }
 
+// Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
+//
+// Solidity: function allowance(address _owner, address _spender) view returns(uint256 remaining)
+func (_MystToken *MystTokenCaller) Allowance(opts *bind.CallOpts, _owner common.Address, _spender common.Address) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "allowance", _owner, _spender)
+	return *ret0, err
+}
+
+// Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
+//
+// Solidity: function allowance(address _owner, address _spender) view returns(uint256 remaining)
+func (_MystToken *MystTokenSession) Allowance(_owner common.Address, _spender common.Address) (*big.Int, error) {
+	return _MystToken.Contract.Allowance(&_MystToken.CallOpts, _owner, _spender)
+}
+
+// Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
+//
+// Solidity: function allowance(address _owner, address _spender) view returns(uint256 remaining)
+func (_MystToken *MystTokenCallerSession) Allowance(_owner common.Address, _spender common.Address) (*big.Int, error) {
+	return _MystToken.Contract.Allowance(&_MystToken.CallOpts, _owner, _spender)
+}
+
+// BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
+//
+// Solidity: function balanceOf(address _owner) view returns(uint256 balance)
+func (_MystToken *MystTokenCaller) BalanceOf(opts *bind.CallOpts, _owner common.Address) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "balanceOf", _owner)
+	return *ret0, err
+}
+
+// BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
+//
+// Solidity: function balanceOf(address _owner) view returns(uint256 balance)
+func (_MystToken *MystTokenSession) BalanceOf(_owner common.Address) (*big.Int, error) {
+	return _MystToken.Contract.BalanceOf(&_MystToken.CallOpts, _owner)
+}
+
+// BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
+//
+// Solidity: function balanceOf(address _owner) view returns(uint256 balance)
+func (_MystToken *MystTokenCallerSession) BalanceOf(_owner common.Address) (*big.Int, error) {
+	return _MystToken.Contract.BalanceOf(&_MystToken.CallOpts, _owner)
+}
+
+// Decimals is a free data retrieval call binding the contract method 0x313ce567.
+//
+// Solidity: function decimals() view returns(uint8)
+func (_MystToken *MystTokenCaller) Decimals(opts *bind.CallOpts) (uint8, error) {
+	var (
+		ret0 = new(uint8)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "decimals")
+	return *ret0, err
+}
+
+// Decimals is a free data retrieval call binding the contract method 0x313ce567.
+//
+// Solidity: function decimals() view returns(uint8)
+func (_MystToken *MystTokenSession) Decimals() (uint8, error) {
+	return _MystToken.Contract.Decimals(&_MystToken.CallOpts)
+}
+
+// Decimals is a free data retrieval call binding the contract method 0x313ce567.
+//
+// Solidity: function decimals() view returns(uint8)
+func (_MystToken *MystTokenCallerSession) Decimals() (uint8, error) {
+	return _MystToken.Contract.Decimals(&_MystToken.CallOpts)
+}
+
+// GetUpgradeState is a free data retrieval call binding the contract method 0x8444b391.
+//
+// Solidity: function getUpgradeState() view returns(uint8)
+func (_MystToken *MystTokenCaller) GetUpgradeState(opts *bind.CallOpts) (uint8, error) {
+	var (
+		ret0 = new(uint8)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "getUpgradeState")
+	return *ret0, err
+}
+
+// GetUpgradeState is a free data retrieval call binding the contract method 0x8444b391.
+//
+// Solidity: function getUpgradeState() view returns(uint8)
+func (_MystToken *MystTokenSession) GetUpgradeState() (uint8, error) {
+	return _MystToken.Contract.GetUpgradeState(&_MystToken.CallOpts)
+}
+
+// GetUpgradeState is a free data retrieval call binding the contract method 0x8444b391.
+//
+// Solidity: function getUpgradeState() view returns(uint8)
+func (_MystToken *MystTokenCallerSession) GetUpgradeState() (uint8, error) {
+	return _MystToken.Contract.GetUpgradeState(&_MystToken.CallOpts)
+}
+
+// MintAgents is a free data retrieval call binding the contract method 0x42c1867b.
+//
+// Solidity: function mintAgents(address ) view returns(bool)
+func (_MystToken *MystTokenCaller) MintAgents(opts *bind.CallOpts, arg0 common.Address) (bool, error) {
+	var (
+		ret0 = new(bool)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "mintAgents", arg0)
+	return *ret0, err
+}
+
+// MintAgents is a free data retrieval call binding the contract method 0x42c1867b.
+//
+// Solidity: function mintAgents(address ) view returns(bool)
+func (_MystToken *MystTokenSession) MintAgents(arg0 common.Address) (bool, error) {
+	return _MystToken.Contract.MintAgents(&_MystToken.CallOpts, arg0)
+}
+
+// MintAgents is a free data retrieval call binding the contract method 0x42c1867b.
+//
+// Solidity: function mintAgents(address ) view returns(bool)
+func (_MystToken *MystTokenCallerSession) MintAgents(arg0 common.Address) (bool, error) {
+	return _MystToken.Contract.MintAgents(&_MystToken.CallOpts, arg0)
+}
+
+// MintingFinished is a free data retrieval call binding the contract method 0x05d2035b.
+//
+// Solidity: function mintingFinished() view returns(bool)
+func (_MystToken *MystTokenCaller) MintingFinished(opts *bind.CallOpts) (bool, error) {
+	var (
+		ret0 = new(bool)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "mintingFinished")
+	return *ret0, err
+}
+
+// MintingFinished is a free data retrieval call binding the contract method 0x05d2035b.
+//
+// Solidity: function mintingFinished() view returns(bool)
+func (_MystToken *MystTokenSession) MintingFinished() (bool, error) {
+	return _MystToken.Contract.MintingFinished(&_MystToken.CallOpts)
+}
+
+// MintingFinished is a free data retrieval call binding the contract method 0x05d2035b.
+//
+// Solidity: function mintingFinished() view returns(bool)
+func (_MystToken *MystTokenCallerSession) MintingFinished() (bool, error) {
+	return _MystToken.Contract.MintingFinished(&_MystToken.CallOpts)
+}
+
+// Name is a free data retrieval call binding the contract method 0x06fdde03.
+//
+// Solidity: function name() view returns(string)
+func (_MystToken *MystTokenCaller) Name(opts *bind.CallOpts) (string, error) {
+	var (
+		ret0 = new(string)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "name")
+	return *ret0, err
+}
+
+// Name is a free data retrieval call binding the contract method 0x06fdde03.
+//
+// Solidity: function name() view returns(string)
+func (_MystToken *MystTokenSession) Name() (string, error) {
+	return _MystToken.Contract.Name(&_MystToken.CallOpts)
+}
+
+// Name is a free data retrieval call binding the contract method 0x06fdde03.
+//
+// Solidity: function name() view returns(string)
+func (_MystToken *MystTokenCallerSession) Name() (string, error) {
+	return _MystToken.Contract.Name(&_MystToken.CallOpts)
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_MystToken *MystTokenCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "owner")
+	return *ret0, err
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_MystToken *MystTokenSession) Owner() (common.Address, error) {
+	return _MystToken.Contract.Owner(&_MystToken.CallOpts)
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_MystToken *MystTokenCallerSession) Owner() (common.Address, error) {
+	return _MystToken.Contract.Owner(&_MystToken.CallOpts)
+}
+
+// Symbol is a free data retrieval call binding the contract method 0x95d89b41.
+//
+// Solidity: function symbol() view returns(string)
+func (_MystToken *MystTokenCaller) Symbol(opts *bind.CallOpts) (string, error) {
+	var (
+		ret0 = new(string)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "symbol")
+	return *ret0, err
+}
+
+// Symbol is a free data retrieval call binding the contract method 0x95d89b41.
+//
+// Solidity: function symbol() view returns(string)
+func (_MystToken *MystTokenSession) Symbol() (string, error) {
+	return _MystToken.Contract.Symbol(&_MystToken.CallOpts)
+}
+
+// Symbol is a free data retrieval call binding the contract method 0x95d89b41.
+//
+// Solidity: function symbol() view returns(string)
+func (_MystToken *MystTokenCallerSession) Symbol() (string, error) {
+	return _MystToken.Contract.Symbol(&_MystToken.CallOpts)
+}
+
+// TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
+//
+// Solidity: function totalSupply() view returns(uint256)
+func (_MystToken *MystTokenCaller) TotalSupply(opts *bind.CallOpts) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "totalSupply")
+	return *ret0, err
+}
+
+// TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
+//
+// Solidity: function totalSupply() view returns(uint256)
+func (_MystToken *MystTokenSession) TotalSupply() (*big.Int, error) {
+	return _MystToken.Contract.TotalSupply(&_MystToken.CallOpts)
+}
+
+// TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
+//
+// Solidity: function totalSupply() view returns(uint256)
+func (_MystToken *MystTokenCallerSession) TotalSupply() (*big.Int, error) {
+	return _MystToken.Contract.TotalSupply(&_MystToken.CallOpts)
+}
+
+// TotalUpgraded is a free data retrieval call binding the contract method 0xc752ff62.
+//
+// Solidity: function totalUpgraded() view returns(uint256)
+func (_MystToken *MystTokenCaller) TotalUpgraded(opts *bind.CallOpts) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "totalUpgraded")
+	return *ret0, err
+}
+
+// TotalUpgraded is a free data retrieval call binding the contract method 0xc752ff62.
+//
+// Solidity: function totalUpgraded() view returns(uint256)
+func (_MystToken *MystTokenSession) TotalUpgraded() (*big.Int, error) {
+	return _MystToken.Contract.TotalUpgraded(&_MystToken.CallOpts)
+}
+
+// TotalUpgraded is a free data retrieval call binding the contract method 0xc752ff62.
+//
+// Solidity: function totalUpgraded() view returns(uint256)
+func (_MystToken *MystTokenCallerSession) TotalUpgraded() (*big.Int, error) {
+	return _MystToken.Contract.TotalUpgraded(&_MystToken.CallOpts)
+}
+
+// UpgradeAgent is a free data retrieval call binding the contract method 0x5de4ccb0.
+//
+// Solidity: function upgradeAgent() view returns(address)
+func (_MystToken *MystTokenCaller) UpgradeAgent(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "upgradeAgent")
+	return *ret0, err
+}
+
+// UpgradeAgent is a free data retrieval call binding the contract method 0x5de4ccb0.
+//
+// Solidity: function upgradeAgent() view returns(address)
+func (_MystToken *MystTokenSession) UpgradeAgent() (common.Address, error) {
+	return _MystToken.Contract.UpgradeAgent(&_MystToken.CallOpts)
+}
+
+// UpgradeAgent is a free data retrieval call binding the contract method 0x5de4ccb0.
+//
+// Solidity: function upgradeAgent() view returns(address)
+func (_MystToken *MystTokenCallerSession) UpgradeAgent() (common.Address, error) {
+	return _MystToken.Contract.UpgradeAgent(&_MystToken.CallOpts)
+}
+
+// UpgradeMaster is a free data retrieval call binding the contract method 0x600440cb.
+//
+// Solidity: function upgradeMaster() view returns(address)
+func (_MystToken *MystTokenCaller) UpgradeMaster(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "upgradeMaster")
+	return *ret0, err
+}
+
+// UpgradeMaster is a free data retrieval call binding the contract method 0x600440cb.
+//
+// Solidity: function upgradeMaster() view returns(address)
+func (_MystToken *MystTokenSession) UpgradeMaster() (common.Address, error) {
+	return _MystToken.Contract.UpgradeMaster(&_MystToken.CallOpts)
+}
+
+// UpgradeMaster is a free data retrieval call binding the contract method 0x600440cb.
+//
+// Solidity: function upgradeMaster() view returns(address)
+func (_MystToken *MystTokenCallerSession) UpgradeMaster() (common.Address, error) {
+	return _MystToken.Contract.UpgradeMaster(&_MystToken.CallOpts)
+}
+
 // AddApproval is a paid mutator transaction binding the contract method 0xac3cb72c.
 //
 // Solidity: function addApproval(address _spender, uint256 _addedValue) returns(bool success)
@@ -224,27 +561,6 @@ func (_MystToken *MystTokenSession) AddApproval(_spender common.Address, _addedV
 // Solidity: function addApproval(address _spender, uint256 _addedValue) returns(bool success)
 func (_MystToken *MystTokenTransactorSession) AddApproval(_spender common.Address, _addedValue *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.AddApproval(&_MystToken.TransactOpts, _spender, _addedValue)
-}
-
-// Allowance is a paid mutator transaction binding the contract method 0xdd62ed3e.
-//
-// Solidity: function allowance(address _owner, address _spender) returns(uint256 remaining)
-func (_MystToken *MystTokenTransactor) Allowance(opts *bind.TransactOpts, _owner common.Address, _spender common.Address) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "allowance", _owner, _spender)
-}
-
-// Allowance is a paid mutator transaction binding the contract method 0xdd62ed3e.
-//
-// Solidity: function allowance(address _owner, address _spender) returns(uint256 remaining)
-func (_MystToken *MystTokenSession) Allowance(_owner common.Address, _spender common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.Allowance(&_MystToken.TransactOpts, _owner, _spender)
-}
-
-// Allowance is a paid mutator transaction binding the contract method 0xdd62ed3e.
-//
-// Solidity: function allowance(address _owner, address _spender) returns(uint256 remaining)
-func (_MystToken *MystTokenTransactorSession) Allowance(_owner common.Address, _spender common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.Allowance(&_MystToken.TransactOpts, _owner, _spender)
 }
 
 // Approve is a paid mutator transaction binding the contract method 0x095ea7b3.
@@ -268,69 +584,6 @@ func (_MystToken *MystTokenTransactorSession) Approve(_spender common.Address, _
 	return _MystToken.Contract.Approve(&_MystToken.TransactOpts, _spender, _value)
 }
 
-// BalanceOf is a paid mutator transaction binding the contract method 0x70a08231.
-//
-// Solidity: function balanceOf(address _owner) returns(uint256 balance)
-func (_MystToken *MystTokenTransactor) BalanceOf(opts *bind.TransactOpts, _owner common.Address) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "balanceOf", _owner)
-}
-
-// BalanceOf is a paid mutator transaction binding the contract method 0x70a08231.
-//
-// Solidity: function balanceOf(address _owner) returns(uint256 balance)
-func (_MystToken *MystTokenSession) BalanceOf(_owner common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.BalanceOf(&_MystToken.TransactOpts, _owner)
-}
-
-// BalanceOf is a paid mutator transaction binding the contract method 0x70a08231.
-//
-// Solidity: function balanceOf(address _owner) returns(uint256 balance)
-func (_MystToken *MystTokenTransactorSession) BalanceOf(_owner common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.BalanceOf(&_MystToken.TransactOpts, _owner)
-}
-
-// Decimals is a paid mutator transaction binding the contract method 0x313ce567.
-//
-// Solidity: function decimals() returns(uint8)
-func (_MystToken *MystTokenTransactor) Decimals(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "decimals")
-}
-
-// Decimals is a paid mutator transaction binding the contract method 0x313ce567.
-//
-// Solidity: function decimals() returns(uint8)
-func (_MystToken *MystTokenSession) Decimals() (*types.Transaction, error) {
-	return _MystToken.Contract.Decimals(&_MystToken.TransactOpts)
-}
-
-// Decimals is a paid mutator transaction binding the contract method 0x313ce567.
-//
-// Solidity: function decimals() returns(uint8)
-func (_MystToken *MystTokenTransactorSession) Decimals() (*types.Transaction, error) {
-	return _MystToken.Contract.Decimals(&_MystToken.TransactOpts)
-}
-
-// GetUpgradeState is a paid mutator transaction binding the contract method 0x8444b391.
-//
-// Solidity: function getUpgradeState() returns(uint8)
-func (_MystToken *MystTokenTransactor) GetUpgradeState(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "getUpgradeState")
-}
-
-// GetUpgradeState is a paid mutator transaction binding the contract method 0x8444b391.
-//
-// Solidity: function getUpgradeState() returns(uint8)
-func (_MystToken *MystTokenSession) GetUpgradeState() (*types.Transaction, error) {
-	return _MystToken.Contract.GetUpgradeState(&_MystToken.TransactOpts)
-}
-
-// GetUpgradeState is a paid mutator transaction binding the contract method 0x8444b391.
-//
-// Solidity: function getUpgradeState() returns(uint8)
-func (_MystToken *MystTokenTransactorSession) GetUpgradeState() (*types.Transaction, error) {
-	return _MystToken.Contract.GetUpgradeState(&_MystToken.TransactOpts)
-}
-
 // Mint is a paid mutator transaction binding the contract method 0x40c10f19.
 //
 // Solidity: function mint(address receiver, uint256 amount) returns()
@@ -350,90 +603,6 @@ func (_MystToken *MystTokenSession) Mint(receiver common.Address, amount *big.In
 // Solidity: function mint(address receiver, uint256 amount) returns()
 func (_MystToken *MystTokenTransactorSession) Mint(receiver common.Address, amount *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.Mint(&_MystToken.TransactOpts, receiver, amount)
-}
-
-// MintAgents is a paid mutator transaction binding the contract method 0x42c1867b.
-//
-// Solidity: function mintAgents(address ) returns(bool)
-func (_MystToken *MystTokenTransactor) MintAgents(opts *bind.TransactOpts, arg0 common.Address) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "mintAgents", arg0)
-}
-
-// MintAgents is a paid mutator transaction binding the contract method 0x42c1867b.
-//
-// Solidity: function mintAgents(address ) returns(bool)
-func (_MystToken *MystTokenSession) MintAgents(arg0 common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.MintAgents(&_MystToken.TransactOpts, arg0)
-}
-
-// MintAgents is a paid mutator transaction binding the contract method 0x42c1867b.
-//
-// Solidity: function mintAgents(address ) returns(bool)
-func (_MystToken *MystTokenTransactorSession) MintAgents(arg0 common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.MintAgents(&_MystToken.TransactOpts, arg0)
-}
-
-// MintingFinished is a paid mutator transaction binding the contract method 0x05d2035b.
-//
-// Solidity: function mintingFinished() returns(bool)
-func (_MystToken *MystTokenTransactor) MintingFinished(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "mintingFinished")
-}
-
-// MintingFinished is a paid mutator transaction binding the contract method 0x05d2035b.
-//
-// Solidity: function mintingFinished() returns(bool)
-func (_MystToken *MystTokenSession) MintingFinished() (*types.Transaction, error) {
-	return _MystToken.Contract.MintingFinished(&_MystToken.TransactOpts)
-}
-
-// MintingFinished is a paid mutator transaction binding the contract method 0x05d2035b.
-//
-// Solidity: function mintingFinished() returns(bool)
-func (_MystToken *MystTokenTransactorSession) MintingFinished() (*types.Transaction, error) {
-	return _MystToken.Contract.MintingFinished(&_MystToken.TransactOpts)
-}
-
-// Name is a paid mutator transaction binding the contract method 0x06fdde03.
-//
-// Solidity: function name() returns(string)
-func (_MystToken *MystTokenTransactor) Name(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "name")
-}
-
-// Name is a paid mutator transaction binding the contract method 0x06fdde03.
-//
-// Solidity: function name() returns(string)
-func (_MystToken *MystTokenSession) Name() (*types.Transaction, error) {
-	return _MystToken.Contract.Name(&_MystToken.TransactOpts)
-}
-
-// Name is a paid mutator transaction binding the contract method 0x06fdde03.
-//
-// Solidity: function name() returns(string)
-func (_MystToken *MystTokenTransactorSession) Name() (*types.Transaction, error) {
-	return _MystToken.Contract.Name(&_MystToken.TransactOpts)
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_MystToken *MystTokenTransactor) Owner(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "owner")
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_MystToken *MystTokenSession) Owner() (*types.Transaction, error) {
-	return _MystToken.Contract.Owner(&_MystToken.TransactOpts)
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_MystToken *MystTokenTransactorSession) Owner() (*types.Transaction, error) {
-	return _MystToken.Contract.Owner(&_MystToken.TransactOpts)
 }
 
 // SetMintAgent is a paid mutator transaction binding the contract method 0x43214675.
@@ -520,69 +689,6 @@ func (_MystToken *MystTokenTransactorSession) SubApproval(_spender common.Addres
 	return _MystToken.Contract.SubApproval(&_MystToken.TransactOpts, _spender, _subtractedValue)
 }
 
-// Symbol is a paid mutator transaction binding the contract method 0x95d89b41.
-//
-// Solidity: function symbol() returns(string)
-func (_MystToken *MystTokenTransactor) Symbol(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "symbol")
-}
-
-// Symbol is a paid mutator transaction binding the contract method 0x95d89b41.
-//
-// Solidity: function symbol() returns(string)
-func (_MystToken *MystTokenSession) Symbol() (*types.Transaction, error) {
-	return _MystToken.Contract.Symbol(&_MystToken.TransactOpts)
-}
-
-// Symbol is a paid mutator transaction binding the contract method 0x95d89b41.
-//
-// Solidity: function symbol() returns(string)
-func (_MystToken *MystTokenTransactorSession) Symbol() (*types.Transaction, error) {
-	return _MystToken.Contract.Symbol(&_MystToken.TransactOpts)
-}
-
-// TotalSupply is a paid mutator transaction binding the contract method 0x18160ddd.
-//
-// Solidity: function totalSupply() returns(uint256)
-func (_MystToken *MystTokenTransactor) TotalSupply(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "totalSupply")
-}
-
-// TotalSupply is a paid mutator transaction binding the contract method 0x18160ddd.
-//
-// Solidity: function totalSupply() returns(uint256)
-func (_MystToken *MystTokenSession) TotalSupply() (*types.Transaction, error) {
-	return _MystToken.Contract.TotalSupply(&_MystToken.TransactOpts)
-}
-
-// TotalSupply is a paid mutator transaction binding the contract method 0x18160ddd.
-//
-// Solidity: function totalSupply() returns(uint256)
-func (_MystToken *MystTokenTransactorSession) TotalSupply() (*types.Transaction, error) {
-	return _MystToken.Contract.TotalSupply(&_MystToken.TransactOpts)
-}
-
-// TotalUpgraded is a paid mutator transaction binding the contract method 0xc752ff62.
-//
-// Solidity: function totalUpgraded() returns(uint256)
-func (_MystToken *MystTokenTransactor) TotalUpgraded(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "totalUpgraded")
-}
-
-// TotalUpgraded is a paid mutator transaction binding the contract method 0xc752ff62.
-//
-// Solidity: function totalUpgraded() returns(uint256)
-func (_MystToken *MystTokenSession) TotalUpgraded() (*types.Transaction, error) {
-	return _MystToken.Contract.TotalUpgraded(&_MystToken.TransactOpts)
-}
-
-// TotalUpgraded is a paid mutator transaction binding the contract method 0xc752ff62.
-//
-// Solidity: function totalUpgraded() returns(uint256)
-func (_MystToken *MystTokenTransactorSession) TotalUpgraded() (*types.Transaction, error) {
-	return _MystToken.Contract.TotalUpgraded(&_MystToken.TransactOpts)
-}
-
 // Transfer is a paid mutator transaction binding the contract method 0xa9059cbb.
 //
 // Solidity: function transfer(address _to, uint256 _value) returns(bool success)
@@ -665,48 +771,6 @@ func (_MystToken *MystTokenSession) Upgrade(value *big.Int) (*types.Transaction,
 // Solidity: function upgrade(uint256 value) returns()
 func (_MystToken *MystTokenTransactorSession) Upgrade(value *big.Int) (*types.Transaction, error) {
 	return _MystToken.Contract.Upgrade(&_MystToken.TransactOpts, value)
-}
-
-// UpgradeAgent is a paid mutator transaction binding the contract method 0x5de4ccb0.
-//
-// Solidity: function upgradeAgent() returns(address)
-func (_MystToken *MystTokenTransactor) UpgradeAgent(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "upgradeAgent")
-}
-
-// UpgradeAgent is a paid mutator transaction binding the contract method 0x5de4ccb0.
-//
-// Solidity: function upgradeAgent() returns(address)
-func (_MystToken *MystTokenSession) UpgradeAgent() (*types.Transaction, error) {
-	return _MystToken.Contract.UpgradeAgent(&_MystToken.TransactOpts)
-}
-
-// UpgradeAgent is a paid mutator transaction binding the contract method 0x5de4ccb0.
-//
-// Solidity: function upgradeAgent() returns(address)
-func (_MystToken *MystTokenTransactorSession) UpgradeAgent() (*types.Transaction, error) {
-	return _MystToken.Contract.UpgradeAgent(&_MystToken.TransactOpts)
-}
-
-// UpgradeMaster is a paid mutator transaction binding the contract method 0x600440cb.
-//
-// Solidity: function upgradeMaster() returns(address)
-func (_MystToken *MystTokenTransactor) UpgradeMaster(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "upgradeMaster")
-}
-
-// UpgradeMaster is a paid mutator transaction binding the contract method 0x600440cb.
-//
-// Solidity: function upgradeMaster() returns(address)
-func (_MystToken *MystTokenSession) UpgradeMaster() (*types.Transaction, error) {
-	return _MystToken.Contract.UpgradeMaster(&_MystToken.TransactOpts)
-}
-
-// UpgradeMaster is a paid mutator transaction binding the contract method 0x600440cb.
-//
-// Solidity: function upgradeMaster() returns(address)
-func (_MystToken *MystTokenTransactorSession) UpgradeMaster() (*types.Transaction, error) {
-	return _MystToken.Contract.UpgradeMaster(&_MystToken.TransactOpts)
 }
 
 // MystTokenApprovalIterator is returned from FilterApproval and is used to iterate over the raw logs and unpacked data for Approval events raised by the MystToken contract.

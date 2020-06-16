@@ -36,7 +36,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -205,6 +204,110 @@ func (_MystDEX *MystDEXTransactorRaw) Transact(opts *bind.TransactOpts, method s
 	return _MystDEX.Contract.contract.Transact(opts, method, params...)
 }
 
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
+//
+// Solidity: function getFundsDestination() view returns(address)
+func (_MystDEX *MystDEXCaller) GetFundsDestination(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _MystDEX.contract.Call(opts, out, "getFundsDestination")
+	return *ret0, err
+}
+
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
+//
+// Solidity: function getFundsDestination() view returns(address)
+func (_MystDEX *MystDEXSession) GetFundsDestination() (common.Address, error) {
+	return _MystDEX.Contract.GetFundsDestination(&_MystDEX.CallOpts)
+}
+
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
+//
+// Solidity: function getFundsDestination() view returns(address)
+func (_MystDEX *MystDEXCallerSession) GetFundsDestination() (common.Address, error) {
+	return _MystDEX.Contract.GetFundsDestination(&_MystDEX.CallOpts)
+}
+
+// Initialised is a free data retrieval call binding the contract method 0x07003bb4.
+//
+// Solidity: function initialised() view returns(bool)
+func (_MystDEX *MystDEXCaller) Initialised(opts *bind.CallOpts) (bool, error) {
+	var (
+		ret0 = new(bool)
+	)
+	out := ret0
+	err := _MystDEX.contract.Call(opts, out, "initialised")
+	return *ret0, err
+}
+
+// Initialised is a free data retrieval call binding the contract method 0x07003bb4.
+//
+// Solidity: function initialised() view returns(bool)
+func (_MystDEX *MystDEXSession) Initialised() (bool, error) {
+	return _MystDEX.Contract.Initialised(&_MystDEX.CallOpts)
+}
+
+// Initialised is a free data retrieval call binding the contract method 0x07003bb4.
+//
+// Solidity: function initialised() view returns(bool)
+func (_MystDEX *MystDEXCallerSession) Initialised() (bool, error) {
+	return _MystDEX.Contract.Initialised(&_MystDEX.CallOpts)
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_MystDEX *MystDEXCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _MystDEX.contract.Call(opts, out, "owner")
+	return *ret0, err
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_MystDEX *MystDEXSession) Owner() (common.Address, error) {
+	return _MystDEX.Contract.Owner(&_MystDEX.CallOpts)
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_MystDEX *MystDEXCallerSession) Owner() (common.Address, error) {
+	return _MystDEX.Contract.Owner(&_MystDEX.CallOpts)
+}
+
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
+//
+// Solidity: function token() view returns(address)
+func (_MystDEX *MystDEXCaller) Token(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _MystDEX.contract.Call(opts, out, "token")
+	return *ret0, err
+}
+
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
+//
+// Solidity: function token() view returns(address)
+func (_MystDEX *MystDEXSession) Token() (common.Address, error) {
+	return _MystDEX.Contract.Token(&_MystDEX.CallOpts)
+}
+
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
+//
+// Solidity: function token() view returns(address)
+func (_MystDEX *MystDEXCallerSession) Token() (common.Address, error) {
+	return _MystDEX.Contract.Token(&_MystDEX.CallOpts)
+}
+
 // ClaimEthers is a paid mutator transaction binding the contract method 0x6931b550.
 //
 // Solidity: function claimEthers() returns()
@@ -247,27 +350,6 @@ func (_MystDEX *MystDEXTransactorSession) ClaimTokens(_token common.Address) (*t
 	return _MystDEX.Contract.ClaimTokens(&_MystDEX.TransactOpts, _token)
 }
 
-// GetFundsDestination is a paid mutator transaction binding the contract method 0xf58c5b6e.
-//
-// Solidity: function getFundsDestination() returns(address)
-func (_MystDEX *MystDEXTransactor) GetFundsDestination(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystDEX.contract.Transact(opts, "getFundsDestination")
-}
-
-// GetFundsDestination is a paid mutator transaction binding the contract method 0xf58c5b6e.
-//
-// Solidity: function getFundsDestination() returns(address)
-func (_MystDEX *MystDEXSession) GetFundsDestination() (*types.Transaction, error) {
-	return _MystDEX.Contract.GetFundsDestination(&_MystDEX.TransactOpts)
-}
-
-// GetFundsDestination is a paid mutator transaction binding the contract method 0xf58c5b6e.
-//
-// Solidity: function getFundsDestination() returns(address)
-func (_MystDEX *MystDEXTransactorSession) GetFundsDestination() (*types.Transaction, error) {
-	return _MystDEX.Contract.GetFundsDestination(&_MystDEX.TransactOpts)
-}
-
 // Initialise is a paid mutator transaction binding the contract method 0x8595d149.
 //
 // Solidity: function initialise(address _dexOwner, address _token, uint256 _rate) returns()
@@ -287,48 +369,6 @@ func (_MystDEX *MystDEXSession) Initialise(_dexOwner common.Address, _token comm
 // Solidity: function initialise(address _dexOwner, address _token, uint256 _rate) returns()
 func (_MystDEX *MystDEXTransactorSession) Initialise(_dexOwner common.Address, _token common.Address, _rate *big.Int) (*types.Transaction, error) {
 	return _MystDEX.Contract.Initialise(&_MystDEX.TransactOpts, _dexOwner, _token, _rate)
-}
-
-// Initialised is a paid mutator transaction binding the contract method 0x07003bb4.
-//
-// Solidity: function initialised() returns(bool)
-func (_MystDEX *MystDEXTransactor) Initialised(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystDEX.contract.Transact(opts, "initialised")
-}
-
-// Initialised is a paid mutator transaction binding the contract method 0x07003bb4.
-//
-// Solidity: function initialised() returns(bool)
-func (_MystDEX *MystDEXSession) Initialised() (*types.Transaction, error) {
-	return _MystDEX.Contract.Initialised(&_MystDEX.TransactOpts)
-}
-
-// Initialised is a paid mutator transaction binding the contract method 0x07003bb4.
-//
-// Solidity: function initialised() returns(bool)
-func (_MystDEX *MystDEXTransactorSession) Initialised() (*types.Transaction, error) {
-	return _MystDEX.Contract.Initialised(&_MystDEX.TransactOpts)
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_MystDEX *MystDEXTransactor) Owner(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystDEX.contract.Transact(opts, "owner")
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_MystDEX *MystDEXSession) Owner() (*types.Transaction, error) {
-	return _MystDEX.Contract.Owner(&_MystDEX.TransactOpts)
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_MystDEX *MystDEXTransactorSession) Owner() (*types.Transaction, error) {
-	return _MystDEX.Contract.Owner(&_MystDEX.TransactOpts)
 }
 
 // RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
@@ -394,27 +434,6 @@ func (_MystDEX *MystDEXTransactorSession) SetRate(_newRate *big.Int) (*types.Tra
 	return _MystDEX.Contract.SetRate(&_MystDEX.TransactOpts, _newRate)
 }
 
-// Token is a paid mutator transaction binding the contract method 0xfc0c546a.
-//
-// Solidity: function token() returns(address)
-func (_MystDEX *MystDEXTransactor) Token(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _MystDEX.contract.Transact(opts, "token")
-}
-
-// Token is a paid mutator transaction binding the contract method 0xfc0c546a.
-//
-// Solidity: function token() returns(address)
-func (_MystDEX *MystDEXSession) Token() (*types.Transaction, error) {
-	return _MystDEX.Contract.Token(&_MystDEX.TransactOpts)
-}
-
-// Token is a paid mutator transaction binding the contract method 0xfc0c546a.
-//
-// Solidity: function token() returns(address)
-func (_MystDEX *MystDEXTransactorSession) Token() (*types.Transaction, error) {
-	return _MystDEX.Contract.Token(&_MystDEX.TransactOpts)
-}
-
 // TransferEthers is a paid mutator transaction binding the contract method 0x1254e64d.
 //
 // Solidity: function transferEthers(address _to, uint256 _amount) returns()
@@ -476,6 +495,27 @@ func (_MystDEX *MystDEXSession) TransferOwnership(newOwner common.Address) (*typ
 // Solidity: function transferOwnership(address newOwner) returns()
 func (_MystDEX *MystDEXTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
 	return _MystDEX.Contract.TransferOwnership(&_MystDEX.TransactOpts, newOwner)
+}
+
+// Receive is a paid mutator transaction binding the contract receive function.
+//
+// Solidity: receive() payable returns()
+func (_MystDEX *MystDEXTransactor) Receive(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _MystDEX.contract.RawTransact(opts, nil) // calldata is disallowed for receive function
+}
+
+// Receive is a paid mutator transaction binding the contract receive function.
+//
+// Solidity: receive() payable returns()
+func (_MystDEX *MystDEXSession) Receive() (*types.Transaction, error) {
+	return _MystDEX.Contract.Receive(&_MystDEX.TransactOpts)
+}
+
+// Receive is a paid mutator transaction binding the contract receive function.
+//
+// Solidity: receive() payable returns()
+func (_MystDEX *MystDEXTransactorSession) Receive() (*types.Transaction, error) {
+	return _MystDEX.Contract.Receive(&_MystDEX.TransactOpts)
 }
 
 // MystDEXDestinationChangedIterator is returned from FilterDestinationChanged and is used to iterate over the raw logs and unpacked data for DestinationChanged events raised by the MystDEX contract.

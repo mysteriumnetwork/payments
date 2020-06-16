@@ -36,7 +36,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -205,65 +204,80 @@ func (_SafeMathLib *SafeMathLibTransactorRaw) Transact(opts *bind.TransactOpts, 
 	return _SafeMathLib.Contract.contract.Transact(opts, method, params...)
 }
 
-// Minus is a paid mutator transaction binding the contract method 0xf4f3bdc1.
+// Minus is a free data retrieval call binding the contract method 0xf4f3bdc1.
 //
-// Solidity: function minus(uint256 a, uint256 b) returns(uint256)
-func (_SafeMathLib *SafeMathLibTransactor) Minus(opts *bind.TransactOpts, a *big.Int, b *big.Int) (*types.Transaction, error) {
-	return _SafeMathLib.contract.Transact(opts, "minus", a, b)
+// Solidity: function minus(uint256 a, uint256 b) pure returns(uint256)
+func (_SafeMathLib *SafeMathLibCaller) Minus(opts *bind.CallOpts, a *big.Int, b *big.Int) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _SafeMathLib.contract.Call(opts, out, "minus", a, b)
+	return *ret0, err
 }
 
-// Minus is a paid mutator transaction binding the contract method 0xf4f3bdc1.
+// Minus is a free data retrieval call binding the contract method 0xf4f3bdc1.
 //
-// Solidity: function minus(uint256 a, uint256 b) returns(uint256)
-func (_SafeMathLib *SafeMathLibSession) Minus(a *big.Int, b *big.Int) (*types.Transaction, error) {
-	return _SafeMathLib.Contract.Minus(&_SafeMathLib.TransactOpts, a, b)
+// Solidity: function minus(uint256 a, uint256 b) pure returns(uint256)
+func (_SafeMathLib *SafeMathLibSession) Minus(a *big.Int, b *big.Int) (*big.Int, error) {
+	return _SafeMathLib.Contract.Minus(&_SafeMathLib.CallOpts, a, b)
 }
 
-// Minus is a paid mutator transaction binding the contract method 0xf4f3bdc1.
+// Minus is a free data retrieval call binding the contract method 0xf4f3bdc1.
 //
-// Solidity: function minus(uint256 a, uint256 b) returns(uint256)
-func (_SafeMathLib *SafeMathLibTransactorSession) Minus(a *big.Int, b *big.Int) (*types.Transaction, error) {
-	return _SafeMathLib.Contract.Minus(&_SafeMathLib.TransactOpts, a, b)
+// Solidity: function minus(uint256 a, uint256 b) pure returns(uint256)
+func (_SafeMathLib *SafeMathLibCallerSession) Minus(a *big.Int, b *big.Int) (*big.Int, error) {
+	return _SafeMathLib.Contract.Minus(&_SafeMathLib.CallOpts, a, b)
 }
 
-// Plus is a paid mutator transaction binding the contract method 0x66098d4f.
+// Plus is a free data retrieval call binding the contract method 0x66098d4f.
 //
-// Solidity: function plus(uint256 a, uint256 b) returns(uint256)
-func (_SafeMathLib *SafeMathLibTransactor) Plus(opts *bind.TransactOpts, a *big.Int, b *big.Int) (*types.Transaction, error) {
-	return _SafeMathLib.contract.Transact(opts, "plus", a, b)
+// Solidity: function plus(uint256 a, uint256 b) pure returns(uint256)
+func (_SafeMathLib *SafeMathLibCaller) Plus(opts *bind.CallOpts, a *big.Int, b *big.Int) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _SafeMathLib.contract.Call(opts, out, "plus", a, b)
+	return *ret0, err
 }
 
-// Plus is a paid mutator transaction binding the contract method 0x66098d4f.
+// Plus is a free data retrieval call binding the contract method 0x66098d4f.
 //
-// Solidity: function plus(uint256 a, uint256 b) returns(uint256)
-func (_SafeMathLib *SafeMathLibSession) Plus(a *big.Int, b *big.Int) (*types.Transaction, error) {
-	return _SafeMathLib.Contract.Plus(&_SafeMathLib.TransactOpts, a, b)
+// Solidity: function plus(uint256 a, uint256 b) pure returns(uint256)
+func (_SafeMathLib *SafeMathLibSession) Plus(a *big.Int, b *big.Int) (*big.Int, error) {
+	return _SafeMathLib.Contract.Plus(&_SafeMathLib.CallOpts, a, b)
 }
 
-// Plus is a paid mutator transaction binding the contract method 0x66098d4f.
+// Plus is a free data retrieval call binding the contract method 0x66098d4f.
 //
-// Solidity: function plus(uint256 a, uint256 b) returns(uint256)
-func (_SafeMathLib *SafeMathLibTransactorSession) Plus(a *big.Int, b *big.Int) (*types.Transaction, error) {
-	return _SafeMathLib.Contract.Plus(&_SafeMathLib.TransactOpts, a, b)
+// Solidity: function plus(uint256 a, uint256 b) pure returns(uint256)
+func (_SafeMathLib *SafeMathLibCallerSession) Plus(a *big.Int, b *big.Int) (*big.Int, error) {
+	return _SafeMathLib.Contract.Plus(&_SafeMathLib.CallOpts, a, b)
 }
 
-// Times is a paid mutator transaction binding the contract method 0x1d3b9edf.
+// Times is a free data retrieval call binding the contract method 0x1d3b9edf.
 //
-// Solidity: function times(uint256 a, uint256 b) returns(uint256)
-func (_SafeMathLib *SafeMathLibTransactor) Times(opts *bind.TransactOpts, a *big.Int, b *big.Int) (*types.Transaction, error) {
-	return _SafeMathLib.contract.Transact(opts, "times", a, b)
+// Solidity: function times(uint256 a, uint256 b) pure returns(uint256)
+func (_SafeMathLib *SafeMathLibCaller) Times(opts *bind.CallOpts, a *big.Int, b *big.Int) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _SafeMathLib.contract.Call(opts, out, "times", a, b)
+	return *ret0, err
 }
 
-// Times is a paid mutator transaction binding the contract method 0x1d3b9edf.
+// Times is a free data retrieval call binding the contract method 0x1d3b9edf.
 //
-// Solidity: function times(uint256 a, uint256 b) returns(uint256)
-func (_SafeMathLib *SafeMathLibSession) Times(a *big.Int, b *big.Int) (*types.Transaction, error) {
-	return _SafeMathLib.Contract.Times(&_SafeMathLib.TransactOpts, a, b)
+// Solidity: function times(uint256 a, uint256 b) pure returns(uint256)
+func (_SafeMathLib *SafeMathLibSession) Times(a *big.Int, b *big.Int) (*big.Int, error) {
+	return _SafeMathLib.Contract.Times(&_SafeMathLib.CallOpts, a, b)
 }
 
-// Times is a paid mutator transaction binding the contract method 0x1d3b9edf.
+// Times is a free data retrieval call binding the contract method 0x1d3b9edf.
 //
-// Solidity: function times(uint256 a, uint256 b) returns(uint256)
-func (_SafeMathLib *SafeMathLibTransactorSession) Times(a *big.Int, b *big.Int) (*types.Transaction, error) {
-	return _SafeMathLib.Contract.Times(&_SafeMathLib.TransactOpts, a, b)
+// Solidity: function times(uint256 a, uint256 b) pure returns(uint256)
+func (_SafeMathLib *SafeMathLibCallerSession) Times(a *big.Int, b *big.Int) (*big.Int, error) {
+	return _SafeMathLib.Contract.Times(&_SafeMathLib.CallOpts, a, b)
 }

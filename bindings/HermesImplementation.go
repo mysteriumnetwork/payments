@@ -36,7 +36,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -205,6 +204,564 @@ func (_HermesImplementation *HermesImplementationTransactorRaw) Transact(opts *b
 	return _HermesImplementation.Contract.contract.Transact(opts, method, params...)
 }
 
+// AvailableBalance is a free data retrieval call binding the contract method 0xab2f0e51.
+//
+// Solidity: function availableBalance() view returns(uint256)
+func (_HermesImplementation *HermesImplementationCaller) AvailableBalance(opts *bind.CallOpts) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "availableBalance")
+	return *ret0, err
+}
+
+// AvailableBalance is a free data retrieval call binding the contract method 0xab2f0e51.
+//
+// Solidity: function availableBalance() view returns(uint256)
+func (_HermesImplementation *HermesImplementationSession) AvailableBalance() (*big.Int, error) {
+	return _HermesImplementation.Contract.AvailableBalance(&_HermesImplementation.CallOpts)
+}
+
+// AvailableBalance is a free data retrieval call binding the contract method 0xab2f0e51.
+//
+// Solidity: function availableBalance() view returns(uint256)
+func (_HermesImplementation *HermesImplementationCallerSession) AvailableBalance() (*big.Int, error) {
+	return _HermesImplementation.Contract.AvailableBalance(&_HermesImplementation.CallOpts)
+}
+
+// CalculateHermesFee is a free data retrieval call binding the contract method 0x1f4f12c6.
+//
+// Solidity: function calculateHermesFee(uint256 _amount) view returns(uint256)
+func (_HermesImplementation *HermesImplementationCaller) CalculateHermesFee(opts *bind.CallOpts, _amount *big.Int) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "calculateHermesFee", _amount)
+	return *ret0, err
+}
+
+// CalculateHermesFee is a free data retrieval call binding the contract method 0x1f4f12c6.
+//
+// Solidity: function calculateHermesFee(uint256 _amount) view returns(uint256)
+func (_HermesImplementation *HermesImplementationSession) CalculateHermesFee(_amount *big.Int) (*big.Int, error) {
+	return _HermesImplementation.Contract.CalculateHermesFee(&_HermesImplementation.CallOpts, _amount)
+}
+
+// CalculateHermesFee is a free data retrieval call binding the contract method 0x1f4f12c6.
+//
+// Solidity: function calculateHermesFee(uint256 _amount) view returns(uint256)
+func (_HermesImplementation *HermesImplementationCallerSession) CalculateHermesFee(_amount *big.Int) (*big.Int, error) {
+	return _HermesImplementation.Contract.CalculateHermesFee(&_HermesImplementation.CallOpts, _amount)
+}
+
+// Channels is a free data retrieval call binding the contract method 0x7a7ebd7b.
+//
+// Solidity: function channels(bytes32 ) view returns(address beneficiary, uint256 balance, uint256 settled, uint256 stake, uint256 stakeGoal, uint256 lastUsedNonce, uint256 timelock)
+func (_HermesImplementation *HermesImplementationCaller) Channels(opts *bind.CallOpts, arg0 [32]byte) (struct {
+	Beneficiary   common.Address
+	Balance       *big.Int
+	Settled       *big.Int
+	Stake         *big.Int
+	StakeGoal     *big.Int
+	LastUsedNonce *big.Int
+	Timelock      *big.Int
+}, error) {
+	ret := new(struct {
+		Beneficiary   common.Address
+		Balance       *big.Int
+		Settled       *big.Int
+		Stake         *big.Int
+		StakeGoal     *big.Int
+		LastUsedNonce *big.Int
+		Timelock      *big.Int
+	})
+	out := ret
+	err := _HermesImplementation.contract.Call(opts, out, "channels", arg0)
+	return *ret, err
+}
+
+// Channels is a free data retrieval call binding the contract method 0x7a7ebd7b.
+//
+// Solidity: function channels(bytes32 ) view returns(address beneficiary, uint256 balance, uint256 settled, uint256 stake, uint256 stakeGoal, uint256 lastUsedNonce, uint256 timelock)
+func (_HermesImplementation *HermesImplementationSession) Channels(arg0 [32]byte) (struct {
+	Beneficiary   common.Address
+	Balance       *big.Int
+	Settled       *big.Int
+	Stake         *big.Int
+	StakeGoal     *big.Int
+	LastUsedNonce *big.Int
+	Timelock      *big.Int
+}, error) {
+	return _HermesImplementation.Contract.Channels(&_HermesImplementation.CallOpts, arg0)
+}
+
+// Channels is a free data retrieval call binding the contract method 0x7a7ebd7b.
+//
+// Solidity: function channels(bytes32 ) view returns(address beneficiary, uint256 balance, uint256 settled, uint256 stake, uint256 stakeGoal, uint256 lastUsedNonce, uint256 timelock)
+func (_HermesImplementation *HermesImplementationCallerSession) Channels(arg0 [32]byte) (struct {
+	Beneficiary   common.Address
+	Balance       *big.Int
+	Settled       *big.Int
+	Stake         *big.Int
+	StakeGoal     *big.Int
+	LastUsedNonce *big.Int
+	Timelock      *big.Int
+}, error) {
+	return _HermesImplementation.Contract.Channels(&_HermesImplementation.CallOpts, arg0)
+}
+
+// GetChannelId is a free data retrieval call binding the contract method 0xeb295b27.
+//
+// Solidity: function getChannelId(address _identity) view returns(bytes32)
+func (_HermesImplementation *HermesImplementationCaller) GetChannelId(opts *bind.CallOpts, _identity common.Address) ([32]byte, error) {
+	var (
+		ret0 = new([32]byte)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "getChannelId", _identity)
+	return *ret0, err
+}
+
+// GetChannelId is a free data retrieval call binding the contract method 0xeb295b27.
+//
+// Solidity: function getChannelId(address _identity) view returns(bytes32)
+func (_HermesImplementation *HermesImplementationSession) GetChannelId(_identity common.Address) ([32]byte, error) {
+	return _HermesImplementation.Contract.GetChannelId(&_HermesImplementation.CallOpts, _identity)
+}
+
+// GetChannelId is a free data retrieval call binding the contract method 0xeb295b27.
+//
+// Solidity: function getChannelId(address _identity) view returns(bytes32)
+func (_HermesImplementation *HermesImplementationCallerSession) GetChannelId(_identity common.Address) ([32]byte, error) {
+	return _HermesImplementation.Contract.GetChannelId(&_HermesImplementation.CallOpts, _identity)
+}
+
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
+//
+// Solidity: function getFundsDestination() view returns(address)
+func (_HermesImplementation *HermesImplementationCaller) GetFundsDestination(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "getFundsDestination")
+	return *ret0, err
+}
+
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
+//
+// Solidity: function getFundsDestination() view returns(address)
+func (_HermesImplementation *HermesImplementationSession) GetFundsDestination() (common.Address, error) {
+	return _HermesImplementation.Contract.GetFundsDestination(&_HermesImplementation.CallOpts)
+}
+
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
+//
+// Solidity: function getFundsDestination() view returns(address)
+func (_HermesImplementation *HermesImplementationCallerSession) GetFundsDestination() (common.Address, error) {
+	return _HermesImplementation.Contract.GetFundsDestination(&_HermesImplementation.CallOpts)
+}
+
+// GetHermesStake is a free data retrieval call binding the contract method 0x306db49b.
+//
+// Solidity: function getHermesStake() view returns(uint256)
+func (_HermesImplementation *HermesImplementationCaller) GetHermesStake(opts *bind.CallOpts) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "getHermesStake")
+	return *ret0, err
+}
+
+// GetHermesStake is a free data retrieval call binding the contract method 0x306db49b.
+//
+// Solidity: function getHermesStake() view returns(uint256)
+func (_HermesImplementation *HermesImplementationSession) GetHermesStake() (*big.Int, error) {
+	return _HermesImplementation.Contract.GetHermesStake(&_HermesImplementation.CallOpts)
+}
+
+// GetHermesStake is a free data retrieval call binding the contract method 0x306db49b.
+//
+// Solidity: function getHermesStake() view returns(uint256)
+func (_HermesImplementation *HermesImplementationCallerSession) GetHermesStake() (*big.Int, error) {
+	return _HermesImplementation.Contract.GetHermesStake(&_HermesImplementation.CallOpts)
+}
+
+// GetOperator is a free data retrieval call binding the contract method 0xe7f43c68.
+//
+// Solidity: function getOperator() view returns(address)
+func (_HermesImplementation *HermesImplementationCaller) GetOperator(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "getOperator")
+	return *ret0, err
+}
+
+// GetOperator is a free data retrieval call binding the contract method 0xe7f43c68.
+//
+// Solidity: function getOperator() view returns(address)
+func (_HermesImplementation *HermesImplementationSession) GetOperator() (common.Address, error) {
+	return _HermesImplementation.Contract.GetOperator(&_HermesImplementation.CallOpts)
+}
+
+// GetOperator is a free data retrieval call binding the contract method 0xe7f43c68.
+//
+// Solidity: function getOperator() view returns(address)
+func (_HermesImplementation *HermesImplementationCallerSession) GetOperator() (common.Address, error) {
+	return _HermesImplementation.Contract.GetOperator(&_HermesImplementation.CallOpts)
+}
+
+// GetRegistry is a free data retrieval call binding the contract method 0x5ab1bd53.
+//
+// Solidity: function getRegistry() view returns(address)
+func (_HermesImplementation *HermesImplementationCaller) GetRegistry(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "getRegistry")
+	return *ret0, err
+}
+
+// GetRegistry is a free data retrieval call binding the contract method 0x5ab1bd53.
+//
+// Solidity: function getRegistry() view returns(address)
+func (_HermesImplementation *HermesImplementationSession) GetRegistry() (common.Address, error) {
+	return _HermesImplementation.Contract.GetRegistry(&_HermesImplementation.CallOpts)
+}
+
+// GetRegistry is a free data retrieval call binding the contract method 0x5ab1bd53.
+//
+// Solidity: function getRegistry() view returns(address)
+func (_HermesImplementation *HermesImplementationCallerSession) GetRegistry() (common.Address, error) {
+	return _HermesImplementation.Contract.GetRegistry(&_HermesImplementation.CallOpts)
+}
+
+// GetStakeThresholds is a free data retrieval call binding the contract method 0x9ed9903e.
+//
+// Solidity: function getStakeThresholds() view returns(uint256, uint256)
+func (_HermesImplementation *HermesImplementationCaller) GetStakeThresholds(opts *bind.CallOpts) (*big.Int, *big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+		ret1 = new(*big.Int)
+	)
+	out := &[]interface{}{
+		ret0,
+		ret1,
+	}
+	err := _HermesImplementation.contract.Call(opts, out, "getStakeThresholds")
+	return *ret0, *ret1, err
+}
+
+// GetStakeThresholds is a free data retrieval call binding the contract method 0x9ed9903e.
+//
+// Solidity: function getStakeThresholds() view returns(uint256, uint256)
+func (_HermesImplementation *HermesImplementationSession) GetStakeThresholds() (*big.Int, *big.Int, error) {
+	return _HermesImplementation.Contract.GetStakeThresholds(&_HermesImplementation.CallOpts)
+}
+
+// GetStakeThresholds is a free data retrieval call binding the contract method 0x9ed9903e.
+//
+// Solidity: function getStakeThresholds() view returns(uint256, uint256)
+func (_HermesImplementation *HermesImplementationCallerSession) GetStakeThresholds() (*big.Int, *big.Int, error) {
+	return _HermesImplementation.Contract.GetStakeThresholds(&_HermesImplementation.CallOpts)
+}
+
+// GetStatus is a free data retrieval call binding the contract method 0x4e69d560.
+//
+// Solidity: function getStatus() view returns(uint8)
+func (_HermesImplementation *HermesImplementationCaller) GetStatus(opts *bind.CallOpts) (uint8, error) {
+	var (
+		ret0 = new(uint8)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "getStatus")
+	return *ret0, err
+}
+
+// GetStatus is a free data retrieval call binding the contract method 0x4e69d560.
+//
+// Solidity: function getStatus() view returns(uint8)
+func (_HermesImplementation *HermesImplementationSession) GetStatus() (uint8, error) {
+	return _HermesImplementation.Contract.GetStatus(&_HermesImplementation.CallOpts)
+}
+
+// GetStatus is a free data retrieval call binding the contract method 0x4e69d560.
+//
+// Solidity: function getStatus() view returns(uint8)
+func (_HermesImplementation *HermesImplementationCallerSession) GetStatus() (uint8, error) {
+	return _HermesImplementation.Contract.GetStatus(&_HermesImplementation.CallOpts)
+}
+
+// IsChannelOpened is a free data retrieval call binding the contract method 0x6e9094ea.
+//
+// Solidity: function isChannelOpened(bytes32 _channelId) view returns(bool)
+func (_HermesImplementation *HermesImplementationCaller) IsChannelOpened(opts *bind.CallOpts, _channelId [32]byte) (bool, error) {
+	var (
+		ret0 = new(bool)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "isChannelOpened", _channelId)
+	return *ret0, err
+}
+
+// IsChannelOpened is a free data retrieval call binding the contract method 0x6e9094ea.
+//
+// Solidity: function isChannelOpened(bytes32 _channelId) view returns(bool)
+func (_HermesImplementation *HermesImplementationSession) IsChannelOpened(_channelId [32]byte) (bool, error) {
+	return _HermesImplementation.Contract.IsChannelOpened(&_HermesImplementation.CallOpts, _channelId)
+}
+
+// IsChannelOpened is a free data retrieval call binding the contract method 0x6e9094ea.
+//
+// Solidity: function isChannelOpened(bytes32 _channelId) view returns(bool)
+func (_HermesImplementation *HermesImplementationCallerSession) IsChannelOpened(_channelId [32]byte) (bool, error) {
+	return _HermesImplementation.Contract.IsChannelOpened(&_HermesImplementation.CallOpts, _channelId)
+}
+
+// IsHermesActive is a free data retrieval call binding the contract method 0xbc96a1e9.
+//
+// Solidity: function isHermesActive() view returns(bool)
+func (_HermesImplementation *HermesImplementationCaller) IsHermesActive(opts *bind.CallOpts) (bool, error) {
+	var (
+		ret0 = new(bool)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "isHermesActive")
+	return *ret0, err
+}
+
+// IsHermesActive is a free data retrieval call binding the contract method 0xbc96a1e9.
+//
+// Solidity: function isHermesActive() view returns(bool)
+func (_HermesImplementation *HermesImplementationSession) IsHermesActive() (bool, error) {
+	return _HermesImplementation.Contract.IsHermesActive(&_HermesImplementation.CallOpts)
+}
+
+// IsHermesActive is a free data retrieval call binding the contract method 0xbc96a1e9.
+//
+// Solidity: function isHermesActive() view returns(bool)
+func (_HermesImplementation *HermesImplementationCallerSession) IsHermesActive() (bool, error) {
+	return _HermesImplementation.Contract.IsHermesActive(&_HermesImplementation.CallOpts)
+}
+
+// IsInitialized is a free data retrieval call binding the contract method 0x392e53cd.
+//
+// Solidity: function isInitialized() view returns(bool)
+func (_HermesImplementation *HermesImplementationCaller) IsInitialized(opts *bind.CallOpts) (bool, error) {
+	var (
+		ret0 = new(bool)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "isInitialized")
+	return *ret0, err
+}
+
+// IsInitialized is a free data retrieval call binding the contract method 0x392e53cd.
+//
+// Solidity: function isInitialized() view returns(bool)
+func (_HermesImplementation *HermesImplementationSession) IsInitialized() (bool, error) {
+	return _HermesImplementation.Contract.IsInitialized(&_HermesImplementation.CallOpts)
+}
+
+// IsInitialized is a free data retrieval call binding the contract method 0x392e53cd.
+//
+// Solidity: function isInitialized() view returns(bool)
+func (_HermesImplementation *HermesImplementationCallerSession) IsInitialized() (bool, error) {
+	return _HermesImplementation.Contract.IsInitialized(&_HermesImplementation.CallOpts)
+}
+
+// LastFee is a free data retrieval call binding the contract method 0x9801134e.
+//
+// Solidity: function lastFee() view returns(uint16 value, uint64 validFrom)
+func (_HermesImplementation *HermesImplementationCaller) LastFee(opts *bind.CallOpts) (struct {
+	Value     uint16
+	ValidFrom uint64
+}, error) {
+	ret := new(struct {
+		Value     uint16
+		ValidFrom uint64
+	})
+	out := ret
+	err := _HermesImplementation.contract.Call(opts, out, "lastFee")
+	return *ret, err
+}
+
+// LastFee is a free data retrieval call binding the contract method 0x9801134e.
+//
+// Solidity: function lastFee() view returns(uint16 value, uint64 validFrom)
+func (_HermesImplementation *HermesImplementationSession) LastFee() (struct {
+	Value     uint16
+	ValidFrom uint64
+}, error) {
+	return _HermesImplementation.Contract.LastFee(&_HermesImplementation.CallOpts)
+}
+
+// LastFee is a free data retrieval call binding the contract method 0x9801134e.
+//
+// Solidity: function lastFee() view returns(uint16 value, uint64 validFrom)
+func (_HermesImplementation *HermesImplementationCallerSession) LastFee() (struct {
+	Value     uint16
+	ValidFrom uint64
+}, error) {
+	return _HermesImplementation.Contract.LastFee(&_HermesImplementation.CallOpts)
+}
+
+// MinimalExpectedBalance is a free data retrieval call binding the contract method 0x94c7915d.
+//
+// Solidity: function minimalExpectedBalance() view returns(uint256)
+func (_HermesImplementation *HermesImplementationCaller) MinimalExpectedBalance(opts *bind.CallOpts) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "minimalExpectedBalance")
+	return *ret0, err
+}
+
+// MinimalExpectedBalance is a free data retrieval call binding the contract method 0x94c7915d.
+//
+// Solidity: function minimalExpectedBalance() view returns(uint256)
+func (_HermesImplementation *HermesImplementationSession) MinimalExpectedBalance() (*big.Int, error) {
+	return _HermesImplementation.Contract.MinimalExpectedBalance(&_HermesImplementation.CallOpts)
+}
+
+// MinimalExpectedBalance is a free data retrieval call binding the contract method 0x94c7915d.
+//
+// Solidity: function minimalExpectedBalance() view returns(uint256)
+func (_HermesImplementation *HermesImplementationCallerSession) MinimalExpectedBalance() (*big.Int, error) {
+	return _HermesImplementation.Contract.MinimalExpectedBalance(&_HermesImplementation.CallOpts)
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_HermesImplementation *HermesImplementationCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "owner")
+	return *ret0, err
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_HermesImplementation *HermesImplementationSession) Owner() (common.Address, error) {
+	return _HermesImplementation.Contract.Owner(&_HermesImplementation.CallOpts)
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_HermesImplementation *HermesImplementationCallerSession) Owner() (common.Address, error) {
+	return _HermesImplementation.Contract.Owner(&_HermesImplementation.CallOpts)
+}
+
+// PreviousFee is a free data retrieval call binding the contract method 0xe1c66487.
+//
+// Solidity: function previousFee() view returns(uint16 value, uint64 validFrom)
+func (_HermesImplementation *HermesImplementationCaller) PreviousFee(opts *bind.CallOpts) (struct {
+	Value     uint16
+	ValidFrom uint64
+}, error) {
+	ret := new(struct {
+		Value     uint16
+		ValidFrom uint64
+	})
+	out := ret
+	err := _HermesImplementation.contract.Call(opts, out, "previousFee")
+	return *ret, err
+}
+
+// PreviousFee is a free data retrieval call binding the contract method 0xe1c66487.
+//
+// Solidity: function previousFee() view returns(uint16 value, uint64 validFrom)
+func (_HermesImplementation *HermesImplementationSession) PreviousFee() (struct {
+	Value     uint16
+	ValidFrom uint64
+}, error) {
+	return _HermesImplementation.Contract.PreviousFee(&_HermesImplementation.CallOpts)
+}
+
+// PreviousFee is a free data retrieval call binding the contract method 0xe1c66487.
+//
+// Solidity: function previousFee() view returns(uint16 value, uint64 validFrom)
+func (_HermesImplementation *HermesImplementationCallerSession) PreviousFee() (struct {
+	Value     uint16
+	ValidFrom uint64
+}, error) {
+	return _HermesImplementation.Contract.PreviousFee(&_HermesImplementation.CallOpts)
+}
+
+// Punishment is a free data retrieval call binding the contract method 0x0684cd20.
+//
+// Solidity: function punishment() view returns(uint256 activationBlock, uint256 amount)
+func (_HermesImplementation *HermesImplementationCaller) Punishment(opts *bind.CallOpts) (struct {
+	ActivationBlock *big.Int
+	Amount          *big.Int
+}, error) {
+	ret := new(struct {
+		ActivationBlock *big.Int
+		Amount          *big.Int
+	})
+	out := ret
+	err := _HermesImplementation.contract.Call(opts, out, "punishment")
+	return *ret, err
+}
+
+// Punishment is a free data retrieval call binding the contract method 0x0684cd20.
+//
+// Solidity: function punishment() view returns(uint256 activationBlock, uint256 amount)
+func (_HermesImplementation *HermesImplementationSession) Punishment() (struct {
+	ActivationBlock *big.Int
+	Amount          *big.Int
+}, error) {
+	return _HermesImplementation.Contract.Punishment(&_HermesImplementation.CallOpts)
+}
+
+// Punishment is a free data retrieval call binding the contract method 0x0684cd20.
+//
+// Solidity: function punishment() view returns(uint256 activationBlock, uint256 amount)
+func (_HermesImplementation *HermesImplementationCallerSession) Punishment() (struct {
+	ActivationBlock *big.Int
+	Amount          *big.Int
+}, error) {
+	return _HermesImplementation.Contract.Punishment(&_HermesImplementation.CallOpts)
+}
+
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
+//
+// Solidity: function token() view returns(address)
+func (_HermesImplementation *HermesImplementationCaller) Token(opts *bind.CallOpts) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "token")
+	return *ret0, err
+}
+
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
+//
+// Solidity: function token() view returns(address)
+func (_HermesImplementation *HermesImplementationSession) Token() (common.Address, error) {
+	return _HermesImplementation.Contract.Token(&_HermesImplementation.CallOpts)
+}
+
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
+//
+// Solidity: function token() view returns(address)
+func (_HermesImplementation *HermesImplementationCallerSession) Token() (common.Address, error) {
+	return _HermesImplementation.Contract.Token(&_HermesImplementation.CallOpts)
+}
+
 // ActivateChannelOpening is a paid mutator transaction binding the contract method 0xfbb46b98.
 //
 // Solidity: function activateChannelOpening() returns()
@@ -224,69 +781,6 @@ func (_HermesImplementation *HermesImplementationSession) ActivateChannelOpening
 // Solidity: function activateChannelOpening() returns()
 func (_HermesImplementation *HermesImplementationTransactorSession) ActivateChannelOpening() (*types.Transaction, error) {
 	return _HermesImplementation.Contract.ActivateChannelOpening(&_HermesImplementation.TransactOpts)
-}
-
-// AvailableBalance is a paid mutator transaction binding the contract method 0xab2f0e51.
-//
-// Solidity: function availableBalance() returns(uint256)
-func (_HermesImplementation *HermesImplementationTransactor) AvailableBalance(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "availableBalance")
-}
-
-// AvailableBalance is a paid mutator transaction binding the contract method 0xab2f0e51.
-//
-// Solidity: function availableBalance() returns(uint256)
-func (_HermesImplementation *HermesImplementationSession) AvailableBalance() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.AvailableBalance(&_HermesImplementation.TransactOpts)
-}
-
-// AvailableBalance is a paid mutator transaction binding the contract method 0xab2f0e51.
-//
-// Solidity: function availableBalance() returns(uint256)
-func (_HermesImplementation *HermesImplementationTransactorSession) AvailableBalance() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.AvailableBalance(&_HermesImplementation.TransactOpts)
-}
-
-// CalculateHermesFee is a paid mutator transaction binding the contract method 0x1f4f12c6.
-//
-// Solidity: function calculateHermesFee(uint256 _amount) returns(uint256)
-func (_HermesImplementation *HermesImplementationTransactor) CalculateHermesFee(opts *bind.TransactOpts, _amount *big.Int) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "calculateHermesFee", _amount)
-}
-
-// CalculateHermesFee is a paid mutator transaction binding the contract method 0x1f4f12c6.
-//
-// Solidity: function calculateHermesFee(uint256 _amount) returns(uint256)
-func (_HermesImplementation *HermesImplementationSession) CalculateHermesFee(_amount *big.Int) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.CalculateHermesFee(&_HermesImplementation.TransactOpts, _amount)
-}
-
-// CalculateHermesFee is a paid mutator transaction binding the contract method 0x1f4f12c6.
-//
-// Solidity: function calculateHermesFee(uint256 _amount) returns(uint256)
-func (_HermesImplementation *HermesImplementationTransactorSession) CalculateHermesFee(_amount *big.Int) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.CalculateHermesFee(&_HermesImplementation.TransactOpts, _amount)
-}
-
-// Channels is a paid mutator transaction binding the contract method 0x7a7ebd7b.
-//
-// Solidity: function channels(bytes32 ) returns(address beneficiary, uint256 balance, uint256 settled, uint256 stake, uint256 stakeGoal, uint256 lastUsedNonce, uint256 timelock)
-func (_HermesImplementation *HermesImplementationTransactor) Channels(opts *bind.TransactOpts, arg0 [32]byte) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "channels", arg0)
-}
-
-// Channels is a paid mutator transaction binding the contract method 0x7a7ebd7b.
-//
-// Solidity: function channels(bytes32 ) returns(address beneficiary, uint256 balance, uint256 settled, uint256 stake, uint256 stakeGoal, uint256 lastUsedNonce, uint256 timelock)
-func (_HermesImplementation *HermesImplementationSession) Channels(arg0 [32]byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.Channels(&_HermesImplementation.TransactOpts, arg0)
-}
-
-// Channels is a paid mutator transaction binding the contract method 0x7a7ebd7b.
-//
-// Solidity: function channels(bytes32 ) returns(address beneficiary, uint256 balance, uint256 settled, uint256 stake, uint256 stakeGoal, uint256 lastUsedNonce, uint256 timelock)
-func (_HermesImplementation *HermesImplementationTransactorSession) Channels(arg0 [32]byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.Channels(&_HermesImplementation.TransactOpts, arg0)
 }
 
 // ClaimEthers is a paid mutator transaction binding the contract method 0x6931b550.
@@ -373,111 +867,6 @@ func (_HermesImplementation *HermesImplementationTransactorSession) DecreaseStak
 	return _HermesImplementation.Contract.DecreaseStake(&_HermesImplementation.TransactOpts, _channelId, _amount, _transactorFee, _nonce, _signature)
 }
 
-// GetChannelId is a paid mutator transaction binding the contract method 0xeb295b27.
-//
-// Solidity: function getChannelId(address _identity) returns(bytes32)
-func (_HermesImplementation *HermesImplementationTransactor) GetChannelId(opts *bind.TransactOpts, _identity common.Address) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "getChannelId", _identity)
-}
-
-// GetChannelId is a paid mutator transaction binding the contract method 0xeb295b27.
-//
-// Solidity: function getChannelId(address _identity) returns(bytes32)
-func (_HermesImplementation *HermesImplementationSession) GetChannelId(_identity common.Address) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetChannelId(&_HermesImplementation.TransactOpts, _identity)
-}
-
-// GetChannelId is a paid mutator transaction binding the contract method 0xeb295b27.
-//
-// Solidity: function getChannelId(address _identity) returns(bytes32)
-func (_HermesImplementation *HermesImplementationTransactorSession) GetChannelId(_identity common.Address) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetChannelId(&_HermesImplementation.TransactOpts, _identity)
-}
-
-// GetFundsDestination is a paid mutator transaction binding the contract method 0xf58c5b6e.
-//
-// Solidity: function getFundsDestination() returns(address)
-func (_HermesImplementation *HermesImplementationTransactor) GetFundsDestination(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "getFundsDestination")
-}
-
-// GetFundsDestination is a paid mutator transaction binding the contract method 0xf58c5b6e.
-//
-// Solidity: function getFundsDestination() returns(address)
-func (_HermesImplementation *HermesImplementationSession) GetFundsDestination() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetFundsDestination(&_HermesImplementation.TransactOpts)
-}
-
-// GetFundsDestination is a paid mutator transaction binding the contract method 0xf58c5b6e.
-//
-// Solidity: function getFundsDestination() returns(address)
-func (_HermesImplementation *HermesImplementationTransactorSession) GetFundsDestination() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetFundsDestination(&_HermesImplementation.TransactOpts)
-}
-
-// GetHermesStake is a paid mutator transaction binding the contract method 0x306db49b.
-//
-// Solidity: function getHermesStake() returns(uint256)
-func (_HermesImplementation *HermesImplementationTransactor) GetHermesStake(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "getHermesStake")
-}
-
-// GetHermesStake is a paid mutator transaction binding the contract method 0x306db49b.
-//
-// Solidity: function getHermesStake() returns(uint256)
-func (_HermesImplementation *HermesImplementationSession) GetHermesStake() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetHermesStake(&_HermesImplementation.TransactOpts)
-}
-
-// GetHermesStake is a paid mutator transaction binding the contract method 0x306db49b.
-//
-// Solidity: function getHermesStake() returns(uint256)
-func (_HermesImplementation *HermesImplementationTransactorSession) GetHermesStake() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetHermesStake(&_HermesImplementation.TransactOpts)
-}
-
-// GetOperator is a paid mutator transaction binding the contract method 0xe7f43c68.
-//
-// Solidity: function getOperator() returns(address)
-func (_HermesImplementation *HermesImplementationTransactor) GetOperator(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "getOperator")
-}
-
-// GetOperator is a paid mutator transaction binding the contract method 0xe7f43c68.
-//
-// Solidity: function getOperator() returns(address)
-func (_HermesImplementation *HermesImplementationSession) GetOperator() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetOperator(&_HermesImplementation.TransactOpts)
-}
-
-// GetOperator is a paid mutator transaction binding the contract method 0xe7f43c68.
-//
-// Solidity: function getOperator() returns(address)
-func (_HermesImplementation *HermesImplementationTransactorSession) GetOperator() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetOperator(&_HermesImplementation.TransactOpts)
-}
-
-// GetRegistry is a paid mutator transaction binding the contract method 0x5ab1bd53.
-//
-// Solidity: function getRegistry() returns(address)
-func (_HermesImplementation *HermesImplementationTransactor) GetRegistry(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "getRegistry")
-}
-
-// GetRegistry is a paid mutator transaction binding the contract method 0x5ab1bd53.
-//
-// Solidity: function getRegistry() returns(address)
-func (_HermesImplementation *HermesImplementationSession) GetRegistry() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetRegistry(&_HermesImplementation.TransactOpts)
-}
-
-// GetRegistry is a paid mutator transaction binding the contract method 0x5ab1bd53.
-//
-// Solidity: function getRegistry() returns(address)
-func (_HermesImplementation *HermesImplementationTransactorSession) GetRegistry() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetRegistry(&_HermesImplementation.TransactOpts)
-}
-
 // GetStakeBack is a paid mutator transaction binding the contract method 0x6138dda7.
 //
 // Solidity: function getStakeBack(address _beneficiary) returns()
@@ -497,48 +886,6 @@ func (_HermesImplementation *HermesImplementationSession) GetStakeBack(_benefici
 // Solidity: function getStakeBack(address _beneficiary) returns()
 func (_HermesImplementation *HermesImplementationTransactorSession) GetStakeBack(_beneficiary common.Address) (*types.Transaction, error) {
 	return _HermesImplementation.Contract.GetStakeBack(&_HermesImplementation.TransactOpts, _beneficiary)
-}
-
-// GetStakeThresholds is a paid mutator transaction binding the contract method 0x9ed9903e.
-//
-// Solidity: function getStakeThresholds() returns(uint256, uint256)
-func (_HermesImplementation *HermesImplementationTransactor) GetStakeThresholds(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "getStakeThresholds")
-}
-
-// GetStakeThresholds is a paid mutator transaction binding the contract method 0x9ed9903e.
-//
-// Solidity: function getStakeThresholds() returns(uint256, uint256)
-func (_HermesImplementation *HermesImplementationSession) GetStakeThresholds() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetStakeThresholds(&_HermesImplementation.TransactOpts)
-}
-
-// GetStakeThresholds is a paid mutator transaction binding the contract method 0x9ed9903e.
-//
-// Solidity: function getStakeThresholds() returns(uint256, uint256)
-func (_HermesImplementation *HermesImplementationTransactorSession) GetStakeThresholds() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetStakeThresholds(&_HermesImplementation.TransactOpts)
-}
-
-// GetStatus is a paid mutator transaction binding the contract method 0x4e69d560.
-//
-// Solidity: function getStatus() returns(uint8)
-func (_HermesImplementation *HermesImplementationTransactor) GetStatus(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "getStatus")
-}
-
-// GetStatus is a paid mutator transaction binding the contract method 0x4e69d560.
-//
-// Solidity: function getStatus() returns(uint8)
-func (_HermesImplementation *HermesImplementationSession) GetStatus() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetStatus(&_HermesImplementation.TransactOpts)
-}
-
-// GetStatus is a paid mutator transaction binding the contract method 0x4e69d560.
-//
-// Solidity: function getStatus() returns(uint8)
-func (_HermesImplementation *HermesImplementationTransactorSession) GetStatus() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.GetStatus(&_HermesImplementation.TransactOpts)
 }
 
 // IncreaseHermesStake is a paid mutator transaction binding the contract method 0xae10ed84.
@@ -604,111 +951,6 @@ func (_HermesImplementation *HermesImplementationTransactorSession) Initialize(_
 	return _HermesImplementation.Contract.Initialize(&_HermesImplementation.TransactOpts, _token, _operator, _fee, _maxStake)
 }
 
-// IsChannelOpened is a paid mutator transaction binding the contract method 0x6e9094ea.
-//
-// Solidity: function isChannelOpened(bytes32 _channelId) returns(bool)
-func (_HermesImplementation *HermesImplementationTransactor) IsChannelOpened(opts *bind.TransactOpts, _channelId [32]byte) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "isChannelOpened", _channelId)
-}
-
-// IsChannelOpened is a paid mutator transaction binding the contract method 0x6e9094ea.
-//
-// Solidity: function isChannelOpened(bytes32 _channelId) returns(bool)
-func (_HermesImplementation *HermesImplementationSession) IsChannelOpened(_channelId [32]byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.IsChannelOpened(&_HermesImplementation.TransactOpts, _channelId)
-}
-
-// IsChannelOpened is a paid mutator transaction binding the contract method 0x6e9094ea.
-//
-// Solidity: function isChannelOpened(bytes32 _channelId) returns(bool)
-func (_HermesImplementation *HermesImplementationTransactorSession) IsChannelOpened(_channelId [32]byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.IsChannelOpened(&_HermesImplementation.TransactOpts, _channelId)
-}
-
-// IsHermesActive is a paid mutator transaction binding the contract method 0xbc96a1e9.
-//
-// Solidity: function isHermesActive() returns(bool)
-func (_HermesImplementation *HermesImplementationTransactor) IsHermesActive(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "isHermesActive")
-}
-
-// IsHermesActive is a paid mutator transaction binding the contract method 0xbc96a1e9.
-//
-// Solidity: function isHermesActive() returns(bool)
-func (_HermesImplementation *HermesImplementationSession) IsHermesActive() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.IsHermesActive(&_HermesImplementation.TransactOpts)
-}
-
-// IsHermesActive is a paid mutator transaction binding the contract method 0xbc96a1e9.
-//
-// Solidity: function isHermesActive() returns(bool)
-func (_HermesImplementation *HermesImplementationTransactorSession) IsHermesActive() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.IsHermesActive(&_HermesImplementation.TransactOpts)
-}
-
-// IsInitialized is a paid mutator transaction binding the contract method 0x392e53cd.
-//
-// Solidity: function isInitialized() returns(bool)
-func (_HermesImplementation *HermesImplementationTransactor) IsInitialized(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "isInitialized")
-}
-
-// IsInitialized is a paid mutator transaction binding the contract method 0x392e53cd.
-//
-// Solidity: function isInitialized() returns(bool)
-func (_HermesImplementation *HermesImplementationSession) IsInitialized() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.IsInitialized(&_HermesImplementation.TransactOpts)
-}
-
-// IsInitialized is a paid mutator transaction binding the contract method 0x392e53cd.
-//
-// Solidity: function isInitialized() returns(bool)
-func (_HermesImplementation *HermesImplementationTransactorSession) IsInitialized() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.IsInitialized(&_HermesImplementation.TransactOpts)
-}
-
-// LastFee is a paid mutator transaction binding the contract method 0x9801134e.
-//
-// Solidity: function lastFee() returns(uint16 value, uint64 validFrom)
-func (_HermesImplementation *HermesImplementationTransactor) LastFee(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "lastFee")
-}
-
-// LastFee is a paid mutator transaction binding the contract method 0x9801134e.
-//
-// Solidity: function lastFee() returns(uint16 value, uint64 validFrom)
-func (_HermesImplementation *HermesImplementationSession) LastFee() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.LastFee(&_HermesImplementation.TransactOpts)
-}
-
-// LastFee is a paid mutator transaction binding the contract method 0x9801134e.
-//
-// Solidity: function lastFee() returns(uint16 value, uint64 validFrom)
-func (_HermesImplementation *HermesImplementationTransactorSession) LastFee() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.LastFee(&_HermesImplementation.TransactOpts)
-}
-
-// MinimalExpectedBalance is a paid mutator transaction binding the contract method 0x94c7915d.
-//
-// Solidity: function minimalExpectedBalance() returns(uint256)
-func (_HermesImplementation *HermesImplementationTransactor) MinimalExpectedBalance(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "minimalExpectedBalance")
-}
-
-// MinimalExpectedBalance is a paid mutator transaction binding the contract method 0x94c7915d.
-//
-// Solidity: function minimalExpectedBalance() returns(uint256)
-func (_HermesImplementation *HermesImplementationSession) MinimalExpectedBalance() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.MinimalExpectedBalance(&_HermesImplementation.TransactOpts)
-}
-
-// MinimalExpectedBalance is a paid mutator transaction binding the contract method 0x94c7915d.
-//
-// Solidity: function minimalExpectedBalance() returns(uint256)
-func (_HermesImplementation *HermesImplementationTransactorSession) MinimalExpectedBalance() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.MinimalExpectedBalance(&_HermesImplementation.TransactOpts)
-}
-
 // OpenChannel is a paid mutator transaction binding the contract method 0x0a798f24.
 //
 // Solidity: function openChannel(address _identity, address _beneficiary, uint256 _amountToLend) returns()
@@ -730,27 +972,6 @@ func (_HermesImplementation *HermesImplementationTransactorSession) OpenChannel(
 	return _HermesImplementation.Contract.OpenChannel(&_HermesImplementation.TransactOpts, _identity, _beneficiary, _amountToLend)
 }
 
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_HermesImplementation *HermesImplementationTransactor) Owner(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "owner")
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_HermesImplementation *HermesImplementationSession) Owner() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.Owner(&_HermesImplementation.TransactOpts)
-}
-
-// Owner is a paid mutator transaction binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() returns(address)
-func (_HermesImplementation *HermesImplementationTransactorSession) Owner() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.Owner(&_HermesImplementation.TransactOpts)
-}
-
 // PauseChannelOpening is a paid mutator transaction binding the contract method 0xaa606dee.
 //
 // Solidity: function pauseChannelOpening() returns()
@@ -770,48 +991,6 @@ func (_HermesImplementation *HermesImplementationSession) PauseChannelOpening() 
 // Solidity: function pauseChannelOpening() returns()
 func (_HermesImplementation *HermesImplementationTransactorSession) PauseChannelOpening() (*types.Transaction, error) {
 	return _HermesImplementation.Contract.PauseChannelOpening(&_HermesImplementation.TransactOpts)
-}
-
-// PreviousFee is a paid mutator transaction binding the contract method 0xe1c66487.
-//
-// Solidity: function previousFee() returns(uint16 value, uint64 validFrom)
-func (_HermesImplementation *HermesImplementationTransactor) PreviousFee(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "previousFee")
-}
-
-// PreviousFee is a paid mutator transaction binding the contract method 0xe1c66487.
-//
-// Solidity: function previousFee() returns(uint16 value, uint64 validFrom)
-func (_HermesImplementation *HermesImplementationSession) PreviousFee() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.PreviousFee(&_HermesImplementation.TransactOpts)
-}
-
-// PreviousFee is a paid mutator transaction binding the contract method 0xe1c66487.
-//
-// Solidity: function previousFee() returns(uint16 value, uint64 validFrom)
-func (_HermesImplementation *HermesImplementationTransactorSession) PreviousFee() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.PreviousFee(&_HermesImplementation.TransactOpts)
-}
-
-// Punishment is a paid mutator transaction binding the contract method 0x0684cd20.
-//
-// Solidity: function punishment() returns(uint256 activationBlock, uint256 amount)
-func (_HermesImplementation *HermesImplementationTransactor) Punishment(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "punishment")
-}
-
-// Punishment is a paid mutator transaction binding the contract method 0x0684cd20.
-//
-// Solidity: function punishment() returns(uint256 activationBlock, uint256 amount)
-func (_HermesImplementation *HermesImplementationSession) Punishment() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.Punishment(&_HermesImplementation.TransactOpts)
-}
-
-// Punishment is a paid mutator transaction binding the contract method 0x0684cd20.
-//
-// Solidity: function punishment() returns(uint256 activationBlock, uint256 amount)
-func (_HermesImplementation *HermesImplementationTransactorSession) Punishment() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.Punishment(&_HermesImplementation.TransactOpts)
 }
 
 // RebalanceChannel is a paid mutator transaction binding the contract method 0xefde05ec.
@@ -1106,27 +1285,6 @@ func (_HermesImplementation *HermesImplementationSession) SettleWithGoalIncrease
 // Solidity: function settleWithGoalIncrease(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _promiseSignature, uint256 _newStakeGoal, uint256 _nonce, bytes _goalChangeSignature) returns()
 func (_HermesImplementation *HermesImplementationTransactorSession) SettleWithGoalIncrease(_channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _promiseSignature []byte, _newStakeGoal *big.Int, _nonce *big.Int, _goalChangeSignature []byte) (*types.Transaction, error) {
 	return _HermesImplementation.Contract.SettleWithGoalIncrease(&_HermesImplementation.TransactOpts, _channelId, _amount, _transactorFee, _lock, _promiseSignature, _newStakeGoal, _nonce, _goalChangeSignature)
-}
-
-// Token is a paid mutator transaction binding the contract method 0xfc0c546a.
-//
-// Solidity: function token() returns(address)
-func (_HermesImplementation *HermesImplementationTransactor) Token(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "token")
-}
-
-// Token is a paid mutator transaction binding the contract method 0xfc0c546a.
-//
-// Solidity: function token() returns(address)
-func (_HermesImplementation *HermesImplementationSession) Token() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.Token(&_HermesImplementation.TransactOpts)
-}
-
-// Token is a paid mutator transaction binding the contract method 0xfc0c546a.
-//
-// Solidity: function token() returns(address)
-func (_HermesImplementation *HermesImplementationTransactorSession) Token() (*types.Transaction, error) {
-	return _HermesImplementation.Contract.Token(&_HermesImplementation.TransactOpts)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.

@@ -36,7 +36,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -188,46 +187,56 @@ func (_HermesContract *HermesContractTransactorRaw) Transact(opts *bind.Transact
 	return _HermesContract.Contract.contract.Transact(opts, method, params...)
 }
 
-// GetStake is a paid mutator transaction binding the contract method 0xfc0e3d90.
+// GetStake is a free data retrieval call binding the contract method 0xfc0e3d90.
 //
-// Solidity: function getStake() returns(uint256)
-func (_HermesContract *HermesContractTransactor) GetStake(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesContract.contract.Transact(opts, "getStake")
+// Solidity: function getStake() view returns(uint256)
+func (_HermesContract *HermesContractCaller) GetStake(opts *bind.CallOpts) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _HermesContract.contract.Call(opts, out, "getStake")
+	return *ret0, err
 }
 
-// GetStake is a paid mutator transaction binding the contract method 0xfc0e3d90.
+// GetStake is a free data retrieval call binding the contract method 0xfc0e3d90.
 //
-// Solidity: function getStake() returns(uint256)
-func (_HermesContract *HermesContractSession) GetStake() (*types.Transaction, error) {
-	return _HermesContract.Contract.GetStake(&_HermesContract.TransactOpts)
+// Solidity: function getStake() view returns(uint256)
+func (_HermesContract *HermesContractSession) GetStake() (*big.Int, error) {
+	return _HermesContract.Contract.GetStake(&_HermesContract.CallOpts)
 }
 
-// GetStake is a paid mutator transaction binding the contract method 0xfc0e3d90.
+// GetStake is a free data retrieval call binding the contract method 0xfc0e3d90.
 //
-// Solidity: function getStake() returns(uint256)
-func (_HermesContract *HermesContractTransactorSession) GetStake() (*types.Transaction, error) {
-	return _HermesContract.Contract.GetStake(&_HermesContract.TransactOpts)
+// Solidity: function getStake() view returns(uint256)
+func (_HermesContract *HermesContractCallerSession) GetStake() (*big.Int, error) {
+	return _HermesContract.Contract.GetStake(&_HermesContract.CallOpts)
 }
 
-// GetStatus is a paid mutator transaction binding the contract method 0x4e69d560.
+// GetStatus is a free data retrieval call binding the contract method 0x4e69d560.
 //
-// Solidity: function getStatus() returns(uint8)
-func (_HermesContract *HermesContractTransactor) GetStatus(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _HermesContract.contract.Transact(opts, "getStatus")
+// Solidity: function getStatus() view returns(uint8)
+func (_HermesContract *HermesContractCaller) GetStatus(opts *bind.CallOpts) (uint8, error) {
+	var (
+		ret0 = new(uint8)
+	)
+	out := ret0
+	err := _HermesContract.contract.Call(opts, out, "getStatus")
+	return *ret0, err
 }
 
-// GetStatus is a paid mutator transaction binding the contract method 0x4e69d560.
+// GetStatus is a free data retrieval call binding the contract method 0x4e69d560.
 //
-// Solidity: function getStatus() returns(uint8)
-func (_HermesContract *HermesContractSession) GetStatus() (*types.Transaction, error) {
-	return _HermesContract.Contract.GetStatus(&_HermesContract.TransactOpts)
+// Solidity: function getStatus() view returns(uint8)
+func (_HermesContract *HermesContractSession) GetStatus() (uint8, error) {
+	return _HermesContract.Contract.GetStatus(&_HermesContract.CallOpts)
 }
 
-// GetStatus is a paid mutator transaction binding the contract method 0x4e69d560.
+// GetStatus is a free data retrieval call binding the contract method 0x4e69d560.
 //
-// Solidity: function getStatus() returns(uint8)
-func (_HermesContract *HermesContractTransactorSession) GetStatus() (*types.Transaction, error) {
-	return _HermesContract.Contract.GetStatus(&_HermesContract.TransactOpts)
+// Solidity: function getStatus() view returns(uint8)
+func (_HermesContract *HermesContractCallerSession) GetStatus() (uint8, error) {
+	return _HermesContract.Contract.GetStatus(&_HermesContract.CallOpts)
 }
 
 // Initialize is a paid mutator transaction binding the contract method 0xfec8157d.
