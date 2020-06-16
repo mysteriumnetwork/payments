@@ -22,7 +22,6 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -31,7 +30,6 @@ import (
 
 // Promise is payment promise object
 type Promise struct {
-	Provider  common.Address
 	ChannelID []byte
 	Amount    uint64
 	Fee       uint64
@@ -145,8 +143,8 @@ func (p *Promise) Sign(ks *keystore.KeyStore, signer common.Address) error {
 func (p Promise) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, Pad(p.ChannelID, 32)...)
-	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(p.Amount)), 32)...)
-	message = append(message, Pad(abi.U256(big.NewInt(0).SetUint64(p.Fee)), 32)...)
+	message = append(message, Pad(U256(big.NewInt(0).SetUint64(p.Amount)), 32)...)
+	message = append(message, Pad(U256(big.NewInt(0).SetUint64(p.Fee)), 32)...)
 	message = append(message, Pad(p.Hashlock, 32)...)
 	return message
 }
