@@ -82,11 +82,11 @@ func NewBlockchainWithCustomNonceTracker(ethClient ethClientGetter, timeout time
 	}
 }
 
-// GetAccountantFee fetches the accountant fee from blockchain
-func (bc *Blockchain) GetAccountantFee(accountantAddress common.Address) (uint16, error) {
-	caller, err := bindings.NewAccountantImplementationCaller(accountantAddress, bc.ethClient.Client())
+// GetHermesFee fetches the hermes fee from blockchain
+func (bc *Blockchain) GetHermesFee(hermesAddress common.Address) (uint16, error) {
+	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
 	if err != nil {
-		return 0, errors.Wrap(err, "could not create accountant implementation caller")
+		return 0, errors.Wrap(err, "could not create hermes implementation caller")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
@@ -96,29 +96,29 @@ func (bc *Blockchain) GetAccountantFee(accountantAddress common.Address) (uint16
 		Context: ctx,
 	})
 	if err != nil {
-		return 0, errors.Wrap(err, "could not get accountant fee")
+		return 0, errors.Wrap(err, "could not get hermes fee")
 	}
 
 	return res.Value, err
 }
 
-// CalculateAccountantFee calls blockchain for calculation of accountant fee
-func (bc *Blockchain) CalculateAccountantFee(accountantAddress common.Address, value uint64) (*big.Int, error) {
-	caller, err := bindings.NewAccountantImplementationCaller(accountantAddress, bc.ethClient.Client())
+// CalculateHermesFee calls blockchain for calculation of hermes fee
+func (bc *Blockchain) CalculateHermesFee(hermesAddress common.Address, value uint64) (*big.Int, error) {
+	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create accountant implementation caller")
+		return nil, errors.Wrap(err, "could not create hermes implementation caller")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	return caller.CalculateAccountantFee(&bind.CallOpts{
+	return caller.CalculateHermesFee(&bind.CallOpts{
 		Context: ctx,
 	}, new(big.Int).SetUint64(value))
 }
 
-// IsRegisteredAsProvider checks if the provider is registered with the accountant properly
-func (bc *Blockchain) IsRegisteredAsProvider(accountantAddress, registryAddress, addressToCheck common.Address) (bool, error) {
+// IsRegisteredAsProvider checks if the provider is registered with the hermes properly
+func (bc *Blockchain) IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck common.Address) (bool, error) {
 	registered, err := bc.IsRegistered(registryAddress, addressToCheck)
 	if err != nil {
 		return false, errors.Wrap(err, "could not check registration status")
@@ -128,7 +128,7 @@ func (bc *Blockchain) IsRegisteredAsProvider(accountantAddress, registryAddress,
 		return false, nil
 	}
 
-	res, err := bc.getProviderChannelStake(accountantAddress, addressToCheck)
+	res, err := bc.getProviderChannelStake(hermesAddress, addressToCheck)
 	if err != nil {
 		return false, errors.Wrap(err, "could not get provider channel stake amount")
 	}
@@ -190,14 +190,14 @@ func (bc *Blockchain) SubscribeToConsumerBalanceEvent(channel, mystSCAddress com
 }
 
 // GetProviderChannel returns the provider channel
-func (bc *Blockchain) GetProviderChannel(accountantAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
-	addressBytes, err := bc.getProviderChannelAddressBytes(accountantAddress, addressToCheck)
+func (bc *Blockchain) GetProviderChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+	addressBytes, err := bc.getProviderChannelAddressBytes(hermesAddress, addressToCheck)
 	if err != nil {
 		return ProviderChannel{}, errors.Wrap(err, "could not calculate provider channel address")
 	}
-	caller, err := bindings.NewAccountantImplementationCaller(accountantAddress, bc.ethClient.Client())
+	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
 	if err != nil {
-		return ProviderChannel{}, errors.Wrap(err, "could not create accountant caller")
+		return ProviderChannel{}, errors.Wrap(err, "could not create hermes caller")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
@@ -210,15 +210,15 @@ func (bc *Blockchain) GetProviderChannel(accountantAddress common.Address, addre
 	return ch, errors.Wrap(err, "could not get provider channel from bc")
 }
 
-func (bc *Blockchain) getProviderChannelStake(accountantAddress common.Address, addressToCheck common.Address) (*big.Int, error) {
-	ch, err := bc.GetProviderChannel(accountantAddress, addressToCheck, false)
+func (bc *Blockchain) getProviderChannelStake(hermesAddress common.Address, addressToCheck common.Address) (*big.Int, error) {
+	ch, err := bc.GetProviderChannel(hermesAddress, addressToCheck, false)
 	return ch.Stake, errors.Wrap(err, "could not get provider channel from bc")
 }
 
-func (bc *Blockchain) getProviderChannelAddressBytes(accountantAddress, addressToCheck common.Address) ([32]byte, error) {
+func (bc *Blockchain) getProviderChannelAddressBytes(hermesAddress, addressToCheck common.Address) ([32]byte, error) {
 	addressBytes := [32]byte{}
 
-	addr, err := crypto.GenerateProviderChannelID(addressToCheck.Hex(), accountantAddress.Hex())
+	addr, err := crypto.GenerateProviderChannelID(addressToCheck.Hex(), hermesAddress.Hex())
 	if err != nil {
 		return addressBytes, errors.Wrap(err, "could not generate channel address")
 	}
@@ -229,12 +229,12 @@ func (bc *Blockchain) getProviderChannelAddressBytes(accountantAddress, addressT
 }
 
 // SubscribeToPromiseSettledEvent subscribes to promise settled events
-func (bc *Blockchain) SubscribeToPromiseSettledEvent(providerID, accountantID common.Address) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error) {
-	addr, err := bc.getProviderChannelAddressBytes(accountantID, providerID)
+func (bc *Blockchain) SubscribeToPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+	addr, err := bc.getProviderChannelAddressBytes(hermesID, providerID)
 	if err != nil {
 		return sink, cancel, errors.Wrap(err, "could not get provider channel address")
 	}
-	return bc.SubscribeToPromiseSettledEventByChannelID(accountantID, [][32]byte{addr})
+	return bc.SubscribeToPromiseSettledEventByChannelID(hermesID, [][32]byte{addr})
 }
 
 // IsRegistered checks wether the given identity is registered or not
@@ -286,7 +286,7 @@ func (bc *Blockchain) GetRegistrationFee(registryAddress common.Address) (*big.I
 // RegistrationRequest contains all the parameters for the registration request
 type RegistrationRequest struct {
 	WriteRequest
-	AccountantID    common.Address
+	HermesID        common.Address
 	Stake           *big.Int
 	TransactorFee   *big.Int
 	Beneficiary     common.Address
@@ -342,7 +342,7 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 		GasPrice: rr.GasPrice,
 		Nonce:    nonce,
 	},
-		rr.AccountantID,
+		rr.HermesID,
 		rr.Stake,
 		rr.TransactorFee,
 		rr.Beneficiary,
@@ -380,8 +380,8 @@ func (bc *Blockchain) TransferMyst(req TransferRequest) (tx *types.Transaction, 
 	}, req.Recipient, req.Amount)
 }
 
-// IsAccountantRegistered checks if given accountant is registered and returns true or false.
-func (bc *Blockchain) IsAccountantRegistered(registryAddress, acccountantID common.Address) (bool, error) {
+// IsHermesRegistered checks if given hermes is registered and returns true or false.
+func (bc *Blockchain) IsHermesRegistered(registryAddress, acccountantID common.Address) (bool, error) {
 	caller, err := bindings.NewRegistryCaller(registryAddress, bc.ethClient.Client())
 	if err != nil {
 		return false, err
@@ -389,15 +389,15 @@ func (bc *Blockchain) IsAccountantRegistered(registryAddress, acccountantID comm
 	parent := context.Background()
 	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
 	defer cancel()
-	return caller.IsAccountant(&bind.CallOpts{
+	return caller.IsHermes(&bind.CallOpts{
 		Pending: false,
 		Context: ctx,
 	}, acccountantID)
 }
 
-// GetAccountantOperator returns operator address of given accountant
-func (bc *Blockchain) GetAccountantOperator(accountantID common.Address) (common.Address, error) {
-	caller, err := bindings.NewAccountantImplementationCaller(accountantID, bc.ethClient.Client())
+// GetHermesOperator returns operator address of given hermes
+func (bc *Blockchain) GetHermesOperator(hermesID common.Address) (common.Address, error) {
+	caller, err := bindings.NewHermesImplementationCaller(hermesID, bc.ethClient.Client())
 	if err != nil {
 		return common.Address{}, err
 	}
@@ -414,13 +414,13 @@ func (bc *Blockchain) GetAccountantOperator(accountantID common.Address) (common
 // SettleAndRebalanceRequest represents all the parameters required for settle and rebalance
 type SettleAndRebalanceRequest struct {
 	WriteRequest
-	AccountantID common.Address
-	Promise      crypto.Promise
+	HermesID common.Address
+	Promise  crypto.Promise
 }
 
-// SettleAndRebalance is settling given accountant issued promise
+// SettleAndRebalance is settling given hermes issued promise
 func (bc *Blockchain) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.Transaction, error) {
-	transactor, err := bindings.NewAccountantImplementationTransactor(req.AccountantID, bc.ethClient.Client())
+	transactor, err := bindings.NewHermesImplementationTransactor(req.HermesID, bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -455,7 +455,7 @@ func toBytes32(arr []byte) (res [32]byte) {
 
 // GetProviderChannelByID returns the given provider channel information
 func (bc *Blockchain) GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error) {
-	caller, err := bindings.NewAccountantImplementationCaller(acc, bc.ethClient.Client())
+	caller, err := bindings.NewHermesImplementationCaller(acc, bc.ethClient.Client())
 	if err != nil {
 		return ProviderChannel{}, err
 	}
@@ -469,24 +469,24 @@ func (bc *Blockchain) GetProviderChannelByID(acc common.Address, chID []byte) (P
 	}, toBytes32(chID))
 }
 
-// ConsumersAccountant represents the consumers accountant
-type ConsumersAccountant struct {
+// ConsumersHermes represents the consumers hermes
+type ConsumersHermes struct {
 	Operator        common.Address
 	ContractAddress common.Address
 	Settled         *big.Int
 }
 
-// GetConsumerChannelsAccountant returns the consumer channels accountant
-func (bc *Blockchain) GetConsumerChannelsAccountant(channelAddress common.Address) (ConsumersAccountant, error) {
+// GetConsumerChannelsHermes returns the consumer channels hermes
+func (bc *Blockchain) GetConsumerChannelsHermes(channelAddress common.Address) (ConsumersHermes, error) {
 	c, err := bindings.NewChannelImplementationCaller(channelAddress, bc.ethClient.Client())
 	if err != nil {
-		return ConsumersAccountant{}, err
+		return ConsumersHermes{}, err
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	return c.Accountant(&bind.CallOpts{Context: ctx})
+	return c.Hermes(&bind.CallOpts{Context: ctx})
 }
 
 // GetConsumerChannelOperator returns the consumer channel operator/identity
@@ -503,7 +503,7 @@ func (bc *Blockchain) GetConsumerChannelOperator(channelAddress common.Address) 
 }
 
 // SubscribeToIdentityRegistrationEvents subscribes to identity registration events
-func (bc *Blockchain) SubscribeToIdentityRegistrationEvents(registryAddress common.Address, accountantIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
+func (bc *Blockchain) SubscribeToIdentityRegistrationEvents(registryAddress common.Address, hermesIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
 	filterer, err := bindings.NewRegistryFilterer(registryAddress, bc.ethClient.Client())
 	if err != nil {
 		return sink, cancel, errors.Wrap(err, "could not create registry filterer")
@@ -512,7 +512,7 @@ func (bc *Blockchain) SubscribeToIdentityRegistrationEvents(registryAddress comm
 	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
 		return filterer.WatchRegisteredIdentity(&bind.WatchOpts{
 			Context: ctx,
-		}, sink, nil, accountantIDs)
+		}, sink, nil, hermesIDs)
 	})
 	go func() {
 		subErr := <-sub.Err()
@@ -548,13 +548,13 @@ func (bc *Blockchain) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress comm
 }
 
 // SubscribeToProviderChannelBalanceUpdate subscribes to provider channel balance update events
-func (bc *Blockchain) SubscribeToProviderChannelBalanceUpdate(accountantAddress common.Address, channelAddresses [][32]byte) (sink chan *bindings.AccountantImplementationChannelBalanceUpdated, cancel func(), err error) {
-	filterer, err := bindings.NewAccountantImplementationFilterer(accountantAddress, bc.ethClient.Client())
+func (bc *Blockchain) SubscribeToProviderChannelBalanceUpdate(hermesAddress common.Address, channelAddresses [][32]byte) (sink chan *bindings.HermesImplementationChannelBalanceUpdated, cancel func(), err error) {
+	filterer, err := bindings.NewHermesImplementationFilterer(hermesAddress, bc.ethClient.Client())
 	if err != nil {
-		return sink, cancel, errors.Wrap(err, "could not create accountant implementation filterer")
+		return sink, cancel, errors.Wrap(err, "could not create hermes implementation filterer")
 	}
 
-	sink = make(chan *bindings.AccountantImplementationChannelBalanceUpdated)
+	sink = make(chan *bindings.HermesImplementationChannelBalanceUpdated)
 	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
 		return filterer.WatchChannelBalanceUpdated(&bind.WatchOpts{
 			Context: ctx,
@@ -615,13 +615,13 @@ func (bc *Blockchain) getNonce(identity common.Address) (uint64, error) {
 }
 
 // SubscribeToChannelOpenedEvents subscribes to provider channel opened events
-func (bc *Blockchain) SubscribeToChannelOpenedEvents(accountantAddress common.Address) (sink chan *bindings.AccountantImplementationChannelOpened, cancel func(), err error) {
-	filterer, err := bindings.NewAccountantImplementationFilterer(accountantAddress, bc.ethClient.Client())
+func (bc *Blockchain) SubscribeToChannelOpenedEvents(hermesAddress common.Address) (sink chan *bindings.HermesImplementationChannelOpened, cancel func(), err error) {
+	filterer, err := bindings.NewHermesImplementationFilterer(hermesAddress, bc.ethClient.Client())
 	if err != nil {
-		return sink, cancel, errors.Wrap(err, "could not create accountant implementation filterer")
+		return sink, cancel, errors.Wrap(err, "could not create hermes implementation filterer")
 	}
 
-	sink = make(chan *bindings.AccountantImplementationChannelOpened)
+	sink = make(chan *bindings.HermesImplementationChannelOpened)
 	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
 		return filterer.WatchChannelOpened(&bind.WatchOpts{
 			Context: ctx,
@@ -638,12 +638,12 @@ func (bc *Blockchain) SubscribeToChannelOpenedEvents(accountantAddress common.Ad
 }
 
 // SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events
-func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(accountantID common.Address, providerAddresses [][32]byte) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error) {
-	caller, err := bindings.NewAccountantImplementationFilterer(accountantID, bc.ethClient.Client())
+func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+	caller, err := bindings.NewHermesImplementationFilterer(hermesID, bc.ethClient.Client())
 	if err != nil {
-		return sink, cancel, errors.Wrap(err, "could not create accountant caller")
+		return sink, cancel, errors.Wrap(err, "could not create hermes caller")
 	}
-	sink = make(chan *bindings.AccountantImplementationPromiseSettled)
+	sink = make(chan *bindings.HermesImplementationPromiseSettled)
 
 	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
 		return caller.WatchPromiseSettled(&bind.WatchOpts{
@@ -721,7 +721,7 @@ type ConsumerChannel struct {
 // GetConsumerChannel returns the consumer channel
 func (bc *Blockchain) GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error) {
 	ad := common.BytesToAddress(addr.Bytes())
-	party, err := bc.GetConsumerChannelsAccountant(ad)
+	party, err := bc.GetConsumerChannelsHermes(ad)
 	if err != nil {
 		return ConsumerChannel{}, err
 	}
@@ -736,18 +736,18 @@ func (bc *Blockchain) GetConsumerChannel(addr common.Address, mystSCAddress comm
 // SettleWithBeneficiaryRequest represents all the parameters required for setting new beneficiary via transactor.
 type SettleWithBeneficiaryRequest struct {
 	WriteRequest
-	Promise      crypto.Promise
-	AccountantID common.Address
-	Beneficiary  common.Address
-	Nonce        uint64
-	Signature    []byte
+	Promise     crypto.Promise
+	HermesID    common.Address
+	Beneficiary common.Address
+	Nonce       uint64
+	Signature   []byte
 }
 
-// GetAccountantsAvailableBalance returns the balance that is available for accountant.
-func (bc *Blockchain) GetAccountantsAvailableBalance(accountantAddress common.Address) (*big.Int, error) {
-	caller, err := bindings.NewAccountantImplementationCaller(accountantAddress, bc.ethClient.Client())
+// GetHermessAvailableBalance returns the balance that is available for hermes.
+func (bc *Blockchain) GetHermessAvailableBalance(hermesAddress common.Address) (*big.Int, error) {
+	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create accountant implementation caller")
+		return nil, errors.Wrap(err, "could not create hermes implementation caller")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
@@ -757,7 +757,7 @@ func (bc *Blockchain) GetAccountantsAvailableBalance(accountantAddress common.Ad
 		Context: ctx,
 	})
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get accountant available balance")
+		return nil, errors.Wrap(err, "could not get hermes available balance")
 	}
 
 	return res, nil
@@ -765,7 +765,7 @@ func (bc *Blockchain) GetAccountantsAvailableBalance(accountantAddress common.Ad
 
 // SettleWithBeneficiary sets new beneficiary for the provided identity and settles lastest promise into new beneficiary address.
 func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*types.Transaction, error) {
-	transactor, err := bindings.NewAccountantImplementationTransactor(req.AccountantID, bc.ethClient.Client())
+	transactor, err := bindings.NewHermesImplementationTransactor(req.HermesID, bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}

@@ -30,37 +30,37 @@ import (
 )
 
 type blockchain interface {
-	GetAccountantFee(accountantAddress common.Address) (uint16, error)
-	CalculateAccountantFee(accountantAddress common.Address, value uint64) (*big.Int, error)
-	IsRegisteredAsProvider(accountantAddress, registryAddress, addressToCheck common.Address) (bool, error)
-	GetProviderChannel(accountantAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error)
+	GetHermesFee(hermesAddress common.Address) (uint16, error)
+	CalculateHermesFee(hermesAddress common.Address, value uint64) (*big.Int, error)
+	IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck common.Address) (bool, error)
+	GetProviderChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error)
 	IsRegistered(registryAddress, addressToCheck common.Address) (bool, error)
-	SubscribeToPromiseSettledEvent(providerID, accountantID common.Address) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error)
+	SubscribeToPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error)
 	GetMystBalance(mystSCAddress, address common.Address) (*big.Int, error)
 	SubscribeToConsumerBalanceEvent(channel, mystSCAddress common.Address, timeout time.Duration) (chan *bindings.MystTokenTransfer, func(), error)
 	GetRegistrationFee(registryAddress common.Address) (*big.Int, error)
 	RegisterIdentity(rr RegistrationRequest) (*types.Transaction, error)
 	TransferMyst(req TransferRequest) (tx *types.Transaction, err error)
-	IsAccountantRegistered(registryAddress, acccountantID common.Address) (bool, error)
-	GetAccountantOperator(accountantID common.Address) (common.Address, error)
+	IsHermesRegistered(registryAddress, acccountantID common.Address) (bool, error)
+	GetHermesOperator(hermesID common.Address) (common.Address, error)
 	SettleAndRebalance(req SettleAndRebalanceRequest) (*types.Transaction, error)
 	SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*types.Transaction, error)
-	GetConsumerChannelsAccountant(channelAddress common.Address) (ConsumersAccountant, error)
+	GetConsumerChannelsHermes(channelAddress common.Address) (ConsumersHermes, error)
 	GetConsumerChannelOperator(channelAddress common.Address) (common.Address, error)
 	GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error)
-	SubscribeToIdentityRegistrationEvents(registryAddress common.Address, accountantIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error)
+	SubscribeToIdentityRegistrationEvents(registryAddress common.Address, hermesIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error)
 	SubscribeToConsumerChannelBalanceUpdate(mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error)
-	SubscribeToProviderChannelBalanceUpdate(accountantAddress common.Address, channelAddresses [][32]byte) (sink chan *bindings.AccountantImplementationChannelBalanceUpdated, cancel func(), err error)
+	SubscribeToProviderChannelBalanceUpdate(hermesAddress common.Address, channelAddresses [][32]byte) (sink chan *bindings.HermesImplementationChannelBalanceUpdated, cancel func(), err error)
 	SettlePromise(req SettleRequest) (*types.Transaction, error)
-	SubscribeToChannelOpenedEvents(accountantAddress common.Address) (sink chan *bindings.AccountantImplementationChannelOpened, cancel func(), err error)
-	SubscribeToPromiseSettledEventByChannelID(accountantID common.Address, providerAddresses [][32]byte) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error)
+	SubscribeToChannelOpenedEvents(hermesAddress common.Address) (sink chan *bindings.HermesImplementationChannelOpened, cancel func(), err error)
+	SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error)
 	SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error)
 	NetworkID() (*big.Int, error)
 	EstimateGas(msg ethereum.CallMsg) (uint64, error)
 	GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error)
 	GetEthBalance(address common.Address) (*big.Int, error)
 	TransferEth(etr EthTransferRequest) (*types.Transaction, error)
-	GetAccountantsAvailableBalance(accountantAddress common.Address) (*big.Int, error)
+	GetHermessAvailableBalance(hermesAddress common.Address) (*big.Int, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -121,13 +121,13 @@ func (bwr *BlockchainWithRetries) SubscribeToMystTokenTransfers(mystSCAddress co
 	return sink, cancel, err
 }
 
-// GetAccountantFee fetches the accountant fee from blockchain
-func (bwr *BlockchainWithRetries) GetAccountantFee(accountantAddress common.Address) (uint16, error) {
+// GetHermesFee fetches the hermes fee from blockchain
+func (bwr *BlockchainWithRetries) GetHermesFee(hermesAddress common.Address) (uint16, error) {
 	var res uint16
 	err := bwr.callWithRetry(func() error {
-		r, err := bwr.bc.GetAccountantFee(accountantAddress)
+		r, err := bwr.bc.GetHermesFee(hermesAddress)
 		if err != nil {
-			return errors.Wrap(err, "could not get accountant fee")
+			return errors.Wrap(err, "could not get hermes fee")
 		}
 		res = r
 		return nil
@@ -135,13 +135,13 @@ func (bwr *BlockchainWithRetries) GetAccountantFee(accountantAddress common.Addr
 	return res, err
 }
 
-// CalculateAccountantFee fetches the accountant fee from blockchain
-func (bwr *BlockchainWithRetries) CalculateAccountantFee(accountantAddress common.Address, value uint64) (*big.Int, error) {
+// CalculateHermesFee fetches the hermes fee from blockchain
+func (bwr *BlockchainWithRetries) CalculateHermesFee(hermesAddress common.Address, value uint64) (*big.Int, error) {
 	var res *big.Int
 	err := bwr.callWithRetry(func() error {
-		r, err := bwr.bc.CalculateAccountantFee(accountantAddress, value)
+		r, err := bwr.bc.CalculateHermesFee(hermesAddress, value)
 		if err != nil {
-			return errors.Wrap(err, "could not calculate accountant fee")
+			return errors.Wrap(err, "could not calculate hermes fee")
 		}
 		res = r
 		return nil
@@ -149,11 +149,11 @@ func (bwr *BlockchainWithRetries) CalculateAccountantFee(accountantAddress commo
 	return res, err
 }
 
-// IsRegisteredAsProvider checks if the provider is registered with the accountant properly
-func (bwr *BlockchainWithRetries) IsRegisteredAsProvider(accountantAddress, registryAddress, addressToCheck common.Address) (bool, error) {
+// IsRegisteredAsProvider checks if the provider is registered with the hermes properly
+func (bwr *BlockchainWithRetries) IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck common.Address) (bool, error) {
 	var res bool
 	err := bwr.callWithRetry(func() error {
-		r, err := bwr.bc.IsRegisteredAsProvider(accountantAddress, registryAddress, addressToCheck)
+		r, err := bwr.bc.IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck)
 		if err != nil {
 			return errors.Wrap(err, "could not check if registered as provider")
 		}
@@ -164,10 +164,10 @@ func (bwr *BlockchainWithRetries) IsRegisteredAsProvider(accountantAddress, regi
 }
 
 // GetProviderChannel returns the provider channel
-func (bwr *BlockchainWithRetries) GetProviderChannel(accountantAddress, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+func (bwr *BlockchainWithRetries) GetProviderChannel(hermesAddress, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
 	var res ProviderChannel
 	err := bwr.callWithRetry(func() error {
-		r, err := bwr.bc.GetProviderChannel(accountantAddress, addressToCheck, pending)
+		r, err := bwr.bc.GetProviderChannel(hermesAddress, addressToCheck, pending)
 		if err != nil {
 			return errors.Wrap(err, "could not get provider channel")
 		}
@@ -179,11 +179,11 @@ func (bwr *BlockchainWithRetries) GetProviderChannel(accountantAddress, addressT
 }
 
 // SubscribeToPromiseSettledEvent subscribes to promise settled events
-func (bwr *BlockchainWithRetries) SubscribeToPromiseSettledEvent(providerID, accountantID common.Address) (chan *bindings.AccountantImplementationPromiseSettled, func(), error) {
-	var sink chan *bindings.AccountantImplementationPromiseSettled
+func (bwr *BlockchainWithRetries) SubscribeToPromiseSettledEvent(providerID, hermesID common.Address) (chan *bindings.HermesImplementationPromiseSettled, func(), error) {
+	var sink chan *bindings.HermesImplementationPromiseSettled
 	var cancel func()
 	err := bwr.callWithRetry(func() error {
-		s, c, err := bwr.bc.SubscribeToPromiseSettledEvent(providerID, accountantID)
+		s, c, err := bwr.bc.SubscribeToPromiseSettledEvent(providerID, hermesID)
 		if err != nil {
 			return errors.Wrap(err, "could not subscribe to settlement events")
 		}
@@ -276,13 +276,13 @@ func (bwr *BlockchainWithRetries) TransferMyst(req TransferRequest) (tx *types.T
 	return tx, err
 }
 
-// IsAccountantRegistered checks if given accountant is registered and returns true or false.
-func (bwr *BlockchainWithRetries) IsAccountantRegistered(registryAddress, acccountantID common.Address) (bool, error) {
+// IsHermesRegistered checks if given hermes is registered and returns true or false.
+func (bwr *BlockchainWithRetries) IsHermesRegistered(registryAddress, acccountantID common.Address) (bool, error) {
 	var res bool
 	err := bwr.callWithRetry(func() error {
-		result, bcErr := bwr.bc.IsAccountantRegistered(registryAddress, acccountantID)
+		result, bcErr := bwr.bc.IsHermesRegistered(registryAddress, acccountantID)
 		if bcErr != nil {
-			return errors.Wrap(bcErr, "could not check if accountant is registered")
+			return errors.Wrap(bcErr, "could not check if hermes is registered")
 		}
 		res = result
 		return nil
@@ -290,13 +290,13 @@ func (bwr *BlockchainWithRetries) IsAccountantRegistered(registryAddress, acccou
 	return res, err
 }
 
-// GetAccountantOperator returns operator address of given accountant
-func (bwr *BlockchainWithRetries) GetAccountantOperator(accountantID common.Address) (common.Address, error) {
+// GetHermesOperator returns operator address of given hermes
+func (bwr *BlockchainWithRetries) GetHermesOperator(hermesID common.Address) (common.Address, error) {
 	var res common.Address
 	err := bwr.callWithRetry(func() error {
-		result, bcErr := bwr.bc.GetAccountantOperator(accountantID)
+		result, bcErr := bwr.bc.GetHermesOperator(hermesID)
 		if bcErr != nil {
-			return errors.Wrap(bcErr, "could not get accountant operator")
+			return errors.Wrap(bcErr, "could not get hermes operator")
 		}
 		res = result
 		return nil
@@ -304,7 +304,7 @@ func (bwr *BlockchainWithRetries) GetAccountantOperator(accountantID common.Addr
 	return res, err
 }
 
-// SettleAndRebalance is settling given accountant issued promise
+// SettleAndRebalance is settling given hermes issued promise
 func (bwr *BlockchainWithRetries) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.Transaction, error) {
 	var res *types.Transaction
 	err := bwr.callWithRetry(func() error {
@@ -332,13 +332,13 @@ func (bwr *BlockchainWithRetries) GetProviderChannelByID(acc common.Address, chI
 	return res, err
 }
 
-// GetConsumerChannelsAccountant returns the consumer channels accountant
-func (bwr *BlockchainWithRetries) GetConsumerChannelsAccountant(channelAddress common.Address) (ConsumersAccountant, error) {
-	var res ConsumersAccountant
+// GetConsumerChannelsHermes returns the consumer channels hermes
+func (bwr *BlockchainWithRetries) GetConsumerChannelsHermes(channelAddress common.Address) (ConsumersHermes, error) {
+	var res ConsumersHermes
 	err := bwr.callWithRetry(func() error {
-		result, bcErr := bwr.bc.GetConsumerChannelsAccountant(channelAddress)
+		result, bcErr := bwr.bc.GetConsumerChannelsHermes(channelAddress)
 		if bcErr != nil {
-			return errors.Wrap(bcErr, "could not get consumers accountant")
+			return errors.Wrap(bcErr, "could not get consumers hermes")
 		}
 		res = result
 		return nil
@@ -361,11 +361,11 @@ func (bwr *BlockchainWithRetries) GetConsumerChannelOperator(channelAddress comm
 }
 
 // SubscribeToIdentityRegistrationEvents subscribes to identity registration events
-func (bwr *BlockchainWithRetries) SubscribeToIdentityRegistrationEvents(registryAddress common.Address, accountantIDs []common.Address) (chan *bindings.RegistryRegisteredIdentity, func(), error) {
+func (bwr *BlockchainWithRetries) SubscribeToIdentityRegistrationEvents(registryAddress common.Address, hermesIDs []common.Address) (chan *bindings.RegistryRegisteredIdentity, func(), error) {
 	var sink chan *bindings.RegistryRegisteredIdentity
 	var cancel func()
 	err := bwr.callWithRetry(func() error {
-		s, c, err := bwr.bc.SubscribeToIdentityRegistrationEvents(registryAddress, accountantIDs)
+		s, c, err := bwr.bc.SubscribeToIdentityRegistrationEvents(registryAddress, hermesIDs)
 		if err != nil {
 			return errors.Wrap(err, "could not subscribe to registration events")
 		}
@@ -393,11 +393,11 @@ func (bwr *BlockchainWithRetries) SubscribeToConsumerChannelBalanceUpdate(mystSC
 }
 
 // SubscribeToProviderChannelBalanceUpdate subscribes to provider channel balance update events
-func (bwr *BlockchainWithRetries) SubscribeToProviderChannelBalanceUpdate(accountantAddress common.Address, channelAddresses [][32]byte) (chan *bindings.AccountantImplementationChannelBalanceUpdated, func(), error) {
-	var sink chan *bindings.AccountantImplementationChannelBalanceUpdated
+func (bwr *BlockchainWithRetries) SubscribeToProviderChannelBalanceUpdate(hermesAddress common.Address, channelAddresses [][32]byte) (chan *bindings.HermesImplementationChannelBalanceUpdated, func(), error) {
+	var sink chan *bindings.HermesImplementationChannelBalanceUpdated
 	var cancel func()
 	err := bwr.callWithRetry(func() error {
-		s, c, err := bwr.bc.SubscribeToProviderChannelBalanceUpdate(accountantAddress, channelAddresses)
+		s, c, err := bwr.bc.SubscribeToProviderChannelBalanceUpdate(hermesAddress, channelAddresses)
 		if err != nil {
 			return errors.Wrap(err, "could not subscribe to channel balance events")
 		}
@@ -422,11 +422,11 @@ func (bwr *BlockchainWithRetries) SettlePromise(req SettleRequest) (*types.Trans
 	return res, err
 }
 
-// GetAccountantsAvailableBalance returns the balance that is available for accountant.
-func (bwr *BlockchainWithRetries) GetAccountantsAvailableBalance(accountantAddress common.Address) (*big.Int, error) {
+// GetHermessAvailableBalance returns the balance that is available for hermes.
+func (bwr *BlockchainWithRetries) GetHermessAvailableBalance(hermesAddress common.Address) (*big.Int, error) {
 	var res *big.Int
 	err := bwr.callWithRetry(func() error {
-		result, bcErr := bwr.bc.GetAccountantsAvailableBalance(accountantAddress)
+		result, bcErr := bwr.bc.GetHermessAvailableBalance(hermesAddress)
 		if bcErr != nil {
 			return errors.Wrap(bcErr, "could not get balance")
 		}
@@ -465,11 +465,11 @@ func (bwr *BlockchainWithRetries) TransferEth(etr EthTransferRequest) (*types.Tr
 }
 
 // SubscribeToChannelOpenedEvents subscribes to provider channel opened events
-func (bwr *BlockchainWithRetries) SubscribeToChannelOpenedEvents(accountantAddress common.Address) (chan *bindings.AccountantImplementationChannelOpened, func(), error) {
-	var sink chan *bindings.AccountantImplementationChannelOpened
+func (bwr *BlockchainWithRetries) SubscribeToChannelOpenedEvents(hermesAddress common.Address) (chan *bindings.HermesImplementationChannelOpened, func(), error) {
+	var sink chan *bindings.HermesImplementationChannelOpened
 	var cancel func()
 	err := bwr.callWithRetry(func() error {
-		s, c, err := bwr.bc.SubscribeToChannelOpenedEvents(accountantAddress)
+		s, c, err := bwr.bc.SubscribeToChannelOpenedEvents(hermesAddress)
 		if err != nil {
 			return errors.Wrap(err, "could not subscribe to channel opened events")
 		}
@@ -481,11 +481,11 @@ func (bwr *BlockchainWithRetries) SubscribeToChannelOpenedEvents(accountantAddre
 }
 
 // SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events
-func (bwr *BlockchainWithRetries) SubscribeToPromiseSettledEventByChannelID(accountantID common.Address, providerAddresses [][32]byte) (chan *bindings.AccountantImplementationPromiseSettled, func(), error) {
-	var sink chan *bindings.AccountantImplementationPromiseSettled
+func (bwr *BlockchainWithRetries) SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (chan *bindings.HermesImplementationPromiseSettled, func(), error) {
+	var sink chan *bindings.HermesImplementationPromiseSettled
 	var cancel func()
 	err := bwr.callWithRetry(func() error {
-		s, c, err := bwr.bc.SubscribeToPromiseSettledEventByChannelID(accountantID, providerAddresses)
+		s, c, err := bwr.bc.SubscribeToPromiseSettledEventByChannelID(hermesID, providerAddresses)
 		if err != nil {
 			return errors.Wrap(err, "could not subscribe to settlement events")
 		}

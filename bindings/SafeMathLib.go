@@ -44,10 +44,10 @@ var (
 )
 
 // SafeMathLibABI is the input ABI used to generate the binding from.
-const SafeMathLibABI = "[{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"a\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"b\",\"type\":\"uint256\"}],\"name\":\"times\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"a\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"b\",\"type\":\"uint256\"}],\"name\":\"minus\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"a\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"b\",\"type\":\"uint256\"}],\"name\":\"plus\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"}]"
+const SafeMathLibABI = "[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"a\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"b\",\"type\":\"uint256\"}],\"name\":\"times\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"a\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"b\",\"type\":\"uint256\"}],\"name\":\"minus\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"a\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"b\",\"type\":\"uint256\"}],\"name\":\"plus\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}]"
 
 // SafeMathLibBin is the compiled bytecode used for deploying new contracts.
-var SafeMathLibBin = "0x610240610026600b82828239805160001a60731461001957fe5b30600052607381538281f3fe730000000000000000000000000000000000000000301460806040526004361061004b5760003560e01c80631d3b9edf1461005057806366098d4f14610085578063f4f3bdc1146100a8575b600080fd5b6100736004803603604081101561006657600080fd5b50803590602001356100cb565b60408051918252519081900360200190f35b6100736004803603604081101561009b57600080fd5b5080359060200135610127565b610073600480360360408110156100be57600080fd5b508035906020013561018d565b60008282028315806100e55750828482816100e257fe5b04145b6101205760405162461bcd60e51b81526004018080602001828103825260218152602001806101eb6021913960400191505060405180910390fd5b9392505050565b600082820183811080159061013c5750828110155b610120576040805162461bcd60e51b815260206004820152601b60248201527f536166654d6174683a206164646974696f6e206f766572666c6f770000000000604482015290519081900360640190fd5b6000828211156101e4576040805162461bcd60e51b815260206004820152601e60248201527f536166654d6174683a207375627472616374696f6e206f766572666c6f770000604482015290519081900360640190fd5b5090039056fe536166654d6174683a206d756c7469706c69636174696f6e206f766572666c6f77a265627a7a72315820b3910b6d206abe8ee1db688144f1e508a93231696e77e66b82aafdd8cbc20f7f64736f6c63430005110032"
+var SafeMathLibBin = "0x610241610026600b82828239805160001a60731461001957fe5b30600052607381538281f3fe730000000000000000000000000000000000000000301460806040526004361061004b5760003560e01c80631d3b9edf1461005057806366098d4f14610085578063f4f3bdc1146100a8575b600080fd5b6100736004803603604081101561006657600080fd5b50803590602001356100cb565b60408051918252519081900360200190f35b6100736004803603604081101561009b57600080fd5b5080359060200135610127565b610073600480360360408110156100be57600080fd5b508035906020013561018d565b60008282028315806100e55750828482816100e257fe5b04145b6101205760405162461bcd60e51b81526004018080602001828103825260218152602001806101eb6021913960400191505060405180910390fd5b9392505050565b600082820183811080159061013c5750828110155b610120576040805162461bcd60e51b815260206004820152601b60248201527f536166654d6174683a206164646974696f6e206f766572666c6f770000000000604482015290519081900360640190fd5b6000828211156101e4576040805162461bcd60e51b815260206004820152601e60248201527f536166654d6174683a207375627472616374696f6e206f766572666c6f770000604482015290519081900360640190fd5b5090039056fe536166654d6174683a206d756c7469706c69636174696f6e206f766572666c6f77a2646970667358221220e2615c0ab86e2bd74112f522f26f89f179b4f8a40a97adf76183f2d3c959d25a64736f6c634300060a0033"
 
 // DeploySafeMathLib deploys a new Ethereum contract, binding an instance of SafeMathLib to it.
 func DeploySafeMathLib(auth *bind.TransactOpts, backend bind.ContractBackend) (common.Address, *types.Transaction, *SafeMathLib, error) {
@@ -205,80 +205,65 @@ func (_SafeMathLib *SafeMathLibTransactorRaw) Transact(opts *bind.TransactOpts, 
 	return _SafeMathLib.Contract.contract.Transact(opts, method, params...)
 }
 
-// Minus is a free data retrieval call binding the contract method 0xf4f3bdc1.
+// Minus is a paid mutator transaction binding the contract method 0xf4f3bdc1.
 //
-// Solidity: function minus(uint256 a, uint256 b) constant returns(uint256)
-func (_SafeMathLib *SafeMathLibCaller) Minus(opts *bind.CallOpts, a *big.Int, b *big.Int) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _SafeMathLib.contract.Call(opts, out, "minus", a, b)
-	return *ret0, err
+// Solidity: function minus(uint256 a, uint256 b) returns(uint256)
+func (_SafeMathLib *SafeMathLibTransactor) Minus(opts *bind.TransactOpts, a *big.Int, b *big.Int) (*types.Transaction, error) {
+	return _SafeMathLib.contract.Transact(opts, "minus", a, b)
 }
 
-// Minus is a free data retrieval call binding the contract method 0xf4f3bdc1.
+// Minus is a paid mutator transaction binding the contract method 0xf4f3bdc1.
 //
-// Solidity: function minus(uint256 a, uint256 b) constant returns(uint256)
-func (_SafeMathLib *SafeMathLibSession) Minus(a *big.Int, b *big.Int) (*big.Int, error) {
-	return _SafeMathLib.Contract.Minus(&_SafeMathLib.CallOpts, a, b)
+// Solidity: function minus(uint256 a, uint256 b) returns(uint256)
+func (_SafeMathLib *SafeMathLibSession) Minus(a *big.Int, b *big.Int) (*types.Transaction, error) {
+	return _SafeMathLib.Contract.Minus(&_SafeMathLib.TransactOpts, a, b)
 }
 
-// Minus is a free data retrieval call binding the contract method 0xf4f3bdc1.
+// Minus is a paid mutator transaction binding the contract method 0xf4f3bdc1.
 //
-// Solidity: function minus(uint256 a, uint256 b) constant returns(uint256)
-func (_SafeMathLib *SafeMathLibCallerSession) Minus(a *big.Int, b *big.Int) (*big.Int, error) {
-	return _SafeMathLib.Contract.Minus(&_SafeMathLib.CallOpts, a, b)
+// Solidity: function minus(uint256 a, uint256 b) returns(uint256)
+func (_SafeMathLib *SafeMathLibTransactorSession) Minus(a *big.Int, b *big.Int) (*types.Transaction, error) {
+	return _SafeMathLib.Contract.Minus(&_SafeMathLib.TransactOpts, a, b)
 }
 
-// Plus is a free data retrieval call binding the contract method 0x66098d4f.
+// Plus is a paid mutator transaction binding the contract method 0x66098d4f.
 //
-// Solidity: function plus(uint256 a, uint256 b) constant returns(uint256)
-func (_SafeMathLib *SafeMathLibCaller) Plus(opts *bind.CallOpts, a *big.Int, b *big.Int) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _SafeMathLib.contract.Call(opts, out, "plus", a, b)
-	return *ret0, err
+// Solidity: function plus(uint256 a, uint256 b) returns(uint256)
+func (_SafeMathLib *SafeMathLibTransactor) Plus(opts *bind.TransactOpts, a *big.Int, b *big.Int) (*types.Transaction, error) {
+	return _SafeMathLib.contract.Transact(opts, "plus", a, b)
 }
 
-// Plus is a free data retrieval call binding the contract method 0x66098d4f.
+// Plus is a paid mutator transaction binding the contract method 0x66098d4f.
 //
-// Solidity: function plus(uint256 a, uint256 b) constant returns(uint256)
-func (_SafeMathLib *SafeMathLibSession) Plus(a *big.Int, b *big.Int) (*big.Int, error) {
-	return _SafeMathLib.Contract.Plus(&_SafeMathLib.CallOpts, a, b)
+// Solidity: function plus(uint256 a, uint256 b) returns(uint256)
+func (_SafeMathLib *SafeMathLibSession) Plus(a *big.Int, b *big.Int) (*types.Transaction, error) {
+	return _SafeMathLib.Contract.Plus(&_SafeMathLib.TransactOpts, a, b)
 }
 
-// Plus is a free data retrieval call binding the contract method 0x66098d4f.
+// Plus is a paid mutator transaction binding the contract method 0x66098d4f.
 //
-// Solidity: function plus(uint256 a, uint256 b) constant returns(uint256)
-func (_SafeMathLib *SafeMathLibCallerSession) Plus(a *big.Int, b *big.Int) (*big.Int, error) {
-	return _SafeMathLib.Contract.Plus(&_SafeMathLib.CallOpts, a, b)
+// Solidity: function plus(uint256 a, uint256 b) returns(uint256)
+func (_SafeMathLib *SafeMathLibTransactorSession) Plus(a *big.Int, b *big.Int) (*types.Transaction, error) {
+	return _SafeMathLib.Contract.Plus(&_SafeMathLib.TransactOpts, a, b)
 }
 
-// Times is a free data retrieval call binding the contract method 0x1d3b9edf.
+// Times is a paid mutator transaction binding the contract method 0x1d3b9edf.
 //
-// Solidity: function times(uint256 a, uint256 b) constant returns(uint256)
-func (_SafeMathLib *SafeMathLibCaller) Times(opts *bind.CallOpts, a *big.Int, b *big.Int) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _SafeMathLib.contract.Call(opts, out, "times", a, b)
-	return *ret0, err
+// Solidity: function times(uint256 a, uint256 b) returns(uint256)
+func (_SafeMathLib *SafeMathLibTransactor) Times(opts *bind.TransactOpts, a *big.Int, b *big.Int) (*types.Transaction, error) {
+	return _SafeMathLib.contract.Transact(opts, "times", a, b)
 }
 
-// Times is a free data retrieval call binding the contract method 0x1d3b9edf.
+// Times is a paid mutator transaction binding the contract method 0x1d3b9edf.
 //
-// Solidity: function times(uint256 a, uint256 b) constant returns(uint256)
-func (_SafeMathLib *SafeMathLibSession) Times(a *big.Int, b *big.Int) (*big.Int, error) {
-	return _SafeMathLib.Contract.Times(&_SafeMathLib.CallOpts, a, b)
+// Solidity: function times(uint256 a, uint256 b) returns(uint256)
+func (_SafeMathLib *SafeMathLibSession) Times(a *big.Int, b *big.Int) (*types.Transaction, error) {
+	return _SafeMathLib.Contract.Times(&_SafeMathLib.TransactOpts, a, b)
 }
 
-// Times is a free data retrieval call binding the contract method 0x1d3b9edf.
+// Times is a paid mutator transaction binding the contract method 0x1d3b9edf.
 //
-// Solidity: function times(uint256 a, uint256 b) constant returns(uint256)
-func (_SafeMathLib *SafeMathLibCallerSession) Times(a *big.Int, b *big.Int) (*big.Int, error) {
-	return _SafeMathLib.Contract.Times(&_SafeMathLib.CallOpts, a, b)
+// Solidity: function times(uint256 a, uint256 b) returns(uint256)
+func (_SafeMathLib *SafeMathLibTransactorSession) Times(a *big.Int, b *big.Int) (*types.Transaction, error) {
+	return _SafeMathLib.Contract.Times(&_SafeMathLib.TransactOpts, a, b)
 }

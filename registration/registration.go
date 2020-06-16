@@ -27,7 +27,7 @@ import (
 
 // Request represent a request to register
 type Request struct {
-	AccountantID    string
+	HermesID        string
 	Stake           uint64
 	Fee             uint64
 	Beneficiary     string
@@ -56,7 +56,7 @@ func (r Request) GetSignatureBytesRaw() []byte {
 func (r Request) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, common.HexToAddress(r.RegistryAddress).Bytes()...)
-	message = append(message, common.HexToAddress(r.AccountantID).Bytes()...)
+	message = append(message, common.HexToAddress(r.HermesID).Bytes()...)
 	message = append(message, crypto.Pad(abi.U256(big.NewInt(0).SetUint64(r.Stake)), 32)...)
 	message = append(message, crypto.Pad(abi.U256(big.NewInt(0).SetUint64(r.Fee)), 32)...)
 	message = append(message, common.HexToAddress(r.Beneficiary).Bytes()...)

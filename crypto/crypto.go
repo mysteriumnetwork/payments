@@ -57,12 +57,12 @@ func deriveCreate2Address(salt string, msgSender string, implementation string) 
 }
 
 // GenerateChannelAddress generate channel address from given identity hash
-func GenerateChannelAddress(identity, accountant, registry, channelImplementation string) (address string, err error) {
+func GenerateChannelAddress(identity, hermes, registry, channelImplementation string) (address string, err error) {
 	if !isHexAddress(identity) || !isHexAddress(registry) || !isHexAddress(channelImplementation) {
 		return "", errors.New("given identity, registry and channelImplementation params have to be hex addresses")
 	}
 
-	saltBytes, err := hex.DecodeString(ensureNoPrefix(identity) + ensureNoPrefix(accountant))
+	saltBytes, err := hex.DecodeString(ensureNoPrefix(identity) + ensureNoPrefix(hermes))
 	if err != nil {
 		return "", err
 	}
@@ -72,31 +72,31 @@ func GenerateChannelAddress(identity, accountant, registry, channelImplementatio
 }
 
 // GenerateProviderChannelID generated channelID for provider channels from given identity hash
-func GenerateProviderChannelID(providerIdentity, accountantAddress string) (string, error) {
-	if !isHexAddress(providerIdentity) || !isHexAddress(accountantAddress) {
-		return "", errors.New("given providerIdentity and accountantAddress params have to be hex addresses")
+func GenerateProviderChannelID(providerIdentity, hermesAddress string) (string, error) {
+	if !isHexAddress(providerIdentity) || !isHexAddress(hermesAddress) {
+		return "", errors.New("given providerIdentity and hermesAddress params have to be hex addresses")
 	}
 
 	channelID := crypto.Keccak256(append(
 		common.HexToAddress(providerIdentity).Bytes(),
-		common.HexToAddress(accountantAddress).Bytes()...,
+		common.HexToAddress(hermesAddress).Bytes()...,
 	))
 
 	return "0x" + common.Bytes2Hex(channelID), nil
 }
 
 // GenerateProviderChannelIDBytes received provider and accountnat Address
-func GenerateProviderChannelIDBytes(providerIdentity, accountantAddress common.Address) []byte {
+func GenerateProviderChannelIDBytes(providerIdentity, hermesAddress common.Address) []byte {
 	return crypto.Keccak256(append(
 		providerIdentity.Bytes(),
-		accountantAddress.Bytes()...,
+		hermesAddress.Bytes()...,
 	))
 }
 
-// GenerateAccountantAddress generate accountant address from given accountant operator address
-func GenerateAccountantAddress(operator string, registry string, accountantImplementation string) (address string, err error) {
-	if !isHexAddress(operator) || !isHexAddress(registry) || !isHexAddress(accountantImplementation) {
-		return "", errors.New("given operator, registry and accountantImplementation params have to be hex addresses")
+// GenerateHermesAddress generate hermes address from given hermes operator address
+func GenerateHermesAddress(operator string, registry string, hermesImplementation string) (address string, err error) {
+	if !isHexAddress(operator) || !isHexAddress(registry) || !isHexAddress(hermesImplementation) {
+		return "", errors.New("given operator, registry and hermesImplementation params have to be hex addresses")
 	}
 
 	salt, err := toBytes32(operator)
@@ -104,7 +104,7 @@ func GenerateAccountantAddress(operator string, registry string, accountantImple
 		return "", err
 	}
 
-	return deriveCreate2Address(salt, registry, accountantImplementation)
+	return deriveCreate2Address(salt, registry, hermesImplementation)
 }
 
 // ReformatSignatureVForBC takes in the signature and modifies its last byte to correspond to the format required for SC
