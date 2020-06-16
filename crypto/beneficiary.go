@@ -114,13 +114,9 @@ func (r SetBeneficiaryRequest) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, common.Hex2Bytes(strings.TrimPrefix(r.ChannelID, "0x"))...)
 	message = append(message, common.HexToAddress(r.Beneficiary).Bytes()...)
-	message = append(message, Pad(U256(big.NewInt(0).SetUint64(r.Nonce)), 32)...)
+	message = append(message, Pad(math.U256(big.NewInt(0).SetUint64(r.Nonce)).Bytes(), 32)...)
 
 	return message
-}
-
-func U256(n *big.Int) []byte {
-	return math.PaddedBigBytes(math.U256(n), 32)
 }
 
 // RecoverSigner recovers the signer identity from the given request.

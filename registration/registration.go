@@ -21,6 +21,7 @@ import (
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/mysteriumnetwork/payments/crypto"
 )
 
@@ -56,8 +57,8 @@ func (r Request) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, common.HexToAddress(r.RegistryAddress).Bytes()...)
 	message = append(message, common.HexToAddress(r.HermesID).Bytes()...)
-	message = append(message, crypto.Pad(crypto.U256(big.NewInt(0).SetUint64(r.Stake)), 32)...)
-	message = append(message, crypto.Pad(crypto.U256(big.NewInt(0).SetUint64(r.Fee)), 32)...)
+	message = append(message, crypto.Pad(math.U256(big.NewInt(0).SetUint64(r.Stake)).Bytes(), 32)...)
+	message = append(message, crypto.Pad(math.U256(big.NewInt(0).SetUint64(r.Fee)).Bytes(), 32)...)
 	message = append(message, common.HexToAddress(r.Beneficiary).Bytes()...)
 	return message
 }
