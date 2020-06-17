@@ -309,13 +309,13 @@ func (cwdr *WithDryRuns) DecreaseProviderStake(req DecreaseProviderStakeRequest)
 		req,
 		bindings.HermesImplementationABI,
 		req.Identity,
-		req.HermesID,
+		req.Request.HermesID,
 		"decreaseStake",
-		req.ChannelID,
-		req.Amount,
-		req.TransactorFee,
-		req.Nonce,
-		req.Signature,
+		req.Request.ChannelID,
+		req.Request.Amount,
+		req.Request.TransactorFee,
+		req.Request.Nonce,
+		req.Request.Signature,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "transaction dry run failed")

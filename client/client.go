@@ -453,17 +453,12 @@ func (bc *Blockchain) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transa
 // DecreaseProviderStakeRequest represents all the parameters required for decreasing provider stake.
 type DecreaseProviderStakeRequest struct {
 	WriteRequest
-	ChannelID     [32]byte
-	Nonce         *big.Int
-	HermesID      common.Address
-	Amount        *big.Int
-	TransactorFee *big.Int
-	Signature     []byte
+	Request crypto.DecreaseProviderStakeRequest
 }
 
 // DecreaseProviderStake decreases provider stake.
 func (bc *Blockchain) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*types.Transaction, error) {
-	t, err := bindings.NewHermesImplementationTransactor(req.HermesID, bc.ethClient.Client())
+	t, err := bindings.NewHermesImplementationTransactor(req.Request.HermesID, bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -474,7 +469,7 @@ func (bc *Blockchain) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*
 		return nil, fmt.Errorf("could not get transactor: %w", err)
 	}
 
-	return t.DecreaseStake(transactor, req.ChannelID, req.Amount, req.TransactorFee, req.Nonce, req.Signature)
+	return t.DecreaseStake(transactor, req.Request.ChannelID, req.Request.Amount, req.Request.TransactorFee, req.Request.Nonce, req.Request.Signature)
 }
 
 // SetProviderStakeGoalRequest represents all the parameters required for setting provider stake.
