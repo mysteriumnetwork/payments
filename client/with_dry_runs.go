@@ -118,8 +118,8 @@ func (cwdr *WithDryRuns) RegisterIdentity(rr RegistrationRequest) (*types.Transa
 		rr.Identity,
 		rr.RegistryAddress,
 		"registerIdentity",
-		rr.AccountantID,
-		rr.Loan,
+		rr.HermesID,
+		rr.Stake,
 		rr.TransactorFee,
 		rr.Beneficiary,
 		rr.Signature,
@@ -131,15 +131,15 @@ func (cwdr *WithDryRuns) RegisterIdentity(rr RegistrationRequest) (*types.Transa
 	return cwdr.bc.RegisterIdentity(rr)
 }
 
-// SettleAndRebalance is settling given accountant issued promise
+// SettleAndRebalance is settling given hermes issued promise
 func (cwdr *WithDryRuns) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.Transaction, error) {
 	_, err := cwdr.dryRun(
 		req,
-		bindings.AccountantImplementationABI,
+		bindings.HermesImplementationABI,
 		req.Identity,
-		req.AccountantID,
+		req.HermesID,
 		"settleAndRebalance",
-		toBytes32(req.Promise.ChannelID),
+		req.ProviderID,
 		big.NewInt(0).SetUint64(req.Promise.Amount),
 		big.NewInt(0).SetUint64(req.Promise.Fee),
 		toBytes32(req.Promise.R),
@@ -151,24 +151,24 @@ func (cwdr *WithDryRuns) SettleAndRebalance(req SettleAndRebalanceRequest) (*typ
 	return cwdr.bc.SettleAndRebalance(req)
 }
 
-// GetAccountantFee fetches the accountant fee from blockchain
-func (cwdr *WithDryRuns) GetAccountantFee(accountantAddress common.Address) (uint16, error) {
-	return cwdr.bc.GetAccountantFee(accountantAddress)
+// GetHermesFee fetches the hermes fee from blockchain
+func (cwdr *WithDryRuns) GetHermesFee(hermesAddress common.Address) (uint16, error) {
+	return cwdr.bc.GetHermesFee(hermesAddress)
 }
 
-// CalculateAccountantFee fetches the accountant fee from blockchain
-func (cwdr *WithDryRuns) CalculateAccountantFee(accountantAddress common.Address, value uint64) (*big.Int, error) {
-	return cwdr.bc.CalculateAccountantFee(accountantAddress, value)
+// CalculateHermesFee fetches the hermes fee from blockchain
+func (cwdr *WithDryRuns) CalculateHermesFee(hermesAddress common.Address, value uint64) (*big.Int, error) {
+	return cwdr.bc.CalculateHermesFee(hermesAddress, value)
 }
 
-// IsRegisteredAsProvider checks if the provider is registered with the accountant properly
-func (cwdr *WithDryRuns) IsRegisteredAsProvider(accountantAddress, registryAddress, addressToCheck common.Address) (bool, error) {
-	return cwdr.bc.IsRegisteredAsProvider(accountantAddress, registryAddress, addressToCheck)
+// IsRegisteredAsProvider checks if the provider is registered with the hermes properly
+func (cwdr *WithDryRuns) IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck common.Address) (bool, error) {
+	return cwdr.bc.IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck)
 }
 
 // GetProviderChannel returns the provider channel
-func (cwdr *WithDryRuns) GetProviderChannel(accountantAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
-	return cwdr.bc.GetProviderChannel(accountantAddress, addressToCheck, pending)
+func (cwdr *WithDryRuns) GetProviderChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+	return cwdr.bc.GetProviderChannel(hermesAddress, addressToCheck, pending)
 }
 
 // IsRegistered checks wether the given identity is registered or not
@@ -177,8 +177,8 @@ func (cwdr *WithDryRuns) IsRegistered(registryAddress, addressToCheck common.Add
 }
 
 // SubscribeToPromiseSettledEvent subscribes to promise settled events
-func (cwdr *WithDryRuns) SubscribeToPromiseSettledEvent(providerID, accountantID common.Address) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error) {
-	return cwdr.bc.SubscribeToPromiseSettledEvent(providerID, accountantID)
+func (cwdr *WithDryRuns) SubscribeToPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+	return cwdr.bc.SubscribeToPromiseSettledEvent(providerID, hermesID)
 }
 
 // GetMystBalance returns the balance in myst
@@ -196,19 +196,19 @@ func (cwdr *WithDryRuns) GetRegistrationFee(registryAddress common.Address) (*bi
 	return cwdr.bc.GetRegistrationFee(registryAddress)
 }
 
-// IsAccountantRegistered checks if given accountant is registered and returns true or false.
-func (cwdr *WithDryRuns) IsAccountantRegistered(registryAddress, acccountantID common.Address) (bool, error) {
-	return cwdr.bc.IsAccountantRegistered(registryAddress, acccountantID)
+// IsHermesRegistered checks if given hermes is registered and returns true or false.
+func (cwdr *WithDryRuns) IsHermesRegistered(registryAddress, acccountantID common.Address) (bool, error) {
+	return cwdr.bc.IsHermesRegistered(registryAddress, acccountantID)
 }
 
-// GetAccountantOperator returns operator address of given accountant
-func (cwdr *WithDryRuns) GetAccountantOperator(accountantID common.Address) (common.Address, error) {
-	return cwdr.bc.GetAccountantOperator(accountantID)
+// GetHermesOperator returns operator address of given hermes
+func (cwdr *WithDryRuns) GetHermesOperator(hermesID common.Address) (common.Address, error) {
+	return cwdr.bc.GetHermesOperator(hermesID)
 }
 
-// GetConsumerChannelsAccountant returns the consumer channels accountant
-func (cwdr *WithDryRuns) GetConsumerChannelsAccountant(channelAddress common.Address) (ConsumersAccountant, error) {
-	return cwdr.bc.GetConsumerChannelsAccountant(channelAddress)
+// GetConsumerChannelsHermes returns the consumer channels hermes
+func (cwdr *WithDryRuns) GetConsumerChannelsHermes(channelAddress common.Address) (ConsumersHermes, error) {
+	return cwdr.bc.GetConsumerChannelsHermes(channelAddress)
 }
 
 // SubscribeToMystTokenTransfers subscribes to myst token transfers
@@ -232,8 +232,8 @@ func (cwdr *WithDryRuns) GetProviderChannelByID(acc common.Address, chID []byte)
 }
 
 // SubscribeToIdentityRegistrationEvents subscribes to identity registration events
-func (cwdr *WithDryRuns) SubscribeToIdentityRegistrationEvents(registryAddress common.Address, accountantIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
-	return cwdr.bc.SubscribeToIdentityRegistrationEvents(registryAddress, accountantIDs)
+func (cwdr *WithDryRuns) SubscribeToIdentityRegistrationEvents(registryAddress common.Address, hermesIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
+	return cwdr.bc.SubscribeToIdentityRegistrationEvents(registryAddress, hermesIDs)
 }
 
 // SubscribeToConsumerChannelBalanceUpdate subscribes to consumer channel balance update events
@@ -242,18 +242,18 @@ func (cwdr *WithDryRuns) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress c
 }
 
 // SubscribeToProviderChannelBalanceUpdate subscribes to provider channel balance update events
-func (cwdr *WithDryRuns) SubscribeToProviderChannelBalanceUpdate(accountantAddress common.Address, channelAddresses [][32]byte) (sink chan *bindings.AccountantImplementationChannelBalanceUpdated, cancel func(), err error) {
-	return cwdr.bc.SubscribeToProviderChannelBalanceUpdate(accountantAddress, channelAddresses)
+func (cwdr *WithDryRuns) SubscribeToProviderChannelBalanceUpdate(hermesAddress common.Address, channelAddresses [][32]byte) (sink chan *bindings.HermesImplementationChannelBalanceUpdated, cancel func(), err error) {
+	return cwdr.bc.SubscribeToProviderChannelBalanceUpdate(hermesAddress, channelAddresses)
 }
 
 // SubscribeToChannelOpenedEvents subscribes to provider channel opened events
-func (cwdr *WithDryRuns) SubscribeToChannelOpenedEvents(accountantAddress common.Address) (sink chan *bindings.AccountantImplementationChannelOpened, cancel func(), err error) {
-	return cwdr.bc.SubscribeToChannelOpenedEvents(accountantAddress)
+func (cwdr *WithDryRuns) SubscribeToChannelOpenedEvents(hermesAddress common.Address) (sink chan *bindings.HermesImplementationChannelOpened, cancel func(), err error) {
+	return cwdr.bc.SubscribeToChannelOpenedEvents(hermesAddress)
 }
 
 // SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events
-func (cwdr *WithDryRuns) SubscribeToPromiseSettledEventByChannelID(accountantID common.Address, providerAddresses [][32]byte) (sink chan *bindings.AccountantImplementationPromiseSettled, cancel func(), err error) {
-	return cwdr.bc.SubscribeToPromiseSettledEventByChannelID(accountantID, providerAddresses)
+func (cwdr *WithDryRuns) SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+	return cwdr.bc.SubscribeToPromiseSettledEventByChannelID(hermesID, providerAddresses)
 }
 
 // NetworkID returns the network id
@@ -261,15 +261,15 @@ func (cwdr *WithDryRuns) NetworkID() (*big.Int, error) {
 	return cwdr.bc.NetworkID()
 }
 
-// SettleWithBeneficiary sets new beneficiary and settling given accountant issued promise into it.
+// SettleWithBeneficiary sets new beneficiary and settling given hermes issued promise into it.
 func (cwdr *WithDryRuns) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*types.Transaction, error) {
 	_, err := cwdr.dryRun(
 		req,
-		bindings.AccountantImplementationABI,
+		bindings.HermesImplementationABI,
 		req.Identity,
-		req.AccountantID,
+		req.HermesID,
 		"settleWithBeneficiary",
-		toBytes32(req.Promise.ChannelID),
+		req.ProviderID,
 		big.NewInt(0).SetUint64(req.Promise.Amount),
 		big.NewInt(0).SetUint64(req.Promise.Fee),
 		toBytes32(req.Promise.R),

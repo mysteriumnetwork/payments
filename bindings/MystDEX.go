@@ -36,7 +36,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -44,10 +43,10 @@ var (
 )
 
 // MystDEXABI is the input ABI used to generate the binding from.
-const MystDEXABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousDestination\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newDestination\",\"type\":\"address\"}],\"name\":\"DestinationChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"fallback\"},{\"constant\":false,\"inputs\":[],\"name\":\"claimEthers\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"}],\"name\":\"claimTokens\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getFundsDestination\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"initialised\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"isOwner\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"addresspayable\",\"name\":\"_newDestination\",\"type\":\"address\"}],\"name\":\"setFundsDestination\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"token\",\"outputs\":[{\"internalType\":\"contractIERC20\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"_dexOwner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_rate\",\"type\":\"uint256\"}],\"name\":\"initialise\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_newRate\",\"type\":\"uint256\"}],\"name\":\"setRate\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"addresspayable\",\"name\":\"_to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"transferEthers\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"_to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"transferMyst\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
+const MystDEXABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousDestination\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newDestination\",\"type\":\"address\"}],\"name\":\"DestinationChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"claimEthers\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"}],\"name\":\"claimTokens\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getFundsDestination\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"initialised\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"addresspayable\",\"name\":\"_newDestination\",\"type\":\"address\"}],\"name\":\"setFundsDestination\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"token\",\"outputs\":[{\"internalType\":\"contractIERC20\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_dexOwner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_rate\",\"type\":\"uint256\"}],\"name\":\"initialise\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_newRate\",\"type\":\"uint256\"}],\"name\":\"setRate\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"addresspayable\",\"name\":\"_to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"transferEthers\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"transferMyst\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
 
 // MystDEXBin is the compiled bytecode used for deploying new contracts.
-var MystDEXBin = "0x60806040819052600080546001600160a01b03191633178082556001600160a01b0316917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908290a3610dab806100576000396000f3fe6080604052600436106100dd5760003560e01c80638595d1491161007f578063df8de3e711610059578063df8de3e714610423578063f2fde38b14610456578063f58c5b6e14610489578063fc0c546a1461049e576100dd565b80638595d1491461039a5780638da5cb5b146103dd5780638f32d59b1461040e576100dd565b806334fcf437116100bb57806334fcf4371461030d57806338d2e411146103375780636931b55014610370578063715018a614610385576100dd565b806307003bb4146102765780631254e64d1461029f578063238e130a146102da575b600254600160a01b900460ff1661013b576040805162461bcd60e51b815260206004820152601b60248201527f436f6e7472616374206973206e6f7420696e697469616c697365640000000000604482015290519081900360640190fd5b600061016a670de0b6b3a764000061015e600354346104b390919063ffffffff16565b9063ffffffff61051f16565b60048054604080516370a0823160e01b815230938101939093525192935083926001600160a01b03909116916370a08231916024808301926020929190829003018186803b1580156101bb57600080fd5b505afa1580156101cf573d6000803e3d6000fd5b505050506040513d60208110156101e557600080fd5b505110156101f257600080fd5b600480546040805163a9059cbb60e01b8152339381019390935260248301849052516001600160a01b039091169163a9059cbb9160448083019260209291908290030181600087803b15801561024757600080fd5b505af115801561025b573d6000803e3d6000fd5b505050506040513d602081101561027157600080fd5b505050005b34801561028257600080fd5b5061028b61057f565b604080519115158252519081900360200190f35b3480156102ab57600080fd5b506102d8600480360360408110156102c257600080fd5b506001600160a01b03813516906020013561058f565b005b3480156102e657600080fd5b506102d8600480360360208110156102fd57600080fd5b50356001600160a01b0316610666565b34801561031957600080fd5b506102d86004803603602081101561033057600080fd5b503561071c565b34801561034357600080fd5b506102d86004803603604081101561035a57600080fd5b506001600160a01b038135169060200135610768565b34801561037c57600080fd5b506102d8610906565b34801561039157600080fd5b506102d8610957565b3480156103a657600080fd5b506102d8600480360360608110156103bd57600080fd5b506001600160a01b038135811691602081013590911690604001356109e8565b3480156103e957600080fd5b506103f2610a8b565b604080516001600160a01b039092168252519081900360200190f35b34801561041a57600080fd5b5061028b610a9a565b34801561042f57600080fd5b506102d86004803603602081101561044657600080fd5b50356001600160a01b0316610aab565b34801561046257600080fd5b506102d86004803603602081101561047957600080fd5b50356001600160a01b0316610bdc565b34801561049557600080fd5b506103f2610c2c565b3480156104aa57600080fd5b506103f2610c3b565b6000808211610509576040805162461bcd60e51b815260206004820152601a60248201527f536166654d6174683a206469766973696f6e206279207a65726f000000000000604482015290519081900360640190fd5b600082848161051457fe5b049150505b92915050565b60008261052e57506000610519565b8282028284828161053b57fe5b04146105785760405162461bcd60e51b8152600401808060200182810382526021815260200180610d366021913960400191505060405180910390fd5b9392505050565b600254600160a01b900460ff1681565b610597610a9a565b6105d6576040805162461bcd60e51b81526020600482018190526024820152600080516020610d57833981519152604482015290519081900360640190fd5b8047101561062b576040805162461bcd60e51b815260206004820152601860248201527f6e6f7420656e6f7567682065746865722062616c616e63650000000000000000604482015290519081900360640190fd5b6040516001600160a01b0383169082156108fc029083906000818181858888f19350505050158015610661573d6000803e3d6000fd5b505050565b61066e610a9a565b6106ad576040805162461bcd60e51b81526020600482018190526024820152600080516020610d57833981519152604482015290519081900360640190fd5b6001600160a01b0381166106c057600080fd5b6001546040516001600160a01b038084169216907fe1a66d77649cf0a57b9937073549f30f1c82bb865aaf066d2f299e37a62c6aad90600090a3600180546001600160a01b0319166001600160a01b0392909216919091179055565b610724610a9a565b610763576040805162461bcd60e51b81526020600482018190526024820152600080516020610d57833981519152604482015290519081900360640190fd5b600355565b610770610a9a565b6107af576040805162461bcd60e51b81526020600482018190526024820152600080516020610d57833981519152604482015290519081900360640190fd5b60048054604080516370a0823160e01b815230938101939093525183926001600160a01b03909216916370a08231916024808301926020929190829003018186803b1580156107fd57600080fd5b505afa158015610811573d6000803e3d6000fd5b505050506040513d602081101561082757600080fd5b5051101561087c576040805162461bcd60e51b815260206004820152601760248201527f6e6f7420656e6f756768206d7973742062616c616e6365000000000000000000604482015290519081900360640190fd5b600480546040805163a9059cbb60e01b81526001600160a01b0386811694820194909452602481018590529051929091169163a9059cbb916044808201926020929091908290030181600087803b1580156108d657600080fd5b505af11580156108ea573d6000803e3d6000fd5b505050506040513d602081101561090057600080fd5b50505050565b6001546001600160a01b031661091b57600080fd5b6001546040516001600160a01b03909116904780156108fc02916000818181858888f19350505050158015610954573d6000803e3d6000fd5b50565b61095f610a9a565b61099e576040805162461bcd60e51b81526020600482018190526024820152600080516020610d57833981519152604482015290519081900360640190fd5b600080546040516001600160a01b03909116907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908390a3600080546001600160a01b0319169055565b600254600160a01b900460ff1615610a47576040805162461bcd60e51b815260206004820152601f60248201527f436f6e747261637420697320616c726561647920696e697469616c6973656400604482015290519081900360640190fd5b610a5083610c4a565b600480546001600160a01b039093166001600160a01b031990931692909217909155600355506002805460ff60a01b1916600160a01b179055565b6000546001600160a01b031690565b6000546001600160a01b0316331490565b6001546001600160a01b0316610ac057600080fd5b6002546001600160a01b0382811691161415610b0d5760405162461bcd60e51b8152600401808060200182810382526025815260200180610d116025913960400191505060405180910390fd5b604080516370a0823160e01b815230600482015290516000916001600160a01b038416916370a0823191602480820192602092909190829003018186803b158015610b5757600080fd5b505afa158015610b6b573d6000803e3d6000fd5b505050506040513d6020811015610b8157600080fd5b50516001546040805163a9059cbb60e01b81526001600160a01b0392831660048201526024810184905290519293509084169163a9059cbb916044808201926020929091908290030181600087803b1580156108d657600080fd5b610be4610a9a565b610c23576040805162461bcd60e51b81526020600482018190526024820152600080516020610d57833981519152604482015290519081900360640190fd5b61095481610c4a565b6001546001600160a01b031690565b6002546001600160a01b031681565b6001600160a01b038116610c8f5760405162461bcd60e51b8152600401808060200182810382526026815260200180610ceb6026913960400191505060405180910390fd5b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600080546001600160a01b0319166001600160a01b039290921691909117905556fe4f776e61626c653a206e6577206f776e657220697320746865207a65726f20616464726573736e617469766520746f6b656e2066756e64732063616e2774206265207265636f7665726564536166654d6174683a206d756c7469706c69636174696f6e206f766572666c6f774f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572a265627a7a723158204bcd1194e967591c0291516c58261b77957cafcc9615f70638ab07a18c49264f64736f6c63430005110032"
+var MystDEXBin = "0x608060405234801561001057600080fd5b50610e79806100206000396000f3fe6080604052600436106100c65760003560e01c8063715018a61161007f578063df8de3e711610059578063df8de3e7146103ff578063f2fde38b14610432578063f58c5b6e14610465578063fc0c546a1461047a57610262565b8063715018a6146103765780638595d1491461038b5780638da5cb5b146103ce57610262565b806307003bb4146102675780631254e64d14610290578063238e130a146102cb57806334fcf437146102fe57806338d2e411146103285780636931b5501461036157610262565b3661026257600254600160a01b900460ff16610129576040805162461bcd60e51b815260206004820152601b60248201527f436f6e7472616374206973206e6f7420696e697469616c697365640000000000604482015290519081900360640190fd5b6000610158670de0b6b3a764000061014c6003543461048f90919063ffffffff16565b9063ffffffff6104da16565b600254604080516370a0823160e01b8152306004820152905192935083926001600160a01b03909216916370a0823191602480820192602092909190829003018186803b1580156101a857600080fd5b505afa1580156101bc573d6000803e3d6000fd5b505050506040513d60208110156101d257600080fd5b505110156101df57600080fd5b6002546040805163a9059cbb60e01b81523360048201526024810184905290516001600160a01b039092169163a9059cbb916044808201926020929091908290030181600087803b15801561023357600080fd5b505af1158015610247573d6000803e3d6000fd5b505050506040513d602081101561025d57600080fd5b505050005b600080fd5b34801561027357600080fd5b5061027c610533565b604080519115158252519081900360200190f35b34801561029c57600080fd5b506102c9600480360360408110156102b357600080fd5b506001600160a01b038135169060200135610543565b005b3480156102d757600080fd5b506102c9600480360360208110156102ee57600080fd5b50356001600160a01b0316610634565b34801561030a57600080fd5b506102c96004803603602081101561032157600080fd5b5035610704565b34801561033457600080fd5b506102c96004803603604081101561034b57600080fd5b506001600160a01b03813516906020013561076a565b34801561036d57600080fd5b506102c961091a565b34801561038257600080fd5b506102c961096b565b34801561039757600080fd5b506102c9600480360360608110156103ae57600080fd5b506001600160a01b03813581169160208101359091169060400135610a16565b3480156103da57600080fd5b506103e3610ab6565b604080516001600160a01b039092168252519081900360200190f35b34801561040b57600080fd5b506102c96004803603602081101561042257600080fd5b50356001600160a01b0316610ac5565b34801561043e57600080fd5b506102c96004803603602081101561045557600080fd5b50356001600160a01b0316610bf6565b34801561047157600080fd5b506103e3610cf7565b34801561048657600080fd5b506103e3610d06565b60006104d183836040518060400160405280601a81526020017f536166654d6174683a206469766973696f6e206279207a65726f000000000000815250610d15565b90505b92915050565b6000826104e9575060006104d4565b828202828482816104f657fe5b04146104d15760405162461bcd60e51b8152600401808060200182810382526021815260200180610e036021913960400191505060405180910390fd5b600254600160a01b900460ff1681565b6000546001600160a01b031633148061056557506000546001600160a01b0316155b6105a4576040805162461bcd60e51b81526020600482018190526024820152600080516020610e24833981519152604482015290519081900360640190fd5b804710156105f9576040805162461bcd60e51b815260206004820152601860248201527f6e6f7420656e6f7567682065746865722062616c616e63650000000000000000604482015290519081900360640190fd5b6040516001600160a01b0383169082156108fc029083906000818181858888f1935050505015801561062f573d6000803e3d6000fd5b505050565b6000546001600160a01b031633148061065657506000546001600160a01b0316155b610695576040805162461bcd60e51b81526020600482018190526024820152600080516020610e24833981519152604482015290519081900360640190fd5b6001600160a01b0381166106a857600080fd5b6001546040516001600160a01b038084169216907fe1a66d77649cf0a57b9937073549f30f1c82bb865aaf066d2f299e37a62c6aad90600090a3600180546001600160a01b0319166001600160a01b0392909216919091179055565b6000546001600160a01b031633148061072657506000546001600160a01b0316155b610765576040805162461bcd60e51b81526020600482018190526024820152600080516020610e24833981519152604482015290519081900360640190fd5b600355565b6000546001600160a01b031633148061078c57506000546001600160a01b0316155b6107cb576040805162461bcd60e51b81526020600482018190526024820152600080516020610e24833981519152604482015290519081900360640190fd5b600254604080516370a0823160e01b8152306004820152905183926001600160a01b0316916370a08231916024808301926020929190829003018186803b15801561081557600080fd5b505afa158015610829573d6000803e3d6000fd5b505050506040513d602081101561083f57600080fd5b50511015610894576040805162461bcd60e51b815260206004820152601760248201527f6e6f7420656e6f756768206d7973742062616c616e6365000000000000000000604482015290519081900360640190fd5b6002546040805163a9059cbb60e01b81526001600160a01b038581166004830152602482018590529151919092169163a9059cbb9160448083019260209291908290030181600087803b1580156108ea57600080fd5b505af11580156108fe573d6000803e3d6000fd5b505050506040513d602081101561091457600080fd5b50505050565b6001546001600160a01b031661092f57600080fd5b6001546040516001600160a01b03909116904780156108fc02916000818181858888f19350505050158015610968573d6000803e3d6000fd5b50565b6000546001600160a01b031633148061098d57506000546001600160a01b0316155b6109cc576040805162461bcd60e51b81526020600482018190526024820152600080516020610e24833981519152604482015290519081900360640190fd5b600080546040516001600160a01b03909116907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908390a3600080546001600160a01b0319169055565b600254600160a01b900460ff1615610a75576040805162461bcd60e51b815260206004820152601f60248201527f436f6e747261637420697320616c726561647920696e697469616c6973656400604482015290519081900360640190fd5b610a7e83610bf6565b60028054600392909255600160a01b6001600160a01b03199092166001600160a01b03939093169290921760ff60a01b191617905550565b6000546001600160a01b031690565b6001546001600160a01b0316610ada57600080fd5b6002546001600160a01b0382811691161415610b275760405162461bcd60e51b8152600401808060200182810382526025815260200180610dde6025913960400191505060405180910390fd5b604080516370a0823160e01b815230600482015290516000916001600160a01b038416916370a0823191602480820192602092909190829003018186803b158015610b7157600080fd5b505afa158015610b85573d6000803e3d6000fd5b505050506040513d6020811015610b9b57600080fd5b50516001546040805163a9059cbb60e01b81526001600160a01b0392831660048201526024810184905290519293509084169163a9059cbb916044808201926020929091908290030181600087803b1580156108ea57600080fd5b6000546001600160a01b0316331480610c1857506000546001600160a01b0316155b610c57576040805162461bcd60e51b81526020600482018190526024820152600080516020610e24833981519152604482015290519081900360640190fd5b6001600160a01b038116610c9c5760405162461bcd60e51b8152600401808060200182810382526026815260200180610db86026913960400191505060405180910390fd5b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600080546001600160a01b0319166001600160a01b0392909216919091179055565b6001546001600160a01b031690565b6002546001600160a01b031681565b60008183610da15760405162461bcd60e51b81526004018080602001828103825283818151815260200191508051906020019080838360005b83811015610d66578181015183820152602001610d4e565b50505050905090810190601f168015610d935780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b506000838581610dad57fe5b049594505050505056fe4f776e61626c653a206e6577206f776e657220697320746865207a65726f20616464726573736e617469766520746f6b656e2066756e64732063616e2774206265207265636f7665726564536166654d6174683a206d756c7469706c69636174696f6e206f766572666c6f774f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572a2646970667358221220b72fc1763123dc6df7917907c23740ac6967ede47dfe1aa2b9452361b729817464736f6c634300060a0033"
 
 // DeployMystDEX deploys a new Ethereum contract, binding an instance of MystDEX to it.
 func DeployMystDEX(auth *bind.TransactOpts, backend bind.ContractBackend) (common.Address, *types.Transaction, *MystDEX, error) {
@@ -207,7 +206,7 @@ func (_MystDEX *MystDEXTransactorRaw) Transact(opts *bind.TransactOpts, method s
 
 // GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
 //
-// Solidity: function getFundsDestination() constant returns(address)
+// Solidity: function getFundsDestination() view returns(address)
 func (_MystDEX *MystDEXCaller) GetFundsDestination(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -219,21 +218,21 @@ func (_MystDEX *MystDEXCaller) GetFundsDestination(opts *bind.CallOpts) (common.
 
 // GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
 //
-// Solidity: function getFundsDestination() constant returns(address)
+// Solidity: function getFundsDestination() view returns(address)
 func (_MystDEX *MystDEXSession) GetFundsDestination() (common.Address, error) {
 	return _MystDEX.Contract.GetFundsDestination(&_MystDEX.CallOpts)
 }
 
 // GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
 //
-// Solidity: function getFundsDestination() constant returns(address)
+// Solidity: function getFundsDestination() view returns(address)
 func (_MystDEX *MystDEXCallerSession) GetFundsDestination() (common.Address, error) {
 	return _MystDEX.Contract.GetFundsDestination(&_MystDEX.CallOpts)
 }
 
 // Initialised is a free data retrieval call binding the contract method 0x07003bb4.
 //
-// Solidity: function initialised() constant returns(bool)
+// Solidity: function initialised() view returns(bool)
 func (_MystDEX *MystDEXCaller) Initialised(opts *bind.CallOpts) (bool, error) {
 	var (
 		ret0 = new(bool)
@@ -245,47 +244,21 @@ func (_MystDEX *MystDEXCaller) Initialised(opts *bind.CallOpts) (bool, error) {
 
 // Initialised is a free data retrieval call binding the contract method 0x07003bb4.
 //
-// Solidity: function initialised() constant returns(bool)
+// Solidity: function initialised() view returns(bool)
 func (_MystDEX *MystDEXSession) Initialised() (bool, error) {
 	return _MystDEX.Contract.Initialised(&_MystDEX.CallOpts)
 }
 
 // Initialised is a free data retrieval call binding the contract method 0x07003bb4.
 //
-// Solidity: function initialised() constant returns(bool)
+// Solidity: function initialised() view returns(bool)
 func (_MystDEX *MystDEXCallerSession) Initialised() (bool, error) {
 	return _MystDEX.Contract.Initialised(&_MystDEX.CallOpts)
 }
 
-// IsOwner is a free data retrieval call binding the contract method 0x8f32d59b.
-//
-// Solidity: function isOwner() constant returns(bool)
-func (_MystDEX *MystDEXCaller) IsOwner(opts *bind.CallOpts) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _MystDEX.contract.Call(opts, out, "isOwner")
-	return *ret0, err
-}
-
-// IsOwner is a free data retrieval call binding the contract method 0x8f32d59b.
-//
-// Solidity: function isOwner() constant returns(bool)
-func (_MystDEX *MystDEXSession) IsOwner() (bool, error) {
-	return _MystDEX.Contract.IsOwner(&_MystDEX.CallOpts)
-}
-
-// IsOwner is a free data retrieval call binding the contract method 0x8f32d59b.
-//
-// Solidity: function isOwner() constant returns(bool)
-func (_MystDEX *MystDEXCallerSession) IsOwner() (bool, error) {
-	return _MystDEX.Contract.IsOwner(&_MystDEX.CallOpts)
-}
-
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
 //
-// Solidity: function owner() constant returns(address)
+// Solidity: function owner() view returns(address)
 func (_MystDEX *MystDEXCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -297,21 +270,21 @@ func (_MystDEX *MystDEXCaller) Owner(opts *bind.CallOpts) (common.Address, error
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
 //
-// Solidity: function owner() constant returns(address)
+// Solidity: function owner() view returns(address)
 func (_MystDEX *MystDEXSession) Owner() (common.Address, error) {
 	return _MystDEX.Contract.Owner(&_MystDEX.CallOpts)
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
 //
-// Solidity: function owner() constant returns(address)
+// Solidity: function owner() view returns(address)
 func (_MystDEX *MystDEXCallerSession) Owner() (common.Address, error) {
 	return _MystDEX.Contract.Owner(&_MystDEX.CallOpts)
 }
 
 // Token is a free data retrieval call binding the contract method 0xfc0c546a.
 //
-// Solidity: function token() constant returns(address)
+// Solidity: function token() view returns(address)
 func (_MystDEX *MystDEXCaller) Token(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -323,14 +296,14 @@ func (_MystDEX *MystDEXCaller) Token(opts *bind.CallOpts) (common.Address, error
 
 // Token is a free data retrieval call binding the contract method 0xfc0c546a.
 //
-// Solidity: function token() constant returns(address)
+// Solidity: function token() view returns(address)
 func (_MystDEX *MystDEXSession) Token() (common.Address, error) {
 	return _MystDEX.Contract.Token(&_MystDEX.CallOpts)
 }
 
 // Token is a free data retrieval call binding the contract method 0xfc0c546a.
 //
-// Solidity: function token() constant returns(address)
+// Solidity: function token() view returns(address)
 func (_MystDEX *MystDEXCallerSession) Token() (common.Address, error) {
 	return _MystDEX.Contract.Token(&_MystDEX.CallOpts)
 }
@@ -522,6 +495,27 @@ func (_MystDEX *MystDEXSession) TransferOwnership(newOwner common.Address) (*typ
 // Solidity: function transferOwnership(address newOwner) returns()
 func (_MystDEX *MystDEXTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
 	return _MystDEX.Contract.TransferOwnership(&_MystDEX.TransactOpts, newOwner)
+}
+
+// Receive is a paid mutator transaction binding the contract receive function.
+//
+// Solidity: receive() payable returns()
+func (_MystDEX *MystDEXTransactor) Receive(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _MystDEX.contract.RawTransact(opts, nil) // calldata is disallowed for receive function
+}
+
+// Receive is a paid mutator transaction binding the contract receive function.
+//
+// Solidity: receive() payable returns()
+func (_MystDEX *MystDEXSession) Receive() (*types.Transaction, error) {
+	return _MystDEX.Contract.Receive(&_MystDEX.TransactOpts)
+}
+
+// Receive is a paid mutator transaction binding the contract receive function.
+//
+// Solidity: receive() payable returns()
+func (_MystDEX *MystDEXTransactorSession) Receive() (*types.Transaction, error) {
+	return _MystDEX.Contract.Receive(&_MystDEX.TransactOpts)
 }
 
 // MystDEXDestinationChangedIterator is returned from FilterDestinationChanged and is used to iterate over the raw logs and unpacked data for DestinationChanged events raised by the MystDEX contract.

@@ -36,7 +36,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -44,7 +43,7 @@ var (
 )
 
 // HermesContractABI is the input ABI used to generate the binding from.
-const HermesContractABI = "[{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"},{\"internalType\":\"uint16\",\"name\":\"_accountantFee\",\"type\":\"uint16\"},{\"internalType\":\"uint256\",\"name\":\"_maxStake\",\"type\":\"uint256\"}],\"name\":\"initialize\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"_party\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_beneficiary\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amountToLend\",\"type\":\"uint256\"}],\"name\":\"openChannel\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getStake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getStatus\",\"outputs\":[{\"internalType\":\"enumHermesContract.Status\",\"name\":\"\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}]"
+const HermesContractABI = "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"},{\"internalType\":\"uint16\",\"name\":\"_hermesFee\",\"type\":\"uint16\"},{\"internalType\":\"uint256\",\"name\":\"_maxStake\",\"type\":\"uint256\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_party\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_beneficiary\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amountToLend\",\"type\":\"uint256\"}],\"name\":\"openChannel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getStake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getStatus\",\"outputs\":[{\"internalType\":\"enumHermesContract.Status\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"
 
 // HermesContract is an auto generated Go binding around an Ethereum contract.
 type HermesContract struct {
@@ -190,7 +189,7 @@ func (_HermesContract *HermesContractTransactorRaw) Transact(opts *bind.Transact
 
 // GetStake is a free data retrieval call binding the contract method 0xfc0e3d90.
 //
-// Solidity: function getStake() constant returns(uint256)
+// Solidity: function getStake() view returns(uint256)
 func (_HermesContract *HermesContractCaller) GetStake(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -202,21 +201,21 @@ func (_HermesContract *HermesContractCaller) GetStake(opts *bind.CallOpts) (*big
 
 // GetStake is a free data retrieval call binding the contract method 0xfc0e3d90.
 //
-// Solidity: function getStake() constant returns(uint256)
+// Solidity: function getStake() view returns(uint256)
 func (_HermesContract *HermesContractSession) GetStake() (*big.Int, error) {
 	return _HermesContract.Contract.GetStake(&_HermesContract.CallOpts)
 }
 
 // GetStake is a free data retrieval call binding the contract method 0xfc0e3d90.
 //
-// Solidity: function getStake() constant returns(uint256)
+// Solidity: function getStake() view returns(uint256)
 func (_HermesContract *HermesContractCallerSession) GetStake() (*big.Int, error) {
 	return _HermesContract.Contract.GetStake(&_HermesContract.CallOpts)
 }
 
 // GetStatus is a free data retrieval call binding the contract method 0x4e69d560.
 //
-// Solidity: function getStatus() constant returns(uint8)
+// Solidity: function getStatus() view returns(uint8)
 func (_HermesContract *HermesContractCaller) GetStatus(opts *bind.CallOpts) (uint8, error) {
 	var (
 		ret0 = new(uint8)
@@ -228,37 +227,37 @@ func (_HermesContract *HermesContractCaller) GetStatus(opts *bind.CallOpts) (uin
 
 // GetStatus is a free data retrieval call binding the contract method 0x4e69d560.
 //
-// Solidity: function getStatus() constant returns(uint8)
+// Solidity: function getStatus() view returns(uint8)
 func (_HermesContract *HermesContractSession) GetStatus() (uint8, error) {
 	return _HermesContract.Contract.GetStatus(&_HermesContract.CallOpts)
 }
 
 // GetStatus is a free data retrieval call binding the contract method 0x4e69d560.
 //
-// Solidity: function getStatus() constant returns(uint8)
+// Solidity: function getStatus() view returns(uint8)
 func (_HermesContract *HermesContractCallerSession) GetStatus() (uint8, error) {
 	return _HermesContract.Contract.GetStatus(&_HermesContract.CallOpts)
 }
 
 // Initialize is a paid mutator transaction binding the contract method 0xfec8157d.
 //
-// Solidity: function initialize(address _token, address _operator, uint16 _accountantFee, uint256 _maxStake) returns()
-func (_HermesContract *HermesContractTransactor) Initialize(opts *bind.TransactOpts, _token common.Address, _operator common.Address, _accountantFee uint16, _maxStake *big.Int) (*types.Transaction, error) {
-	return _HermesContract.contract.Transact(opts, "initialize", _token, _operator, _accountantFee, _maxStake)
+// Solidity: function initialize(address _token, address _operator, uint16 _hermesFee, uint256 _maxStake) returns()
+func (_HermesContract *HermesContractTransactor) Initialize(opts *bind.TransactOpts, _token common.Address, _operator common.Address, _hermesFee uint16, _maxStake *big.Int) (*types.Transaction, error) {
+	return _HermesContract.contract.Transact(opts, "initialize", _token, _operator, _hermesFee, _maxStake)
 }
 
 // Initialize is a paid mutator transaction binding the contract method 0xfec8157d.
 //
-// Solidity: function initialize(address _token, address _operator, uint16 _accountantFee, uint256 _maxStake) returns()
-func (_HermesContract *HermesContractSession) Initialize(_token common.Address, _operator common.Address, _accountantFee uint16, _maxStake *big.Int) (*types.Transaction, error) {
-	return _HermesContract.Contract.Initialize(&_HermesContract.TransactOpts, _token, _operator, _accountantFee, _maxStake)
+// Solidity: function initialize(address _token, address _operator, uint16 _hermesFee, uint256 _maxStake) returns()
+func (_HermesContract *HermesContractSession) Initialize(_token common.Address, _operator common.Address, _hermesFee uint16, _maxStake *big.Int) (*types.Transaction, error) {
+	return _HermesContract.Contract.Initialize(&_HermesContract.TransactOpts, _token, _operator, _hermesFee, _maxStake)
 }
 
 // Initialize is a paid mutator transaction binding the contract method 0xfec8157d.
 //
-// Solidity: function initialize(address _token, address _operator, uint16 _accountantFee, uint256 _maxStake) returns()
-func (_HermesContract *HermesContractTransactorSession) Initialize(_token common.Address, _operator common.Address, _accountantFee uint16, _maxStake *big.Int) (*types.Transaction, error) {
-	return _HermesContract.Contract.Initialize(&_HermesContract.TransactOpts, _token, _operator, _accountantFee, _maxStake)
+// Solidity: function initialize(address _token, address _operator, uint16 _hermesFee, uint256 _maxStake) returns()
+func (_HermesContract *HermesContractTransactorSession) Initialize(_token common.Address, _operator common.Address, _hermesFee uint16, _maxStake *big.Int) (*types.Transaction, error) {
+	return _HermesContract.Contract.Initialize(&_HermesContract.TransactOpts, _token, _operator, _hermesFee, _maxStake)
 }
 
 // OpenChannel is a paid mutator transaction binding the contract method 0x0a798f24.

@@ -23,4 +23,4 @@ package bindings
  * looked up in migration script here: https://github.com/mysteriumnetwork/payments-smart-contracts/blob/master/migrations/2_deploy_contracts.js
  */
 
-//go:generate go run bindings/abi/abigen.go --githubrepo=mysteriumnetwork/payments-smart-contracts -githubrelease=v0.9.0 --contracts=Config.json,SafeMathLib.json,MystToken.json,MystDEX.json,ChannelImplementation.json,ChannelImplementationProxy.json,AccountantImplementation.json,AccountantImplementationProxy.json,Registry.json,HermesContract.json --out=bindings --pkg=bindings
+//go:generate go run bindings/abi/abigen.go --githubrepo=mysteriumnetwork/payments-smart-contracts -githubrelease=v0.9.1 --contracts=SafeMathLib.json,MystToken.json,MystDEX.json,ChannelImplementation.json,Registry.json,HermesContract.json,HermesImplementation.json --out=bindings --pkg=bindings

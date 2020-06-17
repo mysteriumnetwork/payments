@@ -20,14 +20,14 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/mysteriumnetwork/payments/crypto"
 )
 
 // Request represent a request to register
 type Request struct {
-	AccountantID    string
+	HermesID        string
 	Stake           uint64
 	Fee             uint64
 	Beneficiary     string
@@ -35,8 +35,8 @@ type Request struct {
 	RegistryAddress string
 }
 
-// GetLoanAmount returns a big int representation for the loan amount
-func (r Request) GetLoanAmount() *big.Int {
+// GetStakeAmount returns a big int representation for the stake amount
+func (r Request) GetStakeAmount() *big.Int {
 	return big.NewInt(0).SetUint64(r.Stake)
 }
 
@@ -56,9 +56,9 @@ func (r Request) GetSignatureBytesRaw() []byte {
 func (r Request) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, common.HexToAddress(r.RegistryAddress).Bytes()...)
-	message = append(message, common.HexToAddress(r.AccountantID).Bytes()...)
-	message = append(message, crypto.Pad(abi.U256(big.NewInt(0).SetUint64(r.Stake)), 32)...)
-	message = append(message, crypto.Pad(abi.U256(big.NewInt(0).SetUint64(r.Fee)), 32)...)
+	message = append(message, common.HexToAddress(r.HermesID).Bytes()...)
+	message = append(message, crypto.Pad(math.U256(big.NewInt(0).SetUint64(r.Stake)).Bytes(), 32)...)
+	message = append(message, crypto.Pad(math.U256(big.NewInt(0).SetUint64(r.Fee)).Bytes(), 32)...)
 	message = append(message, common.HexToAddress(r.Beneficiary).Bytes()...)
 	return message
 }
