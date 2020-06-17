@@ -422,12 +422,8 @@ func (bc *Blockchain) IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*
 // SettleIntoStakeRequest represents all the parameters required for settling into stake.
 type SettleIntoStakeRequest struct {
 	WriteRequest
-	ChannelID     [32]byte
-	Lock          [32]byte
-	HermesID      common.Address
-	Amount        *big.Int
-	TransactorFee *big.Int
-	Signature     []byte
+	Promise  crypto.Promise
+	HermesID common.Address
 }
 
 // SettleIntoStake settles the hermes promise into stake increase.
@@ -443,7 +439,15 @@ func (bc *Blockchain) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transa
 		return nil, fmt.Errorf("could not get transactor: %w", err)
 	}
 
-	return t.SettleIntoStake(transactor, req.ChannelID, req.Amount, req.TransactorFee, req.Lock, req.Signature)
+	amount := big.NewInt(0).SetUint64(req.Promise.Amount)
+	fee := big.NewInt(0).SetUint64(req.Promise.Fee)
+	lock := [32]byte{}
+	copy(lock[:], req.Promise.R)
+
+	channelID := [32]byte{}
+	copy(channelID[:], req.Promise.ChannelID)
+
+	return t.SettleIntoStake(transactor, channelID, amount, fee, lock, req.Promise.Signature)
 }
 
 // DecreaseProviderStakeRequest represents all the parameters required for decreasing provider stake.

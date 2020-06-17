@@ -331,11 +331,11 @@ func (cwdr *WithDryRuns) SettleIntoStake(req SettleIntoStakeRequest) (*types.Tra
 		req.Identity,
 		req.HermesID,
 		"settleIntoStake",
-		req.ChannelID,
-		req.Amount,
-		req.TransactorFee,
-		req.Lock,
-		req.Signature,
+		toBytes32(req.Promise.ChannelID),
+		big.NewInt(0).SetUint64(req.Promise.Amount),
+		big.NewInt(0).SetUint64(req.Promise.Fee),
+		toBytes32(req.Promise.R),
+		req.Promise.Signature,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "transaction dry run failed")
