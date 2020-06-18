@@ -23,6 +23,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
@@ -68,10 +69,10 @@ func (dpsr *DecreaseProviderStakeRequest) Sign(ks *keystore.KeyStore, signer com
 func (dpsr DecreaseProviderStakeRequest) GetMessage() []byte {
 	msg := []byte{}
 	msg = append(msg, []byte(stakeReturnPrefix)...)
-	msg = append(msg, dpsr.ChannelID[:]...)
-	msg = append(msg, dpsr.Amount.Bytes()...)
-	msg = append(msg, dpsr.TransactorFee.Bytes()...)
-	msg = append(msg, dpsr.Nonce.Bytes()...)
+	msg = append(msg, Pad(dpsr.ChannelID[:], 32)...)
+	msg = append(msg, Pad(math.U256(dpsr.Amount).Bytes(), 32)...)
+	msg = append(msg, Pad(math.U256(dpsr.TransactorFee).Bytes(), 32)...)
+	msg = append(msg, Pad(math.U256(dpsr.Nonce).Bytes(), 32)...)
 	return msg
 }
 
