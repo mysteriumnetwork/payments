@@ -283,3 +283,79 @@ func (cwdr *WithDryRuns) SettleWithBeneficiary(req SettleWithBeneficiaryRequest)
 	}
 	return cwdr.bc.SettleWithBeneficiary(req)
 }
+
+// SetProviderStakeGoal sets provider stake goal.
+func (cwdr *WithDryRuns) SetProviderStakeGoal(req SetProviderStakeGoalRequest) (*types.Transaction, error) {
+	_, err := cwdr.dryRun(
+		req,
+		bindings.HermesImplementationABI,
+		req.Identity,
+		req.HermesID,
+		"updateStakeGoal",
+		req.ChannelID,
+		req.Amount,
+		req.Nonce,
+		req.Signature,
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "transaction dry run failed")
+	}
+	return cwdr.bc.SetProviderStakeGoal(req)
+}
+
+// DecreaseProviderStake decreases provider stake.
+func (cwdr *WithDryRuns) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*types.Transaction, error) {
+	_, err := cwdr.dryRun(
+		req,
+		bindings.HermesImplementationABI,
+		req.Identity,
+		req.Request.HermesID,
+		"decreaseStake",
+		req.Request.ChannelID,
+		req.Request.Amount,
+		req.Request.TransactorFee,
+		req.Request.Nonce,
+		req.Request.Signature,
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "transaction dry run failed")
+	}
+	return cwdr.bc.DecreaseProviderStake(req)
+}
+
+// SettleIntoStake settles the hermes promise into stake increase.
+func (cwdr *WithDryRuns) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transaction, error) {
+	_, err := cwdr.dryRun(
+		req,
+		bindings.HermesImplementationABI,
+		req.Identity,
+		req.HermesID,
+		"settleIntoStake",
+		toBytes32(req.Promise.ChannelID),
+		big.NewInt(0).SetUint64(req.Promise.Amount),
+		big.NewInt(0).SetUint64(req.Promise.Fee),
+		toBytes32(req.Promise.R),
+		req.Promise.Signature,
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "transaction dry run failed")
+	}
+	return cwdr.bc.SettleIntoStake(req)
+}
+
+// IncreaseProviderStake increases the provider stake.
+func (cwdr *WithDryRuns) IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*types.Transaction, error) {
+	_, err := cwdr.dryRun(
+		req,
+		bindings.HermesImplementationABI,
+		req.Identity,
+		req.HermesID,
+		"increaseStake",
+		req.ChannelID,
+		req.Amount,
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "transaction dry run failed")
+	}
+	return cwdr.bc.IncreaseProviderStake(req)
+}

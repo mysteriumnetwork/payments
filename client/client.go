@@ -395,6 +395,127 @@ func (bc *Blockchain) IsHermesRegistered(registryAddress, acccountantID common.A
 	}, acccountantID)
 }
 
+// ProviderStakeIncreaseRequest represents all the parameters required for stake increase.
+type ProviderStakeIncreaseRequest struct {
+	WriteRequest
+	ChannelID [32]byte
+	HermesID  common.Address
+	Amount    *big.Int
+}
+
+// IncreaseProviderStake increases the provider stake.
+func (bc *Blockchain) IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*types.Transaction, error) {
+	t, err := bindings.NewHermesImplementationTransactor(req.HermesID, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	transactor, cancel, err := bc.getTransactorFromRequest(req.WriteRequest)
+	defer cancel()
+	if err != nil {
+		return nil, fmt.Errorf("could not get transactor: %w", err)
+	}
+
+	return t.IncreaseStake(transactor, req.ChannelID, req.Amount)
+}
+
+// SettleIntoStakeRequest represents all the parameters required for settling into stake.
+type SettleIntoStakeRequest struct {
+	WriteRequest
+	Promise  crypto.Promise
+	HermesID common.Address
+}
+
+// SettleIntoStake settles the hermes promise into stake increase.
+func (bc *Blockchain) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transaction, error) {
+	t, err := bindings.NewHermesImplementationTransactor(req.HermesID, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	transactor, cancel, err := bc.getTransactorFromRequest(req.WriteRequest)
+	defer cancel()
+	if err != nil {
+		return nil, fmt.Errorf("could not get transactor: %w", err)
+	}
+
+	amount := big.NewInt(0).SetUint64(req.Promise.Amount)
+	fee := big.NewInt(0).SetUint64(req.Promise.Fee)
+	lock := [32]byte{}
+	copy(lock[:], req.Promise.R)
+
+	channelID := [32]byte{}
+	copy(channelID[:], req.Promise.ChannelID)
+
+	return t.SettleIntoStake(transactor, channelID, amount, fee, lock, req.Promise.Signature)
+}
+
+// DecreaseProviderStakeRequest represents all the parameters required for decreasing provider stake.
+type DecreaseProviderStakeRequest struct {
+	WriteRequest
+	Request crypto.DecreaseProviderStakeRequest
+}
+
+// DecreaseProviderStake decreases provider stake.
+func (bc *Blockchain) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*types.Transaction, error) {
+	t, err := bindings.NewHermesImplementationTransactor(req.Request.HermesID, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	transactor, cancel, err := bc.getTransactorFromRequest(req.WriteRequest)
+	defer cancel()
+	if err != nil {
+		return nil, fmt.Errorf("could not get transactor: %w", err)
+	}
+
+	return t.DecreaseStake(transactor, req.Request.ChannelID, req.Request.Amount, req.Request.TransactorFee, req.Request.Nonce, req.Request.Signature)
+}
+
+// SetProviderStakeGoalRequest represents all the parameters required for setting provider stake.
+type SetProviderStakeGoalRequest struct {
+	WriteRequest
+	ChannelID [32]byte
+	HermesID  common.Address
+	Amount    *big.Int
+	Nonce     *big.Int
+	Signature []byte
+}
+
+// SetProviderStakeGoal sets provider stake goal.
+func (bc *Blockchain) SetProviderStakeGoal(req SetProviderStakeGoalRequest) (*types.Transaction, error) {
+	t, err := bindings.NewHermesImplementationTransactor(req.HermesID, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	transactor, cancel, err := bc.getTransactorFromRequest(req.WriteRequest)
+	defer cancel()
+	if err != nil {
+		return nil, fmt.Errorf("could not get transactor: %w", err)
+	}
+
+	return t.UpdateStakeGoal(transactor, req.ChannelID, req.Amount, req.Nonce, req.Signature)
+}
+
+func (bc *Blockchain) getTransactorFromRequest(req WriteRequest) (*bind.TransactOpts, func(), error) {
+	parent := context.Background()
+	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
+	nonce, err := bc.getNonce(req.Identity)
+	if err != nil {
+		return nil, cancel, errors.Wrap(err, "could not get nonce")
+	}
+
+	return &bind.TransactOpts{
+		From:     req.Identity,
+		Signer:   req.Signer,
+		Context:  ctx,
+		GasLimit: req.GasLimit,
+		GasPrice: req.GasPrice,
+		Nonce:    big.NewInt(0).SetUint64(nonce),
+	}, cancel, nil
+}
+
 // GetHermesOperator returns operator address of given hermes
 func (bc *Blockchain) GetHermesOperator(hermesID common.Address) (common.Address, error) {
 	caller, err := bindings.NewHermesImplementationCaller(hermesID, bc.ethClient.Client())

@@ -61,6 +61,10 @@ type blockchain interface {
 	GetEthBalance(address common.Address) (*big.Int, error)
 	TransferEth(etr EthTransferRequest) (*types.Transaction, error)
 	GetHermessAvailableBalance(hermesAddress common.Address) (*big.Int, error)
+	SetProviderStakeGoal(req SetProviderStakeGoalRequest) (*types.Transaction, error)
+	DecreaseProviderStake(req DecreaseProviderStakeRequest) (*types.Transaction, error)
+	SettleIntoStake(req SettleIntoStakeRequest) (*types.Transaction, error)
+	IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*types.Transaction, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -541,6 +545,62 @@ func (bwr *BlockchainWithRetries) SettleWithBeneficiary(req SettleWithBeneficiar
 	var res *types.Transaction
 	err := bwr.callWithRetry(func() error {
 		result, bcErr := bwr.bc.SettleWithBeneficiary(req)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not set beneficiary")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+// SetProviderStakeGoal sets provider stake goal.
+func (bwr *BlockchainWithRetries) SetProviderStakeGoal(req SetProviderStakeGoalRequest) (*types.Transaction, error) {
+	var res *types.Transaction
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.SetProviderStakeGoal(req)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not set beneficiary")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+// DecreaseProviderStake decreases provider stake.
+func (bwr *BlockchainWithRetries) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*types.Transaction, error) {
+	var res *types.Transaction
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.DecreaseProviderStake(req)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not set beneficiary")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+// SettleIntoStake settles the hermes promise into stake increase.
+func (bwr *BlockchainWithRetries) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transaction, error) {
+	var res *types.Transaction
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.SettleIntoStake(req)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not set beneficiary")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+// IncreaseProviderStake increases the provider stake.
+func (bwr *BlockchainWithRetries) IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*types.Transaction, error) {
+	var res *types.Transaction
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.IncreaseProviderStake(req)
 		if bcErr != nil {
 			return errors.Wrap(bcErr, "could not set beneficiary")
 		}
