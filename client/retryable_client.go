@@ -65,6 +65,7 @@ type blockchain interface {
 	DecreaseProviderStake(req DecreaseProviderStakeRequest) (*types.Transaction, error)
 	SettleIntoStake(req SettleIntoStakeRequest) (*types.Transaction, error)
 	IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*types.Transaction, error)
+	GetHermesURL(registryID, hermesID common.Address) (string, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -447,6 +448,20 @@ func (bwr *BlockchainWithRetries) GetEthBalance(address common.Address) (*big.In
 		result, bcErr := bwr.bc.GetEthBalance(address)
 		if bcErr != nil {
 			return errors.Wrap(bcErr, "could not get balance")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+// GetHermesURL returns the hermes URL.
+func (bwr *BlockchainWithRetries) GetHermesURL(registryID, hermesID common.Address) (string, error) {
+	var res string
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.GetHermesURL(registryID, hermesID)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not get hermes url")
 		}
 		res = result
 		return nil

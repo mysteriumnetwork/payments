@@ -156,6 +156,11 @@ func (cwdr *WithDryRuns) GetHermesFee(hermesAddress common.Address) (uint16, err
 	return cwdr.bc.GetHermesFee(hermesAddress)
 }
 
+// GetHermesURL returns the thermes URL.
+func (cwdr *WithDryRuns) GetHermesURL(registryID, hermesID common.Address) (string, error) {
+	return cwdr.bc.GetHermesURL(registryID, hermesID)
+}
+
 // CalculateHermesFee fetches the hermes fee from blockchain
 func (cwdr *WithDryRuns) CalculateHermesFee(hermesAddress common.Address, value uint64) (*big.Int, error) {
 	return cwdr.bc.CalculateHermesFee(hermesAddress, value)

@@ -759,6 +759,25 @@ func (bc *Blockchain) SubscribeToChannelOpenedEvents(hermesAddress common.Addres
 	return sink, sub.Unsubscribe, nil
 }
 
+// GetHermesURL gets the hermes url from BC.
+func (bc *Blockchain) GetHermesURL(registryID, hermesID common.Address) (string, error) {
+	caller, err := bindings.NewRegistryCaller(registryID, bc.ethClient.Client())
+	if err != nil {
+		return "", fmt.Errorf("could not create new registry caller %w", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	urlBytes, err := caller.GetHermesURL(
+		&bind.CallOpts{
+			Context: ctx,
+		},
+		hermesID,
+	)
+	return string(urlBytes), err
+}
+
 // SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events
 func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	caller, err := bindings.NewHermesImplementationFilterer(hermesID, bc.ethClient.Client())
