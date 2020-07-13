@@ -18,8 +18,22 @@ package crypto
 
 import (
 	"errors"
+	"math/big"
 	"strings"
 )
+
+// Myst represents a single myst ERC 777 token.
+const Myst uint64 = 1000_000_000_000_000_000
+
+var bigMyst = big.NewFloat(0).SetUint64(Myst)
+
+// BigMystToFloat takes in a big int and returns a float64 representation of the myst.
+func BigMystToFloat(input *big.Int) float64 {
+	f := new(big.Float).SetInt(input)
+	divided := f.Quo(f, bigMyst)
+	r, _ := divided.Float64()
+	return r
+}
 
 func hasHexPrefix(str string) bool {
 	return len(str) >= 2 && str[0] == '0' && (str[1] == 'x' || str[1] == 'X')
