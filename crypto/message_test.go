@@ -18,6 +18,7 @@ package crypto
 
 import (
 	"encoding/hex"
+	"math/big"
 	"os"
 	"testing"
 
@@ -28,8 +29,8 @@ import (
 func getExchangeMessage() ExchangeMessage {
 	return ExchangeMessage{
 		Promise:        getPromise("consumer"),
-		AgreementID:    uint64(1),
-		AgreementTotal: uint64(1401),
+		AgreementID:    big.NewInt(1),
+		AgreementTotal: big.NewInt(1401),
 		Provider:       "0xf10021ba3b10d023e671668d20daeff821561d09",
 		Signature:      "56493421bd2772cca2ba970da27396e103a08027f1ce49de974f789e322b0d7a3f52b9dd745a34bfa2f330ba2d3c442867ebb3753d1f206811ab572ab7d482dc1b",
 	}
@@ -70,12 +71,12 @@ func TestCreateExchangeMessage(t *testing.T) {
 
 	p := getParams("consumer")
 	channelID := hex.EncodeToString(p.ChannelID)
-	amount := p.Amount
-	fee := p.Fee
+	amount := big.NewInt(0).SetUint64(p.Amount)
+	fee := big.NewInt(0).SetUint64(p.Fee)
 	provider := p.Provider.Hex()
 
-	agreementID := uint64(1)
-	agreementTotal := uint64(1401)
+	agreementID := big.NewInt(1)
+	agreementTotal := big.NewInt(1401)
 	r, _ := hex.DecodeString("5b6b3f31a3acd0e317173d25c8b60503547b741a0e81d6068bb88486967839fa")
 
 	invoice := CreateInvoice(agreementID, agreementTotal, fee, r)

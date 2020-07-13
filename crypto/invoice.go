@@ -19,21 +19,22 @@ package crypto
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"math/big"
 
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
 // Invoice represent a payment request
 type Invoice struct {
-	AgreementID    uint64
-	AgreementTotal uint64
-	TransactorFee  uint64
+	AgreementID    *big.Int
+	AgreementTotal *big.Int
+	TransactorFee  *big.Int
 	Hashlock       string
 	Provider       string
 }
 
 // CreateInvoice creates new invoice
-func CreateInvoice(agreementID, agreementTotal, transactorFee uint64, r []byte) Invoice {
+func CreateInvoice(agreementID, agreementTotal, transactorFee *big.Int, r []byte) Invoice {
 	if r == nil {
 		r = make([]byte, 32)
 		rand.Read(r)

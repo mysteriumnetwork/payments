@@ -103,7 +103,7 @@ func (bc *Blockchain) GetHermesFee(hermesAddress common.Address) (uint16, error)
 }
 
 // CalculateHermesFee calls blockchain for calculation of hermes fee
-func (bc *Blockchain) CalculateHermesFee(hermesAddress common.Address, value uint64) (*big.Int, error) {
+func (bc *Blockchain) CalculateHermesFee(hermesAddress common.Address, value *big.Int) (*big.Int, error) {
 	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create hermes implementation caller")
@@ -114,7 +114,7 @@ func (bc *Blockchain) CalculateHermesFee(hermesAddress common.Address, value uin
 
 	return caller.CalculateHermesFee(&bind.CallOpts{
 		Context: ctx,
-	}, new(big.Int).SetUint64(value))
+	}, value)
 }
 
 // IsRegisteredAsProvider checks if the provider is registered with the hermes properly
@@ -439,8 +439,8 @@ func (bc *Blockchain) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transa
 		return nil, fmt.Errorf("could not get transactor: %w", err)
 	}
 
-	amount := big.NewInt(0).SetUint64(req.Promise.Amount)
-	fee := big.NewInt(0).SetUint64(req.Promise.Fee)
+	amount := req.Promise.Amount
+	fee := req.Promise.Fee
 	lock := [32]byte{}
 	copy(lock[:], req.Promise.R)
 
@@ -563,8 +563,8 @@ func (bc *Blockchain) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.
 		Nonce:    big.NewInt(0).SetUint64(nonce),
 	},
 		req.ProviderID,
-		big.NewInt(0).SetUint64(req.Promise.Amount),
-		big.NewInt(0).SetUint64(req.Promise.Fee),
+		req.Promise.Amount,
+		req.Promise.Fee,
 		toBytes32(req.Promise.R),
 		req.Promise.Signature,
 	)
@@ -708,8 +708,8 @@ func (bc *Blockchain) SettlePromise(req SettleRequest) (*types.Transaction, erro
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	amount := big.NewInt(0).SetUint64(req.Promise.Amount)
-	fee := big.NewInt(0).SetUint64(req.Promise.Fee)
+	amount := req.Promise.Amount
+	fee := req.Promise.Fee
 	lock := [32]byte{}
 	copy(lock[:], req.Promise.R)
 
@@ -929,8 +929,8 @@ func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*
 		Nonce:    big.NewInt(0).SetUint64(nonce),
 	},
 		req.ProviderID,
-		big.NewInt(0).SetUint64(req.Promise.Amount),
-		big.NewInt(0).SetUint64(req.Promise.Fee),
+		req.Promise.Amount,
+		req.Promise.Fee,
 		toBytes32(req.Promise.R),
 		req.Promise.Signature,
 		req.Beneficiary,

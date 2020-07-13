@@ -28,8 +28,8 @@ import (
 // Request represent a request to register
 type Request struct {
 	HermesID        string
-	Stake           uint64
-	Fee             uint64
+	Stake           *big.Int
+	Fee             *big.Int
 	Beneficiary     string
 	Signature       string
 	RegistryAddress string
@@ -37,12 +37,12 @@ type Request struct {
 
 // GetStakeAmount returns a big int representation for the stake amount
 func (r Request) GetStakeAmount() *big.Int {
-	return big.NewInt(0).SetUint64(r.Stake)
+	return r.Stake
 }
 
 // GetFee returns the big int representation for the fee
 func (r Request) GetFee() *big.Int {
-	return big.NewInt(0).SetUint64(r.Fee)
+	return r.Fee
 }
 
 // GetSignatureBytesRaw returns the unadulterated bytes of the signature
@@ -57,8 +57,8 @@ func (r Request) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, common.HexToAddress(r.RegistryAddress).Bytes()...)
 	message = append(message, common.HexToAddress(r.HermesID).Bytes()...)
-	message = append(message, crypto.Pad(math.U256(big.NewInt(0).SetUint64(r.Stake)).Bytes(), 32)...)
-	message = append(message, crypto.Pad(math.U256(big.NewInt(0).SetUint64(r.Fee)).Bytes(), 32)...)
+	message = append(message, crypto.Pad(math.U256(r.Stake).Bytes(), 32)...)
+	message = append(message, crypto.Pad(math.U256(r.Fee).Bytes(), 32)...)
 	message = append(message, common.HexToAddress(r.Beneficiary).Bytes()...)
 	return message
 }

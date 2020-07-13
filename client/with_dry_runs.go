@@ -98,8 +98,8 @@ func (cwdr *WithDryRuns) SettlePromise(req SettleRequest) (*types.Transaction, e
 		req.Identity,
 		req.ChannelID,
 		"settlePromise",
-		big.NewInt(0).SetUint64(req.Promise.Amount),
-		big.NewInt(0).SetUint64(req.Promise.Fee),
+		req.Promise.Amount,
+		req.Promise.Fee,
 		lock,
 		req.Promise.Signature,
 	)
@@ -140,8 +140,8 @@ func (cwdr *WithDryRuns) SettleAndRebalance(req SettleAndRebalanceRequest) (*typ
 		req.HermesID,
 		"settleAndRebalance",
 		req.ProviderID,
-		big.NewInt(0).SetUint64(req.Promise.Amount),
-		big.NewInt(0).SetUint64(req.Promise.Fee),
+		req.Promise.Amount,
+		req.Promise.Fee,
 		toBytes32(req.Promise.R),
 		req.Promise.Signature,
 	)
@@ -162,7 +162,7 @@ func (cwdr *WithDryRuns) GetHermesURL(registryID, hermesID common.Address) (stri
 }
 
 // CalculateHermesFee fetches the hermes fee from blockchain
-func (cwdr *WithDryRuns) CalculateHermesFee(hermesAddress common.Address, value uint64) (*big.Int, error) {
+func (cwdr *WithDryRuns) CalculateHermesFee(hermesAddress common.Address, value *big.Int) (*big.Int, error) {
 	return cwdr.bc.CalculateHermesFee(hermesAddress, value)
 }
 
@@ -275,8 +275,8 @@ func (cwdr *WithDryRuns) SettleWithBeneficiary(req SettleWithBeneficiaryRequest)
 		req.HermesID,
 		"settleWithBeneficiary",
 		req.ProviderID,
-		big.NewInt(0).SetUint64(req.Promise.Amount),
-		big.NewInt(0).SetUint64(req.Promise.Fee),
+		req.Promise.Amount,
+		req.Promise.Fee,
 		toBytes32(req.Promise.R),
 		req.Promise.Signature,
 		req.Beneficiary,
@@ -337,8 +337,8 @@ func (cwdr *WithDryRuns) SettleIntoStake(req SettleIntoStakeRequest) (*types.Tra
 		req.HermesID,
 		"settleIntoStake",
 		toBytes32(req.Promise.ChannelID),
-		big.NewInt(0).SetUint64(req.Promise.Amount),
-		big.NewInt(0).SetUint64(req.Promise.Fee),
+		req.Promise.Amount,
+		req.Promise.Fee,
 		toBytes32(req.Promise.R),
 		req.Promise.Signature,
 	)

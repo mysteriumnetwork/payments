@@ -32,15 +32,15 @@ import (
 // Promise is payment promise object
 type Promise struct {
 	ChannelID []byte
-	Amount    uint64
-	Fee       uint64
+	Amount    *big.Int
+	Fee       *big.Int
 	Hashlock  []byte
 	R         []byte
 	Signature []byte
 }
 
 // CreatePromise creates and signs new payment promise
-func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string, ks hashSigner, signer common.Address) (*Promise, error) {
+func CreatePromise(channelID string, amount *big.Int, fee *big.Int, hashlock string, ks hashSigner, signer common.Address) (*Promise, error) {
 	if hasHexPrefix(channelID) {
 		channelID = channelID[2:]
 	}
@@ -86,7 +86,7 @@ func CreatePromise(channelID string, amount uint64, fee uint64, hashlock string,
 
 // NewPromise will create new promise,
 // signature can be empty and be created later using `Sign()` method.
-func NewPromise(channelID string, amount uint64, fee uint64, preimage string, signature string) (*Promise, error) {
+func NewPromise(channelID string, amount, fee *big.Int, preimage string, signature string) (*Promise, error) {
 	if hasHexPrefix(channelID) {
 		channelID = channelID[2:]
 	}
@@ -144,8 +144,8 @@ func (p *Promise) Sign(ks *keystore.KeyStore, signer common.Address) error {
 func (p Promise) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, Pad(p.ChannelID, 32)...)
-	message = append(message, Pad(math.U256(big.NewInt(0).SetUint64(p.Amount)).Bytes(), 32)...)
-	message = append(message, Pad(math.U256(big.NewInt(0).SetUint64(p.Fee)).Bytes(), 32)...)
+	message = append(message, Pad(math.U256(p.Amount).Bytes(), 32)...)
+	message = append(message, Pad(math.U256(p.Fee).Bytes(), 32)...)
 	message = append(message, Pad(p.Hashlock, 32)...)
 	return message
 }

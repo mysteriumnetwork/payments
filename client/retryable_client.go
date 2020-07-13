@@ -31,7 +31,7 @@ import (
 
 type blockchain interface {
 	GetHermesFee(hermesAddress common.Address) (uint16, error)
-	CalculateHermesFee(hermesAddress common.Address, value uint64) (*big.Int, error)
+	CalculateHermesFee(hermesAddress common.Address, value *big.Int) (*big.Int, error)
 	IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck common.Address) (bool, error)
 	GetProviderChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error)
 	IsRegistered(registryAddress, addressToCheck common.Address) (bool, error)
@@ -141,7 +141,7 @@ func (bwr *BlockchainWithRetries) GetHermesFee(hermesAddress common.Address) (ui
 }
 
 // CalculateHermesFee fetches the hermes fee from blockchain
-func (bwr *BlockchainWithRetries) CalculateHermesFee(hermesAddress common.Address, value uint64) (*big.Int, error) {
+func (bwr *BlockchainWithRetries) CalculateHermesFee(hermesAddress common.Address, value *big.Int) (*big.Int, error) {
 	var res *big.Int
 	err := bwr.callWithRetry(func() error {
 		r, err := bwr.bc.CalculateHermesFee(hermesAddress, value)

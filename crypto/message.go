@@ -31,8 +31,8 @@ import (
 // ExchangeMessage represent a promise exchange message
 type ExchangeMessage struct {
 	Promise        Promise
-	AgreementID    uint64
-	AgreementTotal uint64
+	AgreementID    *big.Int
+	AgreementTotal *big.Int
 	Provider       string
 	Signature      string
 	HermesID       string
@@ -43,7 +43,7 @@ type hashSigner interface {
 }
 
 // CreateExchangeMessage creates new exchange message with it's promise
-func CreateExchangeMessage(invoice Invoice, promiseAmount uint64, channelID, hermesID string, ks hashSigner, signer common.Address) (*ExchangeMessage, error) {
+func CreateExchangeMessage(invoice Invoice, promiseAmount *big.Int, channelID, hermesID string, ks hashSigner, signer common.Address) (*ExchangeMessage, error) {
 	promise, err := CreatePromise(channelID, promiseAmount, invoice.TransactorFee, invoice.Hashlock, ks, signer)
 	if err != nil {
 		return nil, err
@@ -73,12 +73,12 @@ func CreateExchangeMessage(invoice Invoice, promiseAmount uint64, channelID, her
 
 // GetAgreementTotal returns a big int representation for the agreement total amount
 func (m ExchangeMessage) GetAgreementTotal() *big.Int {
-	return big.NewInt(0).SetUint64(m.AgreementTotal)
+	return m.AgreementTotal
 }
 
 // GetFee returns the big int representation for the promise settling transaction fee
 func (m ExchangeMessage) GetFee() *big.Int {
-	return big.NewInt(0).SetUint64(m.Promise.Fee)
+	return m.Promise.Fee
 }
 
 // GetSignatureBytesRaw returns the unadulterated bytes of the signature
@@ -92,8 +92,8 @@ func (m ExchangeMessage) GetSignatureBytesRaw() []byte {
 func (m ExchangeMessage) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, m.Promise.GetHash()...)
-	message = append(message, Pad(math.U256(big.NewInt(0).SetUint64(m.AgreementID)).Bytes(), 32)...)
-	message = append(message, Pad(math.U256(big.NewInt(0).SetUint64(m.AgreementTotal)).Bytes(), 32)...)
+	message = append(message, Pad(math.U256(m.AgreementID).Bytes(), 32)...)
+	message = append(message, Pad(math.U256(m.AgreementTotal).Bytes(), 32)...)
 	message = append(message, common.HexToAddress(m.Provider).Bytes()...)
 
 	// TODO: once all the consumers upgrade, this check needs to go to

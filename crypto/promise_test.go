@@ -20,6 +20,7 @@ import (
 	"crypto/ecdsa"
 	"encoding/hex"
 	"io/ioutil"
+	"math/big"
 	"os"
 	"testing"
 
@@ -138,8 +139,8 @@ func TestCreatePromise(t *testing.T) {
 
 	p := getParams("consumer")
 	channelID := hex.EncodeToString(p.ChannelID)
-	amount := p.Amount
-	fee := p.Fee
+	amount := big.NewInt(0).SetUint64(p.Amount)
+	fee := big.NewInt(0).SetUint64(p.Fee)
 	hashlock := hex.EncodeToString(p.Hashlock)
 
 	promise, err := CreatePromise(channelID, amount, fee, hashlock, ks, account.Address)
@@ -160,14 +161,14 @@ func TestCreatePromise(t *testing.T) {
 func TestNewPromise(t *testing.T) {
 	p := getParams("provider")
 	channelID := hex.EncodeToString(p.ChannelID)
-	amount := p.Amount
-	fee := p.Fee
+	amount := big.NewInt(0).SetUint64(p.Amount)
+	fee := big.NewInt(0).SetUint64(p.Fee)
 	preimage := hex.EncodeToString(p.R)
 	signature := hex.EncodeToString(p.PromiseSignature)
 
 	promise, err := NewPromise(channelID, amount, fee, preimage, signature)
 	assert.NoError(t, err)
-	assert.Equal(t, p.Amount, promise.Amount)
+	assert.Equal(t, big.NewInt(0).SetUint64(p.Amount), promise.Amount)
 	assert.Equal(t, p.ChannelID, promise.ChannelID)
 	assert.Equal(t, p.Hashlock, promise.Hashlock)
 	assert.Equal(t, p.PromiseSignature, promise.Signature)
@@ -184,10 +185,13 @@ func TestSign(t *testing.T) {
 	}
 
 	p := getParams("provider")
+	amount := big.NewInt(0).SetUint64(p.Amount)
+	fee := big.NewInt(0).SetUint64(p.Fee)
+
 	promise, err := NewPromise(
 		hex.EncodeToString(p.ChannelID),
-		p.Amount,
-		p.Fee,
+		amount,
+		fee,
 		hex.EncodeToString(p.R),
 		"",
 	)
@@ -233,11 +237,12 @@ func getPrivKey(userType string) *ecdsa.PrivateKey {
 
 func getPromise(userType string) Promise {
 	p := getParams(userType)
-
+	amount := big.NewInt(0).SetUint64(p.Amount)
+	fee := big.NewInt(0).SetUint64(p.Fee)
 	promise := Promise{
 		ChannelID: p.ChannelID,
-		Amount:    p.Amount,
-		Fee:       p.Fee,
+		Amount:    amount,
+		Fee:       fee,
 		Hashlock:  p.Hashlock,
 		Signature: p.PromiseSignature,
 	}
