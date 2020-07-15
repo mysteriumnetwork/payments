@@ -31,13 +31,13 @@ import (
 
 // SetBeneficiaryRequest represents a request for setting new beneficiary.
 type SetBeneficiaryRequest struct {
-	ChannelID   string `json:"channelID"`
-	Beneficiary string `json:"beneficiary"`
-	Nonce       uint64 `json:"nonce"`
-	Signature   string `json:"signature"`
+	ChannelID   string   `json:"channelID"`
+	Beneficiary string   `json:"beneficiary"`
+	Nonce       *big.Int `json:"nonce"`
+	Signature   string   `json:"signature"`
 }
 
-func CreateBeneficiaryRequest(channelID, beneficiary string, nonce uint64, ks hashSigner, signer common.Address) (*SetBeneficiaryRequest, error) {
+func CreateBeneficiaryRequest(channelID, beneficiary string, nonce *big.Int, ks hashSigner, signer common.Address) (*SetBeneficiaryRequest, error) {
 	if hasHexPrefix(channelID) {
 		channelID = channelID[2:]
 	}
@@ -70,7 +70,7 @@ func CreateBeneficiaryRequest(channelID, beneficiary string, nonce uint64, ks ha
 	return &request, nil
 }
 
-func NewBeneficiaryRequest(channelID, beneficiary string, nonce uint64, signature string) (*SetBeneficiaryRequest, error) {
+func NewBeneficiaryRequest(channelID, beneficiary string, nonce *big.Int, signature string) (*SetBeneficiaryRequest, error) {
 	if hasHexPrefix(channelID) {
 		channelID = channelID[2:]
 	}
@@ -114,7 +114,7 @@ func (r SetBeneficiaryRequest) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, common.Hex2Bytes(strings.TrimPrefix(r.ChannelID, "0x"))...)
 	message = append(message, common.HexToAddress(r.Beneficiary).Bytes()...)
-	message = append(message, Pad(math.U256(big.NewInt(0).SetUint64(r.Nonce)).Bytes(), 32)...)
+	message = append(message, Pad(math.U256(r.Nonce).Bytes(), 32)...)
 
 	return message
 }

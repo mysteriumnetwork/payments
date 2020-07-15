@@ -18,6 +18,7 @@ package crypto
 
 import (
 	"encoding/hex"
+	"math/big"
 	"os"
 	"testing"
 
@@ -28,7 +29,7 @@ import (
 type Metadata struct {
 	ChannelID   string
 	Beneficiary string
-	Nonce       uint64
+	Nonce       *big.Int
 	Signature   string
 	Message     string
 }
@@ -37,7 +38,7 @@ func getMetadata() Metadata {
 	return Metadata{
 		ChannelID:   "0xcdce1530994e9d86c9446c42209057b4b6cee45ff44c6e746265f50b2051d019",
 		Beneficiary: "0xB6352B90f85CE9992706a80760F0A025FCEE7b0A",
-		Nonce:       1,
+		Nonce:       big.NewInt(1),
 		Signature:   "333f2648ebdbc7d8e4f8d857f4c24a8a8b43951ab9c84f176bdbc8427a640f736f53201a8491b2c22bae91ddee8efbcbfff5bb47957c1d2af83d0245f2de63b41b",
 		Message:     "cdce1530994e9d86c9446c42209057b4b6cee45ff44c6e746265f50b2051d019b6352b90f85ce9992706a80760f0a025fcee7b0a0000000000000000000000000000000000000000000000000000000000000001",
 	}
