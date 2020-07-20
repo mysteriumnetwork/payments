@@ -41,9 +41,9 @@ func CreateInvoice(agreementID, agreementTotal, transactorFee *big.Int, r []byte
 	}
 
 	return Invoice{
-		AgreementID:    agreementID,
-		AgreementTotal: agreementTotal,
-		TransactorFee:  transactorFee,
+		AgreementID:    new(big.Int).Set(agreementID),
+		AgreementTotal: new(big.Int).Set(agreementTotal),
+		TransactorFee:  new(big.Int).Set(transactorFee),
 		Hashlock:       hex.EncodeToString(crypto.Keccak256(r)),
 	}
 }

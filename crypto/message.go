@@ -51,8 +51,8 @@ func CreateExchangeMessage(invoice Invoice, promiseAmount *big.Int, channelID, h
 
 	message := ExchangeMessage{
 		Promise:        *promise,
-		AgreementID:    invoice.AgreementID,
-		AgreementTotal: invoice.AgreementTotal,
+		AgreementID:    new(big.Int).Set(invoice.AgreementID),
+		AgreementTotal: new(big.Int).Set(invoice.AgreementTotal),
 		Provider:       invoice.Provider,
 		HermesID:       hermesID,
 	}

@@ -114,8 +114,8 @@ func NewPromise(channelID string, amount, fee *big.Int, preimage string, signatu
 
 	promise := Promise{
 		ChannelID: chID,
-		Amount:    amount,
-		Fee:       fee,
+		Amount:    new(big.Int).Set(amount),
+		Fee:       new(big.Int).Set(fee),
 		Hashlock:  crypto.Keccak256(r),
 		R:         r,
 		Signature: sig,
