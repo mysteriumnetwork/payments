@@ -43,19 +43,19 @@ var (
 )
 
 // MystTokenABI is the input ABI used to generate the binding from.
-const MystTokenABI = "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_originalToken\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_originalSupply\",\"type\":\"uint256\"},{\"internalType\":\"address[]\",\"name\":\"_defaultOperators\",\"type\":\"address[]\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenHolder\",\"type\":\"address\"}],\"name\":\"AuthorizedOperator\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"operatorData\",\"type\":\"bytes\"}],\"name\":\"Burned\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"operatorData\",\"type\":\"bytes\"}],\"name\":\"Minted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenHolder\",\"type\":\"address\"}],\"name\":\"RevokedOperator\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"operatorData\",\"type\":\"bytes\"}],\"name\":\"Sent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"upgradeAgent\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"Upgrade\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"agent\",\"type\":\"address\"}],\"name\":\"UpgradeAgentSet\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"holder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"authorizeOperator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenHolder\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"burn\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"interfaceHash\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"canImplementInterfaceForAddress\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"defaultOperators\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getUpgradeState\",\"outputs\":[{\"internalType\":\"enumUpgradableERC777.UpgradeState\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"granularity\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"tokenHolder\",\"type\":\"address\"}],\"name\":\"isOperatorFor\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"operatorData\",\"type\":\"bytes\"}],\"name\":\"operatorBurn\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"operatorData\",\"type\":\"bytes\"}],\"name\":\"operatorSend\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"originalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"originalToken\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"revokeOperator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"send\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_agent\",\"type\":\"address\"}],\"name\":\"setUpgradeAgent\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newUpgradeMaster\",\"type\":\"address\"}],\"name\":\"setUpgradeMaster\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"_userData\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"name\":\"tokensReceived\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalUpgraded\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"holder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"_data\",\"type\":\"bytes\"}],\"name\":\"upgrade\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"upgradeAgent\",\"outputs\":[{\"internalType\":\"contractIUpgradeAgent\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"upgradeMaster\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isUpgradeAgent\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_account\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"upgradeFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
+const MystTokenABI = "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"originalToken\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Burned\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousDestination\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newDestination\",\"type\":\"address\"}],\"name\":\"FundsRecoveryDestinationChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Minted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"agent\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"Upgrade\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"agent\",\"type\":\"address\"}],\"name\":\"UpgradeAgentSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"master\",\"type\":\"address\"}],\"name\":\"UpgradeMasterSet\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"DOMAIN_SEPARATOR\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"PERMIT_TYPEHASH\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isUpgradeAgent\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"nonces\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenHolder\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"burn\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"holder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"addedValue\",\"type\":\"uint256\"}],\"name\":\"increaseAllowance\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"subtractedValue\",\"type\":\"uint256\"}],\"name\":\"decreaseAllowance\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"holder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"}],\"name\":\"permit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"holder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"originalToken\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"originalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_account\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"upgradeFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"upgradeMaster\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"upgradeAgent\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalUpgraded\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"upgrade\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newUpgradeMaster\",\"type\":\"address\"}],\"name\":\"setUpgradeMaster\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"agent\",\"type\":\"address\"}],\"name\":\"setUpgradeAgent\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getUpgradeState\",\"outputs\":[{\"internalType\":\"enumMystToken.UpgradeState\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newDestination\",\"type\":\"address\"}],\"name\":\"setFundsDestination\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getFundsDestination\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"claimTokens\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_account\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"mint\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
 
 // MystTokenBin is the compiled bytecode used for deploying new contracts.
-var MystTokenBin = "0x60806040523480156200001157600080fd5b506040516200337c3803806200337c833981810160405260608110156200003757600080fd5b815160208301516040808501805191519395929483019291846401000000008211156200006357600080fd5b9083019060208201858111156200007957600080fd5b82518660208202830111640100000000821117156200009757600080fd5b82525081516020918201928201910280838360005b83811015620000c6578181015183820152602001620000ac565b505050509050016040525050506040518060400160405280601481526020017f54657374204d797374657269756d20746f6b656e00000000000000000000000081525060405180604001604052806005815260200164135654d51560da1b815250828282828260029080519060200190620001439291906200047a565b508151620001599060039060208501906200047a565b5080516200016f906004906020840190620004ff565b5060005b600454811015620001cf57600160056000600484815481106200019257fe5b6000918252602080832091909101546001600160a01b031683528201929092526040019020805460ff191691151591909117905560010162000173565b50604080516a22a9219b9b9baa37b5b2b760a91b8152815190819003600b0181206329965a1d60e01b82523060048301819052602483019190915260448201529051731820a4b7618bde71dce8cdc73aab6c95905fad24916329965a1d91606480830192600092919082900301818387803b1580156200024e57600080fd5b505af115801562000263573d6000803e3d6000fd5b5050604080516922a92199182a37b5b2b760b11b8152815190819003600a0181206329965a1d60e01b82523060048301819052602483019190915260448201529051731820a4b7618bde71dce8cdc73aab6c95905fad2493506329965a1d9250606480830192600092919082900301818387803b158015620002e457600080fd5b505af1158015620002f9573d6000803e3d6000fd5b50505050505050620003476040518060400160405280601581526020017f455243373737546f6b656e73526563697069656e740000000000000000000000815250306200038360201b60201c565b5050600a8054336001600160a01b031991821617909155600e80549091166001600160a01b03959095169490941790935550600d5550620005ac565b6000826040516020018082805190602001908083835b60208310620003ba5780518252601f19909201916020918201910162000399565b51815160209384036101000a60001901801990921691161790526040805192909401828103601f19018352808552825192909101919091206329965a1d60e01b8252306004830152602482018190526001600160a01b03881660448301529251929550731820a4b7618bde71dce8cdc73aab6c95905fad2494506329965a1d9350606480820193600093509182900301818387803b1580156200045c57600080fd5b505af115801562000471573d6000803e3d6000fd5b50505050505050565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f10620004bd57805160ff1916838001178555620004ed565b82800160010185558215620004ed579182015b82811115620004ed578251825591602001919060010190620004d0565b50620004fb92915062000565565b5090565b82805482825590600052602060002090810192821562000557579160200282015b828111156200055757825182546001600160a01b0319166001600160a01b0390911617825560209092019160019091019062000520565b50620004fb92915062000585565b6200058291905b80821115620004fb57600081556001016200056c565b90565b6200058291905b80821115620004fb5780546001600160a01b03191681556001016200058c565b612dc080620005bc6000396000f3fe608060405234801561001057600080fd5b50600436106101e45760003560e01c806362ad1b831161010f578063c752ff62116100a2578063fad8b32a11610071578063fad8b32a146108db578063fc673c4f14610901578063fe9d930314610a3f578063ffeb7d7514610aea576101e4565b8063c752ff6214610851578063d7e7088a14610859578063d95b63711461087f578063dd62ed3e146108ad576101e4565b8063959b8c3f116100de578063959b8c3f1461073e57806395d89b41146107645780639bd9bbc61461076c578063a9059cbb14610825576101e4565b806362ad1b831461057757806370a08231146106c0578063753e88e5146106e65780638444b39114610712576101e4565b8063249cb3fa11610187578063556f0dc711610156578063556f0dc7146105575780635de4ccb01461055f578063600440cb1461056757806361d3d7a61461056f576101e4565b8063249cb3fa1461045a578063313ce567146104865780633b99bcee146104a45780634b2ba0dd1461054f576101e4565b8063095ea7b3116101c3578063095ea7b3146103a65780630e7c1cb5146103e657806318160ddd1461040a57806323b872dd14610424576101e4565b806223de29146101e957806306e48538146102d157806306fdde0314610329575b600080fd5b6102cf600480360360c08110156101ff57600080fd5b6001600160a01b03823581169260208101358216926040820135909216916060820135919081019060a081016080820135600160201b81111561024157600080fd5b82018360208201111561025357600080fd5b803590602001918460018302840111600160201b8311171561027457600080fd5b919390929091602081019035600160201b81111561029157600080fd5b8201836020820111156102a357600080fd5b803590602001918460018302840111600160201b831117156102c457600080fd5b509092509050610b10565b005b6102d9610c70565b60408051602080825283518183015283519192839290830191858101910280838360005b838110156103155781810151838201526020016102fd565b505050509050019250505060405180910390f35b610331610cd3565b6040805160208082528351818301528351919283929083019185019080838360005b8381101561036b578181015183820152602001610353565b50505050905090810190601f1680156103985780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b6103d2600480360360408110156103bc57600080fd5b506001600160a01b038135169060200135610d5d565b604080519115158252519081900360200190f35b6103ee610d81565b604080516001600160a01b039092168252519081900360200190f35b610412610d90565b60408051918252519081900360200190f35b6103d26004803603606081101561043a57600080fd5b506001600160a01b03813581169160208101359091169060400135610d96565b6104126004803603604081101561047057600080fd5b50803590602001356001600160a01b0316610f19565b61048e610f90565b6040805160ff9092168252519081900360200190f35b6102cf600480360360408110156104ba57600080fd5b81359190810190604081016020820135600160201b8111156104db57600080fd5b8201836020820111156104ed57600080fd5b803590602001918460018302840111600160201b8311171561050e57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550610f95945050505050565b610412611020565b610412611026565b6103ee61102b565b6103ee61103a565b6103d2611026565b6102cf600480360360a081101561058d57600080fd5b6001600160a01b03823581169260208101359091169160408201359190810190608081016060820135600160201b8111156105c757600080fd5b8201836020820111156105d957600080fd5b803590602001918460018302840111600160201b831117156105fa57600080fd5b91908080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152509295949360208101935035915050600160201b81111561064c57600080fd5b82018360208201111561065e57600080fd5b803590602001918460018302840111600160201b8311171561067f57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550611049945050505050565b610412600480360360208110156106d657600080fd5b50356001600160a01b03166110ab565b6102cf600480360360408110156106fc57600080fd5b506001600160a01b0381351690602001356110c6565b61071a6111ae565b6040518082600481111561072a57fe5b60ff16815260200191505060405180910390f35b6102cf6004803603602081101561075457600080fd5b50356001600160a01b03166111e0565b61033161132c565b6102cf6004803603606081101561078257600080fd5b6001600160a01b0382351691602081013591810190606081016040820135600160201b8111156107b157600080fd5b8201836020820111156107c357600080fd5b803590602001918460018302840111600160201b831117156107e457600080fd5b91908080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525092955061138d945050505050565b6103d26004803603604081101561083b57600080fd5b506001600160a01b0381351690602001356113b2565b61041261148b565b6102cf6004803603602081101561086f57600080fd5b50356001600160a01b0316611491565b6103d26004803603604081101561089557600080fd5b506001600160a01b03813581169160200135166116b4565b610412600480360360408110156108c357600080fd5b506001600160a01b0381358116916020013516611755565b6102cf600480360360208110156108f157600080fd5b50356001600160a01b0316611780565b6102cf6004803603608081101561091757600080fd5b6001600160a01b0382351691602081013591810190606081016040820135600160201b81111561094657600080fd5b82018360208201111561095857600080fd5b803590602001918460018302840111600160201b8311171561097957600080fd5b91908080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152509295949360208101935035915050600160201b8111156109cb57600080fd5b8201836020820111156109dd57600080fd5b803590602001918460018302840111600160201b831117156109fe57600080fd5b91908080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152509295506118cc945050505050565b6102cf60048036036040811015610a5557600080fd5b81359190810190604081016020820135600160201b811115610a7657600080fd5b820183602082011115610a8857600080fd5b803590602001918460018302840111600160201b83111715610aa957600080fd5b91908080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525092955061192a945050505050565b6102cf60048036036020811015610b0057600080fd5b50356001600160a01b031661194c565b6000610b1a6111ae565b90506003816004811115610b2a57fe5b1480610b4157506004816004811115610b3f57fe5b145b610b88576040805162461bcd60e51b81526020600482015260136024820152721c9958d95a5d99481b9bdd08185b1b1bddd959606a1b604482015290519081900360640190fd5b6001600160a01b0387163014610bcf5760405162461bcd60e51b815260040180806020018281038252602c815260200180612b93602c913960400191505060405180910390fd5b333014610c23576040805162461bcd60e51b815260206004820152601c60248201527f6f6e6c7920776f726b696e672077697468206f776e20746f6b656e7300000000604482015290519081900360640190fd5b610c6587898888888080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152506119fc92505050565b505050505050505050565b60606004805480602002602001604051908101604052809291908181526020018280548015610cc857602002820191906000526020600020905b81546001600160a01b03168152600190910190602001808311610caa575b505050505090505b90565b60028054604080516020601f6000196101006001871615020190941685900493840181900481028201810190925282815260609390929091830182828015610cc85780601f10610d3157610100808354040283529160200191610cc8565b820191906000526020600020905b815481529060010190602001808311610d3f57509395945050505050565b600080610d68611b45565b9050610d75818585611b49565b60019150505b92915050565b600e546001600160a01b031681565b60015490565b60006001600160a01b038316610ddd5760405162461bcd60e51b8152600401808060200182810382526024815260200180612c506024913960400191505060405180910390fd5b6001600160a01b038416610e225760405162461bcd60e51b8152600401808060200182810382526026815260200180612d1f6026913960400191505060405180910390fd5b6000610e2c611b45565b9050610e5a818686866040518060200160405280600081525060405180602001604052806000815250611c35565b610e86818686866040518060200160405280600081525060405180602001604052806000815250611e7d565b610ee08582610edb86604051806060016040528060298152602001612cf6602991396001600160a01b03808c166000908152600860209081526040808320938b1683529290522054919063ffffffff6120a216565b611b49565b610f0e8186868660405180602001604052806000815250604051806020016040528060008152506000612139565b506001949350505050565b60008281526009602090815260408083206001600160a01b038516845290915281205460ff16610f4a576000610f89565b604051602001808073455243313832305f4143434550545f4d4147494360601b8152506014019050604051602081830303815290604052805190602001205b9392505050565b601290565b6000610f9f6111ae565b90506003816004811115610faf57fe5b1480610fc657506004816004811115610fc457fe5b145b61100f576040805162461bcd60e51b815260206004820152601560248201527463616c6c656420696e20612062616420737461746560581b604482015290519081900360640190fd5b61101b333385856119fc565b505050565b600d5481565b600190565b600b546001600160a01b031681565b600a546001600160a01b031681565b61105a611054611b45565b866116b4565b6110955760405162461bcd60e51b815260040180806020018281038252602c815260200180612ca6602c913960400191505060405180910390fd5b6110a4858585858560016123d9565b5050505050565b6001600160a01b031660009081526020819052604090205490565b600e546001600160a01b0316331461110f5760405162461bcd60e51b8152600401808060200182810382526028815260200180612b266028913960400191505060405180910390fd5b61114d82611128836402540be40063ffffffff6124b016565b6040518060200160405280600081525060405180602001604052806000815250612509565b600d54611165906402540be40063ffffffff6124b016565b61116d610d90565b11156111aa5760405162461bcd60e51b8152600401808060200182810382526032815260200180612c746032913960400191505060405180910390fd5b5050565b600b546000906001600160a01b03166111c957506002610cd0565b600c546111d857506003610cd0565b506004610cd0565b806001600160a01b03166111f2611b45565b6001600160a01b031614156112385760405162461bcd60e51b8152600401808060200182810382526024815260200180612b4e6024913960400191505060405180910390fd5b6001600160a01b03811660009081526005602052604090205460ff161561129b5760076000611265611b45565b6001600160a01b03908116825260208083019390935260409182016000908120918516815292529020805460ff191690556112e2565b6001600660006112a9611b45565b6001600160a01b03908116825260208083019390935260409182016000908120918616815292529020805460ff19169115159190911790555b6112ea611b45565b6001600160a01b0316816001600160a01b03167ff4caeb2d6ca8932a215a353d0703c326ec2d81fc68170f320eb2ab49e9df61f960405160405180910390a350565b60038054604080516020601f6002600019610100600188161502019095169490940493840181900481028201810190925282815260609390929091830182828015610cc85780601f10610d3157610100808354040283529160200191610cc8565b61101b611398611b45565b8484846040518060200160405280600081525060016123d9565b60006001600160a01b0383166113f95760405162461bcd60e51b8152600401808060200182810382526024815260200180612c506024913960400191505060405180910390fd5b6000611403611b45565b9050611431818286866040518060200160405280600081525060405180602001604052806000815250611c35565b61145d818286866040518060200160405280600081525060405180602001604052806000815250611e7d565b610d758182868660405180602001604052806000815250604051806020016040528060008152506000612139565b600c5481565b600a546001600160a01b031633146114da5760405162461bcd60e51b815260040180806020018281038252602a815260200180612ada602a913960400191505060405180910390fd5b6001600160a01b0381166114ed57600080fd5b60046114f76111ae565b600481111561150257fe5b1415611555576040805162461bcd60e51b815260206004820152601960248201527f757067726164652068617320616c726561647920626567756e00000000000000604482015290519081900360640190fd5b600b80546001600160a01b0319166001600160a01b038381169190911791829055604080516330e9ebd360e11b8152905192909116916361d3d7a691600480820192602092909190829003018186803b1580156115b157600080fd5b505afa1580156115c5573d6000803e3d6000fd5b505050506040513d60208110156115db57600080fd5b50516115e657600080fd5b6115ee610d90565b600b60009054906101000a90046001600160a01b03166001600160a01b0316634b2ba0dd6040518163ffffffff1660e01b815260040160206040518083038186803b15801561163c57600080fd5b505afa158015611650573d6000803e3d6000fd5b505050506040513d602081101561166657600080fd5b50511461167257600080fd5b600b54604080516001600160a01b039092168252517f7845d5aa74cc410e35571258d954f23b82276e160fe8c188fa80566580f279cc9181900360200190a150565b6000816001600160a01b0316836001600160a01b0316148061171f57506001600160a01b03831660009081526005602052604090205460ff16801561171f57506001600160a01b0380831660009081526007602090815260408083209387168352929052205460ff16155b80610f895750506001600160a01b0390811660009081526006602090815260408083209490931682529290925290205460ff1690565b6001600160a01b03918216600090815260086020908152604080832093909416825291909152205490565b611788611b45565b6001600160a01b0316816001600160a01b031614156117d85760405162461bcd60e51b8152600401808060200182810382526021815260200180612b726021913960400191505060405180910390fd5b6001600160a01b03811660009081526005602052604090205460ff161561184457600160076000611807611b45565b6001600160a01b03908116825260208083019390935260409182016000908120918616815292529020805460ff1916911515919091179055611882565b60066000611850611b45565b6001600160a01b03908116825260208083019390935260409182016000908120918516815292529020805460ff191690555b61188a611b45565b6001600160a01b0316816001600160a01b03167f50546e66e5f44d728365dc3908c63bc5cfeeab470722c1677e3073a6ac294aa160405160405180910390a350565b6118dd6118d7611b45565b856116b4565b6119185760405162461bcd60e51b815260040180806020018281038252602c815260200180612ca6602c913960400191505060405180910390fd5b6119248484848461274d565b50505050565b6111aa611935611b45565b83836040518060200160405280600081525061274d565b6001600160a01b0381166119915760405162461bcd60e51b8152600401808060200182810382526024815260200180612cd26024913960400191505060405180910390fd5b600a546001600160a01b031633146119da5760405162461bcd60e51b8152600401808060200182810382526023815260200180612bbf6023913960400191505060405180910390fd5b600a80546001600160a01b0319166001600160a01b0392909216919091179055565b60008211611a51576040805162461bcd60e51b815260206004820152601c60248201527f616d6f756e742073686f756c64206265206d6f7265207468616e203000000000604482015290519081900360640190fd5b611a6c8483836040518060200160405280600081525061274d565b600c54611a7f908363ffffffff61299316565b600c55600b546040805163753e88e560e01b81526001600160a01b038681166004830152602482018690529151919092169163753e88e591604480830192600092919082900301818387803b158015611ad757600080fd5b505af1158015611aeb573d6000803e3d6000fd5b5050600b54604080516001600160a01b039283168152602081018790528151838916955092891693507f94d4dc6dd33e72ca4b4c13e4e446974b3c8c071fe8df2216d9bafd1093148911929081900390910190a350505050565b3390565b6001600160a01b038316611b8e5760405162461bcd60e51b8152600401808060200182810382526025815260200180612a6c6025913960400191505060405180910390fd5b6001600160a01b038216611bd35760405162461bcd60e51b8152600401808060200182810382526023815260200180612d686023913960400191505060405180910390fd5b6001600160a01b03808416600081815260086020908152604080832094871680845294825291829020859055815185815291517f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b9259281900390910190a3505050565b6040805163555ddc6560e11b81526001600160a01b03871660048201527f29ddb589b1fb5fc7cf394961c1adf5f8c6454761adf795e67fe149f658abe89560248201529051600091731820a4b7618bde71dce8cdc73aab6c95905fad249163aabbb8ca91604480820192602092909190829003018186803b158015611cb957600080fd5b505afa158015611ccd573d6000803e3d6000fd5b505050506040513d6020811015611ce357600080fd5b505190506001600160a01b03811615611e7457806001600160a01b03166375ab97828888888888886040518763ffffffff1660e01b815260040180876001600160a01b03166001600160a01b03168152602001866001600160a01b03166001600160a01b03168152602001856001600160a01b03166001600160a01b031681526020018481526020018060200180602001838103835285818151815260200191508051906020019080838360005b83811015611da9578181015183820152602001611d91565b50505050905090810190601f168015611dd65780820380516001836020036101000a031916815260200191505b50838103825284518152845160209182019186019080838360005b83811015611e09578181015183820152602001611df1565b50505050905090810190601f168015611e365780820380516001836020036101000a031916815260200191505b5098505050505050505050600060405180830381600087803b158015611e5b57600080fd5b505af1158015611e6f573d6000803e3d6000fd5b505050505b50505050505050565b611e8986868686611924565b611ecc83604051806060016040528060278152602001612ab3602791396001600160a01b038816600090815260208190526040902054919063ffffffff6120a216565b6001600160a01b038087166000908152602081905260408082209390935590861681522054611f01908463ffffffff61299316565b600080866001600160a01b03166001600160a01b0316815260200190815260200160002081905550836001600160a01b0316856001600160a01b0316876001600160a01b03167f06b541ddaa720db2b10a4d0cdac39b8d360425fc073085fac19bc82614677987868686604051808481526020018060200180602001838103835285818151815260200191508051906020019080838360005b83811015611fb2578181015183820152602001611f9a565b50505050905090810190601f168015611fdf5780820380516001836020036101000a031916815260200191505b50838103825284518152845160209182019186019080838360005b83811015612012578181015183820152602001611ffa565b50505050905090810190601f16801561203f5780820380516001836020036101000a031916815260200191505b509550505050505060405180910390a4836001600160a01b0316856001600160a01b03167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef856040518082815260200191505060405180910390a3505050505050565b600081848411156121315760405162461bcd60e51b81526004018080602001828103825283818151815260200191508051906020019080838360005b838110156120f65781810151838201526020016120de565b50505050905090810190601f1680156121235780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b505050900390565b6040805163555ddc6560e11b81526001600160a01b03871660048201527fb281fc8c12954d22544db45de3159a39272895b169a852b314f9cc762e44c53b60248201529051600091731820a4b7618bde71dce8cdc73aab6c95905fad249163aabbb8ca91604480820192602092909190829003018186803b1580156121bd57600080fd5b505afa1580156121d1573d6000803e3d6000fd5b505050506040513d60208110156121e757600080fd5b505190506001600160a01b0381161561237b57806001600160a01b03166223de298989898989896040518763ffffffff1660e01b815260040180876001600160a01b03166001600160a01b03168152602001866001600160a01b03166001600160a01b03168152602001856001600160a01b03166001600160a01b031681526020018481526020018060200180602001838103835285818151815260200191508051906020019080838360005b838110156122ac578181015183820152602001612294565b50505050905090810190601f1680156122d95780820380516001836020036101000a031916815260200191505b50838103825284518152845160209182019186019080838360005b8381101561230c5781810151838201526020016122f4565b50505050905090810190601f1680156123395780820380516001836020036101000a031916815260200191505b5098505050505050505050600060405180830381600087803b15801561235e57600080fd5b505af1158015612372573d6000803e3d6000fd5b505050506123cf565b81156123cf57612393866001600160a01b03166129ed565b156123cf5760405162461bcd60e51b815260040180806020018281038252604d815260200180612c03604d913960600191505060405180910390fd5b5050505050505050565b6001600160a01b03861661241e5760405162461bcd60e51b8152600401808060200182810382526022815260200180612a916022913960400191505060405180910390fd5b6001600160a01b038516612479576040805162461bcd60e51b815260206004820181905260248201527f4552433737373a2073656e6420746f20746865207a65726f2061646472657373604482015290519081900360640190fd5b6000612483611b45565b9050612493818888888888611c35565b6124a1818888888888611e7d565b611e7481888888888888612139565b6000826124bf57506000610d7b565b828202828482816124cc57fe5b0414610f895760405162461bcd60e51b8152600401808060200182810382526021815260200180612be26021913960400191505060405180910390fd5b6001600160a01b038416612564576040805162461bcd60e51b815260206004820181905260248201527f4552433737373a206d696e7420746f20746865207a65726f2061646472657373604482015290519081900360640190fd5b600061256e611b45565b905061257d8160008787611924565b600154612590908563ffffffff61299316565b6001556001600160a01b0385166000908152602081905260409020546125bc908563ffffffff61299316565b6001600160a01b0386166000908152602081905260408120919091556125e9908290878787876001612139565b846001600160a01b0316816001600160a01b03167f2fe5be0146f74c5bce36c0b80911af6c7d86ff27e89d5cfa61fc681327954e5d868686604051808481526020018060200180602001838103835285818151815260200191508051906020019080838360005b83811015612668578181015183820152602001612650565b50505050905090810190601f1680156126955780820380516001836020036101000a031916815260200191505b50838103825284518152845160209182019186019080838360005b838110156126c85781810151838201526020016126b0565b50505050905090810190601f1680156126f55780820380516001836020036101000a031916815260200191505b509550505050505060405180910390a36040805185815290516001600160a01b038716916000917fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9181900360200190a35050505050565b6001600160a01b0384166127925760405162461bcd60e51b8152600401808060200182810382526022815260200180612b046022913960400191505060405180910390fd5b600061279c611b45565b90506127ab8186600087611924565b6127ba81866000878787611c35565b6127fd84604051806060016040528060238152602001612d45602391396001600160a01b038816600090815260208190526040902054919063ffffffff6120a216565b6001600160a01b038616600090815260208190526040902055600154612829908563ffffffff612a2916565b600181905550846001600160a01b0316816001600160a01b03167fa78a9be3a7b862d26933ad85fb11d80ef66b8f972d7cbba06621d583943a4098868686604051808481526020018060200180602001838103835285818151815260200191508051906020019080838360005b838110156128ae578181015183820152602001612896565b50505050905090810190601f1680156128db5780820380516001836020036101000a031916815260200191505b50838103825284518152845160209182019186019080838360005b8381101561290e5781810151838201526020016128f6565b50505050905090810190601f16801561293b5780820380516001836020036101000a031916815260200191505b509550505050505060405180910390a36040805185815290516000916001600160a01b038816917fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9181900360200190a35050505050565b600082820183811015610f89576040805162461bcd60e51b815260206004820152601b60248201527f536166654d6174683a206164646974696f6e206f766572666c6f770000000000604482015290519081900360640190fd5b6000813f7fc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470818114801590612a2157508115155b949350505050565b6000610f8983836040518060400160405280601e81526020017f536166654d6174683a207375627472616374696f6e206f766572666c6f7700008152506120a256fe4552433737373a20617070726f76652066726f6d20746865207a65726f20616464726573734552433737373a2073656e642066726f6d20746865207a65726f20616464726573734552433737373a207472616e7366657220616d6f756e7420657863656564732062616c616e63656f6e6c792061206d61737465722063616e2064657369676e61746520746865206e657874206167656e744552433737373a206275726e2066726f6d20746865207a65726f20616464726573736f6e6c79206f726967696e616c20746f6b656e2063616e2063616c6c207570677261646546726f6d4552433737373a20617574686f72697a696e672073656c66206173206f70657261746f724552433737373a207265766f6b696e672073656c66206173206f70657261746f726f6e6c7920776f726b73207769746820746f6b656e732073656e7420746f207468697320636f6e74726163746f6e6c792075706772616465206d61737465722063616e20736574206e6577206f6e65536166654d6174683a206d756c7469706c69636174696f6e206f766572666c6f774552433737373a20746f6b656e20726563697069656e7420636f6e747261637420686173206e6f20696d706c656d656e74657220666f7220455243373737546f6b656e73526563697069656e744552433737373a207472616e7366657220746f20746865207a65726f206164647265737363616e206e6f74206d696e74206d6f726520746f6b656e73207468616e20696e206f726967696e616c20636f6e74726163744552433737373a2063616c6c6572206973206e6f7420616e206f70657261746f7220666f7220686f6c64657275706772616465206d61737465722063616e2774206265207a65726f20616464726573734552433737373a207472616e7366657220616d6f756e74206578636565647320616c6c6f77616e63654552433737373a207472616e736665722066726f6d20746865207a65726f20616464726573734552433737373a206275726e20616d6f756e7420657863656564732062616c616e63654552433737373a20617070726f766520746f20746865207a65726f2061646472657373a2646970667358221220ad3d082641f77789f6cbadb7c009212ba06d07f9a9840fa3f5882ec7f54126c564736f6c634300060b0033"
+var MystTokenBin = "0x60c06040523480156200001157600080fd5b5060405162001f9d38038062001f9d833981810160405260208110156200003757600080fd5b50516001600160601b0319606082901b16608052604080516318160ddd60e01b815290516001600160a01b038316916318160ddd916004808301926020929190829003018186803b1580156200008c57600080fd5b505afa158015620000a1573d6000803e3d6000fd5b505050506040513d6020811015620000b857600080fd5b505160a052620000c7620001d3565b600080546001600160a01b0319166001600160a01b039290921691909117905560408051808201825260098152684d797374657269756d60b81b602091820152815180830190925260018252603160f81b9101527f8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f7f5a6b6ed89c9a1a7ef403de5fac83d634f25f39cd4318f8dabc0fdddabbba7bd17fc89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc662000188620001d7565b6040805160208082019690965280820194909452606084019290925260808301523060a0808401919091528151808403909101815260c09092019052805191012060055550620001db565b3390565b4690565b60805160601c60a051611d9b6200020260003980610b3052508061066a5250611d9b6000f3fe608060405234801561001057600080fd5b50600436106101e55760003560e01c8063600440cb1161010f578063a9059cbb116100a2578063dd62ed3e11610071578063dd62ed3e146105a3578063df8de3e7146105d1578063f58c5b6e146105f7578063ffeb7d75146105ff576101e5565b8063a9059cbb146104f8578063c752ff6214610524578063d505accf1461052c578063d7e7088a1461057d576101e5565b80637ecebe00116100de5780637ecebe00146104755780638444b3911461049b57806395d89b41146104c4578063a457c2d7146104cc576101e5565b8063600440cb1461041357806361d3d7a61461041b57806370a0823114610423578063753e88e514610449576101e5565b8063313ce5671161018757806342966c681161015657806342966c68146103c957806345977d03146103e65780634b2ba0dd146104035780635de4ccb01461040b576101e5565b8063313ce5671461034b5780633644e51514610369578063395093511461037157806340c10f191461039d576101e5565b806318160ddd116101c357806318160ddd146102cb578063238e130a146102e557806323b872dd1461030d57806330adf81f14610343576101e5565b806306fdde03146101ea578063095ea7b3146102675780630e7c1cb5146102a7575b600080fd5b6101f2610625565b6040805160208082528351818301528351919283929083019185019080838360005b8381101561022c578181015183820152602001610214565b50505050905090810190601f1680156102595780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b6102936004803603604081101561027d57600080fd5b506001600160a01b03813516906020013561064a565b604080519115158252519081900360200190f35b6102af610668565b604080516001600160a01b039092168252519081900360200190f35b6102d361068d565b60408051918252519081900360200190f35b61030b600480360360208110156102fb57600080fd5b50356001600160a01b0316610693565b005b6102936004803603606081101561032357600080fd5b506001600160a01b03813581169160208101359091169060400135610781565b6102d361088c565b6103536108b0565b6040805160ff9092168252519081900360200190f35b6102d36108b5565b6102936004803603604081101561038757600080fd5b506001600160a01b0381351690602001356108bb565b61030b600480360360408110156103b357600080fd5b506001600160a01b038135169060200135610909565b61030b600480360360208110156103df57600080fd5b5035610986565b61030b600480360360208110156103fc57600080fd5b503561099a565b6102d3610b2e565b6102af610b52565b6102af610b61565b610293610b70565b6102d36004803603602081101561043957600080fd5b50356001600160a01b0316610b75565b61030b6004803603604081101561045f57600080fd5b506001600160a01b038135169060200135610b90565b6102d36004803603602081101561048b57600080fd5b50356001600160a01b0316610c5b565b6104a3610c6d565b604051808260058111156104b357fe5b815260200191505060405180910390f35b6101f2610cb3565b610293600480360360408110156104e257600080fd5b506001600160a01b038135169060200135610cd3565b6102936004803603604081101561050e57600080fd5b506001600160a01b038135169060200135610d3b565b6102d3610d4f565b61030b600480360360e081101561054257600080fd5b506001600160a01b03813581169160208101359091169060408101359060608101359060ff6080820135169060a08101359060c00135610d55565b61030b6004803603602081101561059357600080fd5b50356001600160a01b0316610f59565b6102d3600480360360408110156105b957600080fd5b506001600160a01b0381358116916020013516611227565b61030b600480360360208110156105e757600080fd5b50356001600160a01b0316611252565b6102af61136b565b61030b6004803603602081101561061557600080fd5b50356001600160a01b031661137a565b604051806040016040528060098152602001684d797374657269756d60b81b81525081565b600061065e61065761145c565b8484611460565b5060015b92915050565b7f00000000000000000000000000000000000000000000000000000000000000005b90565b60045490565b6000546001600160a01b03166106a761145c565b6001600160a01b0316146106ec5760405162461bcd60e51b815260040180806020018281038252602d815260200180611ba2602d913960400191505060405180910390fd5b6001600160a01b0381166107315760405162461bcd60e51b815260040180806020018281038252602e815260200180611c1e602e913960400191505060405180910390fd5b600880546001600160a01b0319166001600160a01b0383811691821792839055604051919216907f2e1db88922daae16be4e3c1a1f4bfab0cf6741938844967bd985ac8b2a12c80490600090a350565b60006001600160a01b0384166107c85760405162461bcd60e51b8152600401808060200182810382526024815260200180611b026024913960400191505060405180910390fd5b60006107d261145c565b9050806001600160a01b0316856001600160a01b03161415801561081d57506001600160a01b0380861660009081526007602090815260408083209385168352929052205460001914155b1561087657610876858261087186604051806060016040528060278152602001611b26602791396001600160a01b03808c166000908152600760209081526040808320938b1683529290522054919061154c565b611460565b6108818585856115e3565b506001949350505050565b7f6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c64845d6126c981565b601281565b60055481565b600061065e6108c861145c565b8461087185600760006108d961145c565b6001600160a01b03908116825260208083019390935260409182016000908120918c1681529252902054906116c9565b6000546001600160a01b031661091d61145c565b6001600160a01b031614610978576040805162461bcd60e51b815260206004820152601c60248201527f4d5953543a206f6e6c792061206d61737465722063616e206d696e7400000000604482015290519081900360640190fd5b610982828261172a565b5050565b61099761099161145c565b8261184f565b50565b60006109a4610c6d565b905060038160058111156109b457fe5b14806109cb575060048160058111156109c957fe5b145b610a065760405162461bcd60e51b8152600401808060200182810382526025815260200180611bf96025913960400191505060405180910390fd5b81610a425760405162461bcd60e51b815260040180806020018281038252602d815260200180611ceb602d913960400191505060405180910390fd5b6000610a4c61145c565b9050610a58818461184f565b600254610a6590846116c9565b6002556001546040805163753e88e560e01b81526001600160a01b038481166004830152602482018790529151919092169163753e88e591604480830192600092919082900301818387803b158015610abd57600080fd5b505af1158015610ad1573d6000803e3d6000fd5b50505050806001600160a01b03167f7e5c344a8141a805725cb476f76c6953b842222b967edd1f78ddb6e8b3f397ac610b08610b52565b604080516001600160a01b039092168252602082018790528051918290030190a2505050565b7f000000000000000000000000000000000000000000000000000000000000000090565b6001546001600160a01b031690565b6000546001600160a01b031690565b600181565b6001600160a01b031660009081526003602052604090205490565b610b98610668565b6001600160a01b0316336001600160a01b031614610be75760405162461bcd60e51b8152600401808060200182810382526028815260200180611ab96028913960400191505060405180910390fd5b610bff82610bfa836402540be400611994565b61172a565b610c166402540be400610c10610b2e565b90611994565b610c1e61068d565b11156109825760405162461bcd60e51b8152600401808060200182810382526032815260200180611c4c6032913960400191505060405180910390fd5b60066020526000908152604090205481565b6001546000906001600160a01b0316610c885750600261068a565b600254610c975750600361068a565b610c9f61068d565b610cab5750600561068a565b50600461068a565b60405180604001604052806004815260200163135654d560e21b81525081565b600061065e610ce061145c565b8461087185604051806060016040528060258152602001611d186025913960076000610d0a61145c565b6001600160a01b03908116825260208083019390935260409182016000908120918d1681529252902054919061154c565b600061065e610d4861145c565b84846115e3565b60025490565b42841015610da1576040805162461bcd60e51b8152602060048201526014602482015273135654d50e8814195c9b5a5d08195e1c1a5c995960621b604482015290519081900360640190fd5b6005546001600160a01b0380891660008181526006602090815260408083208054600180820190925582517f6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c64845d6126c98186015280840196909652958d166060860152608085018c905260a085019590955260c08085018b90528151808603909101815260e08501825280519083012061190160f01b6101008601526101028501969096526101228085019690965280518085039096018652610142840180825286519683019690962095839052610162840180825286905260ff89166101828501526101a284018890526101c28401879052519193926101e280820193601f1981019281900390910190855afa158015610ebc573d6000803e3d6000fd5b5050604051601f1901519150506001600160a01b03811615801590610ef25750886001600160a01b0316816001600160a01b0316145b610f43576040805162461bcd60e51b815260206004820152601760248201527f4d5953543a20696e76616c6964207369676e6174757265000000000000000000604482015290519081900360640190fd5b610f4e898989611460565b505050505050505050565b6000546001600160a01b0316610f6d61145c565b6001600160a01b031614610fb25760405162461bcd60e51b8152600401808060200182810382526030815260200180611a896030913960400191505060405180910390fd5b6001600160a01b038116610ff75760405162461bcd60e51b8152600401808060200182810382526029815260200180611cc26029913960400191505060405180910390fd5b6004611001610c6d565b600581111561100c57fe5b141561105f576040805162461bcd60e51b815260206004820152601f60248201527f4d5953543a20757067726164652068617320616c726561647920626567756e00604482015290519081900360640190fd5b600180546001600160a01b0319166001600160a01b038381169190911791829055604080516330e9ebd360e11b8152905192909116916361d3d7a691600480820192602092909190829003018186803b1580156110bb57600080fd5b505afa1580156110cf573d6000803e3d6000fd5b505050506040513d60208110156110e557600080fd5b50516111225760405162461bcd60e51b8152600401808060200182810382526034815260200180611b6e6034913960400191505060405180910390fd5b61112a61068d565b600160009054906101000a90046001600160a01b03166001600160a01b0316634b2ba0dd6040518163ffffffff1660e01b815260040160206040518083038186803b15801561117857600080fd5b505afa15801561118c573d6000803e3d6000fd5b505050506040513d60208110156111a257600080fd5b5051146111e05760405162461bcd60e51b8152600401808060200182810382526034815260200180611a556034913960400191505060405180910390fd5b7f7845d5aa74cc410e35571258d954f23b82276e160fe8c188fa80566580f279cc611209610b52565b604080516001600160a01b039092168252519081900360200190a150565b6001600160a01b03918216600090815260076020908152604080832093909416825291909152205490565b6008546001600160a01b031661126757600080fd5b6000816001600160a01b03166370a08231306040518263ffffffff1660e01b815260040180826001600160a01b0316815260200191505060206040518083038186803b1580156112b657600080fd5b505afa1580156112ca573d6000803e3d6000fd5b505050506040513d60208110156112e057600080fd5b50516008546040805163a9059cbb60e01b81526001600160a01b0392831660048201526024810184905290519293509084169163a9059cbb916044808201926020929091908290030181600087803b15801561133b57600080fd5b505af115801561134f573d6000803e3d6000fd5b505050506040513d602081101561136557600080fd5b50505050565b6008546001600160a01b031690565b6001600160a01b0381166113bf5760405162461bcd60e51b815260040180806020018281038252602a815260200180611bcf602a913960400191505060405180910390fd5b6000546001600160a01b03166113d361145c565b6001600160a01b0316146114185760405162461bcd60e51b8152600401808060200182810382526029815260200180611d3d6029913960400191505060405180910390fd5b600080546001600160a01b0319166001600160a01b0383161790557f0bae748e6d38d2b1532af619519837d91d74845ad693f6f229677b4ac20b2d50611209610b61565b3390565b6001600160a01b0383166114a55760405162461bcd60e51b8152600401808060200182810382526023815260200180611c9f6023913960400191505060405180910390fd5b6001600160a01b0382166114ea5760405162461bcd60e51b8152600401808060200182810382526021815260200180611ae16021913960400191505060405180910390fd5b6001600160a01b03808416600081815260076020908152604080832094871680845294825291829020859055815185815291517f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b9259281900390910190a3505050565b600081848411156115db5760405162461bcd60e51b81526004018080602001828103825283818151815260200191508051906020019080838360005b838110156115a0578181015183820152602001611588565b50505050905090810190601f1680156115cd5780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b505050900390565b6001600160a01b038216611600576115fb838261184f565b6116c4565b61163d81604051806060016040528060258152602001611a30602591396001600160a01b038616600090815260036020526040902054919061154c565b6001600160a01b03808516600090815260036020526040808220939093559084168152205461166c90826116c9565b6001600160a01b0380841660008181526003602090815260409182902094909455805185815290519193928716927fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef92918290030190a35b505050565b600082820183811015611723576040805162461bcd60e51b815260206004820152601b60248201527f536166654d6174683a206164646974696f6e206f766572666c6f770000000000604482015290519081900360640190fd5b9392505050565b6001600160a01b038216611785576040805162461bcd60e51b815260206004820152601e60248201527f4d5953543a206d696e7420746f20746865207a65726f20616464726573730000604482015290519081900360640190fd5b60045461179290826116c9565b6004556001600160a01b0382166000908152600360205260409020546117b890826116c9565b6001600160a01b038316600081815260036020908152604091829020939093558051848152905191927f30385c845b448a36257a6a1716e6ad2e1bc2cbe333cde1e69fe849ad6511adfe92918290030190a26040805182815290516001600160a01b038416916000917fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9181900360200190a35050565b6001600160a01b0382166118aa576040805162461bcd60e51b815260206004820181905260248201527f4d5953543a206275726e2066726f6d20746865207a65726f2061646472657373604482015290519081900360640190fd5b6118e781604051806060016040528060218152602001611c7e602191396001600160a01b038516600090815260036020526040902054919061154c565b6001600160a01b03831660009081526003602052604090205560045461190d90826119ed565b6004556040805182815290516000916001600160a01b038516917fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9181900360200190a36040805182815290516001600160a01b038416917f696de425f79f4a40bc6d2122ca50507f0efbeabbff86a84871b7196ab8ea8df7919081900360200190a25050565b6000826119a357506000610662565b828202828482816119b057fe5b04146117235760405162461bcd60e51b8152600401808060200182810382526021815260200180611b4d6021913960400191505060405180910390fd5b600061172383836040518060400160405280601e81526020017f536166654d6174683a207375627472616374696f6e206f766572666c6f77000081525061154c56fe4d5953543a207472616e7366657220616d6f756e7420657863656564732062616c616e63654d5953543a2075706772616465206167656e742073686f756c64206b6e6f7720746f6b656e277320746f74616c20737570706c794d5953543a206f6e6c792061206d61737465722063616e2064657369676e61746520746865206e657874206167656e746f6e6c79206f726967696e616c20746f6b656e2063616e2063616c6c207570677261646546726f6d4d5953543a20617070726f766520746f20746865207a65726f20616464726573734d5953543a207472616e736665722066726f6d20746865207a65726f20616464726573734d5953543a207472616e7366657220616d6f756e74206578636565647320616c6c6f77616e6365536166654d6174683a206d756c7469706c69636174696f6e206f766572666c6f774d5953543a206167656e742073686f756c6420696d706c656d656e742049557067726164654167656e7420696e746572666163654d5953543a206f6e6c792061206d61737465722063616e207365742066756e64732064657374696e6174696f6e4d5953543a2075706772616465206d61737465722063616e2774206265207a65726f20616464726573734d5953543a20746f6b656e206973206e6f7420696e20757067726164696e672073746174654d5953543a2066756e64732064657374696e6174696f6e2063616e2774206265207a65726f20616464726565737363616e206e6f74206d696e74206d6f726520746f6b656e73207468616e20696e206f726967696e616c20636f6e74726163744d5953543a206275726e20616d6f756e7420657863656564732062616c616e63654d5953543a20617070726f76652066726f6d20746865207a65726f20616464726573734d5953543a2075706772616465206167656e742063616e2774206265207a65726f20616464726573734d5953543a2075706772616461626c6520616d6f756e742073686f756c64206265206d6f7265207468616e203045524332303a2064656372656173656420616c6c6f77616e63652062656c6f77207a65726f4d5953543a206f6e6c792075706772616465206d61737465722063616e20736574206e6577206f6e65a264697066735822122043f03aa2262bbb3e72c11052ae9b3d60396ed857be7574432aadb5da370f438664736f6c634300060c0033"
 
 // DeployMystToken deploys a new Ethereum contract, binding an instance of MystToken to it.
-func DeployMystToken(auth *bind.TransactOpts, backend bind.ContractBackend, _originalToken common.Address, _originalSupply *big.Int, _defaultOperators []common.Address) (common.Address, *types.Transaction, *MystToken, error) {
+func DeployMystToken(auth *bind.TransactOpts, backend bind.ContractBackend, originalToken common.Address) (common.Address, *types.Transaction, *MystToken, error) {
 	parsed, err := abi.JSON(strings.NewReader(MystTokenABI))
 	if err != nil {
 		return common.Address{}, nil, nil, err
 	}
 
-	address, tx, contract, err := bind.DeployContract(auth, parsed, common.FromHex(MystTokenBin), backend, _originalToken, _originalSupply, _defaultOperators)
+	address, tx, contract, err := bind.DeployContract(auth, parsed, common.FromHex(MystTokenBin), backend, originalToken)
 	if err != nil {
 		return common.Address{}, nil, nil, err
 	}
@@ -204,6 +204,58 @@ func (_MystToken *MystTokenTransactorRaw) Transact(opts *bind.TransactOpts, meth
 	return _MystToken.Contract.contract.Transact(opts, method, params...)
 }
 
+// DOMAINSEPARATOR is a free data retrieval call binding the contract method 0x3644e515.
+//
+// Solidity: function DOMAIN_SEPARATOR() view returns(bytes32)
+func (_MystToken *MystTokenCaller) DOMAINSEPARATOR(opts *bind.CallOpts) ([32]byte, error) {
+	var (
+		ret0 = new([32]byte)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "DOMAIN_SEPARATOR")
+	return *ret0, err
+}
+
+// DOMAINSEPARATOR is a free data retrieval call binding the contract method 0x3644e515.
+//
+// Solidity: function DOMAIN_SEPARATOR() view returns(bytes32)
+func (_MystToken *MystTokenSession) DOMAINSEPARATOR() ([32]byte, error) {
+	return _MystToken.Contract.DOMAINSEPARATOR(&_MystToken.CallOpts)
+}
+
+// DOMAINSEPARATOR is a free data retrieval call binding the contract method 0x3644e515.
+//
+// Solidity: function DOMAIN_SEPARATOR() view returns(bytes32)
+func (_MystToken *MystTokenCallerSession) DOMAINSEPARATOR() ([32]byte, error) {
+	return _MystToken.Contract.DOMAINSEPARATOR(&_MystToken.CallOpts)
+}
+
+// PERMITTYPEHASH is a free data retrieval call binding the contract method 0x30adf81f.
+//
+// Solidity: function PERMIT_TYPEHASH() view returns(bytes32)
+func (_MystToken *MystTokenCaller) PERMITTYPEHASH(opts *bind.CallOpts) ([32]byte, error) {
+	var (
+		ret0 = new([32]byte)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "PERMIT_TYPEHASH")
+	return *ret0, err
+}
+
+// PERMITTYPEHASH is a free data retrieval call binding the contract method 0x30adf81f.
+//
+// Solidity: function PERMIT_TYPEHASH() view returns(bytes32)
+func (_MystToken *MystTokenSession) PERMITTYPEHASH() ([32]byte, error) {
+	return _MystToken.Contract.PERMITTYPEHASH(&_MystToken.CallOpts)
+}
+
+// PERMITTYPEHASH is a free data retrieval call binding the contract method 0x30adf81f.
+//
+// Solidity: function PERMIT_TYPEHASH() view returns(bytes32)
+func (_MystToken *MystTokenCallerSession) PERMITTYPEHASH() ([32]byte, error) {
+	return _MystToken.Contract.PERMITTYPEHASH(&_MystToken.CallOpts)
+}
+
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
 // Solidity: function allowance(address holder, address spender) view returns(uint256)
@@ -256,35 +308,9 @@ func (_MystToken *MystTokenCallerSession) BalanceOf(tokenHolder common.Address) 
 	return _MystToken.Contract.BalanceOf(&_MystToken.CallOpts, tokenHolder)
 }
 
-// CanImplementInterfaceForAddress is a free data retrieval call binding the contract method 0x249cb3fa.
-//
-// Solidity: function canImplementInterfaceForAddress(bytes32 interfaceHash, address account) view returns(bytes32)
-func (_MystToken *MystTokenCaller) CanImplementInterfaceForAddress(opts *bind.CallOpts, interfaceHash [32]byte, account common.Address) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "canImplementInterfaceForAddress", interfaceHash, account)
-	return *ret0, err
-}
-
-// CanImplementInterfaceForAddress is a free data retrieval call binding the contract method 0x249cb3fa.
-//
-// Solidity: function canImplementInterfaceForAddress(bytes32 interfaceHash, address account) view returns(bytes32)
-func (_MystToken *MystTokenSession) CanImplementInterfaceForAddress(interfaceHash [32]byte, account common.Address) ([32]byte, error) {
-	return _MystToken.Contract.CanImplementInterfaceForAddress(&_MystToken.CallOpts, interfaceHash, account)
-}
-
-// CanImplementInterfaceForAddress is a free data retrieval call binding the contract method 0x249cb3fa.
-//
-// Solidity: function canImplementInterfaceForAddress(bytes32 interfaceHash, address account) view returns(bytes32)
-func (_MystToken *MystTokenCallerSession) CanImplementInterfaceForAddress(interfaceHash [32]byte, account common.Address) ([32]byte, error) {
-	return _MystToken.Contract.CanImplementInterfaceForAddress(&_MystToken.CallOpts, interfaceHash, account)
-}
-
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() pure returns(uint8)
+// Solidity: function decimals() view returns(uint8)
 func (_MystToken *MystTokenCaller) Decimals(opts *bind.CallOpts) (uint8, error) {
 	var (
 		ret0 = new(uint8)
@@ -296,42 +322,42 @@ func (_MystToken *MystTokenCaller) Decimals(opts *bind.CallOpts) (uint8, error) 
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() pure returns(uint8)
+// Solidity: function decimals() view returns(uint8)
 func (_MystToken *MystTokenSession) Decimals() (uint8, error) {
 	return _MystToken.Contract.Decimals(&_MystToken.CallOpts)
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() pure returns(uint8)
+// Solidity: function decimals() view returns(uint8)
 func (_MystToken *MystTokenCallerSession) Decimals() (uint8, error) {
 	return _MystToken.Contract.Decimals(&_MystToken.CallOpts)
 }
 
-// DefaultOperators is a free data retrieval call binding the contract method 0x06e48538.
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
 //
-// Solidity: function defaultOperators() view returns(address[])
-func (_MystToken *MystTokenCaller) DefaultOperators(opts *bind.CallOpts) ([]common.Address, error) {
+// Solidity: function getFundsDestination() view returns(address)
+func (_MystToken *MystTokenCaller) GetFundsDestination(opts *bind.CallOpts) (common.Address, error) {
 	var (
-		ret0 = new([]common.Address)
+		ret0 = new(common.Address)
 	)
 	out := ret0
-	err := _MystToken.contract.Call(opts, out, "defaultOperators")
+	err := _MystToken.contract.Call(opts, out, "getFundsDestination")
 	return *ret0, err
 }
 
-// DefaultOperators is a free data retrieval call binding the contract method 0x06e48538.
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
 //
-// Solidity: function defaultOperators() view returns(address[])
-func (_MystToken *MystTokenSession) DefaultOperators() ([]common.Address, error) {
-	return _MystToken.Contract.DefaultOperators(&_MystToken.CallOpts)
+// Solidity: function getFundsDestination() view returns(address)
+func (_MystToken *MystTokenSession) GetFundsDestination() (common.Address, error) {
+	return _MystToken.Contract.GetFundsDestination(&_MystToken.CallOpts)
 }
 
-// DefaultOperators is a free data retrieval call binding the contract method 0x06e48538.
+// GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
 //
-// Solidity: function defaultOperators() view returns(address[])
-func (_MystToken *MystTokenCallerSession) DefaultOperators() ([]common.Address, error) {
-	return _MystToken.Contract.DefaultOperators(&_MystToken.CallOpts)
+// Solidity: function getFundsDestination() view returns(address)
+func (_MystToken *MystTokenCallerSession) GetFundsDestination() (common.Address, error) {
+	return _MystToken.Contract.GetFundsDestination(&_MystToken.CallOpts)
 }
 
 // GetUpgradeState is a free data retrieval call binding the contract method 0x8444b391.
@@ -360,61 +386,9 @@ func (_MystToken *MystTokenCallerSession) GetUpgradeState() (uint8, error) {
 	return _MystToken.Contract.GetUpgradeState(&_MystToken.CallOpts)
 }
 
-// Granularity is a free data retrieval call binding the contract method 0x556f0dc7.
-//
-// Solidity: function granularity() view returns(uint256)
-func (_MystToken *MystTokenCaller) Granularity(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "granularity")
-	return *ret0, err
-}
-
-// Granularity is a free data retrieval call binding the contract method 0x556f0dc7.
-//
-// Solidity: function granularity() view returns(uint256)
-func (_MystToken *MystTokenSession) Granularity() (*big.Int, error) {
-	return _MystToken.Contract.Granularity(&_MystToken.CallOpts)
-}
-
-// Granularity is a free data retrieval call binding the contract method 0x556f0dc7.
-//
-// Solidity: function granularity() view returns(uint256)
-func (_MystToken *MystTokenCallerSession) Granularity() (*big.Int, error) {
-	return _MystToken.Contract.Granularity(&_MystToken.CallOpts)
-}
-
-// IsOperatorFor is a free data retrieval call binding the contract method 0xd95b6371.
-//
-// Solidity: function isOperatorFor(address operator, address tokenHolder) view returns(bool)
-func (_MystToken *MystTokenCaller) IsOperatorFor(opts *bind.CallOpts, operator common.Address, tokenHolder common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "isOperatorFor", operator, tokenHolder)
-	return *ret0, err
-}
-
-// IsOperatorFor is a free data retrieval call binding the contract method 0xd95b6371.
-//
-// Solidity: function isOperatorFor(address operator, address tokenHolder) view returns(bool)
-func (_MystToken *MystTokenSession) IsOperatorFor(operator common.Address, tokenHolder common.Address) (bool, error) {
-	return _MystToken.Contract.IsOperatorFor(&_MystToken.CallOpts, operator, tokenHolder)
-}
-
-// IsOperatorFor is a free data retrieval call binding the contract method 0xd95b6371.
-//
-// Solidity: function isOperatorFor(address operator, address tokenHolder) view returns(bool)
-func (_MystToken *MystTokenCallerSession) IsOperatorFor(operator common.Address, tokenHolder common.Address) (bool, error) {
-	return _MystToken.Contract.IsOperatorFor(&_MystToken.CallOpts, operator, tokenHolder)
-}
-
 // IsUpgradeAgent is a free data retrieval call binding the contract method 0x61d3d7a6.
 //
-// Solidity: function isUpgradeAgent() pure returns(bool)
+// Solidity: function isUpgradeAgent() view returns(bool)
 func (_MystToken *MystTokenCaller) IsUpgradeAgent(opts *bind.CallOpts) (bool, error) {
 	var (
 		ret0 = new(bool)
@@ -426,14 +400,14 @@ func (_MystToken *MystTokenCaller) IsUpgradeAgent(opts *bind.CallOpts) (bool, er
 
 // IsUpgradeAgent is a free data retrieval call binding the contract method 0x61d3d7a6.
 //
-// Solidity: function isUpgradeAgent() pure returns(bool)
+// Solidity: function isUpgradeAgent() view returns(bool)
 func (_MystToken *MystTokenSession) IsUpgradeAgent() (bool, error) {
 	return _MystToken.Contract.IsUpgradeAgent(&_MystToken.CallOpts)
 }
 
 // IsUpgradeAgent is a free data retrieval call binding the contract method 0x61d3d7a6.
 //
-// Solidity: function isUpgradeAgent() pure returns(bool)
+// Solidity: function isUpgradeAgent() view returns(bool)
 func (_MystToken *MystTokenCallerSession) IsUpgradeAgent() (bool, error) {
 	return _MystToken.Contract.IsUpgradeAgent(&_MystToken.CallOpts)
 }
@@ -462,6 +436,32 @@ func (_MystToken *MystTokenSession) Name() (string, error) {
 // Solidity: function name() view returns(string)
 func (_MystToken *MystTokenCallerSession) Name() (string, error) {
 	return _MystToken.Contract.Name(&_MystToken.CallOpts)
+}
+
+// Nonces is a free data retrieval call binding the contract method 0x7ecebe00.
+//
+// Solidity: function nonces(address ) view returns(uint256)
+func (_MystToken *MystTokenCaller) Nonces(opts *bind.CallOpts, arg0 common.Address) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _MystToken.contract.Call(opts, out, "nonces", arg0)
+	return *ret0, err
+}
+
+// Nonces is a free data retrieval call binding the contract method 0x7ecebe00.
+//
+// Solidity: function nonces(address ) view returns(uint256)
+func (_MystToken *MystTokenSession) Nonces(arg0 common.Address) (*big.Int, error) {
+	return _MystToken.Contract.Nonces(&_MystToken.CallOpts, arg0)
+}
+
+// Nonces is a free data retrieval call binding the contract method 0x7ecebe00.
+//
+// Solidity: function nonces(address ) view returns(uint256)
+func (_MystToken *MystTokenCallerSession) Nonces(arg0 common.Address) (*big.Int, error) {
+	return _MystToken.Contract.Nonces(&_MystToken.CallOpts, arg0)
 }
 
 // OriginalSupply is a free data retrieval call binding the contract method 0x4b2ba0dd.
@@ -667,193 +667,193 @@ func (_MystToken *MystTokenTransactorSession) Approve(spender common.Address, va
 	return _MystToken.Contract.Approve(&_MystToken.TransactOpts, spender, value)
 }
 
-// AuthorizeOperator is a paid mutator transaction binding the contract method 0x959b8c3f.
+// Burn is a paid mutator transaction binding the contract method 0x42966c68.
 //
-// Solidity: function authorizeOperator(address operator) returns()
-func (_MystToken *MystTokenTransactor) AuthorizeOperator(opts *bind.TransactOpts, operator common.Address) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "authorizeOperator", operator)
+// Solidity: function burn(uint256 amount) returns()
+func (_MystToken *MystTokenTransactor) Burn(opts *bind.TransactOpts, amount *big.Int) (*types.Transaction, error) {
+	return _MystToken.contract.Transact(opts, "burn", amount)
 }
 
-// AuthorizeOperator is a paid mutator transaction binding the contract method 0x959b8c3f.
+// Burn is a paid mutator transaction binding the contract method 0x42966c68.
 //
-// Solidity: function authorizeOperator(address operator) returns()
-func (_MystToken *MystTokenSession) AuthorizeOperator(operator common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.AuthorizeOperator(&_MystToken.TransactOpts, operator)
+// Solidity: function burn(uint256 amount) returns()
+func (_MystToken *MystTokenSession) Burn(amount *big.Int) (*types.Transaction, error) {
+	return _MystToken.Contract.Burn(&_MystToken.TransactOpts, amount)
 }
 
-// AuthorizeOperator is a paid mutator transaction binding the contract method 0x959b8c3f.
+// Burn is a paid mutator transaction binding the contract method 0x42966c68.
 //
-// Solidity: function authorizeOperator(address operator) returns()
-func (_MystToken *MystTokenTransactorSession) AuthorizeOperator(operator common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.AuthorizeOperator(&_MystToken.TransactOpts, operator)
+// Solidity: function burn(uint256 amount) returns()
+func (_MystToken *MystTokenTransactorSession) Burn(amount *big.Int) (*types.Transaction, error) {
+	return _MystToken.Contract.Burn(&_MystToken.TransactOpts, amount)
 }
 
-// Burn is a paid mutator transaction binding the contract method 0xfe9d9303.
+// ClaimTokens is a paid mutator transaction binding the contract method 0xdf8de3e7.
 //
-// Solidity: function burn(uint256 amount, bytes data) returns()
-func (_MystToken *MystTokenTransactor) Burn(opts *bind.TransactOpts, amount *big.Int, data []byte) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "burn", amount, data)
+// Solidity: function claimTokens(address token) returns()
+func (_MystToken *MystTokenTransactor) ClaimTokens(opts *bind.TransactOpts, token common.Address) (*types.Transaction, error) {
+	return _MystToken.contract.Transact(opts, "claimTokens", token)
 }
 
-// Burn is a paid mutator transaction binding the contract method 0xfe9d9303.
+// ClaimTokens is a paid mutator transaction binding the contract method 0xdf8de3e7.
 //
-// Solidity: function burn(uint256 amount, bytes data) returns()
-func (_MystToken *MystTokenSession) Burn(amount *big.Int, data []byte) (*types.Transaction, error) {
-	return _MystToken.Contract.Burn(&_MystToken.TransactOpts, amount, data)
+// Solidity: function claimTokens(address token) returns()
+func (_MystToken *MystTokenSession) ClaimTokens(token common.Address) (*types.Transaction, error) {
+	return _MystToken.Contract.ClaimTokens(&_MystToken.TransactOpts, token)
 }
 
-// Burn is a paid mutator transaction binding the contract method 0xfe9d9303.
+// ClaimTokens is a paid mutator transaction binding the contract method 0xdf8de3e7.
 //
-// Solidity: function burn(uint256 amount, bytes data) returns()
-func (_MystToken *MystTokenTransactorSession) Burn(amount *big.Int, data []byte) (*types.Transaction, error) {
-	return _MystToken.Contract.Burn(&_MystToken.TransactOpts, amount, data)
+// Solidity: function claimTokens(address token) returns()
+func (_MystToken *MystTokenTransactorSession) ClaimTokens(token common.Address) (*types.Transaction, error) {
+	return _MystToken.Contract.ClaimTokens(&_MystToken.TransactOpts, token)
 }
 
-// OperatorBurn is a paid mutator transaction binding the contract method 0xfc673c4f.
+// DecreaseAllowance is a paid mutator transaction binding the contract method 0xa457c2d7.
 //
-// Solidity: function operatorBurn(address account, uint256 amount, bytes data, bytes operatorData) returns()
-func (_MystToken *MystTokenTransactor) OperatorBurn(opts *bind.TransactOpts, account common.Address, amount *big.Int, data []byte, operatorData []byte) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "operatorBurn", account, amount, data, operatorData)
+// Solidity: function decreaseAllowance(address spender, uint256 subtractedValue) returns(bool)
+func (_MystToken *MystTokenTransactor) DecreaseAllowance(opts *bind.TransactOpts, spender common.Address, subtractedValue *big.Int) (*types.Transaction, error) {
+	return _MystToken.contract.Transact(opts, "decreaseAllowance", spender, subtractedValue)
 }
 
-// OperatorBurn is a paid mutator transaction binding the contract method 0xfc673c4f.
+// DecreaseAllowance is a paid mutator transaction binding the contract method 0xa457c2d7.
 //
-// Solidity: function operatorBurn(address account, uint256 amount, bytes data, bytes operatorData) returns()
-func (_MystToken *MystTokenSession) OperatorBurn(account common.Address, amount *big.Int, data []byte, operatorData []byte) (*types.Transaction, error) {
-	return _MystToken.Contract.OperatorBurn(&_MystToken.TransactOpts, account, amount, data, operatorData)
+// Solidity: function decreaseAllowance(address spender, uint256 subtractedValue) returns(bool)
+func (_MystToken *MystTokenSession) DecreaseAllowance(spender common.Address, subtractedValue *big.Int) (*types.Transaction, error) {
+	return _MystToken.Contract.DecreaseAllowance(&_MystToken.TransactOpts, spender, subtractedValue)
 }
 
-// OperatorBurn is a paid mutator transaction binding the contract method 0xfc673c4f.
+// DecreaseAllowance is a paid mutator transaction binding the contract method 0xa457c2d7.
 //
-// Solidity: function operatorBurn(address account, uint256 amount, bytes data, bytes operatorData) returns()
-func (_MystToken *MystTokenTransactorSession) OperatorBurn(account common.Address, amount *big.Int, data []byte, operatorData []byte) (*types.Transaction, error) {
-	return _MystToken.Contract.OperatorBurn(&_MystToken.TransactOpts, account, amount, data, operatorData)
+// Solidity: function decreaseAllowance(address spender, uint256 subtractedValue) returns(bool)
+func (_MystToken *MystTokenTransactorSession) DecreaseAllowance(spender common.Address, subtractedValue *big.Int) (*types.Transaction, error) {
+	return _MystToken.Contract.DecreaseAllowance(&_MystToken.TransactOpts, spender, subtractedValue)
 }
 
-// OperatorSend is a paid mutator transaction binding the contract method 0x62ad1b83.
+// IncreaseAllowance is a paid mutator transaction binding the contract method 0x39509351.
 //
-// Solidity: function operatorSend(address sender, address recipient, uint256 amount, bytes data, bytes operatorData) returns()
-func (_MystToken *MystTokenTransactor) OperatorSend(opts *bind.TransactOpts, sender common.Address, recipient common.Address, amount *big.Int, data []byte, operatorData []byte) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "operatorSend", sender, recipient, amount, data, operatorData)
+// Solidity: function increaseAllowance(address spender, uint256 addedValue) returns(bool)
+func (_MystToken *MystTokenTransactor) IncreaseAllowance(opts *bind.TransactOpts, spender common.Address, addedValue *big.Int) (*types.Transaction, error) {
+	return _MystToken.contract.Transact(opts, "increaseAllowance", spender, addedValue)
 }
 
-// OperatorSend is a paid mutator transaction binding the contract method 0x62ad1b83.
+// IncreaseAllowance is a paid mutator transaction binding the contract method 0x39509351.
 //
-// Solidity: function operatorSend(address sender, address recipient, uint256 amount, bytes data, bytes operatorData) returns()
-func (_MystToken *MystTokenSession) OperatorSend(sender common.Address, recipient common.Address, amount *big.Int, data []byte, operatorData []byte) (*types.Transaction, error) {
-	return _MystToken.Contract.OperatorSend(&_MystToken.TransactOpts, sender, recipient, amount, data, operatorData)
+// Solidity: function increaseAllowance(address spender, uint256 addedValue) returns(bool)
+func (_MystToken *MystTokenSession) IncreaseAllowance(spender common.Address, addedValue *big.Int) (*types.Transaction, error) {
+	return _MystToken.Contract.IncreaseAllowance(&_MystToken.TransactOpts, spender, addedValue)
 }
 
-// OperatorSend is a paid mutator transaction binding the contract method 0x62ad1b83.
+// IncreaseAllowance is a paid mutator transaction binding the contract method 0x39509351.
 //
-// Solidity: function operatorSend(address sender, address recipient, uint256 amount, bytes data, bytes operatorData) returns()
-func (_MystToken *MystTokenTransactorSession) OperatorSend(sender common.Address, recipient common.Address, amount *big.Int, data []byte, operatorData []byte) (*types.Transaction, error) {
-	return _MystToken.Contract.OperatorSend(&_MystToken.TransactOpts, sender, recipient, amount, data, operatorData)
+// Solidity: function increaseAllowance(address spender, uint256 addedValue) returns(bool)
+func (_MystToken *MystTokenTransactorSession) IncreaseAllowance(spender common.Address, addedValue *big.Int) (*types.Transaction, error) {
+	return _MystToken.Contract.IncreaseAllowance(&_MystToken.TransactOpts, spender, addedValue)
 }
 
-// RevokeOperator is a paid mutator transaction binding the contract method 0xfad8b32a.
+// Mint is a paid mutator transaction binding the contract method 0x40c10f19.
 //
-// Solidity: function revokeOperator(address operator) returns()
-func (_MystToken *MystTokenTransactor) RevokeOperator(opts *bind.TransactOpts, operator common.Address) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "revokeOperator", operator)
+// Solidity: function mint(address _account, uint256 _amount) returns()
+func (_MystToken *MystTokenTransactor) Mint(opts *bind.TransactOpts, _account common.Address, _amount *big.Int) (*types.Transaction, error) {
+	return _MystToken.contract.Transact(opts, "mint", _account, _amount)
 }
 
-// RevokeOperator is a paid mutator transaction binding the contract method 0xfad8b32a.
+// Mint is a paid mutator transaction binding the contract method 0x40c10f19.
 //
-// Solidity: function revokeOperator(address operator) returns()
-func (_MystToken *MystTokenSession) RevokeOperator(operator common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.RevokeOperator(&_MystToken.TransactOpts, operator)
+// Solidity: function mint(address _account, uint256 _amount) returns()
+func (_MystToken *MystTokenSession) Mint(_account common.Address, _amount *big.Int) (*types.Transaction, error) {
+	return _MystToken.Contract.Mint(&_MystToken.TransactOpts, _account, _amount)
 }
 
-// RevokeOperator is a paid mutator transaction binding the contract method 0xfad8b32a.
+// Mint is a paid mutator transaction binding the contract method 0x40c10f19.
 //
-// Solidity: function revokeOperator(address operator) returns()
-func (_MystToken *MystTokenTransactorSession) RevokeOperator(operator common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.RevokeOperator(&_MystToken.TransactOpts, operator)
+// Solidity: function mint(address _account, uint256 _amount) returns()
+func (_MystToken *MystTokenTransactorSession) Mint(_account common.Address, _amount *big.Int) (*types.Transaction, error) {
+	return _MystToken.Contract.Mint(&_MystToken.TransactOpts, _account, _amount)
 }
 
-// Send is a paid mutator transaction binding the contract method 0x9bd9bbc6.
+// Permit is a paid mutator transaction binding the contract method 0xd505accf.
 //
-// Solidity: function send(address recipient, uint256 amount, bytes data) returns()
-func (_MystToken *MystTokenTransactor) Send(opts *bind.TransactOpts, recipient common.Address, amount *big.Int, data []byte) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "send", recipient, amount, data)
+// Solidity: function permit(address holder, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) returns()
+func (_MystToken *MystTokenTransactor) Permit(opts *bind.TransactOpts, holder common.Address, spender common.Address, value *big.Int, deadline *big.Int, v uint8, r [32]byte, s [32]byte) (*types.Transaction, error) {
+	return _MystToken.contract.Transact(opts, "permit", holder, spender, value, deadline, v, r, s)
 }
 
-// Send is a paid mutator transaction binding the contract method 0x9bd9bbc6.
+// Permit is a paid mutator transaction binding the contract method 0xd505accf.
 //
-// Solidity: function send(address recipient, uint256 amount, bytes data) returns()
-func (_MystToken *MystTokenSession) Send(recipient common.Address, amount *big.Int, data []byte) (*types.Transaction, error) {
-	return _MystToken.Contract.Send(&_MystToken.TransactOpts, recipient, amount, data)
+// Solidity: function permit(address holder, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) returns()
+func (_MystToken *MystTokenSession) Permit(holder common.Address, spender common.Address, value *big.Int, deadline *big.Int, v uint8, r [32]byte, s [32]byte) (*types.Transaction, error) {
+	return _MystToken.Contract.Permit(&_MystToken.TransactOpts, holder, spender, value, deadline, v, r, s)
 }
 
-// Send is a paid mutator transaction binding the contract method 0x9bd9bbc6.
+// Permit is a paid mutator transaction binding the contract method 0xd505accf.
 //
-// Solidity: function send(address recipient, uint256 amount, bytes data) returns()
-func (_MystToken *MystTokenTransactorSession) Send(recipient common.Address, amount *big.Int, data []byte) (*types.Transaction, error) {
-	return _MystToken.Contract.Send(&_MystToken.TransactOpts, recipient, amount, data)
+// Solidity: function permit(address holder, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) returns()
+func (_MystToken *MystTokenTransactorSession) Permit(holder common.Address, spender common.Address, value *big.Int, deadline *big.Int, v uint8, r [32]byte, s [32]byte) (*types.Transaction, error) {
+	return _MystToken.Contract.Permit(&_MystToken.TransactOpts, holder, spender, value, deadline, v, r, s)
+}
+
+// SetFundsDestination is a paid mutator transaction binding the contract method 0x238e130a.
+//
+// Solidity: function setFundsDestination(address newDestination) returns()
+func (_MystToken *MystTokenTransactor) SetFundsDestination(opts *bind.TransactOpts, newDestination common.Address) (*types.Transaction, error) {
+	return _MystToken.contract.Transact(opts, "setFundsDestination", newDestination)
+}
+
+// SetFundsDestination is a paid mutator transaction binding the contract method 0x238e130a.
+//
+// Solidity: function setFundsDestination(address newDestination) returns()
+func (_MystToken *MystTokenSession) SetFundsDestination(newDestination common.Address) (*types.Transaction, error) {
+	return _MystToken.Contract.SetFundsDestination(&_MystToken.TransactOpts, newDestination)
+}
+
+// SetFundsDestination is a paid mutator transaction binding the contract method 0x238e130a.
+//
+// Solidity: function setFundsDestination(address newDestination) returns()
+func (_MystToken *MystTokenTransactorSession) SetFundsDestination(newDestination common.Address) (*types.Transaction, error) {
+	return _MystToken.Contract.SetFundsDestination(&_MystToken.TransactOpts, newDestination)
 }
 
 // SetUpgradeAgent is a paid mutator transaction binding the contract method 0xd7e7088a.
 //
-// Solidity: function setUpgradeAgent(address _agent) returns()
-func (_MystToken *MystTokenTransactor) SetUpgradeAgent(opts *bind.TransactOpts, _agent common.Address) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "setUpgradeAgent", _agent)
+// Solidity: function setUpgradeAgent(address agent) returns()
+func (_MystToken *MystTokenTransactor) SetUpgradeAgent(opts *bind.TransactOpts, agent common.Address) (*types.Transaction, error) {
+	return _MystToken.contract.Transact(opts, "setUpgradeAgent", agent)
 }
 
 // SetUpgradeAgent is a paid mutator transaction binding the contract method 0xd7e7088a.
 //
-// Solidity: function setUpgradeAgent(address _agent) returns()
-func (_MystToken *MystTokenSession) SetUpgradeAgent(_agent common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.SetUpgradeAgent(&_MystToken.TransactOpts, _agent)
+// Solidity: function setUpgradeAgent(address agent) returns()
+func (_MystToken *MystTokenSession) SetUpgradeAgent(agent common.Address) (*types.Transaction, error) {
+	return _MystToken.Contract.SetUpgradeAgent(&_MystToken.TransactOpts, agent)
 }
 
 // SetUpgradeAgent is a paid mutator transaction binding the contract method 0xd7e7088a.
 //
-// Solidity: function setUpgradeAgent(address _agent) returns()
-func (_MystToken *MystTokenTransactorSession) SetUpgradeAgent(_agent common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.SetUpgradeAgent(&_MystToken.TransactOpts, _agent)
+// Solidity: function setUpgradeAgent(address agent) returns()
+func (_MystToken *MystTokenTransactorSession) SetUpgradeAgent(agent common.Address) (*types.Transaction, error) {
+	return _MystToken.Contract.SetUpgradeAgent(&_MystToken.TransactOpts, agent)
 }
 
 // SetUpgradeMaster is a paid mutator transaction binding the contract method 0xffeb7d75.
 //
-// Solidity: function setUpgradeMaster(address _newUpgradeMaster) returns()
-func (_MystToken *MystTokenTransactor) SetUpgradeMaster(opts *bind.TransactOpts, _newUpgradeMaster common.Address) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "setUpgradeMaster", _newUpgradeMaster)
+// Solidity: function setUpgradeMaster(address newUpgradeMaster) returns()
+func (_MystToken *MystTokenTransactor) SetUpgradeMaster(opts *bind.TransactOpts, newUpgradeMaster common.Address) (*types.Transaction, error) {
+	return _MystToken.contract.Transact(opts, "setUpgradeMaster", newUpgradeMaster)
 }
 
 // SetUpgradeMaster is a paid mutator transaction binding the contract method 0xffeb7d75.
 //
-// Solidity: function setUpgradeMaster(address _newUpgradeMaster) returns()
-func (_MystToken *MystTokenSession) SetUpgradeMaster(_newUpgradeMaster common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.SetUpgradeMaster(&_MystToken.TransactOpts, _newUpgradeMaster)
+// Solidity: function setUpgradeMaster(address newUpgradeMaster) returns()
+func (_MystToken *MystTokenSession) SetUpgradeMaster(newUpgradeMaster common.Address) (*types.Transaction, error) {
+	return _MystToken.Contract.SetUpgradeMaster(&_MystToken.TransactOpts, newUpgradeMaster)
 }
 
 // SetUpgradeMaster is a paid mutator transaction binding the contract method 0xffeb7d75.
 //
-// Solidity: function setUpgradeMaster(address _newUpgradeMaster) returns()
-func (_MystToken *MystTokenTransactorSession) SetUpgradeMaster(_newUpgradeMaster common.Address) (*types.Transaction, error) {
-	return _MystToken.Contract.SetUpgradeMaster(&_MystToken.TransactOpts, _newUpgradeMaster)
-}
-
-// TokensReceived is a paid mutator transaction binding the contract method 0x0023de29.
-//
-// Solidity: function tokensReceived(address , address _from, address _to, uint256 _amount, bytes _userData, bytes ) returns()
-func (_MystToken *MystTokenTransactor) TokensReceived(opts *bind.TransactOpts, arg0 common.Address, _from common.Address, _to common.Address, _amount *big.Int, _userData []byte, arg5 []byte) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "tokensReceived", arg0, _from, _to, _amount, _userData, arg5)
-}
-
-// TokensReceived is a paid mutator transaction binding the contract method 0x0023de29.
-//
-// Solidity: function tokensReceived(address , address _from, address _to, uint256 _amount, bytes _userData, bytes ) returns()
-func (_MystToken *MystTokenSession) TokensReceived(arg0 common.Address, _from common.Address, _to common.Address, _amount *big.Int, _userData []byte, arg5 []byte) (*types.Transaction, error) {
-	return _MystToken.Contract.TokensReceived(&_MystToken.TransactOpts, arg0, _from, _to, _amount, _userData, arg5)
-}
-
-// TokensReceived is a paid mutator transaction binding the contract method 0x0023de29.
-//
-// Solidity: function tokensReceived(address , address _from, address _to, uint256 _amount, bytes _userData, bytes ) returns()
-func (_MystToken *MystTokenTransactorSession) TokensReceived(arg0 common.Address, _from common.Address, _to common.Address, _amount *big.Int, _userData []byte, arg5 []byte) (*types.Transaction, error) {
-	return _MystToken.Contract.TokensReceived(&_MystToken.TransactOpts, arg0, _from, _to, _amount, _userData, arg5)
+// Solidity: function setUpgradeMaster(address newUpgradeMaster) returns()
+func (_MystToken *MystTokenTransactorSession) SetUpgradeMaster(newUpgradeMaster common.Address) (*types.Transaction, error) {
+	return _MystToken.Contract.SetUpgradeMaster(&_MystToken.TransactOpts, newUpgradeMaster)
 }
 
 // Transfer is a paid mutator transaction binding the contract method 0xa9059cbb.
@@ -898,25 +898,25 @@ func (_MystToken *MystTokenTransactorSession) TransferFrom(holder common.Address
 	return _MystToken.Contract.TransferFrom(&_MystToken.TransactOpts, holder, recipient, amount)
 }
 
-// Upgrade is a paid mutator transaction binding the contract method 0x3b99bcee.
+// Upgrade is a paid mutator transaction binding the contract method 0x45977d03.
 //
-// Solidity: function upgrade(uint256 _amount, bytes _data) returns()
-func (_MystToken *MystTokenTransactor) Upgrade(opts *bind.TransactOpts, _amount *big.Int, _data []byte) (*types.Transaction, error) {
-	return _MystToken.contract.Transact(opts, "upgrade", _amount, _data)
+// Solidity: function upgrade(uint256 amount) returns()
+func (_MystToken *MystTokenTransactor) Upgrade(opts *bind.TransactOpts, amount *big.Int) (*types.Transaction, error) {
+	return _MystToken.contract.Transact(opts, "upgrade", amount)
 }
 
-// Upgrade is a paid mutator transaction binding the contract method 0x3b99bcee.
+// Upgrade is a paid mutator transaction binding the contract method 0x45977d03.
 //
-// Solidity: function upgrade(uint256 _amount, bytes _data) returns()
-func (_MystToken *MystTokenSession) Upgrade(_amount *big.Int, _data []byte) (*types.Transaction, error) {
-	return _MystToken.Contract.Upgrade(&_MystToken.TransactOpts, _amount, _data)
+// Solidity: function upgrade(uint256 amount) returns()
+func (_MystToken *MystTokenSession) Upgrade(amount *big.Int) (*types.Transaction, error) {
+	return _MystToken.Contract.Upgrade(&_MystToken.TransactOpts, amount)
 }
 
-// Upgrade is a paid mutator transaction binding the contract method 0x3b99bcee.
+// Upgrade is a paid mutator transaction binding the contract method 0x45977d03.
 //
-// Solidity: function upgrade(uint256 _amount, bytes _data) returns()
-func (_MystToken *MystTokenTransactorSession) Upgrade(_amount *big.Int, _data []byte) (*types.Transaction, error) {
-	return _MystToken.Contract.Upgrade(&_MystToken.TransactOpts, _amount, _data)
+// Solidity: function upgrade(uint256 amount) returns()
+func (_MystToken *MystTokenTransactorSession) Upgrade(amount *big.Int) (*types.Transaction, error) {
+	return _MystToken.Contract.Upgrade(&_MystToken.TransactOpts, amount)
 }
 
 // UpgradeFrom is a paid mutator transaction binding the contract method 0x753e88e5.
@@ -1093,158 +1093,6 @@ func (_MystToken *MystTokenFilterer) ParseApproval(log types.Log) (*MystTokenApp
 	return event, nil
 }
 
-// MystTokenAuthorizedOperatorIterator is returned from FilterAuthorizedOperator and is used to iterate over the raw logs and unpacked data for AuthorizedOperator events raised by the MystToken contract.
-type MystTokenAuthorizedOperatorIterator struct {
-	Event *MystTokenAuthorizedOperator // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *MystTokenAuthorizedOperatorIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(MystTokenAuthorizedOperator)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(MystTokenAuthorizedOperator)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *MystTokenAuthorizedOperatorIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *MystTokenAuthorizedOperatorIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// MystTokenAuthorizedOperator represents a AuthorizedOperator event raised by the MystToken contract.
-type MystTokenAuthorizedOperator struct {
-	Operator    common.Address
-	TokenHolder common.Address
-	Raw         types.Log // Blockchain specific contextual infos
-}
-
-// FilterAuthorizedOperator is a free log retrieval operation binding the contract event 0xf4caeb2d6ca8932a215a353d0703c326ec2d81fc68170f320eb2ab49e9df61f9.
-//
-// Solidity: event AuthorizedOperator(address indexed operator, address indexed tokenHolder)
-func (_MystToken *MystTokenFilterer) FilterAuthorizedOperator(opts *bind.FilterOpts, operator []common.Address, tokenHolder []common.Address) (*MystTokenAuthorizedOperatorIterator, error) {
-
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-	var tokenHolderRule []interface{}
-	for _, tokenHolderItem := range tokenHolder {
-		tokenHolderRule = append(tokenHolderRule, tokenHolderItem)
-	}
-
-	logs, sub, err := _MystToken.contract.FilterLogs(opts, "AuthorizedOperator", operatorRule, tokenHolderRule)
-	if err != nil {
-		return nil, err
-	}
-	return &MystTokenAuthorizedOperatorIterator{contract: _MystToken.contract, event: "AuthorizedOperator", logs: logs, sub: sub}, nil
-}
-
-// WatchAuthorizedOperator is a free log subscription operation binding the contract event 0xf4caeb2d6ca8932a215a353d0703c326ec2d81fc68170f320eb2ab49e9df61f9.
-//
-// Solidity: event AuthorizedOperator(address indexed operator, address indexed tokenHolder)
-func (_MystToken *MystTokenFilterer) WatchAuthorizedOperator(opts *bind.WatchOpts, sink chan<- *MystTokenAuthorizedOperator, operator []common.Address, tokenHolder []common.Address) (event.Subscription, error) {
-
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-	var tokenHolderRule []interface{}
-	for _, tokenHolderItem := range tokenHolder {
-		tokenHolderRule = append(tokenHolderRule, tokenHolderItem)
-	}
-
-	logs, sub, err := _MystToken.contract.WatchLogs(opts, "AuthorizedOperator", operatorRule, tokenHolderRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(MystTokenAuthorizedOperator)
-				if err := _MystToken.contract.UnpackLog(event, "AuthorizedOperator", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseAuthorizedOperator is a log parse operation binding the contract event 0xf4caeb2d6ca8932a215a353d0703c326ec2d81fc68170f320eb2ab49e9df61f9.
-//
-// Solidity: event AuthorizedOperator(address indexed operator, address indexed tokenHolder)
-func (_MystToken *MystTokenFilterer) ParseAuthorizedOperator(log types.Log) (*MystTokenAuthorizedOperator, error) {
-	event := new(MystTokenAuthorizedOperator)
-	if err := _MystToken.contract.UnpackLog(event, "AuthorizedOperator", log); err != nil {
-		return nil, err
-	}
-	return event, nil
-}
-
 // MystTokenBurnedIterator is returned from FilterBurned and is used to iterate over the raw logs and unpacked data for Burned events raised by the MystToken contract.
 type MystTokenBurnedIterator struct {
 	Event *MystTokenBurned // Event containing the contract specifics and raw log
@@ -1314,50 +1162,39 @@ func (it *MystTokenBurnedIterator) Close() error {
 
 // MystTokenBurned represents a Burned event raised by the MystToken contract.
 type MystTokenBurned struct {
-	Operator     common.Address
-	From         common.Address
-	Amount       *big.Int
-	Data         []byte
-	OperatorData []byte
-	Raw          types.Log // Blockchain specific contextual infos
+	From   common.Address
+	Amount *big.Int
+	Raw    types.Log // Blockchain specific contextual infos
 }
 
-// FilterBurned is a free log retrieval operation binding the contract event 0xa78a9be3a7b862d26933ad85fb11d80ef66b8f972d7cbba06621d583943a4098.
+// FilterBurned is a free log retrieval operation binding the contract event 0x696de425f79f4a40bc6d2122ca50507f0efbeabbff86a84871b7196ab8ea8df7.
 //
-// Solidity: event Burned(address indexed operator, address indexed from, uint256 amount, bytes data, bytes operatorData)
-func (_MystToken *MystTokenFilterer) FilterBurned(opts *bind.FilterOpts, operator []common.Address, from []common.Address) (*MystTokenBurnedIterator, error) {
+// Solidity: event Burned(address indexed from, uint256 amount)
+func (_MystToken *MystTokenFilterer) FilterBurned(opts *bind.FilterOpts, from []common.Address) (*MystTokenBurnedIterator, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
 	var fromRule []interface{}
 	for _, fromItem := range from {
 		fromRule = append(fromRule, fromItem)
 	}
 
-	logs, sub, err := _MystToken.contract.FilterLogs(opts, "Burned", operatorRule, fromRule)
+	logs, sub, err := _MystToken.contract.FilterLogs(opts, "Burned", fromRule)
 	if err != nil {
 		return nil, err
 	}
 	return &MystTokenBurnedIterator{contract: _MystToken.contract, event: "Burned", logs: logs, sub: sub}, nil
 }
 
-// WatchBurned is a free log subscription operation binding the contract event 0xa78a9be3a7b862d26933ad85fb11d80ef66b8f972d7cbba06621d583943a4098.
+// WatchBurned is a free log subscription operation binding the contract event 0x696de425f79f4a40bc6d2122ca50507f0efbeabbff86a84871b7196ab8ea8df7.
 //
-// Solidity: event Burned(address indexed operator, address indexed from, uint256 amount, bytes data, bytes operatorData)
-func (_MystToken *MystTokenFilterer) WatchBurned(opts *bind.WatchOpts, sink chan<- *MystTokenBurned, operator []common.Address, from []common.Address) (event.Subscription, error) {
+// Solidity: event Burned(address indexed from, uint256 amount)
+func (_MystToken *MystTokenFilterer) WatchBurned(opts *bind.WatchOpts, sink chan<- *MystTokenBurned, from []common.Address) (event.Subscription, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
 	var fromRule []interface{}
 	for _, fromItem := range from {
 		fromRule = append(fromRule, fromItem)
 	}
 
-	logs, sub, err := _MystToken.contract.WatchLogs(opts, "Burned", operatorRule, fromRule)
+	logs, sub, err := _MystToken.contract.WatchLogs(opts, "Burned", fromRule)
 	if err != nil {
 		return nil, err
 	}
@@ -1389,12 +1226,164 @@ func (_MystToken *MystTokenFilterer) WatchBurned(opts *bind.WatchOpts, sink chan
 	}), nil
 }
 
-// ParseBurned is a log parse operation binding the contract event 0xa78a9be3a7b862d26933ad85fb11d80ef66b8f972d7cbba06621d583943a4098.
+// ParseBurned is a log parse operation binding the contract event 0x696de425f79f4a40bc6d2122ca50507f0efbeabbff86a84871b7196ab8ea8df7.
 //
-// Solidity: event Burned(address indexed operator, address indexed from, uint256 amount, bytes data, bytes operatorData)
+// Solidity: event Burned(address indexed from, uint256 amount)
 func (_MystToken *MystTokenFilterer) ParseBurned(log types.Log) (*MystTokenBurned, error) {
 	event := new(MystTokenBurned)
 	if err := _MystToken.contract.UnpackLog(event, "Burned", log); err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+// MystTokenFundsRecoveryDestinationChangedIterator is returned from FilterFundsRecoveryDestinationChanged and is used to iterate over the raw logs and unpacked data for FundsRecoveryDestinationChanged events raised by the MystToken contract.
+type MystTokenFundsRecoveryDestinationChangedIterator struct {
+	Event *MystTokenFundsRecoveryDestinationChanged // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *MystTokenFundsRecoveryDestinationChangedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(MystTokenFundsRecoveryDestinationChanged)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(MystTokenFundsRecoveryDestinationChanged)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *MystTokenFundsRecoveryDestinationChangedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *MystTokenFundsRecoveryDestinationChangedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// MystTokenFundsRecoveryDestinationChanged represents a FundsRecoveryDestinationChanged event raised by the MystToken contract.
+type MystTokenFundsRecoveryDestinationChanged struct {
+	PreviousDestination common.Address
+	NewDestination      common.Address
+	Raw                 types.Log // Blockchain specific contextual infos
+}
+
+// FilterFundsRecoveryDestinationChanged is a free log retrieval operation binding the contract event 0x2e1db88922daae16be4e3c1a1f4bfab0cf6741938844967bd985ac8b2a12c804.
+//
+// Solidity: event FundsRecoveryDestinationChanged(address indexed previousDestination, address indexed newDestination)
+func (_MystToken *MystTokenFilterer) FilterFundsRecoveryDestinationChanged(opts *bind.FilterOpts, previousDestination []common.Address, newDestination []common.Address) (*MystTokenFundsRecoveryDestinationChangedIterator, error) {
+
+	var previousDestinationRule []interface{}
+	for _, previousDestinationItem := range previousDestination {
+		previousDestinationRule = append(previousDestinationRule, previousDestinationItem)
+	}
+	var newDestinationRule []interface{}
+	for _, newDestinationItem := range newDestination {
+		newDestinationRule = append(newDestinationRule, newDestinationItem)
+	}
+
+	logs, sub, err := _MystToken.contract.FilterLogs(opts, "FundsRecoveryDestinationChanged", previousDestinationRule, newDestinationRule)
+	if err != nil {
+		return nil, err
+	}
+	return &MystTokenFundsRecoveryDestinationChangedIterator{contract: _MystToken.contract, event: "FundsRecoveryDestinationChanged", logs: logs, sub: sub}, nil
+}
+
+// WatchFundsRecoveryDestinationChanged is a free log subscription operation binding the contract event 0x2e1db88922daae16be4e3c1a1f4bfab0cf6741938844967bd985ac8b2a12c804.
+//
+// Solidity: event FundsRecoveryDestinationChanged(address indexed previousDestination, address indexed newDestination)
+func (_MystToken *MystTokenFilterer) WatchFundsRecoveryDestinationChanged(opts *bind.WatchOpts, sink chan<- *MystTokenFundsRecoveryDestinationChanged, previousDestination []common.Address, newDestination []common.Address) (event.Subscription, error) {
+
+	var previousDestinationRule []interface{}
+	for _, previousDestinationItem := range previousDestination {
+		previousDestinationRule = append(previousDestinationRule, previousDestinationItem)
+	}
+	var newDestinationRule []interface{}
+	for _, newDestinationItem := range newDestination {
+		newDestinationRule = append(newDestinationRule, newDestinationItem)
+	}
+
+	logs, sub, err := _MystToken.contract.WatchLogs(opts, "FundsRecoveryDestinationChanged", previousDestinationRule, newDestinationRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(MystTokenFundsRecoveryDestinationChanged)
+				if err := _MystToken.contract.UnpackLog(event, "FundsRecoveryDestinationChanged", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseFundsRecoveryDestinationChanged is a log parse operation binding the contract event 0x2e1db88922daae16be4e3c1a1f4bfab0cf6741938844967bd985ac8b2a12c804.
+//
+// Solidity: event FundsRecoveryDestinationChanged(address indexed previousDestination, address indexed newDestination)
+func (_MystToken *MystTokenFilterer) ParseFundsRecoveryDestinationChanged(log types.Log) (*MystTokenFundsRecoveryDestinationChanged, error) {
+	event := new(MystTokenFundsRecoveryDestinationChanged)
+	if err := _MystToken.contract.UnpackLog(event, "FundsRecoveryDestinationChanged", log); err != nil {
 		return nil, err
 	}
 	return event, nil
@@ -1469,50 +1458,39 @@ func (it *MystTokenMintedIterator) Close() error {
 
 // MystTokenMinted represents a Minted event raised by the MystToken contract.
 type MystTokenMinted struct {
-	Operator     common.Address
-	To           common.Address
-	Amount       *big.Int
-	Data         []byte
-	OperatorData []byte
-	Raw          types.Log // Blockchain specific contextual infos
+	To     common.Address
+	Amount *big.Int
+	Raw    types.Log // Blockchain specific contextual infos
 }
 
-// FilterMinted is a free log retrieval operation binding the contract event 0x2fe5be0146f74c5bce36c0b80911af6c7d86ff27e89d5cfa61fc681327954e5d.
+// FilterMinted is a free log retrieval operation binding the contract event 0x30385c845b448a36257a6a1716e6ad2e1bc2cbe333cde1e69fe849ad6511adfe.
 //
-// Solidity: event Minted(address indexed operator, address indexed to, uint256 amount, bytes data, bytes operatorData)
-func (_MystToken *MystTokenFilterer) FilterMinted(opts *bind.FilterOpts, operator []common.Address, to []common.Address) (*MystTokenMintedIterator, error) {
+// Solidity: event Minted(address indexed to, uint256 amount)
+func (_MystToken *MystTokenFilterer) FilterMinted(opts *bind.FilterOpts, to []common.Address) (*MystTokenMintedIterator, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
 	var toRule []interface{}
 	for _, toItem := range to {
 		toRule = append(toRule, toItem)
 	}
 
-	logs, sub, err := _MystToken.contract.FilterLogs(opts, "Minted", operatorRule, toRule)
+	logs, sub, err := _MystToken.contract.FilterLogs(opts, "Minted", toRule)
 	if err != nil {
 		return nil, err
 	}
 	return &MystTokenMintedIterator{contract: _MystToken.contract, event: "Minted", logs: logs, sub: sub}, nil
 }
 
-// WatchMinted is a free log subscription operation binding the contract event 0x2fe5be0146f74c5bce36c0b80911af6c7d86ff27e89d5cfa61fc681327954e5d.
+// WatchMinted is a free log subscription operation binding the contract event 0x30385c845b448a36257a6a1716e6ad2e1bc2cbe333cde1e69fe849ad6511adfe.
 //
-// Solidity: event Minted(address indexed operator, address indexed to, uint256 amount, bytes data, bytes operatorData)
-func (_MystToken *MystTokenFilterer) WatchMinted(opts *bind.WatchOpts, sink chan<- *MystTokenMinted, operator []common.Address, to []common.Address) (event.Subscription, error) {
+// Solidity: event Minted(address indexed to, uint256 amount)
+func (_MystToken *MystTokenFilterer) WatchMinted(opts *bind.WatchOpts, sink chan<- *MystTokenMinted, to []common.Address) (event.Subscription, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
 	var toRule []interface{}
 	for _, toItem := range to {
 		toRule = append(toRule, toItem)
 	}
 
-	logs, sub, err := _MystToken.contract.WatchLogs(opts, "Minted", operatorRule, toRule)
+	logs, sub, err := _MystToken.contract.WatchLogs(opts, "Minted", toRule)
 	if err != nil {
 		return nil, err
 	}
@@ -1544,328 +1522,12 @@ func (_MystToken *MystTokenFilterer) WatchMinted(opts *bind.WatchOpts, sink chan
 	}), nil
 }
 
-// ParseMinted is a log parse operation binding the contract event 0x2fe5be0146f74c5bce36c0b80911af6c7d86ff27e89d5cfa61fc681327954e5d.
+// ParseMinted is a log parse operation binding the contract event 0x30385c845b448a36257a6a1716e6ad2e1bc2cbe333cde1e69fe849ad6511adfe.
 //
-// Solidity: event Minted(address indexed operator, address indexed to, uint256 amount, bytes data, bytes operatorData)
+// Solidity: event Minted(address indexed to, uint256 amount)
 func (_MystToken *MystTokenFilterer) ParseMinted(log types.Log) (*MystTokenMinted, error) {
 	event := new(MystTokenMinted)
 	if err := _MystToken.contract.UnpackLog(event, "Minted", log); err != nil {
-		return nil, err
-	}
-	return event, nil
-}
-
-// MystTokenRevokedOperatorIterator is returned from FilterRevokedOperator and is used to iterate over the raw logs and unpacked data for RevokedOperator events raised by the MystToken contract.
-type MystTokenRevokedOperatorIterator struct {
-	Event *MystTokenRevokedOperator // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *MystTokenRevokedOperatorIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(MystTokenRevokedOperator)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(MystTokenRevokedOperator)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *MystTokenRevokedOperatorIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *MystTokenRevokedOperatorIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// MystTokenRevokedOperator represents a RevokedOperator event raised by the MystToken contract.
-type MystTokenRevokedOperator struct {
-	Operator    common.Address
-	TokenHolder common.Address
-	Raw         types.Log // Blockchain specific contextual infos
-}
-
-// FilterRevokedOperator is a free log retrieval operation binding the contract event 0x50546e66e5f44d728365dc3908c63bc5cfeeab470722c1677e3073a6ac294aa1.
-//
-// Solidity: event RevokedOperator(address indexed operator, address indexed tokenHolder)
-func (_MystToken *MystTokenFilterer) FilterRevokedOperator(opts *bind.FilterOpts, operator []common.Address, tokenHolder []common.Address) (*MystTokenRevokedOperatorIterator, error) {
-
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-	var tokenHolderRule []interface{}
-	for _, tokenHolderItem := range tokenHolder {
-		tokenHolderRule = append(tokenHolderRule, tokenHolderItem)
-	}
-
-	logs, sub, err := _MystToken.contract.FilterLogs(opts, "RevokedOperator", operatorRule, tokenHolderRule)
-	if err != nil {
-		return nil, err
-	}
-	return &MystTokenRevokedOperatorIterator{contract: _MystToken.contract, event: "RevokedOperator", logs: logs, sub: sub}, nil
-}
-
-// WatchRevokedOperator is a free log subscription operation binding the contract event 0x50546e66e5f44d728365dc3908c63bc5cfeeab470722c1677e3073a6ac294aa1.
-//
-// Solidity: event RevokedOperator(address indexed operator, address indexed tokenHolder)
-func (_MystToken *MystTokenFilterer) WatchRevokedOperator(opts *bind.WatchOpts, sink chan<- *MystTokenRevokedOperator, operator []common.Address, tokenHolder []common.Address) (event.Subscription, error) {
-
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-	var tokenHolderRule []interface{}
-	for _, tokenHolderItem := range tokenHolder {
-		tokenHolderRule = append(tokenHolderRule, tokenHolderItem)
-	}
-
-	logs, sub, err := _MystToken.contract.WatchLogs(opts, "RevokedOperator", operatorRule, tokenHolderRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(MystTokenRevokedOperator)
-				if err := _MystToken.contract.UnpackLog(event, "RevokedOperator", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseRevokedOperator is a log parse operation binding the contract event 0x50546e66e5f44d728365dc3908c63bc5cfeeab470722c1677e3073a6ac294aa1.
-//
-// Solidity: event RevokedOperator(address indexed operator, address indexed tokenHolder)
-func (_MystToken *MystTokenFilterer) ParseRevokedOperator(log types.Log) (*MystTokenRevokedOperator, error) {
-	event := new(MystTokenRevokedOperator)
-	if err := _MystToken.contract.UnpackLog(event, "RevokedOperator", log); err != nil {
-		return nil, err
-	}
-	return event, nil
-}
-
-// MystTokenSentIterator is returned from FilterSent and is used to iterate over the raw logs and unpacked data for Sent events raised by the MystToken contract.
-type MystTokenSentIterator struct {
-	Event *MystTokenSent // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *MystTokenSentIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(MystTokenSent)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(MystTokenSent)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *MystTokenSentIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *MystTokenSentIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// MystTokenSent represents a Sent event raised by the MystToken contract.
-type MystTokenSent struct {
-	Operator     common.Address
-	From         common.Address
-	To           common.Address
-	Amount       *big.Int
-	Data         []byte
-	OperatorData []byte
-	Raw          types.Log // Blockchain specific contextual infos
-}
-
-// FilterSent is a free log retrieval operation binding the contract event 0x06b541ddaa720db2b10a4d0cdac39b8d360425fc073085fac19bc82614677987.
-//
-// Solidity: event Sent(address indexed operator, address indexed from, address indexed to, uint256 amount, bytes data, bytes operatorData)
-func (_MystToken *MystTokenFilterer) FilterSent(opts *bind.FilterOpts, operator []common.Address, from []common.Address, to []common.Address) (*MystTokenSentIterator, error) {
-
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-	var fromRule []interface{}
-	for _, fromItem := range from {
-		fromRule = append(fromRule, fromItem)
-	}
-	var toRule []interface{}
-	for _, toItem := range to {
-		toRule = append(toRule, toItem)
-	}
-
-	logs, sub, err := _MystToken.contract.FilterLogs(opts, "Sent", operatorRule, fromRule, toRule)
-	if err != nil {
-		return nil, err
-	}
-	return &MystTokenSentIterator{contract: _MystToken.contract, event: "Sent", logs: logs, sub: sub}, nil
-}
-
-// WatchSent is a free log subscription operation binding the contract event 0x06b541ddaa720db2b10a4d0cdac39b8d360425fc073085fac19bc82614677987.
-//
-// Solidity: event Sent(address indexed operator, address indexed from, address indexed to, uint256 amount, bytes data, bytes operatorData)
-func (_MystToken *MystTokenFilterer) WatchSent(opts *bind.WatchOpts, sink chan<- *MystTokenSent, operator []common.Address, from []common.Address, to []common.Address) (event.Subscription, error) {
-
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-	var fromRule []interface{}
-	for _, fromItem := range from {
-		fromRule = append(fromRule, fromItem)
-	}
-	var toRule []interface{}
-	for _, toItem := range to {
-		toRule = append(toRule, toItem)
-	}
-
-	logs, sub, err := _MystToken.contract.WatchLogs(opts, "Sent", operatorRule, fromRule, toRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(MystTokenSent)
-				if err := _MystToken.contract.UnpackLog(event, "Sent", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseSent is a log parse operation binding the contract event 0x06b541ddaa720db2b10a4d0cdac39b8d360425fc073085fac19bc82614677987.
-//
-// Solidity: event Sent(address indexed operator, address indexed from, address indexed to, uint256 amount, bytes data, bytes operatorData)
-func (_MystToken *MystTokenFilterer) ParseSent(log types.Log) (*MystTokenSent, error) {
-	event := new(MystTokenSent)
-	if err := _MystToken.contract.UnpackLog(event, "Sent", log); err != nil {
 		return nil, err
 	}
 	return event, nil
@@ -2093,49 +1755,40 @@ func (it *MystTokenUpgradeIterator) Close() error {
 
 // MystTokenUpgrade represents a Upgrade event raised by the MystToken contract.
 type MystTokenUpgrade struct {
-	From         common.Address
-	To           common.Address
-	UpgradeAgent common.Address
-	Value        *big.Int
-	Raw          types.Log // Blockchain specific contextual infos
+	From  common.Address
+	Agent common.Address
+	Value *big.Int
+	Raw   types.Log // Blockchain specific contextual infos
 }
 
-// FilterUpgrade is a free log retrieval operation binding the contract event 0x94d4dc6dd33e72ca4b4c13e4e446974b3c8c071fe8df2216d9bafd1093148911.
+// FilterUpgrade is a free log retrieval operation binding the contract event 0x7e5c344a8141a805725cb476f76c6953b842222b967edd1f78ddb6e8b3f397ac.
 //
-// Solidity: event Upgrade(address indexed from, address indexed to, address upgradeAgent, uint256 _value)
-func (_MystToken *MystTokenFilterer) FilterUpgrade(opts *bind.FilterOpts, from []common.Address, to []common.Address) (*MystTokenUpgradeIterator, error) {
+// Solidity: event Upgrade(address indexed from, address agent, uint256 _value)
+func (_MystToken *MystTokenFilterer) FilterUpgrade(opts *bind.FilterOpts, from []common.Address) (*MystTokenUpgradeIterator, error) {
 
 	var fromRule []interface{}
 	for _, fromItem := range from {
 		fromRule = append(fromRule, fromItem)
 	}
-	var toRule []interface{}
-	for _, toItem := range to {
-		toRule = append(toRule, toItem)
-	}
 
-	logs, sub, err := _MystToken.contract.FilterLogs(opts, "Upgrade", fromRule, toRule)
+	logs, sub, err := _MystToken.contract.FilterLogs(opts, "Upgrade", fromRule)
 	if err != nil {
 		return nil, err
 	}
 	return &MystTokenUpgradeIterator{contract: _MystToken.contract, event: "Upgrade", logs: logs, sub: sub}, nil
 }
 
-// WatchUpgrade is a free log subscription operation binding the contract event 0x94d4dc6dd33e72ca4b4c13e4e446974b3c8c071fe8df2216d9bafd1093148911.
+// WatchUpgrade is a free log subscription operation binding the contract event 0x7e5c344a8141a805725cb476f76c6953b842222b967edd1f78ddb6e8b3f397ac.
 //
-// Solidity: event Upgrade(address indexed from, address indexed to, address upgradeAgent, uint256 _value)
-func (_MystToken *MystTokenFilterer) WatchUpgrade(opts *bind.WatchOpts, sink chan<- *MystTokenUpgrade, from []common.Address, to []common.Address) (event.Subscription, error) {
+// Solidity: event Upgrade(address indexed from, address agent, uint256 _value)
+func (_MystToken *MystTokenFilterer) WatchUpgrade(opts *bind.WatchOpts, sink chan<- *MystTokenUpgrade, from []common.Address) (event.Subscription, error) {
 
 	var fromRule []interface{}
 	for _, fromItem := range from {
 		fromRule = append(fromRule, fromItem)
 	}
-	var toRule []interface{}
-	for _, toItem := range to {
-		toRule = append(toRule, toItem)
-	}
 
-	logs, sub, err := _MystToken.contract.WatchLogs(opts, "Upgrade", fromRule, toRule)
+	logs, sub, err := _MystToken.contract.WatchLogs(opts, "Upgrade", fromRule)
 	if err != nil {
 		return nil, err
 	}
@@ -2167,9 +1820,9 @@ func (_MystToken *MystTokenFilterer) WatchUpgrade(opts *bind.WatchOpts, sink cha
 	}), nil
 }
 
-// ParseUpgrade is a log parse operation binding the contract event 0x94d4dc6dd33e72ca4b4c13e4e446974b3c8c071fe8df2216d9bafd1093148911.
+// ParseUpgrade is a log parse operation binding the contract event 0x7e5c344a8141a805725cb476f76c6953b842222b967edd1f78ddb6e8b3f397ac.
 //
-// Solidity: event Upgrade(address indexed from, address indexed to, address upgradeAgent, uint256 _value)
+// Solidity: event Upgrade(address indexed from, address agent, uint256 _value)
 func (_MystToken *MystTokenFilterer) ParseUpgrade(log types.Log) (*MystTokenUpgrade, error) {
 	event := new(MystTokenUpgrade)
 	if err := _MystToken.contract.UnpackLog(event, "Upgrade", log); err != nil {
@@ -2306,6 +1959,139 @@ func (_MystToken *MystTokenFilterer) WatchUpgradeAgentSet(opts *bind.WatchOpts, 
 func (_MystToken *MystTokenFilterer) ParseUpgradeAgentSet(log types.Log) (*MystTokenUpgradeAgentSet, error) {
 	event := new(MystTokenUpgradeAgentSet)
 	if err := _MystToken.contract.UnpackLog(event, "UpgradeAgentSet", log); err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+// MystTokenUpgradeMasterSetIterator is returned from FilterUpgradeMasterSet and is used to iterate over the raw logs and unpacked data for UpgradeMasterSet events raised by the MystToken contract.
+type MystTokenUpgradeMasterSetIterator struct {
+	Event *MystTokenUpgradeMasterSet // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *MystTokenUpgradeMasterSetIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(MystTokenUpgradeMasterSet)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(MystTokenUpgradeMasterSet)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *MystTokenUpgradeMasterSetIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *MystTokenUpgradeMasterSetIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// MystTokenUpgradeMasterSet represents a UpgradeMasterSet event raised by the MystToken contract.
+type MystTokenUpgradeMasterSet struct {
+	Master common.Address
+	Raw    types.Log // Blockchain specific contextual infos
+}
+
+// FilterUpgradeMasterSet is a free log retrieval operation binding the contract event 0x0bae748e6d38d2b1532af619519837d91d74845ad693f6f229677b4ac20b2d50.
+//
+// Solidity: event UpgradeMasterSet(address master)
+func (_MystToken *MystTokenFilterer) FilterUpgradeMasterSet(opts *bind.FilterOpts) (*MystTokenUpgradeMasterSetIterator, error) {
+
+	logs, sub, err := _MystToken.contract.FilterLogs(opts, "UpgradeMasterSet")
+	if err != nil {
+		return nil, err
+	}
+	return &MystTokenUpgradeMasterSetIterator{contract: _MystToken.contract, event: "UpgradeMasterSet", logs: logs, sub: sub}, nil
+}
+
+// WatchUpgradeMasterSet is a free log subscription operation binding the contract event 0x0bae748e6d38d2b1532af619519837d91d74845ad693f6f229677b4ac20b2d50.
+//
+// Solidity: event UpgradeMasterSet(address master)
+func (_MystToken *MystTokenFilterer) WatchUpgradeMasterSet(opts *bind.WatchOpts, sink chan<- *MystTokenUpgradeMasterSet) (event.Subscription, error) {
+
+	logs, sub, err := _MystToken.contract.WatchLogs(opts, "UpgradeMasterSet")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(MystTokenUpgradeMasterSet)
+				if err := _MystToken.contract.UnpackLog(event, "UpgradeMasterSet", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseUpgradeMasterSet is a log parse operation binding the contract event 0x0bae748e6d38d2b1532af619519837d91d74845ad693f6f229677b4ac20b2d50.
+//
+// Solidity: event UpgradeMasterSet(address master)
+func (_MystToken *MystTokenFilterer) ParseUpgradeMasterSet(log types.Log) (*MystTokenUpgradeMasterSet, error) {
+	event := new(MystTokenUpgradeMasterSet)
+	if err := _MystToken.contract.UnpackLog(event, "UpgradeMasterSet", log); err != nil {
 		return nil, err
 	}
 	return event, nil
