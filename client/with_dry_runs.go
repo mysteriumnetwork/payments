@@ -196,11 +196,6 @@ func (cwdr *WithDryRuns) SubscribeToConsumerBalanceEvent(channel, mystSCAddress 
 	return cwdr.bc.SubscribeToConsumerBalanceEvent(channel, mystSCAddress, timeout)
 }
 
-// GetRegistrationFee returns the registration fee
-func (cwdr *WithDryRuns) GetRegistrationFee(registryAddress common.Address) (*big.Int, error) {
-	return cwdr.bc.GetRegistrationFee(registryAddress)
-}
-
 // IsHermesRegistered checks if given hermes is registered and returns true or false.
 func (cwdr *WithDryRuns) IsHermesRegistered(registryAddress, acccountantID common.Address) (bool, error) {
 	return cwdr.bc.IsHermesRegistered(registryAddress, acccountantID)

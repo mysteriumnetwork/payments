@@ -38,7 +38,6 @@ type blockchain interface {
 	SubscribeToPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error)
 	GetMystBalance(mystSCAddress, address common.Address) (*big.Int, error)
 	SubscribeToConsumerBalanceEvent(channel, mystSCAddress common.Address, timeout time.Duration) (chan *bindings.MystTokenTransfer, func(), error)
-	GetRegistrationFee(registryAddress common.Address) (*big.Int, error)
 	RegisterIdentity(rr RegistrationRequest) (*types.Transaction, error)
 	TransferMyst(req TransferRequest) (tx *types.Transaction, err error)
 	IsHermesRegistered(registryAddress, acccountantID common.Address) (bool, error)
@@ -239,17 +238,6 @@ func (bwr *BlockchainWithRetries) GetMystBalance(mystSCAddress, channel common.A
 		}
 		res = result
 		return nil
-	})
-	return res, err
-}
-
-// GetRegistrationFee returns the registration fee
-func (bwr *BlockchainWithRetries) GetRegistrationFee(registryAddress common.Address) (*big.Int, error) {
-	var res *big.Int
-	err := bwr.callWithRetry(func() error {
-		var bcErr error
-		res, bcErr = bwr.bc.GetRegistrationFee(registryAddress)
-		return bcErr
 	})
 	return res, err
 }

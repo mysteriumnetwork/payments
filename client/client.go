@@ -267,22 +267,6 @@ func (bc *Blockchain) GetMystBalance(mystAddress, identity common.Address) (*big
 	}, identity)
 }
 
-// GetRegistrationFee returns fee required by registry
-func (bc *Blockchain) GetRegistrationFee(registryAddress common.Address) (*big.Int, error) {
-	// TODO to reduce amount of blockchain calls, it could get registration fee from cache (updated once in a day)
-	c, err := bindings.NewRegistryCaller(registryAddress, bc.ethClient.Client())
-	if err != nil {
-		return nil, errors.Wrap(err, "could not get registration fee")
-	}
-	parent := context.Background()
-	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
-	defer cancel()
-	res, err := c.RegistrationFee(&bind.CallOpts{
-		Context: ctx,
-	})
-	return res, errors.Wrap(err, "could not get registration fee")
-}
-
 // RegistrationRequest contains all the parameters for the registration request
 type RegistrationRequest struct {
 	WriteRequest
