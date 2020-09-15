@@ -35,6 +35,14 @@ func BigMystToFloat(input *big.Int) float64 {
 	return r
 }
 
+// FloatToBigMyst takes in a float converts it to a big int representation.
+// For example, 1.5 becomes 1500_000_000_000_000_000.
+func FloatToBigMyst(input float64) *big.Int {
+	multiplied := new(big.Float).Mul(new(big.Float).SetFloat64(input), bigMyst)
+	res, _ := multiplied.Int(nil)
+	return res
+}
+
 func hasHexPrefix(str string) bool {
 	return len(str) >= 2 && str[0] == '0' && (str[1] == 'x' || str[1] == 'X')
 }
