@@ -61,3 +61,44 @@ func TestBigMystToFloat(t *testing.T) {
 		})
 	}
 }
+
+func TestFloatToBigMyst(t *testing.T) {
+	singleMyst, _ := new(big.Float).Set(bigMyst).Int(nil)
+	type args struct {
+		input float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want *big.Int
+	}{
+		{
+			name: "calculates a single myst correctly",
+			args: args{
+				input: 1.0,
+			},
+			want: singleMyst,
+		},
+		{
+			name: "calculates half a myst",
+			args: args{
+				input: 0.5,
+			},
+			want: big.NewInt(0).Div(singleMyst, big.NewInt(2)),
+		},
+		{
+			name: "calculates a small amount of a myst",
+			args: args{
+				input: 0.000000005,
+			},
+			want: big.NewInt(0).SetUint64(5000_000_000),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := FloatToBigMyst(tt.args.input); got.Cmp(tt.want) != 0 {
+				t.Errorf("FloatToBigMyst() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
