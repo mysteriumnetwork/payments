@@ -18,6 +18,7 @@ package uniswap
 
 import (
 	"context"
+	"errors"
 	"math/big"
 	"time"
 
@@ -40,7 +41,7 @@ func NewClient(bc *ethclient.Client) *Client {
 }
 
 // GetExchangeAmount returns the amount of tokens you'd receive when exchanging the given amount of token0 to token1.
-func (c Client) GetExchangeAmount(amount *big.Int, token0, token1 common.Address) (*big.Int, error) {
+func (c *Client) GetExchangeAmount(amount *big.Int, token0, token1 common.Address) (*big.Int, error) {
 	addr := GeneratePairAddress(token0, token1)
 	caller, err := bindings.NewIUniswapV2PairCaller(addr, c.bc)
 	if err != nil {
@@ -66,4 +67,22 @@ func (c Client) GetExchangeAmount(amount *big.Int, token0, token1 common.Address
 	}
 
 	return Quote(amount, reserves.Reserve0, reserves.Reserve1), nil
+}
+
+// GetExchangeAmountForPath calculates the amount for a given path.
+func (c *Client) GetExchangeAmountForPath(amount *big.Int, tokens ...common.Address) (*big.Int, error) {
+	if len(tokens) <= 1 {
+		return nil, errors.New("not enough tokens for path")
+	}
+
+	pairs := GetPathPairs(tokens)
+	for i := range pairs {
+		a, err := c.GetExchangeAmount(amount, pairs[i].Token0, pairs[i].Token1)
+		if err != nil {
+			return nil, err
+		}
+		amount = a
+	}
+
+	return amount, nil
 }

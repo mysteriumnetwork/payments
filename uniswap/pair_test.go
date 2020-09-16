@@ -159,3 +159,96 @@ func TestQuote(t *testing.T) {
 		})
 	}
 }
+
+func TestGetPathPairs(t *testing.T) {
+	type args struct {
+		tokens []common.Address
+	}
+	tests := []struct {
+		name string
+		args args
+		want []Pair
+	}{
+		{
+			name: "no pairs if single address",
+			args: args{
+				tokens: []common.Address{common.HexToAddress("0x0")},
+			},
+			want: []Pair{},
+		},
+		{
+			name: "no pairs no addresses",
+			args: args{
+				tokens: []common.Address{},
+			},
+			want: []Pair{},
+		},
+		{
+			name: "single pair if two addresses",
+			args: args{
+				tokens: []common.Address{
+					common.HexToAddress("0x0"),
+					common.HexToAddress("0x1"),
+				},
+			},
+			want: []Pair{
+				{
+					Token0: common.HexToAddress("0x0"),
+					Token1: common.HexToAddress("0x1"),
+				},
+			},
+		},
+		{
+			name: "two pair if three addresses",
+			args: args{
+				tokens: []common.Address{
+					common.HexToAddress("0x0"),
+					common.HexToAddress("0x1"),
+					common.HexToAddress("0x2"),
+				},
+			},
+			want: []Pair{
+				{
+					Token0: common.HexToAddress("0x0"),
+					Token1: common.HexToAddress("0x1"),
+				},
+				{
+					Token0: common.HexToAddress("0x1"),
+					Token1: common.HexToAddress("0x2"),
+				},
+			},
+		},
+		{
+			name: "three pair if four addresses",
+			args: args{
+				tokens: []common.Address{
+					common.HexToAddress("0x0"),
+					common.HexToAddress("0x1"),
+					common.HexToAddress("0x2"),
+					common.HexToAddress("0x3"),
+				},
+			},
+			want: []Pair{
+				{
+					Token0: common.HexToAddress("0x0"),
+					Token1: common.HexToAddress("0x1"),
+				},
+				{
+					Token0: common.HexToAddress("0x1"),
+					Token1: common.HexToAddress("0x2"),
+				},
+				{
+					Token0: common.HexToAddress("0x2"),
+					Token1: common.HexToAddress("0x3"),
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetPathPairs(tt.args.tokens); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetPathPairs() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

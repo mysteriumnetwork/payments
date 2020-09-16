@@ -82,3 +82,24 @@ func sortAddressess(tkn0, tkn1 common.Address) (common.Address, common.Address) 
 
 	return tkn0, tkn1
 }
+
+// Pair represents a token pair.
+type Pair struct {
+	Token0, Token1 common.Address
+}
+
+// GetPathPairs takes in the given token path and returns the corresponding pairs.
+func GetPathPairs(tokens []common.Address) []Pair {
+	pairs := make([]Pair, 0)
+
+	for i := 1; i < len(tokens); i++ {
+		pair := Pair{
+			Token0: tokens[i-1],
+			Token1: tokens[i],
+		}
+
+		pairs = append(pairs, pair)
+	}
+
+	return pairs
+}
