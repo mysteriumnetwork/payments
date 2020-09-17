@@ -16,3 +16,5 @@ func CheckCopyright() error {
 func Generate() error {
 	return sh.RunV("go", "generate")
 }
+
+
