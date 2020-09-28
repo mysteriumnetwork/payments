@@ -65,6 +65,7 @@ type blockchain interface {
 	SettleIntoStake(req SettleIntoStakeRequest) (*types.Transaction, error)
 	IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*types.Transaction, error)
 	GetHermesURL(registryID, hermesID common.Address) (string, error)
+	GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -611,4 +612,18 @@ func (bwr *BlockchainWithRetries) IncreaseProviderStake(req ProviderStakeIncreas
 		return nil
 	})
 	return res, err
+}
+
+// GetStakeThresholds returns the stake tresholds for the given hermes.
+func (bwr *BlockchainWithRetries) GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error) {
+	err = bwr.callWithRetry(func() error {
+		m, ma, bcErr := bwr.bc.GetStakeThresholds(hermesID)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not set beneficiary")
+		}
+		min = m
+		max = ma
+		return nil
+	})
+	return min, max, err
 }

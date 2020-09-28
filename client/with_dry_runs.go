@@ -261,6 +261,11 @@ func (cwdr *WithDryRuns) NetworkID() (*big.Int, error) {
 	return cwdr.bc.NetworkID()
 }
 
+// GetStakeThresholds returns the stake tresholds for the given hermes.
+func (cwdr *WithDryRuns) GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error) {
+	return cwdr.bc.GetStakeThresholds(hermesID)
+}
+
 // SettleWithBeneficiary sets new beneficiary and settling given hermes issued promise into it.
 func (cwdr *WithDryRuns) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*types.Transaction, error) {
 	_, err := cwdr.dryRun(

@@ -922,3 +922,18 @@ func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*
 		req.Signature,
 	)
 }
+
+// GetStakeThresholds returns the stake tresholds for the given hermes.
+func (bc *Blockchain) GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error) {
+	caller, err := bindings.NewHermesImplementationCaller(hermesID, bc.ethClient.Client())
+	if err != nil {
+		return nil, nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.GetStakeThresholds(&bind.CallOpts{
+		Context: ctx,
+	})
+}
