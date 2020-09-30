@@ -453,7 +453,7 @@ func (bc *Blockchain) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*
 		return nil, fmt.Errorf("could not get transactor: %w", err)
 	}
 
-	return t.DecreaseStake(transactor, req.Request.ChannelID, req.Request.Amount, req.Request.TransactorFee, req.Request.Nonce, req.Request.Signature)
+	return t.DecreaseStake(transactor, req.Request.ChannelID, req.Request.Amount, req.Request.TransactorFee, req.Request.Signature)
 }
 
 // SetProviderStakeGoalRequest represents all the parameters required for setting provider stake.
@@ -462,7 +462,6 @@ type SetProviderStakeGoalRequest struct {
 	ChannelID [32]byte
 	HermesID  common.Address
 	Amount    *big.Int
-	Nonce     *big.Int
 	Signature []byte
 }
 
@@ -479,7 +478,7 @@ func (bc *Blockchain) SetProviderStakeGoal(req SetProviderStakeGoalRequest) (*ty
 		return nil, fmt.Errorf("could not get transactor: %w", err)
 	}
 
-	return t.UpdateStakeGoal(transactor, req.ChannelID, req.Amount, req.Nonce, req.Signature)
+	return t.UpdateStakeGoal(transactor, req.ChannelID, req.Amount, req.Signature)
 }
 
 func (bc *Blockchain) getTransactorFromRequest(req WriteRequest) (*bind.TransactOpts, func(), error) {
@@ -773,7 +772,7 @@ func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID common.
 	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
 		return caller.WatchPromiseSettled(&bind.WatchOpts{
 			Context: ctx,
-		}, sink, providerAddresses)
+		}, sink, providerAddresses, []common.Address{})
 	})
 	go func() {
 		subErr := <-sub.Err()
@@ -865,7 +864,6 @@ type SettleWithBeneficiaryRequest struct {
 	HermesID    common.Address
 	ProviderID  common.Address
 	Beneficiary common.Address
-	Nonce       uint64
 	Signature   []byte
 }
 
@@ -918,7 +916,6 @@ func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*
 		toBytes32(req.Promise.R),
 		req.Promise.Signature,
 		req.Beneficiary,
-		big.NewInt(0).SetUint64(req.Nonce),
 		req.Signature,
 	)
 }

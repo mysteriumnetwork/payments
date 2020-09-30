@@ -280,7 +280,6 @@ func (cwdr *WithDryRuns) SettleWithBeneficiary(req SettleWithBeneficiaryRequest)
 		toBytes32(req.Promise.R),
 		req.Promise.Signature,
 		req.Beneficiary,
-		big.NewInt(0).SetUint64(req.Nonce),
 		req.Signature,
 	)
 	if err != nil {
@@ -299,7 +298,6 @@ func (cwdr *WithDryRuns) SetProviderStakeGoal(req SetProviderStakeGoalRequest) (
 		"updateStakeGoal",
 		req.ChannelID,
 		req.Amount,
-		req.Nonce,
 		req.Signature,
 	)
 	if err != nil {
@@ -319,7 +317,6 @@ func (cwdr *WithDryRuns) DecreaseProviderStake(req DecreaseProviderStakeRequest)
 		req.Request.ChannelID,
 		req.Request.Amount,
 		req.Request.TransactorFee,
-		req.Request.Nonce,
 		req.Request.Signature,
 	)
 	if err != nil {
