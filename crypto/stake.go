@@ -32,6 +32,7 @@ const stakeReturnPrefix = "Stake return request"
 // DecreaseProviderStakeRequest represents all the parameters required for decreasing provider stake.
 type DecreaseProviderStakeRequest struct {
 	ChannelID     [32]byte
+	Nonce         *big.Int
 	HermesID      common.Address
 	Amount        *big.Int
 	TransactorFee *big.Int
@@ -71,6 +72,7 @@ func (dpsr DecreaseProviderStakeRequest) GetMessage() []byte {
 	msg = append(msg, Pad(dpsr.ChannelID[:], 32)...)
 	msg = append(msg, Pad(math.U256(dpsr.Amount).Bytes(), 32)...)
 	msg = append(msg, Pad(math.U256(dpsr.TransactorFee).Bytes(), 32)...)
+	msg = append(msg, Pad(math.U256(dpsr.Nonce).Bytes(), 32)...)
 	return msg
 }
 
