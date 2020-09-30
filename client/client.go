@@ -864,6 +864,7 @@ type SettleWithBeneficiaryRequest struct {
 	HermesID    common.Address
 	ProviderID  common.Address
 	Beneficiary common.Address
+	Nonce       uint64
 	Signature   []byte
 }
 
