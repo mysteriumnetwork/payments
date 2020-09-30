@@ -25,14 +25,16 @@ import (
 
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
 // SetBeneficiaryRequest represents a request for setting new beneficiary.
 type SetBeneficiaryRequest struct {
-	ChannelID   string `json:"channelID"`
-	Beneficiary string `json:"beneficiary"`
-	Signature   string `json:"signature"`
+	ChannelID   string   `json:"channelID"`
+	Beneficiary string   `json:"beneficiary"`
+	Nonce       *big.Int `json:"nonce"`
+	Signature   string   `json:"signature"`
 }
 
 func CreateBeneficiaryRequest(channelID, beneficiary string, nonce *big.Int, ks hashSigner, signer common.Address) (*SetBeneficiaryRequest, error) {
@@ -51,6 +53,7 @@ func CreateBeneficiaryRequest(channelID, beneficiary string, nonce *big.Int, ks 
 	request := SetBeneficiaryRequest{
 		ChannelID:   strings.ToLower(channelID),
 		Beneficiary: strings.ToLower(beneficiary),
+		Nonce:       nonce,
 	}
 
 	signature, err := request.CreateSignature(ks, signer)
@@ -83,6 +86,7 @@ func NewBeneficiaryRequest(channelID, beneficiary string, nonce *big.Int, signat
 	return &SetBeneficiaryRequest{
 		ChannelID:   channelID,
 		Beneficiary: beneficiary,
+		Nonce:       nonce,
 		Signature:   signature,
 	}, nil
 }
@@ -110,6 +114,7 @@ func (r SetBeneficiaryRequest) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, common.Hex2Bytes(strings.TrimPrefix(r.ChannelID, "0x"))...)
 	message = append(message, common.HexToAddress(r.Beneficiary).Bytes()...)
+	message = append(message, Pad(math.U256(r.Nonce).Bytes(), 32)...)
 
 	return message
 }
