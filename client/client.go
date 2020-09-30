@@ -166,11 +166,11 @@ func (bc *Blockchain) SubscribeToConsumerBalanceEvent(channel, mystSCAddress com
 	if err != nil {
 		return sink, nil, err
 	}
-	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
-		return mtc.WatchTransfer(&bind.WatchOpts{
-			Context: ctx,
-		}, sink, []common.Address{}, []common.Address{channel})
-	})
+
+	sub, err := mtc.WatchTransfer(&bind.WatchOpts{}, sink, []common.Address{}, []common.Address{channel})
+	if err != nil {
+		return sink, nil, err
+	}
 
 	go func() {
 		select {
