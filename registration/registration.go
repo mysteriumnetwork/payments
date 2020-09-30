@@ -27,12 +27,12 @@ import (
 
 // Request represent a request to register
 type Request struct {
-	HermesID        string
-	Stake           *big.Int
-	Fee             *big.Int
-	Beneficiary     string
-	Signature       string
-	RegistryAddress string
+	HermesID        string   `json:"hermesID"`
+	Stake           *big.Int `json:"stake"`
+	Fee             *big.Int `json:"fee"`
+	Beneficiary     string   `json:"beneficiary"`
+	Signature       string   `json:"signature"`
+	RegistryAddress string   `json:"registryAddress"`
 }
 
 // GetStakeAmount returns a big int representation for the stake amount
