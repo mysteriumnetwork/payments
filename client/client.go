@@ -519,6 +519,7 @@ type SetProviderStakeGoalRequest struct {
 	ChannelID [32]byte
 	HermesID  common.Address
 	Amount    *big.Int
+	ChainID   int64
 	Signature []byte
 }
 
@@ -960,7 +961,6 @@ type SettleWithBeneficiaryRequest struct {
 	HermesID    common.Address
 	ProviderID  common.Address
 	Beneficiary common.Address
-	Nonce       uint64
 	Signature   []byte
 }
 

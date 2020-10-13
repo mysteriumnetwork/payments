@@ -17,6 +17,7 @@
 package crypto
 
 import (
+	"encoding/binary"
 	"fmt"
 	"math/big"
 
@@ -32,10 +33,11 @@ const stakeReturnPrefix = "Stake return request"
 // DecreaseProviderStakeRequest represents all the parameters required for decreasing provider stake.
 type DecreaseProviderStakeRequest struct {
 	ChannelID     [32]byte
-	Nonce         *big.Int
 	HermesID      common.Address
 	Amount        *big.Int
 	TransactorFee *big.Int
+	Nonce         *big.Int
+	ChainID       int64
 	Signature     []byte
 }
 
@@ -69,6 +71,9 @@ func (dpsr *DecreaseProviderStakeRequest) Sign(ks *keystore.KeyStore, signer com
 func (dpsr DecreaseProviderStakeRequest) GetMessage() []byte {
 	msg := []byte{}
 	msg = append(msg, []byte(stakeReturnPrefix)...)
+	b := make([]byte, 8)
+	binary.BigEndian.PutUint64(b, uint64(dpsr.ChainID))
+	msg = append(msg, Pad(b, 32)...)
 	msg = append(msg, Pad(dpsr.ChannelID[:], 32)...)
 	msg = append(msg, Pad(math.U256(dpsr.Amount).Bytes(), 32)...)
 	msg = append(msg, Pad(math.U256(dpsr.TransactorFee).Bytes(), 32)...)

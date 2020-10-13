@@ -17,6 +17,7 @@
 package crypto
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"fmt"
 	"math/big"
@@ -32,6 +33,7 @@ import (
 // Promise is payment promise object
 type Promise struct {
 	ChannelID []byte
+	ChainID   int64
 	Amount    *big.Int
 	Fee       *big.Int
 	Hashlock  []byte
@@ -40,7 +42,7 @@ type Promise struct {
 }
 
 // CreatePromise creates and signs new payment promise
-func CreatePromise(channelID string, amount *big.Int, fee *big.Int, hashlock string, ks hashSigner, signer common.Address) (*Promise, error) {
+func CreatePromise(channelID string, chainID int64, amount *big.Int, fee *big.Int, hashlock string, ks hashSigner, signer common.Address) (*Promise, error) {
 	if hasHexPrefix(channelID) {
 		channelID = channelID[2:]
 	}
@@ -68,6 +70,7 @@ func CreatePromise(channelID string, amount *big.Int, fee *big.Int, hashlock str
 		Amount:    amount,
 		Fee:       fee,
 		Hashlock:  hl,
+		ChainID:   chainID,
 	}
 
 	signature, err := promise.CreateSignature(ks, signer)
@@ -86,7 +89,7 @@ func CreatePromise(channelID string, amount *big.Int, fee *big.Int, hashlock str
 
 // NewPromise will create new promise,
 // signature can be empty and be created later using `Sign()` method.
-func NewPromise(channelID string, amount, fee *big.Int, preimage string, signature string) (*Promise, error) {
+func NewPromise(chainID int64, channelID string, amount, fee *big.Int, preimage string, signature string) (*Promise, error) {
 	if hasHexPrefix(channelID) {
 		channelID = channelID[2:]
 	}
@@ -119,6 +122,7 @@ func NewPromise(channelID string, amount, fee *big.Int, preimage string, signatu
 		Hashlock:  crypto.Keccak256(r),
 		R:         r,
 		Signature: sig,
+		ChainID:   chainID,
 	}
 
 	return &promise, nil
@@ -143,6 +147,9 @@ func (p *Promise) Sign(ks *keystore.KeyStore, signer common.Address) error {
 // GetMessage forms the message of payment promise
 func (p Promise) GetMessage() []byte {
 	message := []byte{}
+	b := make([]byte, 8)
+	binary.BigEndian.PutUint64(b, uint64(p.ChainID))
+	message = append(message, Pad(b, 32)...)
 	message = append(message, Pad(p.ChannelID, 32)...)
 	message = append(message, Pad(math.U256(p.Amount).Bytes(), 32)...)
 	message = append(message, Pad(math.U256(p.Fee).Bytes(), 32)...)
