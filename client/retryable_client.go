@@ -28,7 +28,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type blockchain interface {
+type BC interface {
 	GetHermesFee(hermesAddress common.Address) (uint16, error)
 	CalculateHermesFee(hermesAddress common.Address, value *big.Int) (*big.Int, error)
 	IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck common.Address) (bool, error)
@@ -71,7 +71,7 @@ type blockchain interface {
 type BlockchainWithRetries struct {
 	delay      time.Duration
 	maxRetries int
-	bc         blockchain
+	bc         BC
 	stop       chan struct{}
 	once       sync.Once
 }
@@ -80,7 +80,7 @@ type BlockchainWithRetries struct {
 var ErrStopped = errors.New("call stopped")
 
 // NewBlockchainWithRetries returns a new instance of blockchain with retries
-func NewBlockchainWithRetries(bc blockchain, delay time.Duration, maxRetries int) *BlockchainWithRetries {
+func NewBlockchainWithRetries(bc BC, delay time.Duration, maxRetries int) *BlockchainWithRetries {
 	return &BlockchainWithRetries{
 		bc:         bc,
 		delay:      delay,

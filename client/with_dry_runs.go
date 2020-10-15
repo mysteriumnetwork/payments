@@ -50,19 +50,18 @@ func (e ErrorTransactionReverted) Error() string {
 // In this way, the dry run is always performed before sending the transaction to the network.
 // For convenience, this component proxies read only calls to the underlying blockchain.
 type WithDryRuns struct {
-	bc        blockchain
+	bc        BC
 	ethClient ethClientGetter
 }
 
 // NewWithDryRuns creates a new instance of client with dry runs.
-func NewWithDryRuns(bc blockchain, ethClient ethClientGetter) *WithDryRuns {
+func NewWithDryRuns(bc BC, ethClient ethClientGetter) *WithDryRuns {
 	return &WithDryRuns{
 		bc:        bc,
 		ethClient: ethClient,
 	}
 }
 
-// Estimate estimates the (paid) contract gas price.
 func (cwdr *WithDryRuns) Estimate(req Estimatable) (uint64, error) {
 	// If the gas limit is set to 0, ethereum client will do the estimation for us.
 	// We only force the estimation if the gas limit is set to a non zero value.
@@ -77,6 +76,24 @@ func (cwdr *WithDryRuns) Estimate(req Estimatable) (uint64, error) {
 
 	gas, err := estimator.Estimate(req.toEstimateOps())
 	return gas, errors.Wrap(err, "could not estimate gas")
+}
+
+type gasLimitProvider interface {
+	GetGasLimit() uint64
+}
+
+// GetEthBalance gets the current ethereum balance for the address.
+func (cwdr *WithDryRuns) GetEthBalance(address common.Address) (*big.Int, error) {
+	return cwdr.bc.GetEthBalance(address)
+}
+
+func (cwdr *WithDryRuns) GetHermessAvailableBalance(hermesAddress common.Address) (*big.Int, error) {
+	return cwdr.bc.GetHermessAvailableBalance(hermesAddress)
+}
+
+func (cwdr *WithDryRuns) TransferEth(etr EthTransferRequest) (*types.Transaction, error) {
+	// TODO: implement this dry run
+	return cwdr.bc.TransferEth(etr)
 }
 
 // DryRun simulates the (paid) contract method with params as input values.

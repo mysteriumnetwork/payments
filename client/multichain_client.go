@@ -12,10 +12,10 @@ import (
 )
 
 type MultichainBlockchainClient struct {
-	clients map[int64]blockchain
+	clients map[int64]BC
 }
 
-func NewMultichainBlockchainClient(clients map[int64]blockchain) *MultichainBlockchainClient {
+func NewMultichainBlockchainClient(clients map[int64]BC) *MultichainBlockchainClient {
 	return &MultichainBlockchainClient{
 		clients: clients,
 	}
@@ -23,7 +23,7 @@ func NewMultichainBlockchainClient(clients map[int64]blockchain) *MultichainBloc
 
 var ErrUnknownChain = errors.New("unknown chain")
 
-func (mbc *MultichainBlockchainClient) getClientByChain(chainID int64) (blockchain, error) {
+func (mbc *MultichainBlockchainClient) getClientByChain(chainID int64) (BC, error) {
 	if v, ok := mbc.clients[chainID]; ok {
 		return v, nil
 	}
