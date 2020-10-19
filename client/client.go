@@ -23,7 +23,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -302,14 +301,6 @@ type WriteRequest struct {
 // getGasLimit returns the gas limit
 func (wr WriteRequest) getGasLimit() uint64 {
 	return wr.GasLimit
-}
-
-// EstimateGas exposes the clients internal estimate gas
-func (bc *Blockchain) EstimateGas(msg ethereum.CallMsg) (uint64, error) {
-	parent := context.Background()
-	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
-	defer cancel()
-	return bc.ethClient.Client().EstimateGas(ctx, msg)
 }
 
 // RegisterIdentity registers the given identity on blockchain
