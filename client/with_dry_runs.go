@@ -18,13 +18,31 @@ package client
 
 import (
 	"math/big"
+	"strings"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/mysteriumnetwork/payments/bindings"
 	"github.com/pkg/errors"
 )
+
+type Estimatable interface {
+	getGasLimit() uint64
+	toEstimator(ethClientGetter) (*bindings.ContractEstimator, error)
+	toEstimateOps() *bindings.EstimateOpts
+}
+
+// ErrorTransactionReverted when contract execution is interrupted with an error./
+type ErrorTransactionReverted struct {
+	Err    rpc.Error
+	Reason string
+}
+
+func (e ErrorTransactionReverted) Error() string {
+	return e.Err.Error()
+}
 
 // WithDryRuns forces a dry run before running a write transaction on blockchain.
 // Ethereum client will perform a dry run on a transaction with no gas limit set.
@@ -44,39 +62,47 @@ func NewWithDryRuns(bc blockchain, ethClient ethClientGetter) *WithDryRuns {
 	}
 }
 
-type gasLimitProvider interface {
-	GetGasLimit() uint64
-}
-
-// The params for the dry run should be in the strict order as required by the smart contract.
-func (cwdr *WithDryRuns) dryRun(glp gasLimitProvider, binding string, from, to common.Address, method string, params ...interface{}) (uint64, error) {
+// Estimate estimates the (paid) contract gas price.
+func (cwdr *WithDryRuns) Estimate(req Estimatable) (uint64, error) {
 	// If the gas limit is set to 0, ethereum client will do the estimation for us.
 	// We only force the estimation if the gas limit is set to a non zero value.
-	if glp.GetGasLimit() == 0 {
+	if req.getGasLimit() == 0 {
 		return 0, nil
 	}
 
-	estimator, err := bindings.NewContractEstimator(to, binding, cwdr.ethClient.Client())
+	estimator, err := req.toEstimator(cwdr.ethClient)
 	if err != nil {
 		return 0, err
 	}
 
-	return estimator.Estimate(&bindings.DryRunOpts{From: from}, method, params)
+	gas, err := estimator.Estimate(req.toEstimateOps())
+	return gas, errors.Wrap(err, "could not estimate gas")
+}
+
+// DryRun simulates the (paid) contract method with params as input values.
+func (cwdr *WithDryRuns) DryRun(req Estimatable) error {
+	_, err := cwdr.Estimate(req)
+	if err == nil {
+		return nil
+	}
+
+	// Extract error thrown in contract
+	if rpcCauseErr, hasCause := errors.Cause(err).(rpc.Error); hasCause {
+		if rpcCauseErr.ErrorCode() == -32000 && strings.Contains(rpcCauseErr.Error(), "VM Exception while processing transaction: revert") {
+			err = &ErrorTransactionReverted{
+				Err:    rpcCauseErr,
+				Reason: strings.TrimPrefix(rpcCauseErr.Error(), "VM Exception while processing transaction: revert "),
+			}
+		}
+	}
+
+	return err
 }
 
 // TransferMyst transfers myst
 func (cwdr *WithDryRuns) TransferMyst(req TransferRequest) (tx *types.Transaction, err error) {
-	_, err = cwdr.dryRun(
-		req,
-		bindings.MystTokenABI,
-		req.Identity,
-		req.MystAddress,
-		"transfer",
-		req.Recipient,
-		req.Amount,
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "transaction dry run failed")
+	if _, err := cwdr.Estimate(req); err != nil {
+		return nil, err
 	}
 
 	return cwdr.bc.TransferMyst(req)
@@ -84,65 +110,28 @@ func (cwdr *WithDryRuns) TransferMyst(req TransferRequest) (tx *types.Transactio
 
 // SettlePromise is settling the given consumer issued promise
 func (cwdr *WithDryRuns) SettlePromise(req SettleRequest) (*types.Transaction, error) {
-	lock := [32]byte{}
-	copy(lock[:], req.Promise.R)
-
-	_, err := cwdr.dryRun(
-		req,
-		bindings.ChannelImplementationABI,
-		req.Identity,
-		req.ChannelID,
-		"settlePromise",
-		req.Promise.Amount,
-		req.Promise.Fee,
-		lock,
-		req.Promise.Signature,
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "transaction dry run failed")
+	if _, err := cwdr.Estimate(req); err != nil {
+		return nil, err
 	}
 
 	return cwdr.bc.SettlePromise(req)
 }
 
 // RegisterIdentity registers the given identity on blockchain
-func (cwdr *WithDryRuns) RegisterIdentity(rr RegistrationRequest) (*types.Transaction, error) {
-	_, err := cwdr.dryRun(
-		rr,
-		bindings.RegistryABI,
-		rr.Identity,
-		rr.RegistryAddress,
-		"registerIdentity",
-		rr.HermesID,
-		rr.Stake,
-		rr.TransactorFee,
-		rr.Beneficiary,
-		rr.Signature,
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "transaction dry run failed")
+func (cwdr *WithDryRuns) RegisterIdentity(req RegistrationRequest) (*types.Transaction, error) {
+	if _, err := cwdr.Estimate(req); err != nil {
+		return nil, err
 	}
 
-	return cwdr.bc.RegisterIdentity(rr)
+	return cwdr.bc.RegisterIdentity(req)
 }
 
 // SettleAndRebalance is settling given hermes issued promise
 func (cwdr *WithDryRuns) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.Transaction, error) {
-	_, err := cwdr.dryRun(
-		req,
-		bindings.HermesImplementationABI,
-		req.Identity,
-		req.HermesID,
-		"settleAndRebalance",
-		req.ProviderID,
-		req.Promise.Amount,
-		req.Promise.Fee,
-		toBytes32(req.Promise.R),
-		req.Promise.Signature,
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "transaction dry run failed")
+	if _, err := cwdr.Estimate(req); err != nil {
+		return nil, err
 	}
+
 	return cwdr.bc.SettleAndRebalance(req)
 }
 
@@ -263,96 +252,45 @@ func (cwdr *WithDryRuns) GetStakeThresholds(hermesID common.Address) (min, max *
 
 // SettleWithBeneficiary sets new beneficiary and settling given hermes issued promise into it.
 func (cwdr *WithDryRuns) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*types.Transaction, error) {
-	_, err := cwdr.dryRun(
-		req,
-		bindings.HermesImplementationABI,
-		req.Identity,
-		req.HermesID,
-		"settleWithBeneficiary",
-		req.ProviderID,
-		req.Promise.Amount,
-		req.Promise.Fee,
-		toBytes32(req.Promise.R),
-		req.Promise.Signature,
-		req.Beneficiary,
-		req.Signature,
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "transaction dry run failed")
+	if _, err := cwdr.Estimate(req); err != nil {
+		return nil, err
 	}
+
 	return cwdr.bc.SettleWithBeneficiary(req)
 }
 
 // SetProviderStakeGoal sets provider stake goal.
 func (cwdr *WithDryRuns) SetProviderStakeGoal(req SetProviderStakeGoalRequest) (*types.Transaction, error) {
-	_, err := cwdr.dryRun(
-		req,
-		bindings.HermesImplementationABI,
-		req.Identity,
-		req.HermesID,
-		"updateStakeGoal",
-		req.ChannelID,
-		req.Amount,
-		req.Signature,
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "transaction dry run failed")
+	if _, err := cwdr.Estimate(req); err != nil {
+		return nil, err
 	}
+
 	return cwdr.bc.SetProviderStakeGoal(req)
 }
 
 // DecreaseProviderStake decreases provider stake.
 func (cwdr *WithDryRuns) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*types.Transaction, error) {
-	_, err := cwdr.dryRun(
-		req,
-		bindings.HermesImplementationABI,
-		req.Identity,
-		req.Request.HermesID,
-		"decreaseStake",
-		req.Request.ChannelID,
-		req.Request.Amount,
-		req.Request.TransactorFee,
-		req.Request.Signature,
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "transaction dry run failed")
+	if _, err := cwdr.Estimate(req); err != nil {
+		return nil, err
 	}
+
 	return cwdr.bc.DecreaseProviderStake(req)
 }
 
 // SettleIntoStake settles the hermes promise into stake increase.
 func (cwdr *WithDryRuns) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transaction, error) {
-	_, err := cwdr.dryRun(
-		req,
-		bindings.HermesImplementationABI,
-		req.Identity,
-		req.HermesID,
-		"settleIntoStake",
-		toBytes32(req.Promise.ChannelID),
-		req.Promise.Amount,
-		req.Promise.Fee,
-		toBytes32(req.Promise.R),
-		req.Promise.Signature,
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "transaction dry run failed")
+	if _, err := cwdr.Estimate(req); err != nil {
+		return nil, err
 	}
+
 	return cwdr.bc.SettleIntoStake(req)
 }
 
 // IncreaseProviderStake increases the provider stake.
 func (cwdr *WithDryRuns) IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*types.Transaction, error) {
-	_, err := cwdr.dryRun(
-		req,
-		bindings.HermesImplementationABI,
-		req.Identity,
-		req.HermesID,
-		"increaseStake",
-		req.ChannelID,
-		req.Amount,
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "transaction dry run failed")
+	if _, err := cwdr.Estimate(req); err != nil {
+		return nil, err
 	}
+
 	return cwdr.bc.IncreaseProviderStake(req)
 }

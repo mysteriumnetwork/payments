@@ -279,6 +279,18 @@ type RegistrationRequest struct {
 	Nonce           *big.Int
 }
 
+func (r RegistrationRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+	return bindings.NewContractEstimator(r.RegistryAddress, bindings.RegistryABI, ethClient.Client())
+}
+
+func (r RegistrationRequest) toEstimateOps() *bindings.EstimateOpts {
+	return &bindings.EstimateOpts{
+		From:   r.Identity,
+		Method: "registerIdentity",
+		Params: []interface{}{r.HermesID, r.Stake, r.TransactorFee, r.Beneficiary, r.Signature},
+	}
+}
+
 // WriteRequest contains the required params for a write request
 type WriteRequest struct {
 	Identity common.Address
@@ -287,8 +299,8 @@ type WriteRequest struct {
 	GasPrice *big.Int
 }
 
-// GetGasLimit returns the gas limit
-func (wr WriteRequest) GetGasLimit() uint64 {
+// getGasLimit returns the gas limit
+func (wr WriteRequest) getGasLimit() uint64 {
 	return wr.GasLimit
 }
 
@@ -343,6 +355,18 @@ type TransferRequest struct {
 	WriteRequest
 }
 
+func (r TransferRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+	return bindings.NewContractEstimator(r.MystAddress, bindings.MystTokenABI, ethClient.Client())
+}
+
+func (r TransferRequest) toEstimateOps() *bindings.EstimateOpts {
+	return &bindings.EstimateOpts{
+		From:   r.Identity,
+		Method: "transfer",
+		Params: []interface{}{r.Recipient, r.Amount},
+	}
+}
+
 // TransferMyst transfers myst
 func (bc *Blockchain) TransferMyst(req TransferRequest) (tx *types.Transaction, err error) {
 	transactor, err := bindings.NewMystTokenTransactor(req.MystAddress, bc.ethClient.Client())
@@ -387,6 +411,18 @@ type ProviderStakeIncreaseRequest struct {
 	Amount    *big.Int
 }
 
+func (r ProviderStakeIncreaseRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+}
+
+func (r ProviderStakeIncreaseRequest) toEstimateOps() *bindings.EstimateOpts {
+	return &bindings.EstimateOpts{
+		From:   r.Identity,
+		Method: "increaseStake",
+		Params: []interface{}{r.ChannelID, r.Amount},
+	}
+}
+
 // IncreaseProviderStake increases the provider stake.
 func (bc *Blockchain) IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*types.Transaction, error) {
 	t, err := bindings.NewHermesImplementationTransactor(req.HermesID, bc.ethClient.Client())
@@ -408,6 +444,24 @@ type SettleIntoStakeRequest struct {
 	WriteRequest
 	Promise  crypto.Promise
 	HermesID common.Address
+}
+
+func (r SettleIntoStakeRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+}
+
+func (r SettleIntoStakeRequest) toEstimateOps() *bindings.EstimateOpts {
+	return &bindings.EstimateOpts{
+		From:   r.Identity,
+		Method: "settleIntoStake",
+		Params: []interface{}{
+			toBytes32(r.Promise.ChannelID),
+			r.Promise.Amount,
+			r.Promise.Fee,
+			toBytes32(r.Promise.R),
+			r.Promise.Signature,
+		},
+	}
 }
 
 // SettleIntoStake settles the hermes promise into stake increase.
@@ -440,6 +494,18 @@ type DecreaseProviderStakeRequest struct {
 	Request crypto.DecreaseProviderStakeRequest
 }
 
+func (r DecreaseProviderStakeRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+	return bindings.NewContractEstimator(r.Request.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+}
+
+func (r DecreaseProviderStakeRequest) toEstimateOps() *bindings.EstimateOpts {
+	return &bindings.EstimateOpts{
+		From:   r.Identity,
+		Method: "decreaseStake",
+		Params: []interface{}{r.Request.ChannelID, r.Request.Amount, r.Request.TransactorFee, r.Request.Signature},
+	}
+}
+
 // DecreaseProviderStake decreases provider stake.
 func (bc *Blockchain) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*types.Transaction, error) {
 	t, err := bindings.NewHermesImplementationTransactor(req.Request.HermesID, bc.ethClient.Client())
@@ -463,6 +529,18 @@ type SetProviderStakeGoalRequest struct {
 	HermesID  common.Address
 	Amount    *big.Int
 	Signature []byte
+}
+
+func (r SetProviderStakeGoalRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+}
+
+func (r SetProviderStakeGoalRequest) toEstimateOps() *bindings.EstimateOpts {
+	return &bindings.EstimateOpts{
+		From:   r.Identity,
+		Method: "updateStakeGoal",
+		Params: []interface{}{r.ChannelID, r.Amount, r.Signature},
+	}
 }
 
 // SetProviderStakeGoal sets provider stake goal.
@@ -521,6 +599,18 @@ type SettleAndRebalanceRequest struct {
 	HermesID   common.Address
 	ProviderID common.Address
 	Promise    crypto.Promise
+}
+
+func (r SettleAndRebalanceRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+}
+
+func (r SettleAndRebalanceRequest) toEstimateOps() *bindings.EstimateOpts {
+	return &bindings.EstimateOpts{
+		From:   r.Identity,
+		Method: "settleAndRebalance",
+		Params: []interface{}{r.ProviderID, r.Promise.Amount, r.Promise.Fee, toBytes32(r.Promise.R), r.Promise.Signature},
+	}
 }
 
 // SettleAndRebalance is settling given hermes issued promise
@@ -680,6 +770,21 @@ type SettleRequest struct {
 	WriteRequest
 	ChannelID common.Address
 	Promise   crypto.Promise
+}
+
+func (r SettleRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+	return bindings.NewContractEstimator(r.ChannelID, bindings.ChannelImplementationABI, ethClient.Client())
+}
+
+func (r SettleRequest) toEstimateOps() *bindings.EstimateOpts {
+	lock := [32]byte{}
+	copy(lock[:], r.Promise.R)
+
+	return &bindings.EstimateOpts{
+		From:   r.Identity,
+		Method: "settlePromise",
+		Params: []interface{}{r.Promise.Amount, r.Promise.Fee, lock, r.Promise.Signature},
+	}
 }
 
 // SettlePromise is settling the given consumer issued promise
@@ -866,6 +971,26 @@ type SettleWithBeneficiaryRequest struct {
 	Beneficiary common.Address
 	Nonce       uint64
 	Signature   []byte
+}
+
+func (r SettleWithBeneficiaryRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+}
+
+func (r SettleWithBeneficiaryRequest) toEstimateOps() *bindings.EstimateOpts {
+	return &bindings.EstimateOpts{
+		From:   r.Identity,
+		Method: "settleWithBeneficiary",
+		Params: []interface{}{
+			r.ProviderID,
+			r.Promise.Amount,
+			r.Promise.Fee,
+			toBytes32(r.Promise.R),
+			r.Promise.Signature,
+			r.Beneficiary,
+			r.Signature,
+		},
+	}
 }
 
 // GetHermessAvailableBalance returns the balance that is available for hermes.
