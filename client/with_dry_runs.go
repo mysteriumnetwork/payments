@@ -18,11 +18,8 @@ package client
 
 import (
 	"math/big"
-	"strings"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/mysteriumnetwork/payments/bindings"
@@ -35,13 +32,15 @@ import (
 // In this way, the dry run is always performed before sending the transaction to the network.
 // For convenience, this component proxies read only calls to the underlying blockchain.
 type WithDryRuns struct {
-	bc blockchain
+	bc        blockchain
+	ethClient ethClientGetter
 }
 
 // NewWithDryRuns creates a new instance of client with dry runs.
-func NewWithDryRuns(bc blockchain) *WithDryRuns {
+func NewWithDryRuns(bc blockchain, ethClient ethClientGetter) *WithDryRuns {
 	return &WithDryRuns{
-		bc: bc,
+		bc:        bc,
+		ethClient: ethClient,
 	}
 }
 
@@ -56,17 +55,13 @@ func (cwdr *WithDryRuns) dryRun(glp gasLimitProvider, binding string, from, to c
 	if glp.GetGasLimit() == 0 {
 		return 0, nil
 	}
-	parsed, err := abi.JSON(strings.NewReader(binding))
+
+	estimator, err := bindings.NewContractEstimator(to, binding, cwdr.ethClient.Client())
 	if err != nil {
-		return 0, errors.Wrap(err, "could not deserialize ABI")
+		return 0, err
 	}
-	input, err := parsed.Pack(method, params...)
-	if err != nil {
-		return 0, errors.Wrap(err, "could not pack input")
-	}
-	msg := ethereum.CallMsg{From: from, To: &to, Data: input}
-	gas, err := cwdr.bc.EstimateGas(msg)
-	return gas, errors.Wrap(err, "could not estimate gas")
+
+	return estimator.Estimate(&bindings.DryRunOpts{From: from}, method, params)
 }
 
 // TransferMyst transfers myst
