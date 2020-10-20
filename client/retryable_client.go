@@ -21,7 +21,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/mysteriumnetwork/payments/bindings"
@@ -55,7 +54,6 @@ type blockchain interface {
 	SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error)
 	SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error)
 	NetworkID() (*big.Int, error)
-	EstimateGas(msg ethereum.CallMsg) (uint64, error)
 	GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error)
 	GetEthBalance(address common.Address) (*big.Int, error)
 	TransferEth(etr EthTransferRequest) (*types.Transaction, error)
@@ -530,11 +528,6 @@ func (bwr *BlockchainWithRetries) NetworkID() (*big.Int, error) {
 		return nil
 	})
 	return res, err
-}
-
-// EstimateGas proxies the estimate gas call to the underlying blockchain since no network calls are performed.
-func (bwr *BlockchainWithRetries) EstimateGas(msg ethereum.CallMsg) (uint64, error) {
-	return bwr.bc.EstimateGas(msg)
 }
 
 // Stop stops the blockchain with retries aborting any waits for retries
