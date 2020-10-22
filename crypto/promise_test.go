@@ -143,17 +143,17 @@ func TestCreatePromise(t *testing.T) {
 	fee := big.NewInt(0).SetUint64(p.Fee)
 	hashlock := hex.EncodeToString(p.Hashlock)
 
-	promise, err := CreatePromise(channelID, amount, fee, hashlock, ks, account.Address)
+	promise, err := CreatePromise(channelID, 1, amount, fee, hashlock, ks, account.Address)
 	assert.NoError(t, err)
 	assert.Equal(t, p.PromiseSignature, promise.Signature)
 
 	// ChannelID can also be provided with prefix
-	promise, err = CreatePromise("0x"+channelID, amount, fee, hashlock, ks, account.Address)
+	promise, err = CreatePromise("0x"+channelID, 1, amount, fee, hashlock, ks, account.Address)
 	assert.NoError(t, err)
 	assert.Equal(t, p.PromiseSignature, promise.Signature)
 
 	// Should fail when provided not correct channel ID
-	_, err = CreatePromise("NotHex", amount, fee, hashlock, ks, account.Address)
+	_, err = CreatePromise("NotHex", 1, amount, fee, hashlock, ks, account.Address)
 	assert.Error(t, err)
 	assert.Equal(t, "channelID and hashlock have to be proper hex strings", err.Error())
 }
@@ -166,7 +166,7 @@ func TestNewPromise(t *testing.T) {
 	preimage := hex.EncodeToString(p.R)
 	signature := hex.EncodeToString(p.PromiseSignature)
 
-	promise, err := NewPromise(channelID, amount, fee, preimage, signature)
+	promise, err := NewPromise(1, channelID, amount, fee, preimage, signature)
 	assert.NoError(t, err)
 	assert.Equal(t, big.NewInt(0).SetUint64(p.Amount), promise.Amount)
 	assert.Equal(t, p.ChannelID, promise.ChannelID)
@@ -188,7 +188,7 @@ func TestSign(t *testing.T) {
 	amount := big.NewInt(0).SetUint64(p.Amount)
 	fee := big.NewInt(0).SetUint64(p.Fee)
 
-	promise, err := NewPromise(
+	promise, err := NewPromise(1,
 		hex.EncodeToString(p.ChannelID),
 		amount,
 		fee,

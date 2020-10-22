@@ -4,7 +4,6 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/mysteriumnetwork/payments/bindings"
@@ -250,15 +249,6 @@ func (mbc *MultichainBlockchainClient) NetworkID(chainID int64) (*big.Int, error
 	}
 
 	return bc.NetworkID()
-}
-
-func (mbc *MultichainBlockchainClient) EstimateGas(chainID int64, msg ethereum.CallMsg) (uint64, error) {
-	bc, err := mbc.getClientByChain(chainID)
-	if err != nil {
-		return 0, err
-	}
-
-	return bc.EstimateGas(msg)
 }
 
 func (mbc *MultichainBlockchainClient) GetConsumerChannel(chainID int64, addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error) {

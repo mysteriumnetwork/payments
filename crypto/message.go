@@ -44,6 +44,30 @@ type hashSigner interface {
 	SignHash(a accounts.Account, hash []byte) ([]byte, error)
 }
 
+func CreateExchangeMessageWithPromise(chainID int64, invoice Invoice, promise *Promise, hermesID string, ks hashSigner, signer common.Address) (*ExchangeMessage, error) {
+	message := ExchangeMessage{
+		Promise:        *promise,
+		AgreementID:    new(big.Int).Set(invoice.AgreementID),
+		AgreementTotal: new(big.Int).Set(invoice.AgreementTotal),
+		Provider:       invoice.Provider,
+		HermesID:       hermesID,
+		ChainID:        chainID,
+	}
+
+	signature, err := message.CreateSignature(ks, signer)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := ReformatSignatureVForBC(signature); err != nil {
+		return nil, fmt.Errorf("failed to reformat signature: %w", err)
+	}
+
+	message.Signature = hex.EncodeToString(signature)
+
+	return &message, nil
+}
+
 // CreateExchangeMessage creates new exchange message with it's promise
 func CreateExchangeMessage(chainID int64, invoice Invoice, promiseAmount *big.Int, channelID, hermesID string, ks hashSigner, signer common.Address) (*ExchangeMessage, error) {
 	promise, err := CreatePromise(channelID, chainID, promiseAmount, invoice.TransactorFee, invoice.Hashlock, ks, signer)
