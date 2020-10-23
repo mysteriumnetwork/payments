@@ -33,6 +33,10 @@ type client interface {
 	TransactionReceipt(ctx context.Context, hash common.Hash) (*types.Receipt, error)
 }
 
+type TxWatcherIface interface {
+	EnsureTransactionSuccess(wt WatchableTransaction, initialGasPrice *big.Int) (*types.Transaction, func(), error)
+}
+
 // TxWatcher makes sure that transactions actually get sent to the network.
 // It retries for the given amount of times to send the TX, each time increasing the gas price by given percentage.
 type TxWatcher struct {
