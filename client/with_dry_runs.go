@@ -62,21 +62,6 @@ func NewWithDryRuns(bc BC, ethClient ethClientGetter) *WithDryRuns {
 	}
 }
 
-func (cwdr *WithDryRuns) Estimate(req Estimatable) (uint64, error) {
-	// If the gas limit is set to 0, ethereum client will do the estimation for us.
-	// We only force the estimation if the gas limit is set to a non zero value.
-	if req.getGasLimit() == 0 {
-		return 0, nil
-	}
-
-	estimator, err := req.toEstimator(cwdr.ethClient)
-	if err != nil {
-		return 0, err
-	}
-
-	gas, err := estimator.Estimate(req.toEstimateOps())
-	return gas, errors.Wrap(err, "could not estimate gas")
-}
 
 type gasLimitProvider interface {
 	GetGasLimit() uint64
@@ -94,6 +79,22 @@ func (cwdr *WithDryRuns) GetHermessAvailableBalance(hermesAddress common.Address
 func (cwdr *WithDryRuns) TransferEth(etr EthTransferRequest) (*types.Transaction, error) {
 	// TODO: implement this dry run
 	return cwdr.bc.TransferEth(etr)
+}
+
+func (cwdr *WithDryRuns) Estimate(req Estimatable) (uint64, error) {
+	// If the gas limit is set to 0, ethereum client will do the estimation for us.
+	// We only force the estimation if the gas limit is set to a non zero value.
+	if req.getGasLimit() == 0 {
+		return 0, nil
+	}
+
+	estimator, err := req.toEstimator(cwdr.ethClient)
+	if err != nil {
+		return 0, err
+	}
+
+	gas, err := estimator.Estimate(req.toEstimateOps())
+	return gas, errors.Wrap(err, "could not estimate gas")
 }
 
 // DryRun simulates the (paid) contract method with params as input values.
@@ -310,4 +311,8 @@ func (cwdr *WithDryRuns) IncreaseProviderStake(req ProviderStakeIncreaseRequest)
 	}
 
 	return cwdr.bc.IncreaseProviderStake(req)
+}
+
+func (cwdr *WithDryRuns) TransactionReceipt(hash common.Hash) (*types.Receipt, error) {
+	return cwdr.bc.TransactionReceipt(hash)
 }

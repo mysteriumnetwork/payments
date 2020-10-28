@@ -269,6 +269,14 @@ func (mbc *MultichainBlockchainClient) GetEthBalance(chainID int64, address comm
 	return bc.GetEthBalance(address)
 }
 
+func (mbc *MultichainBlockchainClient) TransactionReceipt(chainID int64, hash common.Hash) (*types.Receipt, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.TransactionReceipt(hash)
+}
+
 func (mbc *MultichainBlockchainClient) TransferEth(chainID int64, etr EthTransferRequest) (*types.Transaction, error) {
 	bc, err := mbc.getClientByChain(chainID)
 	if err != nil {
@@ -330,4 +338,14 @@ func (mbc *MultichainBlockchainClient) GetHermesURL(chainID int64, registryID, h
 	}
 
 	return bc.GetHermesURL(registryID, hermesID)
+}
+
+// GetStakeThresholds returns the stake tresholds for the given hermes.
+func (mbc *MultichainBlockchainClient) GetStakeThresholds(chainID int64, hermesID common.Address) (min, max *big.Int, err error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return bc.GetStakeThresholds(hermesID)
 }

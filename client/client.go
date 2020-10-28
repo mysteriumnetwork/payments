@@ -214,6 +214,12 @@ func (bc *Blockchain) getProviderChannelStake(hermesAddress common.Address, addr
 	return ch.Stake, errors.Wrap(err, "could not get provider channel from bc")
 }
 
+func (bc *Blockchain) TransactionReceipt(hash common.Hash) (*types.Receipt, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+	return bc.ethClient.Client().TransactionReceipt(ctx, hash)
+}
+
 func (bc *Blockchain) getProviderChannelAddressBytes(hermesAddress, addressToCheck common.Address) ([32]byte, error) {
 	addressBytes := [32]byte{}
 

@@ -62,6 +62,7 @@ type BC interface {
 	DecreaseProviderStake(req DecreaseProviderStakeRequest) (*types.Transaction, error)
 	SettleIntoStake(req SettleIntoStakeRequest) (*types.Transaction, error)
 	IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*types.Transaction, error)
+	TransactionReceipt(hash common.Hash) (*types.Receipt, error)
 	GetHermesURL(registryID, hermesID common.Address) (string, error)
 	GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error)
 }
@@ -345,6 +346,19 @@ func (bwr *BlockchainWithRetries) GetConsumerChannelOperator(channelAddress comm
 		result, bcErr := bwr.bc.GetConsumerChannelOperator(channelAddress)
 		if bcErr != nil {
 			return errors.Wrap(bcErr, "could not get consumer's operator")
+		}
+		res = result
+		return nil
+	})
+	return res, err
+}
+
+func (bwr *BlockchainWithRetries) TransactionReceipt(hash common.Hash) (*types.Receipt, error) {
+	var res *types.Receipt
+	err := bwr.callWithRetry(func() error {
+		result, bcErr := bwr.bc.TransactionReceipt(hash)
+		if bcErr != nil {
+			return errors.Wrap(bcErr, "could not get transaction receipt")
 		}
 		res = result
 		return nil
