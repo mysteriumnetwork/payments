@@ -233,8 +233,8 @@ func (cwdr *WithDryRuns) GetProviderChannelByID(acc common.Address, chID []byte)
 }
 
 // SubscribeToIdentityRegistrationEvents subscribes to identity registration events
-func (cwdr *WithDryRuns) SubscribeToIdentityRegistrationEvents(registryAddress common.Address, hermesIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
-	return cwdr.bc.SubscribeToIdentityRegistrationEvents(registryAddress, hermesIDs)
+func (cwdr *WithDryRuns) SubscribeToIdentityRegistrationEvents(registryAddress common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
+	return cwdr.bc.SubscribeToIdentityRegistrationEvents(registryAddress)
 }
 
 // SubscribeToConsumerChannelBalanceUpdate subscribes to consumer channel balance update events

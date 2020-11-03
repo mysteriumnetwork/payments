@@ -46,7 +46,7 @@ type BC interface {
 	GetConsumerChannelsHermes(channelAddress common.Address) (ConsumersHermes, error)
 	GetConsumerChannelOperator(channelAddress common.Address) (common.Address, error)
 	GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error)
-	SubscribeToIdentityRegistrationEvents(registryAddress common.Address, hermesIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error)
+	SubscribeToIdentityRegistrationEvents(registryAddress common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error)
 	SubscribeToConsumerChannelBalanceUpdate(mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error)
 	SettlePromise(req SettleRequest) (*types.Transaction, error)
 	SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error)
@@ -364,11 +364,11 @@ func (bwr *BlockchainWithRetries) TransactionReceipt(hash common.Hash) (*types.R
 }
 
 // SubscribeToIdentityRegistrationEvents subscribes to identity registration events
-func (bwr *BlockchainWithRetries) SubscribeToIdentityRegistrationEvents(registryAddress common.Address, hermesIDs []common.Address) (chan *bindings.RegistryRegisteredIdentity, func(), error) {
+func (bwr *BlockchainWithRetries) SubscribeToIdentityRegistrationEvents(registryAddress common.Address) (chan *bindings.RegistryRegisteredIdentity, func(), error) {
 	var sink chan *bindings.RegistryRegisteredIdentity
 	var cancel func()
 	err := bwr.callWithRetry(func() error {
-		s, c, err := bwr.bc.SubscribeToIdentityRegistrationEvents(registryAddress, hermesIDs)
+		s, c, err := bwr.bc.SubscribeToIdentityRegistrationEvents(registryAddress)
 		if err != nil {
 			return errors.Wrap(err, "could not subscribe to registration events")
 		}

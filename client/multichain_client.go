@@ -101,13 +101,13 @@ func (mbc *MultichainBlockchainClient) SubscribeToConsumerBalanceEvent(chainID i
 	return bc.SubscribeToConsumerBalanceEvent(channel, mystSCAddress, timeout)
 }
 
-func (mbc *MultichainBlockchainClient) SubscribeToIdentityRegistrationEvents(chainID int64, registryAddress common.Address, hermesIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
+func (mbc *MultichainBlockchainClient) SubscribeToIdentityRegistrationEvents(chainID int64, registryAddress common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
 	bc, err := mbc.getClientByChain(chainID)
 	if err != nil {
 		return nil, func() {}, err
 	}
 
-	return bc.SubscribeToIdentityRegistrationEvents(registryAddress, hermesIDs)
+	return bc.SubscribeToIdentityRegistrationEvents(registryAddress)
 }
 func (mbc *MultichainBlockchainClient) SubscribeToConsumerChannelBalanceUpdate(chainID int64, mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error) {
 	bc, err := mbc.getClientByChain(chainID)
