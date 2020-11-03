@@ -565,7 +565,7 @@ func (r SettleAndRebalanceRequest) toEstimator(ethClient ethClientGetter) (*bind
 func (r SettleAndRebalanceRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
 		From:   r.Identity,
-		Method: "settleAndRebalance",
+		Method: "settlePromise",
 		Params: []interface{}{r.ProviderID, r.Promise.Amount, r.Promise.Fee, toBytes32(r.Promise.R), r.Promise.Signature},
 	}
 }
