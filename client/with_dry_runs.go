@@ -62,7 +62,6 @@ func NewWithDryRuns(bc BC, ethClient ethClientGetter) *WithDryRuns {
 	}
 }
 
-
 type gasLimitProvider interface {
 	GetGasLimit() uint64
 }
@@ -243,16 +242,6 @@ func (cwdr *WithDryRuns) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress c
 	return cwdr.bc.SubscribeToConsumerChannelBalanceUpdate(mystSCAddress, channelAddresses)
 }
 
-// SubscribeToProviderChannelBalanceUpdate subscribes to provider channel balance update events
-func (cwdr *WithDryRuns) SubscribeToProviderChannelBalanceUpdate(hermesAddress common.Address, channelAddresses [][32]byte) (sink chan *bindings.HermesImplementationChannelBalanceUpdated, cancel func(), err error) {
-	return cwdr.bc.SubscribeToProviderChannelBalanceUpdate(hermesAddress, channelAddresses)
-}
-
-// SubscribeToChannelOpenedEvents subscribes to provider channel opened events
-func (cwdr *WithDryRuns) SubscribeToChannelOpenedEvents(hermesAddress common.Address) (sink chan *bindings.HermesImplementationChannelOpened, cancel func(), err error) {
-	return cwdr.bc.SubscribeToChannelOpenedEvents(hermesAddress)
-}
-
 // SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events
 func (cwdr *WithDryRuns) SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	return cwdr.bc.SubscribeToPromiseSettledEventByChannelID(hermesID, providerAddresses)
@@ -275,15 +264,6 @@ func (cwdr *WithDryRuns) SettleWithBeneficiary(req SettleWithBeneficiaryRequest)
 	}
 
 	return cwdr.bc.SettleWithBeneficiary(req)
-}
-
-// SetProviderStakeGoal sets provider stake goal.
-func (cwdr *WithDryRuns) SetProviderStakeGoal(req SetProviderStakeGoalRequest) (*types.Transaction, error) {
-	if _, err := cwdr.Estimate(req); err != nil {
-		return nil, err
-	}
-
-	return cwdr.bc.SetProviderStakeGoal(req)
 }
 
 // DecreaseProviderStake decreases provider stake.

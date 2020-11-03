@@ -117,22 +117,6 @@ func (mbc *MultichainBlockchainClient) SubscribeToConsumerChannelBalanceUpdate(c
 
 	return bc.SubscribeToConsumerChannelBalanceUpdate(mystSCAddress, channelAddresses)
 }
-func (mbc *MultichainBlockchainClient) SubscribeToProviderChannelBalanceUpdate(chainID int64, hermesAddress common.Address, channelAddresses [][32]byte) (sink chan *bindings.HermesImplementationChannelBalanceUpdated, cancel func(), err error) {
-	bc, err := mbc.getClientByChain(chainID)
-	if err != nil {
-		return nil, func() {}, err
-	}
-
-	return bc.SubscribeToProviderChannelBalanceUpdate(hermesAddress, channelAddresses)
-}
-func (mbc *MultichainBlockchainClient) SubscribeToChannelOpenedEvents(chainID int64, hermesAddress common.Address) (sink chan *bindings.HermesImplementationChannelOpened, cancel func(), err error) {
-	bc, err := mbc.getClientByChain(chainID)
-	if err != nil {
-		return nil, func() {}, err
-	}
-
-	return bc.SubscribeToChannelOpenedEvents(hermesAddress)
-}
 func (mbc *MultichainBlockchainClient) SubscribeToPromiseSettledEventByChannelID(chainID int64, hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	bc, err := mbc.getClientByChain(chainID)
 	if err != nil {
@@ -293,15 +277,6 @@ func (mbc *MultichainBlockchainClient) GetHermessAvailableBalance(chainID int64,
 	}
 
 	return bc.GetHermessAvailableBalance(hermesAddress)
-}
-
-func (mbc *MultichainBlockchainClient) SetProviderStakeGoal(chainID int64, req SetProviderStakeGoalRequest) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
-	if err != nil {
-		return nil, err
-	}
-
-	return bc.SetProviderStakeGoal(req)
 }
 
 func (mbc *MultichainBlockchainClient) DecreaseProviderStake(chainID int64, req DecreaseProviderStakeRequest) (*types.Transaction, error) {

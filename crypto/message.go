@@ -81,7 +81,7 @@ func CreateExchangeMessage(chainID int64, invoice Invoice, promiseAmount *big.In
 		AgreementTotal: new(big.Int).Set(invoice.AgreementTotal),
 		Provider:       invoice.Provider,
 		HermesID:       hermesID,
-		ChainID:        chainID,
+		ChainID:        invoice.ChainID,
 	}
 
 	signature, err := message.CreateSignature(ks, signer)

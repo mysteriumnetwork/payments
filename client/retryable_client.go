@@ -48,9 +48,7 @@ type BC interface {
 	GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error)
 	SubscribeToIdentityRegistrationEvents(registryAddress common.Address, hermesIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error)
 	SubscribeToConsumerChannelBalanceUpdate(mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error)
-	SubscribeToProviderChannelBalanceUpdate(hermesAddress common.Address, channelAddresses [][32]byte) (sink chan *bindings.HermesImplementationChannelBalanceUpdated, cancel func(), err error)
 	SettlePromise(req SettleRequest) (*types.Transaction, error)
-	SubscribeToChannelOpenedEvents(hermesAddress common.Address) (sink chan *bindings.HermesImplementationChannelOpened, cancel func(), err error)
 	SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error)
 	SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error)
 	NetworkID() (*big.Int, error)
@@ -58,7 +56,6 @@ type BC interface {
 	GetEthBalance(address common.Address) (*big.Int, error)
 	TransferEth(etr EthTransferRequest) (*types.Transaction, error)
 	GetHermessAvailableBalance(hermesAddress common.Address) (*big.Int, error)
-	SetProviderStakeGoal(req SetProviderStakeGoalRequest) (*types.Transaction, error)
 	DecreaseProviderStake(req DecreaseProviderStakeRequest) (*types.Transaction, error)
 	SettleIntoStake(req SettleIntoStakeRequest) (*types.Transaction, error)
 	IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*types.Transaction, error)
@@ -398,22 +395,6 @@ func (bwr *BlockchainWithRetries) SubscribeToConsumerChannelBalanceUpdate(mystSC
 	return sink, cancel, err
 }
 
-// SubscribeToProviderChannelBalanceUpdate subscribes to provider channel balance update events
-func (bwr *BlockchainWithRetries) SubscribeToProviderChannelBalanceUpdate(hermesAddress common.Address, channelAddresses [][32]byte) (chan *bindings.HermesImplementationChannelBalanceUpdated, func(), error) {
-	var sink chan *bindings.HermesImplementationChannelBalanceUpdated
-	var cancel func()
-	err := bwr.callWithRetry(func() error {
-		s, c, err := bwr.bc.SubscribeToProviderChannelBalanceUpdate(hermesAddress, channelAddresses)
-		if err != nil {
-			return errors.Wrap(err, "could not subscribe to channel balance events")
-		}
-		sink = s
-		cancel = c
-		return nil
-	})
-	return sink, cancel, err
-}
-
 // SettlePromise is settling the given consumer issued promise
 func (bwr *BlockchainWithRetries) SettlePromise(req SettleRequest) (*types.Transaction, error) {
 	var res *types.Transaction
@@ -484,22 +465,6 @@ func (bwr *BlockchainWithRetries) TransferEth(etr EthTransferRequest) (*types.Tr
 	return res, err
 }
 
-// SubscribeToChannelOpenedEvents subscribes to provider channel opened events
-func (bwr *BlockchainWithRetries) SubscribeToChannelOpenedEvents(hermesAddress common.Address) (chan *bindings.HermesImplementationChannelOpened, func(), error) {
-	var sink chan *bindings.HermesImplementationChannelOpened
-	var cancel func()
-	err := bwr.callWithRetry(func() error {
-		s, c, err := bwr.bc.SubscribeToChannelOpenedEvents(hermesAddress)
-		if err != nil {
-			return errors.Wrap(err, "could not subscribe to channel opened events")
-		}
-		sink = s
-		cancel = c
-		return nil
-	})
-	return sink, cancel, err
-}
-
 // SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events
 func (bwr *BlockchainWithRetries) SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (chan *bindings.HermesImplementationPromiseSettled, func(), error) {
 	var sink chan *bindings.HermesImplementationPromiseSettled
@@ -556,20 +521,6 @@ func (bwr *BlockchainWithRetries) SettleWithBeneficiary(req SettleWithBeneficiar
 	var res *types.Transaction
 	err := bwr.callWithRetry(func() error {
 		result, bcErr := bwr.bc.SettleWithBeneficiary(req)
-		if bcErr != nil {
-			return errors.Wrap(bcErr, "could not set beneficiary")
-		}
-		res = result
-		return nil
-	})
-	return res, err
-}
-
-// SetProviderStakeGoal sets provider stake goal.
-func (bwr *BlockchainWithRetries) SetProviderStakeGoal(req SetProviderStakeGoalRequest) (*types.Transaction, error) {
-	var res *types.Transaction
-	err := bwr.callWithRetry(func() error {
-		result, bcErr := bwr.bc.SetProviderStakeGoal(req)
 		if bcErr != nil {
 			return errors.Wrap(bcErr, "could not set beneficiary")
 		}

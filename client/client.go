@@ -39,11 +39,8 @@ const DefaultBackoff = time.Second * 3
 
 // ProviderChannel represents the provider channel
 type ProviderChannel struct {
-	Beneficiary   common.Address
-	Balance       *big.Int
 	Settled       *big.Int
 	Stake         *big.Int
-	StakeGoal     *big.Int
 	LastUsedNonce *big.Int
 	Timelock      *big.Int
 }
@@ -482,7 +479,7 @@ func (bc *Blockchain) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transa
 	channelID := [32]byte{}
 	copy(channelID[:], req.Promise.ChannelID)
 
-	return t.SettleIntoStake(transactor, channelID, amount, fee, lock, req.Promise.Signature)
+	return t.SettleIntoStake(transactor, req.Identity, amount, fee, lock, req.Promise.Signature)
 }
 
 // DecreaseProviderStakeRequest represents all the parameters required for decreasing provider stake.
@@ -516,45 +513,7 @@ func (bc *Blockchain) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*
 		return nil, fmt.Errorf("could not get transactor: %w", err)
 	}
 
-	return t.DecreaseStake(transactor, req.Request.ChannelID, req.Request.Amount, req.Request.TransactorFee, req.Request.Signature)
-}
-
-// SetProviderStakeGoalRequest represents all the parameters required for setting provider stake.
-type SetProviderStakeGoalRequest struct {
-	WriteRequest
-	ChannelID [32]byte
-	HermesID  common.Address
-	Amount    *big.Int
-	ChainID   int64
-	Signature []byte
-}
-
-func (r SetProviderStakeGoalRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
-	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
-}
-
-func (r SetProviderStakeGoalRequest) toEstimateOps() *bindings.EstimateOpts {
-	return &bindings.EstimateOpts{
-		From:   r.Identity,
-		Method: "updateStakeGoal",
-		Params: []interface{}{r.ChannelID, r.Amount, r.Signature},
-	}
-}
-
-// SetProviderStakeGoal sets provider stake goal.
-func (bc *Blockchain) SetProviderStakeGoal(req SetProviderStakeGoalRequest) (*types.Transaction, error) {
-	t, err := bindings.NewHermesImplementationTransactor(req.HermesID, bc.ethClient.Client())
-	if err != nil {
-		return nil, err
-	}
-
-	transactor, cancel, err := bc.getTransactorFromRequest(req.WriteRequest)
-	defer cancel()
-	if err != nil {
-		return nil, fmt.Errorf("could not get transactor: %w", err)
-	}
-
-	return t.UpdateStakeGoal(transactor, req.ChannelID, req.Amount, req.Signature)
+	return t.DecreaseStake(transactor, req.Identity, req.Request.Amount, req.Request.TransactorFee, req.Request.Signature)
 }
 
 func (bc *Blockchain) getTransactorFromRequest(req WriteRequest) (*bind.TransactOpts, func(), error) {
@@ -625,7 +584,7 @@ func (bc *Blockchain) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.
 		return nil, errors.Wrap(err, "could not get nonce")
 	}
 
-	return transactor.SettleAndRebalance(&bind.TransactOpts{
+	return transactor.SettlePromise(&bind.TransactOpts{
 		From:     req.Identity,
 		Signer:   req.Signer,
 		Context:  ctx,
@@ -696,7 +655,7 @@ func (bc *Blockchain) GetConsumerChannelOperator(channelAddress common.Address) 
 }
 
 // SubscribeToIdentityRegistrationEvents subscribes to identity registration events
-func (bc *Blockchain) SubscribeToIdentityRegistrationEvents(registryAddress common.Address, hermesIDs []common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
+func (bc *Blockchain) SubscribeToIdentityRegistrationEvents(registryAddress common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
 	filterer, err := bindings.NewRegistryFilterer(registryAddress, bc.ethClient.Client())
 	if err != nil {
 		return sink, cancel, errors.Wrap(err, "could not create registry filterer")
@@ -705,7 +664,7 @@ func (bc *Blockchain) SubscribeToIdentityRegistrationEvents(registryAddress comm
 	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
 		return filterer.WatchRegisteredIdentity(&bind.WatchOpts{
 			Context: ctx,
-		}, sink, nil, hermesIDs)
+		}, sink, nil)
 	})
 	go func() {
 		subErr := <-sub.Err()
@@ -729,29 +688,6 @@ func (bc *Blockchain) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress comm
 		return filterer.WatchTransfer(&bind.WatchOpts{
 			Context: ctx,
 		}, sink, nil, channelAddresses)
-	})
-	go func() {
-		subErr := <-sub.Err()
-		if subErr != nil {
-			log.Error().Err(err).Msg("subscription error")
-		}
-		close(sink)
-	}()
-	return sink, sub.Unsubscribe, nil
-}
-
-// SubscribeToProviderChannelBalanceUpdate subscribes to provider channel balance update events
-func (bc *Blockchain) SubscribeToProviderChannelBalanceUpdate(hermesAddress common.Address, channelAddresses [][32]byte) (sink chan *bindings.HermesImplementationChannelBalanceUpdated, cancel func(), err error) {
-	filterer, err := bindings.NewHermesImplementationFilterer(hermesAddress, bc.ethClient.Client())
-	if err != nil {
-		return sink, cancel, errors.Wrap(err, "could not create hermes implementation filterer")
-	}
-
-	sink = make(chan *bindings.HermesImplementationChannelBalanceUpdated)
-	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
-		return filterer.WatchChannelBalanceUpdated(&bind.WatchOpts{
-			Context: ctx,
-		}, sink, channelAddresses)
 	})
 	go func() {
 		subErr := <-sub.Err()
@@ -820,29 +756,6 @@ func (bc *Blockchain) getNonce(identity common.Address) (uint64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 	return bc.nonceFunc(ctx, identity)
-}
-
-// SubscribeToChannelOpenedEvents subscribes to provider channel opened events
-func (bc *Blockchain) SubscribeToChannelOpenedEvents(hermesAddress common.Address) (sink chan *bindings.HermesImplementationChannelOpened, cancel func(), err error) {
-	filterer, err := bindings.NewHermesImplementationFilterer(hermesAddress, bc.ethClient.Client())
-	if err != nil {
-		return sink, cancel, errors.Wrap(err, "could not create hermes implementation filterer")
-	}
-
-	sink = make(chan *bindings.HermesImplementationChannelOpened)
-	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
-		return filterer.WatchChannelOpened(&bind.WatchOpts{
-			Context: ctx,
-		}, sink)
-	})
-	go func() {
-		subErr := <-sub.Err()
-		if subErr != nil {
-			log.Error().Err(err).Msg("subscription error")
-		}
-		close(sink)
-	}()
-	return sink, sub.Unsubscribe, nil
 }
 
 // GetHermesURL gets the hermes url from BC.
