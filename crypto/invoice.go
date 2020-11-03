@@ -31,10 +31,11 @@ type Invoice struct {
 	TransactorFee  *big.Int
 	Hashlock       string
 	Provider       string
+	ChainID        int64
 }
 
 // CreateInvoice creates new invoice
-func CreateInvoice(agreementID, agreementTotal, transactorFee *big.Int, r []byte) Invoice {
+func CreateInvoice(agreementID, agreementTotal, transactorFee *big.Int, r []byte, chainID int64) Invoice {
 	if r == nil {
 		r = make([]byte, 32)
 		rand.Read(r)
@@ -45,5 +46,6 @@ func CreateInvoice(agreementID, agreementTotal, transactorFee *big.Int, r []byte
 		AgreementTotal: new(big.Int).Set(agreementTotal),
 		TransactorFee:  new(big.Int).Set(transactorFee),
 		Hashlock:       hex.EncodeToString(crypto.Keccak256(r)),
+		ChainID:        chainID,
 	}
 }

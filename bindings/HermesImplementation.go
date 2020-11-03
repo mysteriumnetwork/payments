@@ -43,10 +43,10 @@ var (
 )
 
 // HermesImplementationABI is the input ABI used to generate the binding from.
-const HermesImplementationABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"channelId\",\"type\":\"bytes32\"}],\"name\":\"ChannelBalanceDecreaseRequested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"channelId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newBalance\",\"type\":\"uint256\"}],\"name\":\"ChannelBalanceUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"channelId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newBeneficiary\",\"type\":\"address\"}],\"name\":\"ChannelBeneficiaryChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"channelId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"initialBalance\",\"type\":\"uint256\"}],\"name\":\"ChannelOpened\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"ChannelOpeningActivated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"ChannelOpeningPaused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousDestination\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newDestination\",\"type\":\"address\"}],\"name\":\"DestinationChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"beneficiary\",\"type\":\"address\"}],\"name\":\"FundsWithdrawned\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"}],\"name\":\"HermesClosed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint16\",\"name\":\"newFee\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"validFromBlock\",\"type\":\"uint64\"}],\"name\":\"HermesFeeUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"activationBlock\",\"type\":\"uint256\"}],\"name\":\"HermesPunishmentActivated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"HermesPunishmentDeactivated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newStake\",\"type\":\"uint256\"}],\"name\":\"HermesStakeIncreased\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newMaxStake\",\"type\":\"uint256\"}],\"name\":\"MaxStakeValueUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newMinStake\",\"type\":\"uint256\"}],\"name\":\"MinStakeValueUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newOperator\",\"type\":\"address\"}],\"name\":\"NewHermesOperator\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"channelId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"stakeAmount\",\"type\":\"uint256\"}],\"name\":\"NewStake\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"channelId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"beneficiary\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"sentToBeneficiary\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"fees\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"stakeInsceseAmount\",\"type\":\"uint256\"}],\"name\":\"PromiseSettled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"channelId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newStakeGoal\",\"type\":\"uint256\"}],\"name\":\"StakeGoalUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"channels\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"beneficiary\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"settled\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"stake\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"stakeGoal\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"lastUsedNonce\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"timelock\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"claimEthers\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"}],\"name\":\"claimTokens\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getFundsDestination\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"lastFee\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"value\",\"type\":\"uint16\"},{\"internalType\":\"uint64\",\"name\":\"validFrom\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"previousFee\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"value\",\"type\":\"uint16\"},{\"internalType\":\"uint64\",\"name\":\"validFrom\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"punishment\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"activationBlock\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"token\",\"outputs\":[{\"internalType\":\"contractIERC20Token\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getOperator\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_identity\",\"type\":\"address\"}],\"name\":\"getChannelId\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getRegistry\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getHermesStake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getStakeThresholds\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getStatus\",\"outputs\":[{\"internalType\":\"enumHermesImplementation.Status\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"},{\"internalType\":\"uint16\",\"name\":\"_fee\",\"type\":\"uint16\"},{\"internalType\":\"uint256\",\"name\":\"_minStake\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_maxStake\",\"type\":\"uint256\"},{\"internalType\":\"addresspayable\",\"name\":\"_dexAddress\",\"type\":\"address\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isInitialized\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_identity\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_beneficiary\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amountToLend\",\"type\":\"uint256\"}],\"name\":\"openChannel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_identity\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_transactorFee\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_lock\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"_signature\",\"type\":\"bytes\"}],\"name\":\"settlePromise\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_identity\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_transactorFee\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_lock\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"_signature\",\"type\":\"bytes\"}],\"name\":\"settleAndRebalance\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_identity\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_transactorFee\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_lock\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"_promiseSignature\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"_newBeneficiary\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"_signature\",\"type\":\"bytes\"}],\"name\":\"settleWithBeneficiary\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_transactorFee\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_lock\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"_promiseSignature\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"_newStakeGoal\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"_goalChangeSignature\",\"type\":\"bytes\"}],\"name\":\"settleWithGoalIncrease\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_transactorFee\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_lock\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"_signature\",\"type\":\"bytes\"}],\"name\":\"settleWithDEX\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"_newBalance\",\"type\":\"uint256\"}],\"name\":\"updateChannelBalance\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelId\",\"type\":\"bytes32\"}],\"name\":\"rebalanceChannel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_beneficiary\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_transactorFee\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_lock\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"_signature\",\"type\":\"bytes\"}],\"name\":\"settleIntoStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"increaseStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_transactorFee\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"_signature\",\"type\":\"bytes\"}],\"name\":\"decreaseStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"_newStakeGoal\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"_signature\",\"type\":\"bytes\"}],\"name\":\"updateStakeGoal\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"resolveEmergency\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelId\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"_newBeneficiary\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"_signature\",\"type\":\"bytes\"}],\"name\":\"setBeneficiary\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newOperator\",\"type\":\"address\"}],\"name\":\"setHermesOperator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_newMaxStake\",\"type\":\"uint256\"}],\"name\":\"setMaxStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_newMinStake\",\"type\":\"uint256\"}],\"name\":\"setMinStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_newFee\",\"type\":\"uint16\"}],\"name\":\"setHermesFee\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"calculateHermesFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getActiveFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_additionalStake\",\"type\":\"uint256\"}],\"name\":\"increaseHermesStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelId\",\"type\":\"bytes32\"}],\"name\":\"isChannelOpened\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isHermesActive\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pauseChannelOpening\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"activateChannelOpening\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"availableBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"minimalExpectedBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"closeHermes\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_beneficiary\",\"type\":\"address\"}],\"name\":\"getStakeBack\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"addresspayable\",\"name\":\"_newDestination\",\"type\":\"address\"}],\"name\":\"setFundsDestination\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
+const HermesImplementationABI = "[{\"anonymous\":false,\"inputs\":[],\"name\":\"ChannelOpeningActivated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"ChannelOpeningPaused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousDestination\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newDestination\",\"type\":\"address\"}],\"name\":\"DestinationChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"beneficiary\",\"type\":\"address\"}],\"name\":\"FundsWithdrawned\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"}],\"name\":\"HermesClosed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint16\",\"name\":\"newFee\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"validFromBlock\",\"type\":\"uint64\"}],\"name\":\"HermesFeeUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"activationBlock\",\"type\":\"uint256\"}],\"name\":\"HermesPunishmentActivated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"HermesPunishmentDeactivated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newStake\",\"type\":\"uint256\"}],\"name\":\"HermesStakeIncreased\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newMaxStake\",\"type\":\"uint256\"}],\"name\":\"MaxStakeValueUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newMinStake\",\"type\":\"uint256\"}],\"name\":\"MinStakeValueUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"channelId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"stakeAmount\",\"type\":\"uint256\"}],\"name\":\"NewStake\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"channelId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"beneficiary\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amountSentToBeneficiary\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"fees\",\"type\":\"uint256\"}],\"name\":\"PromiseSettled\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"channels\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"settled\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"stake\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"lastUsedNonce\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"timelock\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"claimEthers\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"}],\"name\":\"claimTokens\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getFundsDestination\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"lastFee\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"value\",\"type\":\"uint16\"},{\"internalType\":\"uint64\",\"name\":\"validFrom\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"previousFee\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"value\",\"type\":\"uint16\"},{\"internalType\":\"uint64\",\"name\":\"validFrom\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"punishment\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"activationBlock\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"token\",\"outputs\":[{\"internalType\":\"contractIERC20Token\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getOperator\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_identity\",\"type\":\"address\"}],\"name\":\"getChannelId\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getRegistry\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getActiveFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getHermesStake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getStakeThresholds\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getStatus\",\"outputs\":[{\"internalType\":\"enumHermesImplementation.Status\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"},{\"internalType\":\"uint16\",\"name\":\"_fee\",\"type\":\"uint16\"},{\"internalType\":\"uint256\",\"name\":\"_minStake\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_maxStake\",\"type\":\"uint256\"},{\"internalType\":\"addresspayable\",\"name\":\"_dexAddress\",\"type\":\"address\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isInitialized\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_identity\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amountToStake\",\"type\":\"uint256\"}],\"name\":\"openChannel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_identity\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_transactorFee\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_preimage\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"_signature\",\"type\":\"bytes\"}],\"name\":\"settlePromise\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_identity\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_transactorFee\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_preimage\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"_promiseSignature\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"_newBeneficiary\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"_beneficiarySignature\",\"type\":\"bytes\"}],\"name\":\"settleWithBeneficiary\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_identity\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_transactorFee\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_preimage\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"_signature\",\"type\":\"bytes\"}],\"name\":\"settleWithDEX\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"increaseStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_identity\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_transactorFee\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_preimage\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"_signature\",\"type\":\"bytes\"}],\"name\":\"settleIntoStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_identity\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_transactorFee\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"_signature\",\"type\":\"bytes\"}],\"name\":\"decreaseStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"resolveEmergency\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_newMinStake\",\"type\":\"uint256\"}],\"name\":\"setMinStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_newMaxStake\",\"type\":\"uint256\"}],\"name\":\"setMaxStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_newFee\",\"type\":\"uint16\"}],\"name\":\"setHermesFee\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_additionalStake\",\"type\":\"uint256\"}],\"name\":\"increaseHermesStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_beneficiary\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"availableBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelId\",\"type\":\"bytes32\"}],\"name\":\"isChannelOpened\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isHermesActive\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pauseChannelOpening\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"activateChannelOpening\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"closeHermes\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_beneficiary\",\"type\":\"address\"}],\"name\":\"getStakeBack\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"calculateHermesFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"minimalExpectedBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_transactorFee\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_preimage\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"_signature\",\"type\":\"bytes\"}],\"name\":\"validatePromise\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"addresspayable\",\"name\":\"_newDestination\",\"type\":\"address\"}],\"name\":\"setFundsDestination\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
 
 // HermesImplementationBin is the compiled bytecode used for deploying new contracts.
-var HermesImplementationBin = "0x608060405234801561001057600080fd5b50614e6b806100206000396000f3fe608060405234801561001057600080fd5b50600436106102bb5760003560e01c80638da5cb5b11610182578063c3bfa352116100e9578063efde05ec116100a2578063f58c5b6e1161007c578063f58c5b6e14610e11578063fbb46b9814610e19578063fc0c546a14610e21578063fdba0a0d14610e29576102bb565b8063efde05ec14610da2578063f2fde38b14610dbf578063f3fef3a314610de5576102bb565b8063c3bfa35214610c87578063df8de3e714610d3e578063e1c6648714610d64578063e58473f214610d6c578063e7f43c6814610d74578063eb295b2714610d7c576102bb565b8063aa606dee1161013b578063aa606dee14610ad1578063ab2f0e5114610ad9578063ae10ed8414610ae1578063b07d948314610afe578063bc96a1e914610bc3578063c062fe0614610bcb576102bb565b80638da5cb5b1461088557806394c7915d1461088d5780639801134e146108955780639ed9903e146108c45780639fa73b0f146108cc578063a795c8e714610988576102bb565b80634e69d560116102265780636e9094ea116101df5780636e9094ea146107a45780636fc14837146107c15780637a7ebd7b146107de5780637c2be0a31461083d5780638c80fd90146108605780638d886fac1461087d576102bb565b80634e69d5601461058257806353d2a0ff146105ab5780635ab1bd53146107065780636138dda71461072a5780636931b55014610750578063699a088514610758576102bb565b8063306db49b11610278578063306db49b1461039c57806338df1024146103a4578063392e53cd146103c557806339f97626146103e157806348528ff81461040457806348d9f01e146104bd576102bb565b80630684cd20146102c05780630a798f24146102e157806315c73afd146103195780631f4f12c6146103215780632055536a14610350578063238e130a14610376575b600080fd5b6102c8610ed9565b6040805192835260208301919091528051918290030190f35b610317600480360360608110156102f757600080fd5b506001600160a01b03813581169160208101359091169060400135610ee2565b005b610317610fb0565b61033e6004803603602081101561033757600080fd5b503561120e565b60408051918252519081900360200190f35b6103176004803603602081101561036657600080fd5b50356001600160a01b031661123e565b6103176004803603602081101561038c57600080fd5b50356001600160a01b031661132e565b61033e6113e6565b610317600480360360208110156103ba57600080fd5b503561ffff166113ed565b6103cd611614565b604080519115158252519081900360200190f35b610317600480360360408110156103f757600080fd5b5080359060200135611625565b6103176004803603606081101561041a57600080fd5b8135916001600160a01b0360208201351691810190606081016040820135600160201b81111561044957600080fd5b82018360208201111561045b57600080fd5b803590602001918460018302840111600160201b8311171561047c57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550611733945050505050565b610317600480360360a08110156104d357600080fd5b6001600160a01b038235169160208101359160408201359160608101359181019060a081016080820135600160201b81111561050e57600080fd5b82018360208201111561052057600080fd5b803590602001918460018302840111600160201b8311171561054157600080fd5b91908080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152509295506118dd945050505050565b61058a6119a1565b6040518082600381111561059a57fe5b815260200191505060405180910390f35b610317600480360360e08110156105c157600080fd5b6001600160a01b038235169160208101359160408201359160608101359181019060a081016080820135600160201b8111156105fc57600080fd5b82018360208201111561060e57600080fd5b803590602001918460018302840111600160201b8311171561062f57600080fd5b91908080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525092956001600160a01b03853516959094909350604081019250602001359050600160201b81111561069257600080fd5b8201836020820111156106a457600080fd5b803590602001918460018302840111600160201b831117156106c557600080fd5b91908080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152509295506119b1945050505050565b61070e611a04565b604080516001600160a01b039092168252519081900360200190f35b6103176004803603602081101561074057600080fd5b50356001600160a01b0316611a13565b610317611c0e565b610317600480360360c081101561076e57600080fd5b506001600160a01b038135811691602081013582169161ffff6040830135169160608101359160808201359160a0013516611c5f565b6103cd600480360360208110156107ba57600080fd5b5035611f80565b610317600480360360208110156107d757600080fd5b5035611f9d565b6107fb600480360360208110156107f457600080fd5b50356120b4565b604080516001600160a01b0390981688526020880196909652868601949094526060860192909252608085015260a084015260c0830152519081900360e00190f35b6103176004803603604081101561085357600080fd5b50803590602001356120fb565b6103176004803603602081101561087657600080fd5b503561237d565b61033e612494565b61070e6124f6565b61033e612505565b61089d612523565b6040805161ffff909316835267ffffffffffffffff90911660208301528051918290030190f35b6102c861253f565b610317600480360360a08110156108e257600080fd5b81359160208101359160408201359160608101359181019060a081016080820135600160201b81111561091457600080fd5b82018360208201111561092657600080fd5b803590602001918460018302840111600160201b8311171561094757600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550612549945050505050565b610317600480360360e081101561099e57600080fd5b81359160208101359160408201359160608101359181019060a081016080820135600160201b8111156109d057600080fd5b8201836020820111156109e257600080fd5b803590602001918460018302840111600160201b83111715610a0357600080fd5b91908080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525092958435959094909350604081019250602001359050600160201b811115610a5d57600080fd5b820183602082011115610a6f57600080fd5b803590602001918460018302840111600160201b83111715610a9057600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550612568945050505050565b61031761258b565b61033e612663565b61031760048036036020811015610af757600080fd5b503561275c565b610317600480360360a0811015610b1457600080fd5b6001600160a01b038235169160208101359160408201359160608101359181019060a081016080820135600160201b811115610b4f57600080fd5b820183602082011115610b6157600080fd5b803590602001918460018302840111600160201b83111715610b8257600080fd5b91908080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525092955061289a945050505050565b6103cd61295f565b610317600480360360a0811015610be157600080fd5b81359160208101359160408201359160608101359181019060a081016080820135600160201b811115610c1357600080fd5b820183602082011115610c2557600080fd5b803590602001918460018302840111600160201b83111715610c4657600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550612999945050505050565b61031760048036036080811015610c9d57600080fd5b81359160208101359160408201359190810190608081016060820135600160201b811115610cca57600080fd5b820183602082011115610cdc57600080fd5b803590602001918460018302840111600160201b83111715610cfd57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550612c3c945050505050565b61031760048036036020811015610d5457600080fd5b50356001600160a01b031661318a565b61089d6132c0565b6103176132dc565b61070e6133d1565b61033e60048036036020811015610d9257600080fd5b50356001600160a01b03166133e0565b61031760048036036020811015610db857600080fd5b5035613424565b61031760048036036020811015610dd557600080fd5b50356001600160a01b0316613629565b61031760048036036040811015610dfb57600080fd5b506001600160a01b03813516906020013561373c565b61070e6138e8565b6103176138f7565b61070e6139c9565b61031760048036036060811015610e3f57600080fd5b813591602081013591810190606081016040820135600160201b811115610e6557600080fd5b820183602082011115610e7757600080fd5b803590602001918460018302840111600160201b83111715610e9857600080fd5b91908080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152509295506139d8945050505050565b600f5460105482565b6003546001600160a01b03163314610f41576040805162461bcd60e51b815260206004820152601f60248201527f6f6e6c792072656769737472792063616e206f70656e206368616e6e656c7300604482015290519081900360640190fd5b6000610f4b6119a1565b6003811115610f5657fe5b14610f925760405162461bcd60e51b8152600401808060200182810382526021815260200180614b836021913960400191505060405180910390fd5b6000610f9d846133e0565b9050610faa818484613bd4565b50505050565b6002610fba6119a1565b6003811115610fc557fe5b146110015760405162461bcd60e51b8152600401808060200182810382526025815260200180614a1c6025913960400191505060405180910390fd5b600061102e60646110286110216004600554613ca290919063ffffffff16565b6064613d04565b90613d1e565b9050600061103a613d60565b600f54909150430360006110626001846110548582613d04565b8161105b57fe5b0490613d66565b905060006110708286613ca2565b6010549091506110809082613da8565b60108190556009546000916110ac9161109891613e02565b6110a6600554600654613e02565b90613da8565b600254604080516370a0823160e01b815230600482015290519293506000926001600160a01b03909216916370a0823191602480820192602092909190829003018186803b1580156110fd57600080fd5b505afa158015611111573d6000803e3d6000fd5b505050506040513d602081101561112757600080fd5b50519050600082821061113b576000611145565b6111458383613d66565b600254604080516323b872dd60e01b81523360048201523060248201526044810184905290519293506001600160a01b03909116916323b872dd916064808201926020929091908290030181600087803b1580156111a257600080fd5b505af11580156111b6573d6000803e3d6000fd5b505050506040513d60208110156111cc57600080fd5b5050600b805460ff60a01b191690556040517f5dc43dfad9aedde473e812a66ff033b91a2b1ee060e7dc0746a1a14a4a3bd47c90600090a15050505050505050565b60006064611230606461121f612494565b85028161122857fe5b046064613d04565b8161123757fe5b0492915050565b6004546001600160a01b031633146112875760405162461bcd60e51b8152600401808060200182810382526024815260200180614a416024913960400191505060405180910390fd5b6001600160a01b0381166112da576040805162461bcd60e51b815260206004820152601560248201527463616e2774206265207a65726f206164647265737360581b604482015290519081900360640190fd5b600480546001600160a01b0383166001600160a01b0319909116811790915560408051918252517fbc84399c3fec552aa29d6b02eefe7180532020bf40739f24e0b8a6fc4035455e9181900360200190a150565b6004546001600160a01b031633146113775760405162461bcd60e51b8152600401808060200182810382526024815260200180614a416024913960400191505060405180910390fd5b6001600160a01b03811661138a57600080fd5b6001546040516001600160a01b038084169216907fe1a66d77649cf0a57b9937073549f30f1c82bb865aaf066d2f299e37a62c6aad90600090a3600180546001600160a01b0319166001600160a01b0392909216919091179055565b6009545b90565b6004546001600160a01b031633146114365760405162461bcd60e51b8152600401808060200182810382526024815260200180614a416024913960400191505060405180910390fd5b60036114406119a1565b600381111561144b57fe5b141561149e576040805162461bcd60e51b815260206004820152601b60248201527f6865726d65732073686f756c64206265206e6f7420636c6f7365640000000000604482015290519081900360640190fd5b6113888161ffff1611156114f9576040805162461bcd60e51b815260206004820152601c60248201527f6665652063616e27742062652062696767657220746861742035302500000000604482015290519081900360640190fd5b600c5462010000900467ffffffffffffffff16431015611560576040805162461bcd60e51b815260206004820152601960248201527f63616e27742075706461746520696e6163746976652066656500000000000000604482015290519081900360640190fd5b600061156a613e18565b600c8054600d805467ffffffffffffffff620100008085048216810269ffffffffffffffff00001961ffff1994851661ffff80891691909117821692909217909555604080518082018252918b1680835293891660209283018190529283029490961683179094169290921790945582519384529083015280519293507fea76eb91f1817e0757719ea43e0733faf6f1121425bde387d1dd91badb9d403b92918290030190a15050565b6004546001600160a01b0316151590565b61162e82611f80565b61167a576040805162461bcd60e51b815260206004820152601860248201527718da185b9b995b081a185cc81d1bc81899481bdc195b995960421b604482015290519081900360640190fd5b60036116846119a1565b600381111561168f57fe5b14156116e2576040805162461bcd60e51b815260206004820152601b60248201527f6865726d65732073686f756c64206265206e6f7420636c6f7365640000000000604482015290519081900360640190fd5b6116ee82826000613e20565b6000828152600e60209081526040918290206003810154600182018190558351908152925190928592600080516020614b3883398151915292918290030190a2505050565b61173c83611f80565b611788576040805162461bcd60e51b815260206004820152601860248201527718da185b9b995b081a185cc81d1bc81899481bdc195b995960421b604482015290519081900360640190fd5b6001600160a01b0382166117cd5760405162461bcd60e51b8152600401808060200182810382526021815260200180614bcc6021913960400191505060405180910390fd5b6000838152600e602090815260408083206005810180546001019081905582518085018990526bffffffffffffffffffffffff19606089901b168185015260548082019290925283518082039092018252607401909252815191909201209091906118389084614028565b905084611844826133e0565b146118805760405162461bcd60e51b8152600401808060200182810382526022815260200180614d796022913960400191505060405180910390fd5b81546001600160a01b0319166001600160a01b038516908117835560408051878152602081019290925280517f8756aa559142225f918d7584303ecfe48e75b454f6614d0fae9f0d6ca0a898cc9281900390910190a15050505050565b60006118e8866133e0565b90506118f381611f80565b61198a5760035460408051633985eaab60e21b81526001600160a01b0389811660048301523060248301529151600093929092169163e617aaac91604480820192602092909190829003018186803b15801561194e57600080fd5b505afa158015611962573d6000803e3d6000fd5b505050506040513d602081101561197857600080fd5b5051905061198882826000613bd4565b505b61199981868686866000614213565b505050505050565b600b54600160a01b900460ff1690565b60006119bc886133e0565b90506119c781611f80565b6119d7576119d781846000613bd4565b6119e2818484611733565b6119f181888888886000614213565b6119fa81613424565b5050505050505050565b6003546001600160a01b031690565b6004546001600160a01b03163314611a5c5760405162461bcd60e51b8152600401808060200182810382526024815260200180614a416024913960400191505060405180910390fd5b6003611a666119a1565b6003811115611a7157fe5b14611ac3576040805162461bcd60e51b815260206004820152601860248201527f6865726d6573206861766520746f20626520636c6f7365640000000000000000604482015290519081900360640190fd5b600a544311611b035760405162461bcd60e51b8152600401808060200182810382526026815260200180614bed6026913960400191505060405180910390fd5b601054600254604080516370a0823160e01b81523060048201529051600093611b8c9390926001600160a01b03909116916370a0823191602480820192602092909190829003018186803b158015611b5a57600080fd5b505afa158015611b6e573d6000803e3d6000fd5b505050506040513d6020811015611b8457600080fd5b505190613d66565b6002546040805163a9059cbb60e01b81526001600160a01b03868116600483015260248201859052915193945091169163a9059cbb916044808201926020929091908290030181600087803b158015611be457600080fd5b505af1158015611bf8573d6000803e3d6000fd5b505050506040513d6020811015610faa57600080fd5b6001546001600160a01b0316611c2357600080fd5b6001546040516001600160a01b03909116904780156108fc02916000818181858888f19350505050158015611c5c573d6000803e3d6000fd5b50565b611c67611614565b15611cb9576040805162461bcd60e51b815260206004820152601a60248201527f6861766520746f206265206e6f7420696e697469616c697a6564000000000000604482015290519081900360640190fd5b6001600160a01b038516611d14576040805162461bcd60e51b815260206004820152601760248201527f6f70657261746f72206861766520746f20626520736574000000000000000000604482015290519081900360640190fd5b6001600160a01b038616611d595760405162461bcd60e51b8152600401808060200182810382526028815260200180614d286028913960400191505060405180910390fd5b6113888461ffff161115611db4576040805162461bcd60e51b815260206004820152601c60248201527f6665652063616e277420626520626967676572207468616e2035302500000000604482015290519081900360640190fd5b828211611df25760405162461bcd60e51b8152600401808060200182810382526028815260200180614d006028913960400191505060405180910390fd5b600280546001600160a01b03199081166001600160a01b03898116919091179283905560038054339084161790556004805490921688821617825560408051808201825261ffff89168082524367ffffffffffffffff166020928301819052600c805461ffff191690921769ffffffffffffffff00001916620100009091021790556007889055600887905581516370a0823160e01b81523094810194909452905193909116926370a08231926024808201939291829003018186803b158015611ebb57600080fd5b505afa158015611ecf573d6000803e3d6000fd5b505050506040513d6020811015611ee557600080fd5b5051600955600b80546001600160a01b0319166001600160a01b038381169182179092556002546040805163095ea7b360e01b8152600481019390935260001960248401525192169163095ea7b3916044808201926020929091908290030181600087803b158015611f5657600080fd5b505af1158015611f6a573d6000803e3d6000fd5b505050506040513d60208110156119fa57600080fd5b6000908152600e60205260409020546001600160a01b0316151590565b6004546001600160a01b03163314611fe65760405162461bcd60e51b8152600401808060200182810382526024815260200180614a416024913960400191505060405180910390fd5b611fee61295f565b612039576040805162461bcd60e51b81526020600482015260176024820152766865726d65732068617320746f2062652061637469766560481b604482015290519081900360640190fd5b60075481116120795760405162461bcd60e51b8152600401808060200182810382526027815260200180614cd96027913960400191505060405180910390fd5b60088190556040805182815290517f53f4fb18cb329155d5af04681c1d0846d0484d7de33791619c6988ca61910e3d9181900360200190a150565b600e6020526000908152604090208054600182015460028301546003840154600485015460058601546006909601546001600160a01b039095169593949293919290919087565b6004546001600160a01b031633146121445760405162461bcd60e51b8152600401808060200182810382526024815260200180614a416024913960400191505060405180910390fd5b61214c61295f565b612197576040805162461bcd60e51b81526020600482015260176024820152766865726d65732068617320746f2062652061637469766560481b604482015290519081900360640190fd5b6121a082611f80565b6121ec576040805162461bcd60e51b815260206004820152601860248201527718da185b9b995b081a185cc81d1bc81899481bdc195b995960421b604482015290519081900360640190fd5b6000828152600e602052604090206003015481101561223c5760405162461bcd60e51b81526004018080602001828103825260278152602001806149b26027913960400191505060405180910390fd5b6000828152600e6020526040812060018101549091908311156122c6576001820154612269908490613d66565b905080612274612663565b10156122b15760405162461bcd60e51b81526004018080602001828103825260228152602001806149d96022913960400191505060405180910390fd5b6005546122be9082613da8565b60055561234b565b600682015461230e576122d7613e18565b600683015560405184907faf4c616dc7856b81dbc1346e5547f0a1d4f1553011653f920d1041f21540107590600090a25050612379565b8160060154431015612321575050612379565b60018201546123309084613d66565b6005549091506123409082613d66565b600555600060068301555b600182018390556040805184815290518591600080516020614b38833981519152919081900360200190a250505b5050565b6004546001600160a01b031633146123c65760405162461bcd60e51b8152600401808060200182810382526024815260200180614a416024913960400191505060405180910390fd5b6123ce61295f565b612419576040805162461bcd60e51b81526020600482015260176024820152766865726d65732068617320746f2062652061637469766560481b604482015290519081900360640190fd5b60085481106124595760405162461bcd60e51b8152600401808060200182810382526028815260200180614ba46028913960400191505060405180910390fd5b60078190556040805182815290517fb9e5e6e8db1283ee860f3856d8383e40665c58a5264ede5e6ed8ec1afb0312519181900360200190a150565b600061249e61499a565b600c5462010000900467ffffffffffffffff164310156124bf57600d6124c2565b600c5b60408051808201909152905461ffff81168083526201000090910467ffffffffffffffff1660209092019190915292915050565b6000546001600160a01b031690565b600061251e6005546110a6600954600f60010154613e02565b905090565b600c5461ffff81169062010000900467ffffffffffffffff1682565b6007546008549091565b61255885858585856001614213565b61256185613424565b5050505050565b6125738783836139d8565b61258287878787876000614213565b50505050505050565b6004546001600160a01b031633146125d45760405162461bcd60e51b8152600401808060200182810382526024815260200180614a416024913960400191505060405180910390fd5b60006125de6119a1565b60038111156125e957fe5b146126255760405162461bcd60e51b8152600401808060200182810382526021815260200180614b836021913960400191505060405180910390fd5b600b805460ff60a01b1916600160a01b1790556040517f1f4cd5d6edef8a0c4dbe6d547fdc42e0f3575167257553271f2366f9d497f67e90600090a1565b60008061267a611098600954600f60010154613e02565b600254604080516370a0823160e01b815230600482015290519293506001600160a01b03909116916370a0823191602480820192602092909190829003018186803b1580156126c857600080fd5b505afa1580156126dc573d6000803e3d6000fd5b505050506040513d60208110156126f257600080fd5b50518111156127055760009150506113ea565b600254604080516370a0823160e01b815230600482015290516127569284926001600160a01b03909116916370a0823191602480820192602092909190829003018186803b158015611b5a57600080fd5b91505090565b6004546001600160a01b031633146127a55760405162461bcd60e51b8152600401808060200182810382526024815260200180614a416024913960400191505060405180910390fd5b806127ae612663565b10156128535760006127c86127c1612663565b8390613d66565b600254604080516323b872dd60e01b81523360048201523060248201526044810184905290519293506001600160a01b03909116916323b872dd916064808201926020929091908290030181600087803b15801561282557600080fd5b505af1158015612839573d6000803e3d6000fd5b505050506040513d602081101561284f57600080fd5b5050505b6009546128609082613da8565b600981905560408051918252517feb10b8b69c3eb290299237eaee4760bf1c02734ce3dc7740d6f2017b5ca3ed919181900360200190a150565b60006128a5866133e0565b90506128b081611f80565b6129475760035460408051633985eaab60e21b81526001600160a01b0389811660048301523060248301529151600093929092169163e617aaac91604480820192602092909190829003018186803b15801561290b57600080fd5b505afa15801561291f573d6000803e3d6000fd5b505050506040513d602081101561293557600080fd5b5051905061294582826000613bd4565b505b61295681868686866000614213565b61199981613424565b60008061296a6119a1565b9050600281600381111561297a57fe5b141580156127565750600381600381111561299157fe5b141591505090565b6129a285611f80565b6129ef576040805162461bcd60e51b815260206004820152601960248201527818da185b9b995b081a185d99481d1bc81899481bdc195b9959603a1b604482015290519081900360640190fd5b6000858152600e6020908152604080832081518084018790528251808203850181528184018452805190850120606082018b9052608082018a905260a0820189905260c08083018290528451808403909101815260e0909201909352805193019290922091929091612a619085614028565b6004549091506001600160a01b03808316911614612ac6576040805162461bcd60e51b815260206004820152601d60248201527f6861766520746f206265207369676e6564206279206f70657261746f72000000604482015290519081900360640190fd5b6000612adf846002015489613d6690919063ffffffff16565b905080871115612b205760405162461bcd60e51b815260040180806020018281038252603c815260200180614ab5603c913960400191505060405180910390fd5b6000612b2c8289613d66565b9050612b3a8a826001613e20565b6002850154612b499083613da8565b60028601558715612bd5576002546040805163a9059cbb60e01b8152336004820152602481018b905290516001600160a01b039092169163a9059cbb916044808201926020929091908290030181600087803b158015612ba857600080fd5b505af1158015612bbc573d6000803e3d6000fd5b505050506040513d6020811015612bd257600080fd5b50505b84546040805160008152602081018b905280820184905290516001600160a01b03909216918c917fa1f6960b3f39be76536e5ceb8f07a7b92640393da10654d061e82ee2f28694e2919081900360600190a3612c308a613424565b50505050505050505050565b612c4584611f80565b612c91576040805162461bcd60e51b815260206004820152601860248201527718da185b9b995b081a185cc81d1bc81899481bdc195b995960421b604482015290519081900360640190fd5b6000600e60008681526020019081526020016000209050806005015460010181600501819055506000612d7d836040518060400160405280601481526020017314dd185ad9481c995d1d5c9b881c995c5d595cdd60621b81525088888887600501546040516020018086805190602001908083835b60208310612d255780518252601f199092019160209182019101612d06565b51815160209384036101000a6000190180199092169116179052920196875250858101949094525060408085019290925260608085019190915281518085039091018152608090930190528151910120919050614028565b905085612d89826133e0565b14612dc55760405162461bcd60e51b8152600401808060200182810382526022815260200180614d796022913960400191505060405180910390fd5b8160030154851115612e085760405162461bcd60e51b815260040180806020018281038252602a815260200180614a8b602a913960400191505060405180910390fd5b83851015612e475760405162461bcd60e51b815260040180806020018281038252602b815260200180614c13602b913960400191505060405180910390fd5b6000612e57836001015487614886565b90506000612e6d82612e67612505565b90613d66565b600254604080516370a0823160e01b815230600482015290519293506000926001600160a01b03909216916370a0823191602480820192602092909190829003018186803b158015612ebe57600080fd5b505afa158015612ed2573d6000803e3d6000fd5b505050506040513d6020811015612ee857600080fd5b5051905080881180612f02575081612f00828a613d66565b105b15612f6d57612f0f61295f565b15612f6057600b805460ff60a01b1916600160a11b17905543600f81905560408051918252517f23dc47ee5d995fb521fbe4351f353f3177d7b9d9e15bdd01ed358764c25d96299181900360200190a15b612f6a8183613d66565b97505b6003850154600090612f7f908a613d66565b9050600854811115612fc25760405162461bcd60e51b8152600401808060200182810382526033815260200180614d9b6033913960400191505060405180910390fd5b8715613049576002546040805163a9059cbb60e01b8152336004820152602481018b905290516001600160a01b039092169163a9059cbb916044808201926020929091908290030181600087803b15801561301c57600080fd5b505af1158015613030573d6000803e3d6000fd5b505050506040513d602081101561304657600080fd5b50505b60025486546001600160a01b039182169163a9059cbb911661306b8c8c613d66565b6040518363ffffffff1660e01b815260040180836001600160a01b0316815260200182815260200192505050602060405180830381600087803b1580156130b157600080fd5b505af11580156130c5573d6000803e3d6000fd5b505050506040513d60208110156130db57600080fd5b50506003860181905560018601546130f39085613d66565b6001870155600754600487015560055461310d9085613d66565b60055560065461311d908a613d66565b600655600186015460408051918252518b91600080516020614b38833981519152919081900360200190a26040805182815290518b917fc5f0715c45dab2e8f14871936119e3c64fd5841d397130c2d1db743d142522cb919081900360200190a250505050505050505050565b6001546001600160a01b031661319f57600080fd5b6002546001600160a01b03828116911614156131ec5760405162461bcd60e51b8152600401808060200182810382526025815260200180614af16025913960400191505060405180910390fd5b6000816001600160a01b03166370a08231306040518263ffffffff1660e01b815260040180826001600160a01b0316815260200191505060206040518083038186803b15801561323b57600080fd5b505afa15801561324f573d6000803e3d6000fd5b505050506040513d602081101561326557600080fd5b50516001546040805163a9059cbb60e01b81526001600160a01b0392831660048201526024810184905290519293509084169163a9059cbb916044808201926020929091908290030181600087803b158015611be457600080fd5b600d5461ffff81169062010000900467ffffffffffffffff1682565b6004546001600160a01b031633146133255760405162461bcd60e51b8152600401808060200182810382526024815260200180614a416024913960400191505060405180910390fd5b61332d61295f565b61337e576040805162461bcd60e51b815260206004820152601760248201527f6865726d65732073686f756c6420626520616374697665000000000000000000604482015290519081900360640190fd5b600b805460ff60a01b1916600360a01b179055613399614895565b600a556040805143815290517ffa9b0c2718819d67ceaec4f97d36185c2f1d22bdc5ff18f44c52cd56a5dd8e459181900360200190a1565b6004546001600160a01b031690565b60408051606092831b6bffffffffffffffffffffffff19166020808301919091523090931b6034820152815180820360280181526048909101909152805191012090565b61342c61295f565b613478576040805162461bcd60e51b81526020600482015260186024820152776865726d6573206861766520746f2062652061637469766560401b604482015290519081900360640190fd5b6000818152600e6020526040902060018101546003820154116134cc5760405162461bcd60e51b8152600401808060200182810382526029815260200180614d506029913960400191505060405180910390fd5b60006134e982600101548360030154613d6690919063ffffffff16565b905060006134f9826110a6612505565b600254604080516370a0823160e01b815230600482015290519293506000926001600160a01b03909216916370a0823191602480820192602092909190829003018186803b15801561354a57600080fd5b505afa15801561355e573d6000803e3d6000fd5b505050506040513d602081101561357457600080fd5b50519050818110156135d957600b805460ff60a01b1916600160a11b17905543600f556135a18282613d66565b6040805143815290519194507f23dc47ee5d995fb521fbe4351f353f3177d7b9d9e15bdd01ed358764c25d9629919081900360200190a15b6005546135e69084613da8565b60055560018401546135f89084613da8565b6001850181905560408051918252518691600080516020614b38833981519152919081900360200190a25050505050565b6000546001600160a01b031633148061364b57506000546001600160a01b0316155b61369c576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b6001600160a01b0381166136e15760405162461bcd60e51b8152600401808060200182810382526026815260200180614a656026913960400191505060405180910390fd5b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600080546001600160a01b0319166001600160a01b0392909216919091179055565b6004546001600160a01b031633146137855760405162461bcd60e51b8152600401808060200182810382526024815260200180614a416024913960400191505060405180910390fd5b61378d61295f565b6137d9576040805162461bcd60e51b81526020600482015260186024820152776865726d6573206861766520746f2062652061637469766560401b604482015290519081900360640190fd5b806137e2612663565b101561381f5760405162461bcd60e51b815260040180806020018281038252602c815260200180614e0a602c913960400191505060405180910390fd5b6002546040805163a9059cbb60e01b81526001600160a01b038581166004830152602482018590529151919092169163a9059cbb9160448083019260209291908290030181600087803b15801561387557600080fd5b505af1158015613889573d6000803e3d6000fd5b505050506040513d602081101561389f57600080fd5b5050604080518281526001600160a01b038416602082015281517fa2e147ce2b7cb83d9c07e397bb806f23dd42c42e86ea45e1611d6e50eb1ec8bf929181900390910190a15050565b6001546001600160a01b031690565b6004546001600160a01b031633146139405760405162461bcd60e51b8152600401808060200182810382526024815260200180614a416024913960400191505060405180910390fd5b600161394a6119a1565b600381111561395557fe5b146139915760405162461bcd60e51b8152600401808060200182810382526021815260200180614c816021913960400191505060405180910390fd5b600b805460ff60a01b191690556040517f2d8b6ec230798e206d536342a28b7b61cc8fcfafb1d27c11c5519b3c42eb7df890600090a1565b6002546001600160a01b031681565b6139e183611f80565b613a2e576040805162461bcd60e51b815260206004820152601960248201527818da185b9b995b081a185d99481d1bc81899481bdc195b9959603a1b604482015290519081900360640190fd5b600754821015613a6f5760405162461bcd60e51b815260040180806020018281038252602b815260200180614b58602b913960400191505060405180910390fd5b6000838152600e60209081526040808320600581018054600101908190558251808401845260198082527f5374616b6520676f616c207570646174652072657175657374000000000000008287019081529451939695613b4895899593948c948c949193019182918083835b60208310613afa5780518252601f199092019160209182019101613adb565b51815160209384036101000a60001901801990921691161790529201958652508481019390935250604080840191909152805180840382018152606090930190528151910120919050614028565b905084613b54826133e0565b14613b905760405162461bcd60e51b8152600401808060200182810382526022815260200180614d796022913960400191505060405180910390fd5b6004820184905560408051858152905186917f5ec1b60bc705196753b2e21e144bbb185e6ef7264f9d79b99f04f1bc22198733919081900360200190a25050505050565b613bdd83611f80565b15613c195760405162461bcd60e51b81526004018080602001828103825260218152602001806149fb6021913960400191505060405180910390fd5b8015613c2b57613c2b83826000613e20565b6000838152600e602090815260409182902080546001600160a01b0319166001600160a01b0386161781556001810184905560075460048201558251868152918201849052825190927fbe2e1f3a6197dfd16fa6830c4870364b618b8b288c21cbcfa4fdb5d7c6a5e45b928290030190a150505050565b600082613cb157506000613cfe565b82820282848281613cbe57fe5b0414613cfb5760405162461bcd60e51b8152600401808060200182810382526021815260200180614c606021913960400191505060405180910390fd5b90505b92915050565b6000818260018486010381613d1557fe5b04029392505050565b6000613cfb83836040518060400160405280601a81526020017f536166654d6174683a206469766973696f6e206279207a65726f00000000000081525061489e565b61010190565b6000613cfb83836040518060400160405280601e81526020017f536166654d6174683a207375627472616374696f6e206f766572666c6f770000815250614940565b600082820183811015613cfb576040805162461bcd60e51b815260206004820152601b60248201527f536166654d6174683a206164646974696f6e206f766572666c6f770000000000604482015290519081900360640190fd5b6000818311613e115781613cfb565b5090919050565b436146500190565b60008211613e75576040805162461bcd60e51b815260206004820152601b60248201527f73686f756c64207374616b65206d6f7265207468616e207a65726f0000000000604482015290519081900360640190fd5b6000838152600e602052604081206003810154909190613e959085613da8565b9050600854811115613ed85760405162461bcd60e51b815260040180806020018281038252603c815260200180614dce603c913960400191505060405180910390fd5b82613fb457600254604080516323b872dd60e01b81523360048201523060248201526044810187905290516001600160a01b03909216916323b872dd916064808201926020929091908290030181600087803b158015613f3757600080fd5b505af1158015613f4b573d6000803e3d6000fd5b505050506040513d6020811015613f6157600080fd5b5051613fb4576040805162461bcd60e51b815260206004820152601d60248201527f746f6b656e207472616e736665722073686f756c642073756363656564000000604482015290519081900360640190fd5b600382018190556001820154613fd890613fcf908390613d66565b60055490613da8565b600555600654613fe89085613da8565b60065560408051828152905186917fc5f0715c45dab2e8f14871936119e3c64fd5841d397130c2d1db743d142522cb919081900360200190a25050505050565b60008151604114614080576040805162461bcd60e51b815260206004820152601f60248201527f45434453413a20696e76616c6964207369676e6174757265206c656e67746800604482015290519081900360640190fd5b60208201516040830151606084015160001a7f7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46681b20a08211156140f15760405162461bcd60e51b8152600401808060200182810382526022815260200180614b166022913960400191505060405180910390fd5b8060ff16601b1415801561410957508060ff16601c14155b156141455760405162461bcd60e51b8152600401808060200182810382526022815260200180614c3e6022913960400191505060405180910390fd5b600060018783868660405160008152602001604052604051808581526020018460ff1681526020018381526020018281526020019450505050506020604051602081039080840390855afa1580156141a1573d6000803e3d6000fd5b5050604051601f1901519150506001600160a01b038116614209576040805162461bcd60e51b815260206004820152601860248201527f45434453413a20696e76616c6964207369676e61747572650000000000000000604482015290519081900360640190fd5b9695505050505050565b6000868152600e6020908152604080832081518084018890528251808203850181528184018452805190850120606082018c9052608082018b905260a082018a905260c08083018290528451808403909101815260e09092019093528051930192909220919290916142859086614028565b6004549091506001600160a01b038083169116146142ea576040805162461bcd60e51b815260206004820152601d60248201527f6861766520746f206265207369676e6564206279206f70657261746f72000000604482015290519081900360640190fd5b600061430384600201548a613d6690919063ffffffff16565b9050600081116143445760405162461bcd60e51b8152600401808060200182810382526037815260200180614ca26037913960400191505060405180910390fd5b808811156143835760405162461bcd60e51b815260040180806020018281038252603c815260200180614ab5603c913960400191505060405180910390fd5b600084600401548560030154101561439f5784600401546143a5565b84600101545b9050808211156143b3578091505b60028501546143c29083613da8565b600286015560006143d28361120e565b905060006143e08b83613da8565b905060006143ee8583613d66565b9050600088600401548960030154101561444257614427600a83046144228b60030154600854613d6690919063ffffffff16565b614886565b90506144358f826001613e20565b61443f8282613d66565b91505b61445c614453878b60010154614886565b60055490613d66565b60055589156146c7576040805160028082526060808301845260009390929190602083019080368337505060025482519293506001600160a01b0316918391506000906144a557fe5b6001600160a01b03928316602091820292909201810191909152600b54604080516315ab88c960e31b81529051919093169263ad5c4648926004808301939192829003018186803b1580156144f957600080fd5b505afa15801561450d573d6000803e3d6000fd5b505050506040513d602081101561452357600080fd5b505181518290600190811061453457fe5b6001600160a01b03928316602091820292909201810191909152600b548d546040516318cbafe560e01b8152600481018981526024820188905291851660648201819052426084830181905260a060448401908152885160a4850152885195909716966318cbafe5968c968b968b9690939260c490910191878201910280838360005b838110156145cf5781810151838201526020016145b7565b505050509050019650505050505050600060405180830381600087803b1580156145f857600080fd5b505af115801561460c573d6000803e3d6000fd5b505050506040513d6000823e601f3d908101601f19168201604052602081101561463557600080fd5b8101908080516040519392919084600160201b82111561465457600080fd5b90830190602082018581111561466957600080fd5b82518660208202830111600160201b8211171561468557600080fd5b82525081516020918201928201910280838360005b838110156146b257818101518382015260200161469a565b5050505090500160405250505050505061474c565b60025489546040805163a9059cbb60e01b81526001600160a01b039283166004820152602481018690529051919092169163a9059cbb9160448083019260209291908290030181600087803b15801561471f57600080fd5b505af1158015614733573d6000803e3d6000fd5b505050506040513d602081101561474957600080fd5b50505b61476861475d878b60010154614886565b60018b015490613d66565b60018a01558c1561480c57600260009054906101000a90046001600160a01b03166001600160a01b031663a9059cbb338f6040518363ffffffff1660e01b815260040180836001600160a01b0316815260200182815260200192505050602060405180830381600087803b1580156147df57600080fd5b505af11580156147f3573d6000803e3d6000fd5b505050506040513d602081101561480957600080fd5b50505b8860000160009054906101000a90046001600160a01b03166001600160a01b03168f7fa1f6960b3f39be76536e5ceb8f07a7b92640393da10654d061e82ee2f28694e284868560405180848152602001838152602001828152602001935050505060405180910390a3505050505050505050505050505050565b6000818310613e115781613cfb565b43621b77400190565b6000818361492a5760405162461bcd60e51b81526004018080602001828103825283818151815260200191508051906020019080838360005b838110156148ef5781810151838201526020016148d7565b50505050905090810190601f16801561491c5780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b50600083858161493657fe5b0495945050505050565b600081848411156149925760405162461bcd60e51b81526020600482018181528351602484015283519092839260449091019190850190808383600083156148ef5781810151838201526020016148d7565b505050900390565b60408051808201909152600080825260208201529056fe62616c616e63652063616e2774206265206c657373207468616e207374616b6520616d6f756e7473686f756c6420626520656e6f75676820617661696c61626c652062616c616e63656368616e6e656c206861766520746f206265206e6f74206f70656e6564207965746865726d65732073686f756c6420626520696e2070756e6973686d656e74207374617475736f6e6c79206f70657261746f722063616e2063616c6c20746869732066756e6374696f6e4f776e61626c653a206e6577206f776e657220697320746865207a65726f206164647265737363616e2774207769746864726177206d6f7265207468616e207468652063757272656e74207374616b657472616e736163746f72206665652073686f756c6420626520657175616c20746f206f72206c657373207468616e205f756e70616964416d6f756e746e617469766520746f6b656e2066756e64732063616e2774206265207265636f766572656445434453413a20696e76616c6964207369676e6174757265202773272076616c75652eb87c52e5d2d7395da77618aa1afe310b9cf13fa9f70e3199d100adda3a7aa57374616b6520676f616c2063616e2774206265206c657373207468616e206d696e696d616c207374616b656865726d6573206861766520746f20626520696e206163746976652073746174656d696e5374616b652068617320746f20626520736d616c6c6572207468616e206d61785374616b6562656e65666963696172792063616e2774206265207a65726f206164647265737374696d656c6f636b20706572696f64206861766520626520616c726561647920706173736564616d6f756e742073686f756c6420626520626967676572207468616e207472616e736163746f722066656545434453413a20696e76616c6964207369676e6174757265202776272076616c7565536166654d6174683a206d756c7469706c69636174696f6e206f766572666c6f776865726d6573206861766520746f20626520696e20706175736564207374617465616d6f756e7420746f20736574746c652073686f756c642062652067726561746572207468617420616c726561647920736574746c65646d61785374616b652068617320746f20626520626967676572207468616e206d696e5374616b656d61785374616b65206861766520746f20626520626967676572207468616e206d696e5374616b65746f6b656e2063616e2774206265206465706c6f796420696e746f207a65726f20616464726573736e65772062616c616e63652073686f756c6420626520626967676572207468616e2063757272656e746861766520746f206265207369676e6564206279206368616e6e656c207061727479616d6f756e7420746f206c656e642063616e277420626520626967676572207468616e206d6178696d756d20616c6c6f776564746f74616c20616d6f756e7420746f207374616b652063616e277420626520626967676572207468616e206d6178696d616c6c7920616c6c6f77656473686f756c6420626520656e6f7567682066756e647320617661696c61626c6520746f207769746864726177a2646970667358221220c6964181624044f256f58e6759df2c75890bb43ab6d35426d1970f587c06148564736f6c63430007010033"
+var HermesImplementationBin = "0x608060405234801561001057600080fd5b50613d43806100206000396000f3fe608060405234801561001057600080fd5b50600436106102695760003560e01c80637295973a11610151578063bc96a1e9116100c3578063eb295b2711610087578063eb295b2714610acb578063f2fde38b14610af1578063f3fef3a314610b17578063f58c5b6e14610b43578063fbb46b9814610b4b578063fc0c546a14610b5357610269565b8063bc96a1e914610a85578063df8de3e714610a8d578063e1c6648714610ab3578063e58473f214610abb578063e7f43c6814610ac357610269565b806394c7915d1161011557806394c7915d14610a195780639801134e14610a215780639ed9903e14610a50578063aa606dee14610a58578063ab2f0e5114610a60578063ae10ed8414610a6857610269565b80637295973a146108e95780637a7ebd7b146109a95780638c80fd90146109ec5780638d886fac14610a095780638da5cb5b14610a1157610269565b806348d9f01e116101ea5780636931b550116101ae5780636931b550146106da578063699a0885146106e25780636e9094ea1461072e5780636fc148371461074b57806370603a7f1461076857806371d2ff1b1461082457610269565b806348d9f01e146104475780634e69d5601461050c57806353d2a0ff146105355780635ab1bd53146106905780636138dda7146106b457610269565b806324f453d11161023157806324f453d1146103b3578063306db49b146103df57806338df1024146103e7578063392e53cd1461040857806339f976261461042457610269565b806302062d121461026e5780630684cd201461033557806315c73afd146103565780631f4f12c61461035e578063238e130a1461038d575b600080fd5b610333600480360360a081101561028457600080fd5b6001600160a01b038235169160208101359160408201359160608101359181019060a081016080820135600160201b8111156102bf57600080fd5b8201836020820111156102d157600080fd5b803590602001918460018302840111600160201b831117156102f257600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550610b5b945050505050565b005b61033d610ec1565b6040805192835260208301919091528051918290030190f35b610333610eca565b61037b6004803603602081101561037457600080fd5b503561111b565b60408051918252519081900360200190f35b610333600480360360208110156103a357600080fd5b50356001600160a01b031661114b565b610333600480360360408110156103c957600080fd5b506001600160a01b038135169060200135611203565b61037b6112b5565b610333600480360360208110156103fd57600080fd5b503561ffff166112bc565b6104106114b7565b604080519115158252519081900360200190f35b6103336004803603604081101561043a57600080fd5b50803590602001356114c8565b610333600480360360a081101561045d57600080fd5b6001600160a01b038235169160208101359160408201359160608101359181019060a081016080820135600160201b81111561049857600080fd5b8201836020820111156104aa57600080fd5b803590602001918460018302840111600160201b831117156104cb57600080fd5b91908080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525092955061153c945050505050565b6105146116ab565b6040518082600381111561052457fe5b815260200191505060405180910390f35b610333600480360360e081101561054b57600080fd5b6001600160a01b038235169160208101359160408201359160608101359181019060a081016080820135600160201b81111561058657600080fd5b82018360208201111561059857600080fd5b803590602001918460018302840111600160201b831117156105b957600080fd5b91908080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525092956001600160a01b03853516959094909350604081019250602001359050600160201b81111561061c57600080fd5b82018360208201111561062e57600080fd5b803590602001918460018302840111600160201b8311171561064f57600080fd5b91908080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152509295506116bb945050505050565b610698611847565b604080516001600160a01b039092168252519081900360200190f35b610333600480360360208110156106ca57600080fd5b50356001600160a01b0316611856565b610333611a57565b610333600480360360c08110156106f857600080fd5b506001600160a01b038135811691602081013582169161ffff6040830135169160608101359160808201359160a0013516611aa8565b6104106004803603602081101561074457600080fd5b5035611db0565b6103336004803603602081101561076157600080fd5b5035611de2565b610410600480360360a081101561077e57600080fd5b81359160208101359160408201359160608101359181019060a081016080820135600160201b8111156107b057600080fd5b8201836020820111156107c257600080fd5b803590602001918460018302840111600160201b831117156107e357600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550611efa945050505050565b610333600480360360a081101561083a57600080fd5b6001600160a01b038235169160208101359160408201359160608101359181019060a081016080820135600160201b81111561087557600080fd5b82018360208201111561088757600080fd5b803590602001918460018302840111600160201b831117156108a857600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550611f8d945050505050565b610333600480360360808110156108ff57600080fd5b6001600160a01b038235169160208101359160408201359190810190608081016060820135600160201b81111561093557600080fd5b82018360208201111561094757600080fd5b803590602001918460018302840111600160201b8311171561096857600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550611fc1945050505050565b6109c6600480360360208110156109bf57600080fd5b50356123ee565b604080519485526020850193909352838301919091526060830152519081900360800190f35b61033360048036036020811015610a0257600080fd5b5035612415565b61037b61252d565b61069861258f565b61037b61259e565b610a296125bc565b6040805161ffff909316835267ffffffffffffffff90911660208301528051918290030190f35b61033d6125d8565b6103336125e2565b61037b6126ba565b61033360048036036020811015610a7e57600080fd5b5035612768565b6104106128a6565b61033360048036036020811015610aa357600080fd5b50356001600160a01b03166128e1565b610a29612a17565b610333612a33565b610698612b28565b61037b60048036036020811015610ae157600080fd5b50356001600160a01b0316612b37565b61033360048036036020811015610b0757600080fd5b50356001600160a01b0316612b7b565b61033360048036036040811015610b2d57600080fd5b506001600160a01b038135169060200135612c8e565b610698612e3f565b610333612e4e565b610698612f20565b6003546040805163505a1b3160e01b81526001600160a01b0388811660048301529151600093929092169163505a1b3191602480820192602092909190829003018186803b158015610bac57600080fd5b505afa158015610bc0573d6000803e3d6000fd5b505050506040513d6020811015610bd657600080fd5b505190506001600160a01b038116610c1f5760405162461bcd60e51b8152600401808060200182810382526042815260200180613a786042913960600191505060405180910390fd5b6000610c2a87612b37565b90506000610c3c828489898989612f2f565b6040805160028082526060808301845293945060009392602083019080368337505060025482519293506001600160a01b031691839150600090610c7c57fe5b6001600160a01b03928316602091820292909201810191909152600a54604080516315ab88c960e31b81529051919093169263ad5c4648926004808301939192829003018186803b158015610cd057600080fd5b505afa158015610ce4573d6000803e3d6000fd5b505050506040513d6020811015610cfa57600080fd5b5051815182906001908110610d0b57fe5b60200260200101906001600160a01b031690816001600160a01b031681525050600a60009054906101000a90046001600160a01b03166001600160a01b03166318cbafe584848489426040518663ffffffff1660e01b81526004018086815260200185815260200180602001846001600160a01b03168152602001838152602001828103825285818151815260200191508051906020019060200280838360005b83811015610dc4578181015183820152602001610dac565b505050509050019650505050505050600060405180830381600087803b158015610ded57600080fd5b505af1158015610e01573d6000803e3d6000fd5b505050506040513d6000823e601f3d908101601f191682016040526020811015610e2a57600080fd5b8101908080516040519392919084600160201b821115610e4957600080fd5b908301906020820185811115610e5e57600080fd5b82518660208202830111600160201b82111715610e7a57600080fd5b82525081516020918201928201910280838360005b83811015610ea7578181015183820152602001610e8f565b505050509050016040525050505050505050505050505050565b600e54600f5482565b6002610ed46116ab565b6003811115610edf57fe5b14610f1b5760405162461bcd60e51b8152600401808060200182810382526026815260200180613c406026913960400191505060405180910390fd5b6000610f486064610f42610f3b60046005546131b890919063ffffffff16565b6064613218565b90613232565b90506000610f54613274565b600e5490915043036000610f7c600184610f6e8582613218565b81610f7557fe5b049061327a565b90506000610f8a82866131b8565b600f54909150610f9a90826132bc565b600f55600754600090610fb590610faf61259e565b906132bc565b600254604080516370a0823160e01b815230600482015290519293506000926001600160a01b03909216916370a0823191602480820192602092909190829003018186803b15801561100657600080fd5b505afa15801561101a573d6000803e3d6000fd5b505050506040513d602081101561103057600080fd5b50519050818110156110dc576002546001600160a01b03166323b872dd3330611059868661327a565b6040518463ffffffff1660e01b815260040180846001600160a01b03168152602001836001600160a01b031681526020018281526020019350505050602060405180830381600087803b1580156110af57600080fd5b505af11580156110c3573d6000803e3d6000fd5b505050506040513d60208110156110d957600080fd5b50505b600a805460ff60a01b191690556040517f5dc43dfad9aedde473e812a66ff033b91a2b1ee060e7dc0746a1a14a4a3bd47c90600090a150505050505050565b6000606461113d606461112c61252d565b85028161113557fe5b046064613218565b8161114457fe5b0492915050565b6004546001600160a01b031633146111945760405162461bcd60e51b8152600401808060200182810382526033815260200180613cb16033913960400191505060405180910390fd5b6001600160a01b0381166111a757600080fd5b6001546040516001600160a01b038084169216907fe1a66d77649cf0a57b9937073549f30f1c82bb865aaf066d2f299e37a62c6aad90600090a3600180546001600160a01b0319166001600160a01b0392909216919091179055565b6003546001600160a01b0316331461124c5760405162461bcd60e51b8152600401808060200182810382526027815260200180613c666027913960400191505060405180910390fd5b60006112566116ab565b600381111561126157fe5b1461129d5760405162461bcd60e51b8152600401808060200182810382526022815260200180613adb6022913960400191505060405180910390fd5b6112b16112a983612b37565b826000613316565b5050565b6008545b90565b6004546001600160a01b031633146113055760405162461bcd60e51b8152600401808060200182810382526033815260200180613cb16033913960400191505060405180910390fd5b600361130f6116ab565b600381111561131a57fe5b141561136d576040805162461bcd60e51b815260206004820152601c60248201527f4865726d65733a2073686f756c64206265206e6f7420636c6f73656400000000604482015290519081900360640190fd5b6113888161ffff1611156113b25760405162461bcd60e51b815260040180806020018281038252602481526020018061380b6024913960400191505060405180910390fd5b600b5462010000900467ffffffffffffffff164310156114035760405162461bcd60e51b8152600401808060200182810382526021815260200180613aba6021913960400191505060405180910390fd5b600061140d6134d2565b600b8054600c805467ffffffffffffffff620100008085048216810269ffffffffffffffff00001961ffff1994851661ffff80891691909117821692909217909555604080518082018252918b1680835293891660209283018190529283029490961683179094169290921790945582519384529083015280519293507fea76eb91f1817e0757719ea43e0733faf6f1121425bde387d1dd91badb9d403b92918290030190a15050565b6004546001600160a01b0316151590565b60036114d26116ab565b60038111156114dd57fe5b1415611530576040805162461bcd60e51b815260206004820152601b60248201527f6865726d65732073686f756c64206265206e6f7420636c6f7365640000000000604482015290519081900360640190fd5b6112b182826000613316565b6003546040805163505a1b3160e01b81526001600160a01b0388811660048301529151600093929092169163505a1b3191602480820192602092909190829003018186803b15801561158d57600080fd5b505afa1580156115a1573d6000803e3d6000fd5b505050506040513d60208110156115b757600080fd5b505190506001600160a01b0381166116005760405162461bcd60e51b8152600401808060200182810382526042815260200180613a786042913960600191505060405180910390fd5b600061160b87612b37565b9050600061161d828489898989612f2f565b6002546040805163a9059cbb60e01b81526001600160a01b03878116600483015260248201859052915193945091169163a9059cbb916044808201926020929091908290030181600087803b15801561167557600080fd5b505af1158015611689573d6000803e3d6000fd5b505050506040513d602081101561169f57600080fd5b50505050505050505050565b600a54600160a01b900460ff1690565b60035460405163d0171d7960e01b81526001600160a01b03898116600483019081528582166024840152606060448401908152855160648501528551929094169363d0171d79938c938893889390929091608490910190602085019080838360005b8381101561173557818101518382015260200161171d565b50505050905090810190601f1680156117625780820380516001836020036101000a031916815260200191505b50945050505050600060405180830381600087803b15801561178357600080fd5b505af1158015611797573d6000803e3d6000fd5b5050505060006117a688612b37565b905060006117b882858a8a8a8a612f2f565b6002546040805163a9059cbb60e01b81526001600160a01b03888116600483015260248201859052915193945091169163a9059cbb916044808201926020929091908290030181600087803b15801561181057600080fd5b505af1158015611824573d6000803e3d6000fd5b505050506040513d602081101561183a57600080fd5b5050505050505050505050565b6003546001600160a01b031690565b6004546001600160a01b0316331461189f5760405162461bcd60e51b8152600401808060200182810382526033815260200180613cb16033913960400191505060405180910390fd5b60036118a96116ab565b60038111156118b457fe5b14611906576040805162461bcd60e51b815260206004820152601860248201527f6865726d6573206861766520746f20626520636c6f7365640000000000000000604482015290519081900360640190fd5b60095443116119465760405162461bcd60e51b81526004018080602001828103825260268152602001806139db6026913960400191505060405180910390fd5b600f54600254604080516370a0823160e01b815230600482015290516000936119cf9390926001600160a01b03909116916370a0823191602480820192602092909190829003018186803b15801561199d57600080fd5b505afa1580156119b1573d6000803e3d6000fd5b505050506040513d60208110156119c757600080fd5b50519061327a565b6002546040805163a9059cbb60e01b81526001600160a01b03868116600483015260248201859052915193945091169163a9059cbb916044808201926020929091908290030181600087803b158015611a2757600080fd5b505af1158015611a3b573d6000803e3d6000fd5b505050506040513d6020811015611a5157600080fd5b50505050565b6001546001600160a01b0316611a6c57600080fd5b6001546040516001600160a01b03909116904780156108fc02916000818181858888f19350505050158015611aa5573d6000803e3d6000fd5b50565b611ab06114b7565b15611aec5760405162461bcd60e51b81526004018080602001828103825260228152602001806138df6022913960400191505060405180910390fd5b6001600160a01b038616611b315760405162461bcd60e51b81526004018080602001828103825260308152602001806139016030913960400191505060405180910390fd5b6001600160a01b038516611b8c576040805162461bcd60e51b815260206004820152601f60248201527f4865726d65733a206f70657261746f72206861766520746f2062652073657400604482015290519081900360640190fd5b6113888461ffff161115611bd15760405162461bcd60e51b8152600401808060200182810382526024815260200180613c8d6024913960400191505060405180910390fd5b828211611c0f5760405162461bcd60e51b8152600401808060200182810382526030815260200180613a016030913960400191505060405180910390fd5b60038054336001600160a01b0319918216179091556002805482166001600160a01b0389811691909117918290556004805490931688821617835560408051808201825261ffff89168082524367ffffffffffffffff166020928301819052600b805461ffff191690921769ffffffffffffffff00001916620100009091021790556006889055600787905581516370a0823160e01b81523095810195909552905192909116926370a082319260248083019392829003018186803b158015611cd757600080fd5b505afa158015611ceb573d6000803e3d6000fd5b505050506040513d6020811015611d0157600080fd5b50516008556002546040805163095ea7b360e01b81526001600160a01b03848116600483015260001960248301529151919092169163095ea7b39160448083019260209291908290030181600087803b158015611d5d57600080fd5b505af1158015611d71573d6000803e3d6000fd5b505050506040513d6020811015611d8757600080fd5b5050600a80546001600160a01b0319166001600160a01b03929092169190911790555050505050565b6000818152600d6020526040812054151580611ddc57506000828152600d602052604090206001015415155b92915050565b6004546001600160a01b03163314611e2b5760405162461bcd60e51b8152600401808060200182810382526033815260200180613cb16033913960400191505060405180910390fd5b611e336128a6565b611e7f576040805162461bcd60e51b81526020600482015260186024820152774865726d65733a2068617320746f2062652061637469766560401b604482015290519081900360640190fd5b6006548111611ebf5760405162461bcd60e51b815260040180806020018281038252602f8152602001806139ac602f913960400191505060405180910390fd5b60078190556040805182815290517f53f4fb18cb329155d5af04681c1d0846d0484d7de33791619c6988ca61910e3d9181900360200190a150565b604080516020808201859052825180830382018152918301909252805191012060009081611f7084611f2a6134da565b604080516020808201939093528082018d9052606081018c9052608081018b905260a08082018890528251808303909101815260c09091019091528051910120906134de565b6004546001600160a01b0390811691161498975050505050505050565b6000611f9886612b37565b90506000611faa823088888888612f2f565b9050611fb882826001613316565b50505050505050565b6000611fcc85612b37565b9050611fd781611db0565b612028576040805162461bcd60e51b815260206004820181905260248201527f4865726d65733a206368616e6e656c2068617320746f206265206f70656e6564604482015290519081900360640190fd5b828410156120675760405162461bcd60e51b815260040180806020018281038252603381526020018061382f6033913960400191505060405180910390fd5b6000818152600d6020526040902060018101548511156120b85760405162461bcd60e51b8152600401808060200182810382526032815260200180613afd6032913960400191505060405180910390fd5b600281018054600101905560408051808201909152601481527314dd185ad9481c995d1d5c9b881c995c5d595cdd60621b60208201526000906121a59085906120ff6134da565b868a8a88600201546040516020018087805190602001908083835b602083106121395780518252601f19909201916020918201910161211a565b6001836020036101000a0380198251168184511680821785525050505050509050018681526020018581526020018481526020018381526020018281526020019650505050505050604051602081830303815290604052805190602001206134de90919063ffffffff16565b9050826121b182612b37565b146121ed5760405162461bcd60e51b815260040180806020018281038252602a815260200180613ce4602a913960400191505060405180910390fd5b60018201546000906121ff908861327a565b90508515612288576002546040805163a9059cbb60e01b81523360048201526024810189905290516001600160a01b039092169163a9059cbb916044808201926020929091908290030181600087803b15801561225b57600080fd5b505af115801561226f573d6000803e3d6000fd5b505050506040513d602081101561228557600080fd5b50505b6003546040805163505a1b3160e01b81526001600160a01b038b811660048301529151600093929092169163505a1b3191602480820192602092909190829003018186803b1580156122d957600080fd5b505afa1580156122ed573d6000803e3d6000fd5b505050506040513d602081101561230357600080fd5b50516002549091506001600160a01b031663a9059cbb826123248b8b61327a565b6040518363ffffffff1660e01b815260040180836001600160a01b0316815260200182815260200192505050602060405180830381600087803b15801561236a57600080fd5b505af115801561237e573d6000803e3d6000fd5b505050506040513d602081101561239457600080fd5b5050600184018290556005546123aa908961327a565b60055560408051838152905186917fc5f0715c45dab2e8f14871936119e3c64fd5841d397130c2d1db743d142522cb919081900360200190a2505050505050505050565b600d6020526000908152604090208054600182015460028301546003909301549192909184565b6004546001600160a01b0316331461245e5760405162461bcd60e51b8152600401808060200182810382526033815260200180613cb16033913960400191505060405180910390fd5b6124666128a6565b6124b2576040805162461bcd60e51b81526020600482015260186024820152774865726d65733a2068617320746f2062652061637469766560401b604482015290519081900360640190fd5b60075481106124f25760405162461bcd60e51b81526004018080602001828103825260308152602001806139536030913960400191505060405180910390fd5b60068190556040805182815290517fb9e5e6e8db1283ee860f3856d8383e40665c58a5264ede5e6ed8ec1afb0312519181900360200190a150565b60006125376137f3565b600b5462010000900467ffffffffffffffff1643101561255857600c61255b565b600b5b60408051808201909152905461ffff81168083526201000090910467ffffffffffffffff1660209092019190915292915050565b6000546001600160a01b031690565b60006125b7600554610faf600854600e600101546136c9565b905090565b600b5461ffff81169062010000900467ffffffffffffffff1682565b6006546007549091565b6004546001600160a01b0316331461262b5760405162461bcd60e51b8152600401808060200182810382526033815260200180613cb16033913960400191505060405180910390fd5b60006126356116ab565b600381111561264057fe5b1461267c5760405162461bcd60e51b8152600401808060200182810382526022815260200180613adb6022913960400191505060405180910390fd5b600a805460ff60a01b1916600160a01b1790556040517f1f4cd5d6edef8a0c4dbe6d547fdc42e0f3575167257553271f2366f9d497f67e90600090a1565b6000806126c561259e565b600254604080516370a0823160e01b815230600482015290519293506000926001600160a01b03909216916370a0823191602480820192602092909190829003018186803b15801561271657600080fd5b505afa15801561272a573d6000803e3d6000fd5b505050506040513d602081101561274057600080fd5b5051905080821115612757576000925050506112b9565b612761818361327a565b9250505090565b6004546001600160a01b031633146127b15760405162461bcd60e51b8152600401808060200182810382526033815260200180613cb16033913960400191505060405180910390fd5b806127ba6126ba565b101561285f5760006127d46127cd6126ba565b839061327a565b600254604080516323b872dd60e01b81523360048201523060248201526044810184905290519293506001600160a01b03909116916323b872dd916064808201926020929091908290030181600087803b15801561283157600080fd5b505af1158015612845573d6000803e3d6000fd5b505050506040513d602081101561285b57600080fd5b5050505b60085461286c90826132bc565b600881905560408051918252517feb10b8b69c3eb290299237eaee4760bf1c02734ce3dc7740d6f2017b5ca3ed919181900360200190a150565b6000806128b16116ab565b905060028160038111156128c157fe5b141580156128db575060038160038111156128d857fe5b14155b91505090565b6001546001600160a01b03166128f657600080fd5b6002546001600160a01b03828116911614156129435760405162461bcd60e51b81526004018080602001828103825260258152602001806138ba6025913960400191505060405180910390fd5b6000816001600160a01b03166370a08231306040518263ffffffff1660e01b815260040180826001600160a01b0316815260200191505060206040518083038186803b15801561299257600080fd5b505afa1580156129a6573d6000803e3d6000fd5b505050506040513d60208110156129bc57600080fd5b50516001546040805163a9059cbb60e01b81526001600160a01b0392831660048201526024810184905290519293509084169163a9059cbb916044808201926020929091908290030181600087803b158015611a2757600080fd5b600c5461ffff81169062010000900467ffffffffffffffff1682565b6004546001600160a01b03163314612a7c5760405162461bcd60e51b8152600401808060200182810382526033815260200180613cb16033913960400191505060405180910390fd5b612a846128a6565b612ad5576040805162461bcd60e51b815260206004820152601760248201527f6865726d65732073686f756c6420626520616374697665000000000000000000604482015290519081900360640190fd5b600a805460ff60a01b1916600360a01b179055612af06136df565b6009556040805143815290517ffa9b0c2718819d67ceaec4f97d36185c2f1d22bdc5ff18f44c52cd56a5dd8e459181900360200190a1565b6004546001600160a01b031690565b60408051606092831b6bffffffffffffffffffffffff19166020808301919091523090931b6034820152815180820360280181526048909101909152805191012090565b6000546001600160a01b0316331480612b9d57506000546001600160a01b0316155b612bee576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b6001600160a01b038116612c335760405162461bcd60e51b81526004018080602001828103825260268152602001806138626026913960400191505060405180910390fd5b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600080546001600160a01b0319166001600160a01b0392909216919091179055565b6004546001600160a01b03163314612cd75760405162461bcd60e51b8152600401808060200182810382526033815260200180613cb16033913960400191505060405180910390fd5b612cdf6128a6565b612d30576040805162461bcd60e51b815260206004820152601960248201527f4865726d65733a206861766520746f2062652061637469766500000000000000604482015290519081900360640190fd5b80612d396126ba565b1015612d765760405162461bcd60e51b8152600401808060200182810382526034815260200180613b946034913960400191505060405180910390fd5b6002546040805163a9059cbb60e01b81526001600160a01b038581166004830152602482018590529151919092169163a9059cbb9160448083019260209291908290030181600087803b158015612dcc57600080fd5b505af1158015612de0573d6000803e3d6000fd5b505050506040513d6020811015612df657600080fd5b5050604080518281526001600160a01b038416602082015281517fa2e147ce2b7cb83d9c07e397bb806f23dd42c42e86ea45e1611d6e50eb1ec8bf929181900390910190a15050565b6001546001600160a01b031690565b6004546001600160a01b03163314612e975760405162461bcd60e51b8152600401808060200182810382526033815260200180613cb16033913960400191505060405180910390fd5b6001612ea16116ab565b6003811115612eac57fe5b14612ee85760405162461bcd60e51b8152600401808060200182810382526021815260200180613b736021913960400191505060405180910390fd5b600a805460ff60a01b191690556040517f2d8b6ec230798e206d536342a28b7b61cc8fcfafb1d27c11c5519b3c42eb7df890600090a1565b6002546001600160a01b031681565b6000612f396128a6565b612f745760405162461bcd60e51b81526004018080602001828103825260298152602001806139836029913960400191505060405180910390fd5b612f818786868686611efa565b612fbc5760405162461bcd60e51b81526004018080602001828103825260328152602001806138886032913960400191505060405180910390fd5b6000878152600d6020526040812090612fd36126ba565b9050816001015481101561302d57600a805460ff60a01b1916600160a11b17905543600e81905560408051918252517f23dc47ee5d995fb521fbe4351f353f3177d7b9d9e15bdd01ed358764c25d96299181900360200190a15b815460009061303d90899061327a565b905086811161307d5760405162461bcd60e51b8152600401808060200182810382526034815260200180613c0c6034913960400191505060405180910390fd5b8181118061308c575060075481115b156130a05761309d826007546136e8565b90505b82546130ac90826132bc565b835560006130b98261111b565b905060006130c789836132bc565b90508815613150576002546040805163a9059cbb60e01b8152336004820152602481018c905290516001600160a01b039092169163a9059cbb916044808201926020929091908290030181600087803b15801561312357600080fd5b505af1158015613137573d6000803e3d6000fd5b505050506040513d602081101561314d57600080fd5b50505b600061315c848361327a565b90508b6001600160a01b03168d7fa5a1f05785a942c5f624cee545c68394881a83bcaf21a83f4d76a9e8240a56688385604051808381526020018281526020019250505060405180910390a39c9b505050505050505050505050565b6000826131c757506000611ddc565b828202828482816131d457fe5b04146132115760405162461bcd60e51b8152600401808060200182810382526021815260200180613b2f6021913960400191505060405180910390fd5b9392505050565b600081826001848601038161322957fe5b04029392505050565b600061321183836040518060400160405280601a81526020017f536166654d6174683a206469766973696f6e206279207a65726f0000000000008152506136f7565b61010190565b600061321183836040518060400160405280601e81526020017f536166654d6174683a207375627472616374696f6e206f766572666c6f770000815250613799565b600082820183811015613211576040805162461bcd60e51b815260206004820152601b60248201527f536166654d6174683a206164646974696f6e206f766572666c6f770000000000604482015290519081900360640190fd5b600082116133555760405162461bcd60e51b8152600401808060200182810382526023815260200180613b506023913960400191505060405180910390fd5b6000838152600d60205260408120600181015490919061337590856132bc565b90506007548111156133b85760405162461bcd60e51b8152600401808060200182810382526044815260200180613bc86044913960600191505060405180910390fd5b8261347e57600254604080516323b872dd60e01b81523360048201523060248201526044810187905290516001600160a01b03909216916323b872dd916064808201926020929091908290030181600087803b15801561341757600080fd5b505af115801561342b573d6000803e3d6000fd5b505050506040513d602081101561344157600080fd5b505161347e5760405162461bcd60e51b8152600401808060200182810382526025815260200180613a536025913960400191505060405180910390fd5b6001820181905560055461349290856132bc565b60055560408051828152905186917fc5f0715c45dab2e8f14871936119e3c64fd5841d397130c2d1db743d142522cb919081900360200190a25050505050565b436146500190565b4690565b60008151604114613536576040805162461bcd60e51b815260206004820152601f60248201527f45434453413a20696e76616c6964207369676e6174757265206c656e67746800604482015290519081900360640190fd5b60208201516040830151606084015160001a7f7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46681b20a08211156135a75760405162461bcd60e51b81526004018080602001828103825260228152602001806139316022913960400191505060405180910390fd5b8060ff16601b141580156135bf57508060ff16601c14155b156135fb5760405162461bcd60e51b8152600401808060200182810382526022815260200180613a316022913960400191505060405180910390fd5b600060018783868660405160008152602001604052604051808581526020018460ff1681526020018381526020018281526020019450505050506020604051602081039080840390855afa158015613657573d6000803e3d6000fd5b5050604051601f1901519150506001600160a01b0381166136bf576040805162461bcd60e51b815260206004820152601860248201527f45434453413a20696e76616c6964207369676e61747572650000000000000000604482015290519081900360640190fd5b9695505050505050565b60008183116136d85781613211565b5090919050565b43621b77400190565b60008183106136d85781613211565b600081836137835760405162461bcd60e51b81526004018080602001828103825283818151815260200191508051906020019080838360005b83811015613748578181015183820152602001613730565b50505050905090810190601f1680156137755780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b50600083858161378f57fe5b0495945050505050565b600081848411156137eb5760405162461bcd60e51b8152602060048201818152835160248401528351909283926044909101919085019080838360008315613748578181015183820152602001613730565b505050900390565b60408051808201909152600080825260208201529056fe4865726d65733a206665652063616e2774206265206269676765722074686174203530254865726d65733a20616d6f756e742073686f756c6420626520626967676572207468616e207472616e736163746f72206665654f776e61626c653a206e6577206f776e657220697320746865207a65726f20616464726573734865726d65733a206861766520746f2062652070726f7065726c79207369676e6564207061796d656e742070726f6d6973656e617469766520746f6b656e2066756e64732063616e2774206265207265636f76657265644865726d65733a206861766520746f206265206e6f7420696e697469616c697a65644865726d65733a20746f6b656e2063616e2774206265206465706c6f796420696e746f207a65726f206164647265737345434453413a20696e76616c6964207369676e6174757265202773272076616c75654865726d65733a206d696e5374616b652068617320746f20626520736d616c6c6572207468616e206d61785374616b654865726d65733a206865726d6573206861766520746f20626520696e206163746976652073746174654865726d65733a206d61785374616b652068617320746f20626520626967676572207468616e206d696e5374616b6574696d656c6f636b20706572696f64206861766520626520616c7265616479207061737365644865726d65733a206d61785374616b65206861766520746f20626520626967676572207468616e206d696e5374616b6545434453413a20696e76616c6964207369676e6174757265202776272076616c75654865726d65733a20746f6b656e207472616e736665722073686f756c6420737563636565644865726d65733a206964656e74697479206861766520746f20626520726567697374657265642c2062656e6566696369617279206861766520746f206265207365744865726d65733a2063616e27742075706461746520696e616374697665206665654865726d65733a206861766520746f20626520696e206163746976652073746174654865726d65733a2063616e2774207769746864726177206d6f7265207468616e207468652063757272656e74207374616b65536166654d6174683a206d756c7469706c69636174696f6e206f766572666c6f774865726d65733a2073686f756c64207374616b65206d6f7265207468616e207a65726f6865726d6573206861766520746f20626520696e207061757365642073746174654865726d65733a2073686f756c6420626520656e6f7567682066756e647320617661696c61626c6520746f2077697468647261774865726d65733a20746f74616c20616d6f756e7420746f207374616b652063616e277420626520626967676572207468616e206d6178696d616c6c7920616c6c6f7765644865726d65733a20616d6f756e7420746f20736574746c652073686f756c6420636f766572207472616e736163746f72206665654865726d65733a2073686f756c6420626520696e2070756e6973686d656e74207374617475734865726d65733a206f6e6c792072656769737472792063616e206f70656e206368616e6e656c734865726d65733a206665652063616e277420626520626967676572207468616e203530254865726d65733a206f6e6c79206865726d6573206f70657261746f722063616e2063616c6c20746869732066756e6374696f6e4865726d65733a206861766520746f206265207369676e6564206279206368616e6e656c207061727479a264697066735822122091316a3b137a7ad5828b0439a23cb9d6acaaa00fa8325c1e71912be89882c70d64736f6c63430007040033"
 
 // DeployHermesImplementation deploys a new Ethereum contract, binding an instance of HermesImplementation to it.
 func DeployHermesImplementation(auth *bind.TransactOpts, backend bind.ContractBackend) (common.Address, *types.Transaction, *HermesImplementation, error) {
@@ -258,22 +258,16 @@ func (_HermesImplementation *HermesImplementationCallerSession) CalculateHermesF
 
 // Channels is a free data retrieval call binding the contract method 0x7a7ebd7b.
 //
-// Solidity: function channels(bytes32 ) view returns(address beneficiary, uint256 balance, uint256 settled, uint256 stake, uint256 stakeGoal, uint256 lastUsedNonce, uint256 timelock)
+// Solidity: function channels(bytes32 ) view returns(uint256 settled, uint256 stake, uint256 lastUsedNonce, uint256 timelock)
 func (_HermesImplementation *HermesImplementationCaller) Channels(opts *bind.CallOpts, arg0 [32]byte) (struct {
-	Beneficiary   common.Address
-	Balance       *big.Int
 	Settled       *big.Int
 	Stake         *big.Int
-	StakeGoal     *big.Int
 	LastUsedNonce *big.Int
 	Timelock      *big.Int
 }, error) {
 	ret := new(struct {
-		Beneficiary   common.Address
-		Balance       *big.Int
 		Settled       *big.Int
 		Stake         *big.Int
-		StakeGoal     *big.Int
 		LastUsedNonce *big.Int
 		Timelock      *big.Int
 	})
@@ -284,13 +278,10 @@ func (_HermesImplementation *HermesImplementationCaller) Channels(opts *bind.Cal
 
 // Channels is a free data retrieval call binding the contract method 0x7a7ebd7b.
 //
-// Solidity: function channels(bytes32 ) view returns(address beneficiary, uint256 balance, uint256 settled, uint256 stake, uint256 stakeGoal, uint256 lastUsedNonce, uint256 timelock)
+// Solidity: function channels(bytes32 ) view returns(uint256 settled, uint256 stake, uint256 lastUsedNonce, uint256 timelock)
 func (_HermesImplementation *HermesImplementationSession) Channels(arg0 [32]byte) (struct {
-	Beneficiary   common.Address
-	Balance       *big.Int
 	Settled       *big.Int
 	Stake         *big.Int
-	StakeGoal     *big.Int
 	LastUsedNonce *big.Int
 	Timelock      *big.Int
 }, error) {
@@ -299,13 +290,10 @@ func (_HermesImplementation *HermesImplementationSession) Channels(arg0 [32]byte
 
 // Channels is a free data retrieval call binding the contract method 0x7a7ebd7b.
 //
-// Solidity: function channels(bytes32 ) view returns(address beneficiary, uint256 balance, uint256 settled, uint256 stake, uint256 stakeGoal, uint256 lastUsedNonce, uint256 timelock)
+// Solidity: function channels(bytes32 ) view returns(uint256 settled, uint256 stake, uint256 lastUsedNonce, uint256 timelock)
 func (_HermesImplementation *HermesImplementationCallerSession) Channels(arg0 [32]byte) (struct {
-	Beneficiary   common.Address
-	Balance       *big.Int
 	Settled       *big.Int
 	Stake         *big.Int
-	StakeGoal     *big.Int
 	LastUsedNonce *big.Int
 	Timelock      *big.Int
 }, error) {
@@ -788,6 +776,32 @@ func (_HermesImplementation *HermesImplementationCallerSession) Token() (common.
 	return _HermesImplementation.Contract.Token(&_HermesImplementation.CallOpts)
 }
 
+// ValidatePromise is a free data retrieval call binding the contract method 0x70603a7f.
+//
+// Solidity: function validatePromise(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _signature) view returns(bool)
+func (_HermesImplementation *HermesImplementationCaller) ValidatePromise(opts *bind.CallOpts, _channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _signature []byte) (bool, error) {
+	var (
+		ret0 = new(bool)
+	)
+	out := ret0
+	err := _HermesImplementation.contract.Call(opts, out, "validatePromise", _channelId, _amount, _transactorFee, _preimage, _signature)
+	return *ret0, err
+}
+
+// ValidatePromise is a free data retrieval call binding the contract method 0x70603a7f.
+//
+// Solidity: function validatePromise(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _signature) view returns(bool)
+func (_HermesImplementation *HermesImplementationSession) ValidatePromise(_channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _signature []byte) (bool, error) {
+	return _HermesImplementation.Contract.ValidatePromise(&_HermesImplementation.CallOpts, _channelId, _amount, _transactorFee, _preimage, _signature)
+}
+
+// ValidatePromise is a free data retrieval call binding the contract method 0x70603a7f.
+//
+// Solidity: function validatePromise(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _signature) view returns(bool)
+func (_HermesImplementation *HermesImplementationCallerSession) ValidatePromise(_channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _signature []byte) (bool, error) {
+	return _HermesImplementation.Contract.ValidatePromise(&_HermesImplementation.CallOpts, _channelId, _amount, _transactorFee, _preimage, _signature)
+}
+
 // ActivateChannelOpening is a paid mutator transaction binding the contract method 0xfbb46b98.
 //
 // Solidity: function activateChannelOpening() returns()
@@ -872,25 +886,25 @@ func (_HermesImplementation *HermesImplementationTransactorSession) CloseHermes(
 	return _HermesImplementation.Contract.CloseHermes(&_HermesImplementation.TransactOpts)
 }
 
-// DecreaseStake is a paid mutator transaction binding the contract method 0xc3bfa352.
+// DecreaseStake is a paid mutator transaction binding the contract method 0x7295973a.
 //
-// Solidity: function decreaseStake(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactor) DecreaseStake(opts *bind.TransactOpts, _channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "decreaseStake", _channelId, _amount, _transactorFee, _signature)
+// Solidity: function decreaseStake(address _identity, uint256 _amount, uint256 _transactorFee, bytes _signature) returns()
+func (_HermesImplementation *HermesImplementationTransactor) DecreaseStake(opts *bind.TransactOpts, _identity common.Address, _amount *big.Int, _transactorFee *big.Int, _signature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.contract.Transact(opts, "decreaseStake", _identity, _amount, _transactorFee, _signature)
 }
 
-// DecreaseStake is a paid mutator transaction binding the contract method 0xc3bfa352.
+// DecreaseStake is a paid mutator transaction binding the contract method 0x7295973a.
 //
-// Solidity: function decreaseStake(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationSession) DecreaseStake(_channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.DecreaseStake(&_HermesImplementation.TransactOpts, _channelId, _amount, _transactorFee, _signature)
+// Solidity: function decreaseStake(address _identity, uint256 _amount, uint256 _transactorFee, bytes _signature) returns()
+func (_HermesImplementation *HermesImplementationSession) DecreaseStake(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _signature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.Contract.DecreaseStake(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _signature)
 }
 
-// DecreaseStake is a paid mutator transaction binding the contract method 0xc3bfa352.
+// DecreaseStake is a paid mutator transaction binding the contract method 0x7295973a.
 //
-// Solidity: function decreaseStake(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactorSession) DecreaseStake(_channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.DecreaseStake(&_HermesImplementation.TransactOpts, _channelId, _amount, _transactorFee, _signature)
+// Solidity: function decreaseStake(address _identity, uint256 _amount, uint256 _transactorFee, bytes _signature) returns()
+func (_HermesImplementation *HermesImplementationTransactorSession) DecreaseStake(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _signature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.Contract.DecreaseStake(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _signature)
 }
 
 // GetStakeBack is a paid mutator transaction binding the contract method 0x6138dda7.
@@ -977,25 +991,25 @@ func (_HermesImplementation *HermesImplementationTransactorSession) Initialize(_
 	return _HermesImplementation.Contract.Initialize(&_HermesImplementation.TransactOpts, _token, _operator, _fee, _minStake, _maxStake, _dexAddress)
 }
 
-// OpenChannel is a paid mutator transaction binding the contract method 0x0a798f24.
+// OpenChannel is a paid mutator transaction binding the contract method 0x24f453d1.
 //
-// Solidity: function openChannel(address _identity, address _beneficiary, uint256 _amountToLend) returns()
-func (_HermesImplementation *HermesImplementationTransactor) OpenChannel(opts *bind.TransactOpts, _identity common.Address, _beneficiary common.Address, _amountToLend *big.Int) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "openChannel", _identity, _beneficiary, _amountToLend)
+// Solidity: function openChannel(address _identity, uint256 _amountToStake) returns()
+func (_HermesImplementation *HermesImplementationTransactor) OpenChannel(opts *bind.TransactOpts, _identity common.Address, _amountToStake *big.Int) (*types.Transaction, error) {
+	return _HermesImplementation.contract.Transact(opts, "openChannel", _identity, _amountToStake)
 }
 
-// OpenChannel is a paid mutator transaction binding the contract method 0x0a798f24.
+// OpenChannel is a paid mutator transaction binding the contract method 0x24f453d1.
 //
-// Solidity: function openChannel(address _identity, address _beneficiary, uint256 _amountToLend) returns()
-func (_HermesImplementation *HermesImplementationSession) OpenChannel(_identity common.Address, _beneficiary common.Address, _amountToLend *big.Int) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.OpenChannel(&_HermesImplementation.TransactOpts, _identity, _beneficiary, _amountToLend)
+// Solidity: function openChannel(address _identity, uint256 _amountToStake) returns()
+func (_HermesImplementation *HermesImplementationSession) OpenChannel(_identity common.Address, _amountToStake *big.Int) (*types.Transaction, error) {
+	return _HermesImplementation.Contract.OpenChannel(&_HermesImplementation.TransactOpts, _identity, _amountToStake)
 }
 
-// OpenChannel is a paid mutator transaction binding the contract method 0x0a798f24.
+// OpenChannel is a paid mutator transaction binding the contract method 0x24f453d1.
 //
-// Solidity: function openChannel(address _identity, address _beneficiary, uint256 _amountToLend) returns()
-func (_HermesImplementation *HermesImplementationTransactorSession) OpenChannel(_identity common.Address, _beneficiary common.Address, _amountToLend *big.Int) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.OpenChannel(&_HermesImplementation.TransactOpts, _identity, _beneficiary, _amountToLend)
+// Solidity: function openChannel(address _identity, uint256 _amountToStake) returns()
+func (_HermesImplementation *HermesImplementationTransactorSession) OpenChannel(_identity common.Address, _amountToStake *big.Int) (*types.Transaction, error) {
+	return _HermesImplementation.Contract.OpenChannel(&_HermesImplementation.TransactOpts, _identity, _amountToStake)
 }
 
 // PauseChannelOpening is a paid mutator transaction binding the contract method 0xaa606dee.
@@ -1019,27 +1033,6 @@ func (_HermesImplementation *HermesImplementationTransactorSession) PauseChannel
 	return _HermesImplementation.Contract.PauseChannelOpening(&_HermesImplementation.TransactOpts)
 }
 
-// RebalanceChannel is a paid mutator transaction binding the contract method 0xefde05ec.
-//
-// Solidity: function rebalanceChannel(bytes32 _channelId) returns()
-func (_HermesImplementation *HermesImplementationTransactor) RebalanceChannel(opts *bind.TransactOpts, _channelId [32]byte) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "rebalanceChannel", _channelId)
-}
-
-// RebalanceChannel is a paid mutator transaction binding the contract method 0xefde05ec.
-//
-// Solidity: function rebalanceChannel(bytes32 _channelId) returns()
-func (_HermesImplementation *HermesImplementationSession) RebalanceChannel(_channelId [32]byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.RebalanceChannel(&_HermesImplementation.TransactOpts, _channelId)
-}
-
-// RebalanceChannel is a paid mutator transaction binding the contract method 0xefde05ec.
-//
-// Solidity: function rebalanceChannel(bytes32 _channelId) returns()
-func (_HermesImplementation *HermesImplementationTransactorSession) RebalanceChannel(_channelId [32]byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.RebalanceChannel(&_HermesImplementation.TransactOpts, _channelId)
-}
-
 // ResolveEmergency is a paid mutator transaction binding the contract method 0x15c73afd.
 //
 // Solidity: function resolveEmergency() returns()
@@ -1059,27 +1052,6 @@ func (_HermesImplementation *HermesImplementationSession) ResolveEmergency() (*t
 // Solidity: function resolveEmergency() returns()
 func (_HermesImplementation *HermesImplementationTransactorSession) ResolveEmergency() (*types.Transaction, error) {
 	return _HermesImplementation.Contract.ResolveEmergency(&_HermesImplementation.TransactOpts)
-}
-
-// SetBeneficiary is a paid mutator transaction binding the contract method 0x48528ff8.
-//
-// Solidity: function setBeneficiary(bytes32 _channelId, address _newBeneficiary, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactor) SetBeneficiary(opts *bind.TransactOpts, _channelId [32]byte, _newBeneficiary common.Address, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "setBeneficiary", _channelId, _newBeneficiary, _signature)
-}
-
-// SetBeneficiary is a paid mutator transaction binding the contract method 0x48528ff8.
-//
-// Solidity: function setBeneficiary(bytes32 _channelId, address _newBeneficiary, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationSession) SetBeneficiary(_channelId [32]byte, _newBeneficiary common.Address, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SetBeneficiary(&_HermesImplementation.TransactOpts, _channelId, _newBeneficiary, _signature)
-}
-
-// SetBeneficiary is a paid mutator transaction binding the contract method 0x48528ff8.
-//
-// Solidity: function setBeneficiary(bytes32 _channelId, address _newBeneficiary, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactorSession) SetBeneficiary(_channelId [32]byte, _newBeneficiary common.Address, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SetBeneficiary(&_HermesImplementation.TransactOpts, _channelId, _newBeneficiary, _signature)
 }
 
 // SetFundsDestination is a paid mutator transaction binding the contract method 0x238e130a.
@@ -1124,27 +1096,6 @@ func (_HermesImplementation *HermesImplementationTransactorSession) SetHermesFee
 	return _HermesImplementation.Contract.SetHermesFee(&_HermesImplementation.TransactOpts, _newFee)
 }
 
-// SetHermesOperator is a paid mutator transaction binding the contract method 0x2055536a.
-//
-// Solidity: function setHermesOperator(address _newOperator) returns()
-func (_HermesImplementation *HermesImplementationTransactor) SetHermesOperator(opts *bind.TransactOpts, _newOperator common.Address) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "setHermesOperator", _newOperator)
-}
-
-// SetHermesOperator is a paid mutator transaction binding the contract method 0x2055536a.
-//
-// Solidity: function setHermesOperator(address _newOperator) returns()
-func (_HermesImplementation *HermesImplementationSession) SetHermesOperator(_newOperator common.Address) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SetHermesOperator(&_HermesImplementation.TransactOpts, _newOperator)
-}
-
-// SetHermesOperator is a paid mutator transaction binding the contract method 0x2055536a.
-//
-// Solidity: function setHermesOperator(address _newOperator) returns()
-func (_HermesImplementation *HermesImplementationTransactorSession) SetHermesOperator(_newOperator common.Address) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SetHermesOperator(&_HermesImplementation.TransactOpts, _newOperator)
-}
-
 // SetMaxStake is a paid mutator transaction binding the contract method 0x6fc14837.
 //
 // Solidity: function setMaxStake(uint256 _newMaxStake) returns()
@@ -1187,130 +1138,88 @@ func (_HermesImplementation *HermesImplementationTransactorSession) SetMinStake(
 	return _HermesImplementation.Contract.SetMinStake(&_HermesImplementation.TransactOpts, _newMinStake)
 }
 
-// SettleAndRebalance is a paid mutator transaction binding the contract method 0xb07d9483.
+// SettleIntoStake is a paid mutator transaction binding the contract method 0x71d2ff1b.
 //
-// Solidity: function settleAndRebalance(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactor) SettleAndRebalance(opts *bind.TransactOpts, _identity common.Address, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "settleAndRebalance", _identity, _amount, _transactorFee, _lock, _signature)
+// Solidity: function settleIntoStake(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _signature) returns()
+func (_HermesImplementation *HermesImplementationTransactor) SettleIntoStake(opts *bind.TransactOpts, _identity common.Address, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _signature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.contract.Transact(opts, "settleIntoStake", _identity, _amount, _transactorFee, _preimage, _signature)
 }
 
-// SettleAndRebalance is a paid mutator transaction binding the contract method 0xb07d9483.
+// SettleIntoStake is a paid mutator transaction binding the contract method 0x71d2ff1b.
 //
-// Solidity: function settleAndRebalance(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationSession) SettleAndRebalance(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SettleAndRebalance(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _lock, _signature)
+// Solidity: function settleIntoStake(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _signature) returns()
+func (_HermesImplementation *HermesImplementationSession) SettleIntoStake(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _signature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.Contract.SettleIntoStake(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _preimage, _signature)
 }
 
-// SettleAndRebalance is a paid mutator transaction binding the contract method 0xb07d9483.
+// SettleIntoStake is a paid mutator transaction binding the contract method 0x71d2ff1b.
 //
-// Solidity: function settleAndRebalance(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactorSession) SettleAndRebalance(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SettleAndRebalance(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _lock, _signature)
-}
-
-// SettleIntoStake is a paid mutator transaction binding the contract method 0xc062fe06.
-//
-// Solidity: function settleIntoStake(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactor) SettleIntoStake(opts *bind.TransactOpts, _channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "settleIntoStake", _channelId, _amount, _transactorFee, _lock, _signature)
-}
-
-// SettleIntoStake is a paid mutator transaction binding the contract method 0xc062fe06.
-//
-// Solidity: function settleIntoStake(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationSession) SettleIntoStake(_channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SettleIntoStake(&_HermesImplementation.TransactOpts, _channelId, _amount, _transactorFee, _lock, _signature)
-}
-
-// SettleIntoStake is a paid mutator transaction binding the contract method 0xc062fe06.
-//
-// Solidity: function settleIntoStake(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactorSession) SettleIntoStake(_channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SettleIntoStake(&_HermesImplementation.TransactOpts, _channelId, _amount, _transactorFee, _lock, _signature)
+// Solidity: function settleIntoStake(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _signature) returns()
+func (_HermesImplementation *HermesImplementationTransactorSession) SettleIntoStake(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _signature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.Contract.SettleIntoStake(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _preimage, _signature)
 }
 
 // SettlePromise is a paid mutator transaction binding the contract method 0x48d9f01e.
 //
-// Solidity: function settlePromise(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactor) SettlePromise(opts *bind.TransactOpts, _identity common.Address, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "settlePromise", _identity, _amount, _transactorFee, _lock, _signature)
+// Solidity: function settlePromise(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _signature) returns()
+func (_HermesImplementation *HermesImplementationTransactor) SettlePromise(opts *bind.TransactOpts, _identity common.Address, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _signature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.contract.Transact(opts, "settlePromise", _identity, _amount, _transactorFee, _preimage, _signature)
 }
 
 // SettlePromise is a paid mutator transaction binding the contract method 0x48d9f01e.
 //
-// Solidity: function settlePromise(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationSession) SettlePromise(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SettlePromise(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _lock, _signature)
+// Solidity: function settlePromise(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _signature) returns()
+func (_HermesImplementation *HermesImplementationSession) SettlePromise(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _signature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.Contract.SettlePromise(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _preimage, _signature)
 }
 
 // SettlePromise is a paid mutator transaction binding the contract method 0x48d9f01e.
 //
-// Solidity: function settlePromise(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactorSession) SettlePromise(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SettlePromise(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _lock, _signature)
+// Solidity: function settlePromise(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _signature) returns()
+func (_HermesImplementation *HermesImplementationTransactorSession) SettlePromise(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _signature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.Contract.SettlePromise(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _preimage, _signature)
 }
 
 // SettleWithBeneficiary is a paid mutator transaction binding the contract method 0x53d2a0ff.
 //
-// Solidity: function settleWithBeneficiary(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _promiseSignature, address _newBeneficiary, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactor) SettleWithBeneficiary(opts *bind.TransactOpts, _identity common.Address, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _promiseSignature []byte, _newBeneficiary common.Address, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "settleWithBeneficiary", _identity, _amount, _transactorFee, _lock, _promiseSignature, _newBeneficiary, _signature)
+// Solidity: function settleWithBeneficiary(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _promiseSignature, address _newBeneficiary, bytes _beneficiarySignature) returns()
+func (_HermesImplementation *HermesImplementationTransactor) SettleWithBeneficiary(opts *bind.TransactOpts, _identity common.Address, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _promiseSignature []byte, _newBeneficiary common.Address, _beneficiarySignature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.contract.Transact(opts, "settleWithBeneficiary", _identity, _amount, _transactorFee, _preimage, _promiseSignature, _newBeneficiary, _beneficiarySignature)
 }
 
 // SettleWithBeneficiary is a paid mutator transaction binding the contract method 0x53d2a0ff.
 //
-// Solidity: function settleWithBeneficiary(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _promiseSignature, address _newBeneficiary, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationSession) SettleWithBeneficiary(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _promiseSignature []byte, _newBeneficiary common.Address, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SettleWithBeneficiary(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _lock, _promiseSignature, _newBeneficiary, _signature)
+// Solidity: function settleWithBeneficiary(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _promiseSignature, address _newBeneficiary, bytes _beneficiarySignature) returns()
+func (_HermesImplementation *HermesImplementationSession) SettleWithBeneficiary(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _promiseSignature []byte, _newBeneficiary common.Address, _beneficiarySignature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.Contract.SettleWithBeneficiary(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _preimage, _promiseSignature, _newBeneficiary, _beneficiarySignature)
 }
 
 // SettleWithBeneficiary is a paid mutator transaction binding the contract method 0x53d2a0ff.
 //
-// Solidity: function settleWithBeneficiary(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _promiseSignature, address _newBeneficiary, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactorSession) SettleWithBeneficiary(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _promiseSignature []byte, _newBeneficiary common.Address, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SettleWithBeneficiary(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _lock, _promiseSignature, _newBeneficiary, _signature)
+// Solidity: function settleWithBeneficiary(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _promiseSignature, address _newBeneficiary, bytes _beneficiarySignature) returns()
+func (_HermesImplementation *HermesImplementationTransactorSession) SettleWithBeneficiary(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _promiseSignature []byte, _newBeneficiary common.Address, _beneficiarySignature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.Contract.SettleWithBeneficiary(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _preimage, _promiseSignature, _newBeneficiary, _beneficiarySignature)
 }
 
-// SettleWithDEX is a paid mutator transaction binding the contract method 0x9fa73b0f.
+// SettleWithDEX is a paid mutator transaction binding the contract method 0x02062d12.
 //
-// Solidity: function settleWithDEX(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactor) SettleWithDEX(opts *bind.TransactOpts, _channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "settleWithDEX", _channelId, _amount, _transactorFee, _lock, _signature)
+// Solidity: function settleWithDEX(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _signature) returns()
+func (_HermesImplementation *HermesImplementationTransactor) SettleWithDEX(opts *bind.TransactOpts, _identity common.Address, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _signature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.contract.Transact(opts, "settleWithDEX", _identity, _amount, _transactorFee, _preimage, _signature)
 }
 
-// SettleWithDEX is a paid mutator transaction binding the contract method 0x9fa73b0f.
+// SettleWithDEX is a paid mutator transaction binding the contract method 0x02062d12.
 //
-// Solidity: function settleWithDEX(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationSession) SettleWithDEX(_channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SettleWithDEX(&_HermesImplementation.TransactOpts, _channelId, _amount, _transactorFee, _lock, _signature)
+// Solidity: function settleWithDEX(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _signature) returns()
+func (_HermesImplementation *HermesImplementationSession) SettleWithDEX(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _signature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.Contract.SettleWithDEX(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _preimage, _signature)
 }
 
-// SettleWithDEX is a paid mutator transaction binding the contract method 0x9fa73b0f.
+// SettleWithDEX is a paid mutator transaction binding the contract method 0x02062d12.
 //
-// Solidity: function settleWithDEX(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactorSession) SettleWithDEX(_channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SettleWithDEX(&_HermesImplementation.TransactOpts, _channelId, _amount, _transactorFee, _lock, _signature)
-}
-
-// SettleWithGoalIncrease is a paid mutator transaction binding the contract method 0xa795c8e7.
-//
-// Solidity: function settleWithGoalIncrease(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _promiseSignature, uint256 _newStakeGoal, bytes _goalChangeSignature) returns()
-func (_HermesImplementation *HermesImplementationTransactor) SettleWithGoalIncrease(opts *bind.TransactOpts, _channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _promiseSignature []byte, _newStakeGoal *big.Int, _goalChangeSignature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "settleWithGoalIncrease", _channelId, _amount, _transactorFee, _lock, _promiseSignature, _newStakeGoal, _goalChangeSignature)
-}
-
-// SettleWithGoalIncrease is a paid mutator transaction binding the contract method 0xa795c8e7.
-//
-// Solidity: function settleWithGoalIncrease(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _promiseSignature, uint256 _newStakeGoal, bytes _goalChangeSignature) returns()
-func (_HermesImplementation *HermesImplementationSession) SettleWithGoalIncrease(_channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _promiseSignature []byte, _newStakeGoal *big.Int, _goalChangeSignature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SettleWithGoalIncrease(&_HermesImplementation.TransactOpts, _channelId, _amount, _transactorFee, _lock, _promiseSignature, _newStakeGoal, _goalChangeSignature)
-}
-
-// SettleWithGoalIncrease is a paid mutator transaction binding the contract method 0xa795c8e7.
-//
-// Solidity: function settleWithGoalIncrease(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _lock, bytes _promiseSignature, uint256 _newStakeGoal, bytes _goalChangeSignature) returns()
-func (_HermesImplementation *HermesImplementationTransactorSession) SettleWithGoalIncrease(_channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _lock [32]byte, _promiseSignature []byte, _newStakeGoal *big.Int, _goalChangeSignature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.SettleWithGoalIncrease(&_HermesImplementation.TransactOpts, _channelId, _amount, _transactorFee, _lock, _promiseSignature, _newStakeGoal, _goalChangeSignature)
+// Solidity: function settleWithDEX(address _identity, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _signature) returns()
+func (_HermesImplementation *HermesImplementationTransactorSession) SettleWithDEX(_identity common.Address, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _signature []byte) (*types.Transaction, error) {
+	return _HermesImplementation.Contract.SettleWithDEX(&_HermesImplementation.TransactOpts, _identity, _amount, _transactorFee, _preimage, _signature)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
@@ -1334,48 +1243,6 @@ func (_HermesImplementation *HermesImplementationTransactorSession) TransferOwne
 	return _HermesImplementation.Contract.TransferOwnership(&_HermesImplementation.TransactOpts, newOwner)
 }
 
-// UpdateChannelBalance is a paid mutator transaction binding the contract method 0x7c2be0a3.
-//
-// Solidity: function updateChannelBalance(bytes32 _channelId, uint256 _newBalance) returns()
-func (_HermesImplementation *HermesImplementationTransactor) UpdateChannelBalance(opts *bind.TransactOpts, _channelId [32]byte, _newBalance *big.Int) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "updateChannelBalance", _channelId, _newBalance)
-}
-
-// UpdateChannelBalance is a paid mutator transaction binding the contract method 0x7c2be0a3.
-//
-// Solidity: function updateChannelBalance(bytes32 _channelId, uint256 _newBalance) returns()
-func (_HermesImplementation *HermesImplementationSession) UpdateChannelBalance(_channelId [32]byte, _newBalance *big.Int) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.UpdateChannelBalance(&_HermesImplementation.TransactOpts, _channelId, _newBalance)
-}
-
-// UpdateChannelBalance is a paid mutator transaction binding the contract method 0x7c2be0a3.
-//
-// Solidity: function updateChannelBalance(bytes32 _channelId, uint256 _newBalance) returns()
-func (_HermesImplementation *HermesImplementationTransactorSession) UpdateChannelBalance(_channelId [32]byte, _newBalance *big.Int) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.UpdateChannelBalance(&_HermesImplementation.TransactOpts, _channelId, _newBalance)
-}
-
-// UpdateStakeGoal is a paid mutator transaction binding the contract method 0xfdba0a0d.
-//
-// Solidity: function updateStakeGoal(bytes32 _channelId, uint256 _newStakeGoal, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactor) UpdateStakeGoal(opts *bind.TransactOpts, _channelId [32]byte, _newStakeGoal *big.Int, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.contract.Transact(opts, "updateStakeGoal", _channelId, _newStakeGoal, _signature)
-}
-
-// UpdateStakeGoal is a paid mutator transaction binding the contract method 0xfdba0a0d.
-//
-// Solidity: function updateStakeGoal(bytes32 _channelId, uint256 _newStakeGoal, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationSession) UpdateStakeGoal(_channelId [32]byte, _newStakeGoal *big.Int, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.UpdateStakeGoal(&_HermesImplementation.TransactOpts, _channelId, _newStakeGoal, _signature)
-}
-
-// UpdateStakeGoal is a paid mutator transaction binding the contract method 0xfdba0a0d.
-//
-// Solidity: function updateStakeGoal(bytes32 _channelId, uint256 _newStakeGoal, bytes _signature) returns()
-func (_HermesImplementation *HermesImplementationTransactorSession) UpdateStakeGoal(_channelId [32]byte, _newStakeGoal *big.Int, _signature []byte) (*types.Transaction, error) {
-	return _HermesImplementation.Contract.UpdateStakeGoal(&_HermesImplementation.TransactOpts, _channelId, _newStakeGoal, _signature)
-}
-
 // Withdraw is a paid mutator transaction binding the contract method 0xf3fef3a3.
 //
 // Solidity: function withdraw(address _beneficiary, uint256 _amount) returns()
@@ -1395,561 +1262,6 @@ func (_HermesImplementation *HermesImplementationSession) Withdraw(_beneficiary 
 // Solidity: function withdraw(address _beneficiary, uint256 _amount) returns()
 func (_HermesImplementation *HermesImplementationTransactorSession) Withdraw(_beneficiary common.Address, _amount *big.Int) (*types.Transaction, error) {
 	return _HermesImplementation.Contract.Withdraw(&_HermesImplementation.TransactOpts, _beneficiary, _amount)
-}
-
-// HermesImplementationChannelBalanceDecreaseRequestedIterator is returned from FilterChannelBalanceDecreaseRequested and is used to iterate over the raw logs and unpacked data for ChannelBalanceDecreaseRequested events raised by the HermesImplementation contract.
-type HermesImplementationChannelBalanceDecreaseRequestedIterator struct {
-	Event *HermesImplementationChannelBalanceDecreaseRequested // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *HermesImplementationChannelBalanceDecreaseRequestedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(HermesImplementationChannelBalanceDecreaseRequested)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(HermesImplementationChannelBalanceDecreaseRequested)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *HermesImplementationChannelBalanceDecreaseRequestedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *HermesImplementationChannelBalanceDecreaseRequestedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// HermesImplementationChannelBalanceDecreaseRequested represents a ChannelBalanceDecreaseRequested event raised by the HermesImplementation contract.
-type HermesImplementationChannelBalanceDecreaseRequested struct {
-	ChannelId [32]byte
-	Raw       types.Log // Blockchain specific contextual infos
-}
-
-// FilterChannelBalanceDecreaseRequested is a free log retrieval operation binding the contract event 0xaf4c616dc7856b81dbc1346e5547f0a1d4f1553011653f920d1041f215401075.
-//
-// Solidity: event ChannelBalanceDecreaseRequested(bytes32 indexed channelId)
-func (_HermesImplementation *HermesImplementationFilterer) FilterChannelBalanceDecreaseRequested(opts *bind.FilterOpts, channelId [][32]byte) (*HermesImplementationChannelBalanceDecreaseRequestedIterator, error) {
-
-	var channelIdRule []interface{}
-	for _, channelIdItem := range channelId {
-		channelIdRule = append(channelIdRule, channelIdItem)
-	}
-
-	logs, sub, err := _HermesImplementation.contract.FilterLogs(opts, "ChannelBalanceDecreaseRequested", channelIdRule)
-	if err != nil {
-		return nil, err
-	}
-	return &HermesImplementationChannelBalanceDecreaseRequestedIterator{contract: _HermesImplementation.contract, event: "ChannelBalanceDecreaseRequested", logs: logs, sub: sub}, nil
-}
-
-// WatchChannelBalanceDecreaseRequested is a free log subscription operation binding the contract event 0xaf4c616dc7856b81dbc1346e5547f0a1d4f1553011653f920d1041f215401075.
-//
-// Solidity: event ChannelBalanceDecreaseRequested(bytes32 indexed channelId)
-func (_HermesImplementation *HermesImplementationFilterer) WatchChannelBalanceDecreaseRequested(opts *bind.WatchOpts, sink chan<- *HermesImplementationChannelBalanceDecreaseRequested, channelId [][32]byte) (event.Subscription, error) {
-
-	var channelIdRule []interface{}
-	for _, channelIdItem := range channelId {
-		channelIdRule = append(channelIdRule, channelIdItem)
-	}
-
-	logs, sub, err := _HermesImplementation.contract.WatchLogs(opts, "ChannelBalanceDecreaseRequested", channelIdRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(HermesImplementationChannelBalanceDecreaseRequested)
-				if err := _HermesImplementation.contract.UnpackLog(event, "ChannelBalanceDecreaseRequested", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseChannelBalanceDecreaseRequested is a log parse operation binding the contract event 0xaf4c616dc7856b81dbc1346e5547f0a1d4f1553011653f920d1041f215401075.
-//
-// Solidity: event ChannelBalanceDecreaseRequested(bytes32 indexed channelId)
-func (_HermesImplementation *HermesImplementationFilterer) ParseChannelBalanceDecreaseRequested(log types.Log) (*HermesImplementationChannelBalanceDecreaseRequested, error) {
-	event := new(HermesImplementationChannelBalanceDecreaseRequested)
-	if err := _HermesImplementation.contract.UnpackLog(event, "ChannelBalanceDecreaseRequested", log); err != nil {
-		return nil, err
-	}
-	return event, nil
-}
-
-// HermesImplementationChannelBalanceUpdatedIterator is returned from FilterChannelBalanceUpdated and is used to iterate over the raw logs and unpacked data for ChannelBalanceUpdated events raised by the HermesImplementation contract.
-type HermesImplementationChannelBalanceUpdatedIterator struct {
-	Event *HermesImplementationChannelBalanceUpdated // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *HermesImplementationChannelBalanceUpdatedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(HermesImplementationChannelBalanceUpdated)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(HermesImplementationChannelBalanceUpdated)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *HermesImplementationChannelBalanceUpdatedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *HermesImplementationChannelBalanceUpdatedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// HermesImplementationChannelBalanceUpdated represents a ChannelBalanceUpdated event raised by the HermesImplementation contract.
-type HermesImplementationChannelBalanceUpdated struct {
-	ChannelId  [32]byte
-	NewBalance *big.Int
-	Raw        types.Log // Blockchain specific contextual infos
-}
-
-// FilterChannelBalanceUpdated is a free log retrieval operation binding the contract event 0x2eb87c52e5d2d7395da77618aa1afe310b9cf13fa9f70e3199d100adda3a7aa5.
-//
-// Solidity: event ChannelBalanceUpdated(bytes32 indexed channelId, uint256 newBalance)
-func (_HermesImplementation *HermesImplementationFilterer) FilterChannelBalanceUpdated(opts *bind.FilterOpts, channelId [][32]byte) (*HermesImplementationChannelBalanceUpdatedIterator, error) {
-
-	var channelIdRule []interface{}
-	for _, channelIdItem := range channelId {
-		channelIdRule = append(channelIdRule, channelIdItem)
-	}
-
-	logs, sub, err := _HermesImplementation.contract.FilterLogs(opts, "ChannelBalanceUpdated", channelIdRule)
-	if err != nil {
-		return nil, err
-	}
-	return &HermesImplementationChannelBalanceUpdatedIterator{contract: _HermesImplementation.contract, event: "ChannelBalanceUpdated", logs: logs, sub: sub}, nil
-}
-
-// WatchChannelBalanceUpdated is a free log subscription operation binding the contract event 0x2eb87c52e5d2d7395da77618aa1afe310b9cf13fa9f70e3199d100adda3a7aa5.
-//
-// Solidity: event ChannelBalanceUpdated(bytes32 indexed channelId, uint256 newBalance)
-func (_HermesImplementation *HermesImplementationFilterer) WatchChannelBalanceUpdated(opts *bind.WatchOpts, sink chan<- *HermesImplementationChannelBalanceUpdated, channelId [][32]byte) (event.Subscription, error) {
-
-	var channelIdRule []interface{}
-	for _, channelIdItem := range channelId {
-		channelIdRule = append(channelIdRule, channelIdItem)
-	}
-
-	logs, sub, err := _HermesImplementation.contract.WatchLogs(opts, "ChannelBalanceUpdated", channelIdRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(HermesImplementationChannelBalanceUpdated)
-				if err := _HermesImplementation.contract.UnpackLog(event, "ChannelBalanceUpdated", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseChannelBalanceUpdated is a log parse operation binding the contract event 0x2eb87c52e5d2d7395da77618aa1afe310b9cf13fa9f70e3199d100adda3a7aa5.
-//
-// Solidity: event ChannelBalanceUpdated(bytes32 indexed channelId, uint256 newBalance)
-func (_HermesImplementation *HermesImplementationFilterer) ParseChannelBalanceUpdated(log types.Log) (*HermesImplementationChannelBalanceUpdated, error) {
-	event := new(HermesImplementationChannelBalanceUpdated)
-	if err := _HermesImplementation.contract.UnpackLog(event, "ChannelBalanceUpdated", log); err != nil {
-		return nil, err
-	}
-	return event, nil
-}
-
-// HermesImplementationChannelBeneficiaryChangedIterator is returned from FilterChannelBeneficiaryChanged and is used to iterate over the raw logs and unpacked data for ChannelBeneficiaryChanged events raised by the HermesImplementation contract.
-type HermesImplementationChannelBeneficiaryChangedIterator struct {
-	Event *HermesImplementationChannelBeneficiaryChanged // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *HermesImplementationChannelBeneficiaryChangedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(HermesImplementationChannelBeneficiaryChanged)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(HermesImplementationChannelBeneficiaryChanged)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *HermesImplementationChannelBeneficiaryChangedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *HermesImplementationChannelBeneficiaryChangedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// HermesImplementationChannelBeneficiaryChanged represents a ChannelBeneficiaryChanged event raised by the HermesImplementation contract.
-type HermesImplementationChannelBeneficiaryChanged struct {
-	ChannelId      [32]byte
-	NewBeneficiary common.Address
-	Raw            types.Log // Blockchain specific contextual infos
-}
-
-// FilterChannelBeneficiaryChanged is a free log retrieval operation binding the contract event 0x8756aa559142225f918d7584303ecfe48e75b454f6614d0fae9f0d6ca0a898cc.
-//
-// Solidity: event ChannelBeneficiaryChanged(bytes32 channelId, address newBeneficiary)
-func (_HermesImplementation *HermesImplementationFilterer) FilterChannelBeneficiaryChanged(opts *bind.FilterOpts) (*HermesImplementationChannelBeneficiaryChangedIterator, error) {
-
-	logs, sub, err := _HermesImplementation.contract.FilterLogs(opts, "ChannelBeneficiaryChanged")
-	if err != nil {
-		return nil, err
-	}
-	return &HermesImplementationChannelBeneficiaryChangedIterator{contract: _HermesImplementation.contract, event: "ChannelBeneficiaryChanged", logs: logs, sub: sub}, nil
-}
-
-// WatchChannelBeneficiaryChanged is a free log subscription operation binding the contract event 0x8756aa559142225f918d7584303ecfe48e75b454f6614d0fae9f0d6ca0a898cc.
-//
-// Solidity: event ChannelBeneficiaryChanged(bytes32 channelId, address newBeneficiary)
-func (_HermesImplementation *HermesImplementationFilterer) WatchChannelBeneficiaryChanged(opts *bind.WatchOpts, sink chan<- *HermesImplementationChannelBeneficiaryChanged) (event.Subscription, error) {
-
-	logs, sub, err := _HermesImplementation.contract.WatchLogs(opts, "ChannelBeneficiaryChanged")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(HermesImplementationChannelBeneficiaryChanged)
-				if err := _HermesImplementation.contract.UnpackLog(event, "ChannelBeneficiaryChanged", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseChannelBeneficiaryChanged is a log parse operation binding the contract event 0x8756aa559142225f918d7584303ecfe48e75b454f6614d0fae9f0d6ca0a898cc.
-//
-// Solidity: event ChannelBeneficiaryChanged(bytes32 channelId, address newBeneficiary)
-func (_HermesImplementation *HermesImplementationFilterer) ParseChannelBeneficiaryChanged(log types.Log) (*HermesImplementationChannelBeneficiaryChanged, error) {
-	event := new(HermesImplementationChannelBeneficiaryChanged)
-	if err := _HermesImplementation.contract.UnpackLog(event, "ChannelBeneficiaryChanged", log); err != nil {
-		return nil, err
-	}
-	return event, nil
-}
-
-// HermesImplementationChannelOpenedIterator is returned from FilterChannelOpened and is used to iterate over the raw logs and unpacked data for ChannelOpened events raised by the HermesImplementation contract.
-type HermesImplementationChannelOpenedIterator struct {
-	Event *HermesImplementationChannelOpened // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *HermesImplementationChannelOpenedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(HermesImplementationChannelOpened)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(HermesImplementationChannelOpened)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *HermesImplementationChannelOpenedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *HermesImplementationChannelOpenedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// HermesImplementationChannelOpened represents a ChannelOpened event raised by the HermesImplementation contract.
-type HermesImplementationChannelOpened struct {
-	ChannelId      [32]byte
-	InitialBalance *big.Int
-	Raw            types.Log // Blockchain specific contextual infos
-}
-
-// FilterChannelOpened is a free log retrieval operation binding the contract event 0xbe2e1f3a6197dfd16fa6830c4870364b618b8b288c21cbcfa4fdb5d7c6a5e45b.
-//
-// Solidity: event ChannelOpened(bytes32 channelId, uint256 initialBalance)
-func (_HermesImplementation *HermesImplementationFilterer) FilterChannelOpened(opts *bind.FilterOpts) (*HermesImplementationChannelOpenedIterator, error) {
-
-	logs, sub, err := _HermesImplementation.contract.FilterLogs(opts, "ChannelOpened")
-	if err != nil {
-		return nil, err
-	}
-	return &HermesImplementationChannelOpenedIterator{contract: _HermesImplementation.contract, event: "ChannelOpened", logs: logs, sub: sub}, nil
-}
-
-// WatchChannelOpened is a free log subscription operation binding the contract event 0xbe2e1f3a6197dfd16fa6830c4870364b618b8b288c21cbcfa4fdb5d7c6a5e45b.
-//
-// Solidity: event ChannelOpened(bytes32 channelId, uint256 initialBalance)
-func (_HermesImplementation *HermesImplementationFilterer) WatchChannelOpened(opts *bind.WatchOpts, sink chan<- *HermesImplementationChannelOpened) (event.Subscription, error) {
-
-	logs, sub, err := _HermesImplementation.contract.WatchLogs(opts, "ChannelOpened")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(HermesImplementationChannelOpened)
-				if err := _HermesImplementation.contract.UnpackLog(event, "ChannelOpened", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseChannelOpened is a log parse operation binding the contract event 0xbe2e1f3a6197dfd16fa6830c4870364b618b8b288c21cbcfa4fdb5d7c6a5e45b.
-//
-// Solidity: event ChannelOpened(bytes32 channelId, uint256 initialBalance)
-func (_HermesImplementation *HermesImplementationFilterer) ParseChannelOpened(log types.Log) (*HermesImplementationChannelOpened, error) {
-	event := new(HermesImplementationChannelOpened)
-	if err := _HermesImplementation.contract.UnpackLog(event, "ChannelOpened", log); err != nil {
-		return nil, err
-	}
-	return event, nil
 }
 
 // HermesImplementationChannelOpeningActivatedIterator is returned from FilterChannelOpeningActivated and is used to iterate over the raw logs and unpacked data for ChannelOpeningActivated events raised by the HermesImplementation contract.
@@ -3433,139 +2745,6 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseMinStakeValueUpd
 	return event, nil
 }
 
-// HermesImplementationNewHermesOperatorIterator is returned from FilterNewHermesOperator and is used to iterate over the raw logs and unpacked data for NewHermesOperator events raised by the HermesImplementation contract.
-type HermesImplementationNewHermesOperatorIterator struct {
-	Event *HermesImplementationNewHermesOperator // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *HermesImplementationNewHermesOperatorIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(HermesImplementationNewHermesOperator)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(HermesImplementationNewHermesOperator)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *HermesImplementationNewHermesOperatorIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *HermesImplementationNewHermesOperatorIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// HermesImplementationNewHermesOperator represents a NewHermesOperator event raised by the HermesImplementation contract.
-type HermesImplementationNewHermesOperator struct {
-	NewOperator common.Address
-	Raw         types.Log // Blockchain specific contextual infos
-}
-
-// FilterNewHermesOperator is a free log retrieval operation binding the contract event 0xbc84399c3fec552aa29d6b02eefe7180532020bf40739f24e0b8a6fc4035455e.
-//
-// Solidity: event NewHermesOperator(address newOperator)
-func (_HermesImplementation *HermesImplementationFilterer) FilterNewHermesOperator(opts *bind.FilterOpts) (*HermesImplementationNewHermesOperatorIterator, error) {
-
-	logs, sub, err := _HermesImplementation.contract.FilterLogs(opts, "NewHermesOperator")
-	if err != nil {
-		return nil, err
-	}
-	return &HermesImplementationNewHermesOperatorIterator{contract: _HermesImplementation.contract, event: "NewHermesOperator", logs: logs, sub: sub}, nil
-}
-
-// WatchNewHermesOperator is a free log subscription operation binding the contract event 0xbc84399c3fec552aa29d6b02eefe7180532020bf40739f24e0b8a6fc4035455e.
-//
-// Solidity: event NewHermesOperator(address newOperator)
-func (_HermesImplementation *HermesImplementationFilterer) WatchNewHermesOperator(opts *bind.WatchOpts, sink chan<- *HermesImplementationNewHermesOperator) (event.Subscription, error) {
-
-	logs, sub, err := _HermesImplementation.contract.WatchLogs(opts, "NewHermesOperator")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(HermesImplementationNewHermesOperator)
-				if err := _HermesImplementation.contract.UnpackLog(event, "NewHermesOperator", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseNewHermesOperator is a log parse operation binding the contract event 0xbc84399c3fec552aa29d6b02eefe7180532020bf40739f24e0b8a6fc4035455e.
-//
-// Solidity: event NewHermesOperator(address newOperator)
-func (_HermesImplementation *HermesImplementationFilterer) ParseNewHermesOperator(log types.Log) (*HermesImplementationNewHermesOperator, error) {
-	event := new(HermesImplementationNewHermesOperator)
-	if err := _HermesImplementation.contract.UnpackLog(event, "NewHermesOperator", log); err != nil {
-		return nil, err
-	}
-	return event, nil
-}
-
 // HermesImplementationNewStakeIterator is returned from FilterNewStake and is used to iterate over the raw logs and unpacked data for NewStake events raised by the HermesImplementation contract.
 type HermesImplementationNewStakeIterator struct {
 	Event *HermesImplementationNewStake // Event containing the contract specifics and raw log
@@ -3931,17 +3110,16 @@ func (it *HermesImplementationPromiseSettledIterator) Close() error {
 
 // HermesImplementationPromiseSettled represents a PromiseSettled event raised by the HermesImplementation contract.
 type HermesImplementationPromiseSettled struct {
-	ChannelId          [32]byte
-	Beneficiary        common.Address
-	SentToBeneficiary  *big.Int
-	Fees               *big.Int
-	StakeInsceseAmount *big.Int
-	Raw                types.Log // Blockchain specific contextual infos
+	ChannelId               [32]byte
+	Beneficiary             common.Address
+	AmountSentToBeneficiary *big.Int
+	Fees                    *big.Int
+	Raw                     types.Log // Blockchain specific contextual infos
 }
 
-// FilterPromiseSettled is a free log retrieval operation binding the contract event 0xa1f6960b3f39be76536e5ceb8f07a7b92640393da10654d061e82ee2f28694e2.
+// FilterPromiseSettled is a free log retrieval operation binding the contract event 0xa5a1f05785a942c5f624cee545c68394881a83bcaf21a83f4d76a9e8240a5668.
 //
-// Solidity: event PromiseSettled(bytes32 indexed channelId, address indexed beneficiary, uint256 sentToBeneficiary, uint256 fees, uint256 stakeInsceseAmount)
+// Solidity: event PromiseSettled(bytes32 indexed channelId, address indexed beneficiary, uint256 amountSentToBeneficiary, uint256 fees)
 func (_HermesImplementation *HermesImplementationFilterer) FilterPromiseSettled(opts *bind.FilterOpts, channelId [][32]byte, beneficiary []common.Address) (*HermesImplementationPromiseSettledIterator, error) {
 
 	var channelIdRule []interface{}
@@ -3960,9 +3138,9 @@ func (_HermesImplementation *HermesImplementationFilterer) FilterPromiseSettled(
 	return &HermesImplementationPromiseSettledIterator{contract: _HermesImplementation.contract, event: "PromiseSettled", logs: logs, sub: sub}, nil
 }
 
-// WatchPromiseSettled is a free log subscription operation binding the contract event 0xa1f6960b3f39be76536e5ceb8f07a7b92640393da10654d061e82ee2f28694e2.
+// WatchPromiseSettled is a free log subscription operation binding the contract event 0xa5a1f05785a942c5f624cee545c68394881a83bcaf21a83f4d76a9e8240a5668.
 //
-// Solidity: event PromiseSettled(bytes32 indexed channelId, address indexed beneficiary, uint256 sentToBeneficiary, uint256 fees, uint256 stakeInsceseAmount)
+// Solidity: event PromiseSettled(bytes32 indexed channelId, address indexed beneficiary, uint256 amountSentToBeneficiary, uint256 fees)
 func (_HermesImplementation *HermesImplementationFilterer) WatchPromiseSettled(opts *bind.WatchOpts, sink chan<- *HermesImplementationPromiseSettled, channelId [][32]byte, beneficiary []common.Address) (event.Subscription, error) {
 
 	var channelIdRule []interface{}
@@ -4006,156 +3184,12 @@ func (_HermesImplementation *HermesImplementationFilterer) WatchPromiseSettled(o
 	}), nil
 }
 
-// ParsePromiseSettled is a log parse operation binding the contract event 0xa1f6960b3f39be76536e5ceb8f07a7b92640393da10654d061e82ee2f28694e2.
+// ParsePromiseSettled is a log parse operation binding the contract event 0xa5a1f05785a942c5f624cee545c68394881a83bcaf21a83f4d76a9e8240a5668.
 //
-// Solidity: event PromiseSettled(bytes32 indexed channelId, address indexed beneficiary, uint256 sentToBeneficiary, uint256 fees, uint256 stakeInsceseAmount)
+// Solidity: event PromiseSettled(bytes32 indexed channelId, address indexed beneficiary, uint256 amountSentToBeneficiary, uint256 fees)
 func (_HermesImplementation *HermesImplementationFilterer) ParsePromiseSettled(log types.Log) (*HermesImplementationPromiseSettled, error) {
 	event := new(HermesImplementationPromiseSettled)
 	if err := _HermesImplementation.contract.UnpackLog(event, "PromiseSettled", log); err != nil {
-		return nil, err
-	}
-	return event, nil
-}
-
-// HermesImplementationStakeGoalUpdatedIterator is returned from FilterStakeGoalUpdated and is used to iterate over the raw logs and unpacked data for StakeGoalUpdated events raised by the HermesImplementation contract.
-type HermesImplementationStakeGoalUpdatedIterator struct {
-	Event *HermesImplementationStakeGoalUpdated // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *HermesImplementationStakeGoalUpdatedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(HermesImplementationStakeGoalUpdated)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(HermesImplementationStakeGoalUpdated)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *HermesImplementationStakeGoalUpdatedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *HermesImplementationStakeGoalUpdatedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// HermesImplementationStakeGoalUpdated represents a StakeGoalUpdated event raised by the HermesImplementation contract.
-type HermesImplementationStakeGoalUpdated struct {
-	ChannelId    [32]byte
-	NewStakeGoal *big.Int
-	Raw          types.Log // Blockchain specific contextual infos
-}
-
-// FilterStakeGoalUpdated is a free log retrieval operation binding the contract event 0x5ec1b60bc705196753b2e21e144bbb185e6ef7264f9d79b99f04f1bc22198733.
-//
-// Solidity: event StakeGoalUpdated(bytes32 indexed channelId, uint256 newStakeGoal)
-func (_HermesImplementation *HermesImplementationFilterer) FilterStakeGoalUpdated(opts *bind.FilterOpts, channelId [][32]byte) (*HermesImplementationStakeGoalUpdatedIterator, error) {
-
-	var channelIdRule []interface{}
-	for _, channelIdItem := range channelId {
-		channelIdRule = append(channelIdRule, channelIdItem)
-	}
-
-	logs, sub, err := _HermesImplementation.contract.FilterLogs(opts, "StakeGoalUpdated", channelIdRule)
-	if err != nil {
-		return nil, err
-	}
-	return &HermesImplementationStakeGoalUpdatedIterator{contract: _HermesImplementation.contract, event: "StakeGoalUpdated", logs: logs, sub: sub}, nil
-}
-
-// WatchStakeGoalUpdated is a free log subscription operation binding the contract event 0x5ec1b60bc705196753b2e21e144bbb185e6ef7264f9d79b99f04f1bc22198733.
-//
-// Solidity: event StakeGoalUpdated(bytes32 indexed channelId, uint256 newStakeGoal)
-func (_HermesImplementation *HermesImplementationFilterer) WatchStakeGoalUpdated(opts *bind.WatchOpts, sink chan<- *HermesImplementationStakeGoalUpdated, channelId [][32]byte) (event.Subscription, error) {
-
-	var channelIdRule []interface{}
-	for _, channelIdItem := range channelId {
-		channelIdRule = append(channelIdRule, channelIdItem)
-	}
-
-	logs, sub, err := _HermesImplementation.contract.WatchLogs(opts, "StakeGoalUpdated", channelIdRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(HermesImplementationStakeGoalUpdated)
-				if err := _HermesImplementation.contract.UnpackLog(event, "StakeGoalUpdated", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseStakeGoalUpdated is a log parse operation binding the contract event 0x5ec1b60bc705196753b2e21e144bbb185e6ef7264f9d79b99f04f1bc22198733.
-//
-// Solidity: event StakeGoalUpdated(bytes32 indexed channelId, uint256 newStakeGoal)
-func (_HermesImplementation *HermesImplementationFilterer) ParseStakeGoalUpdated(log types.Log) (*HermesImplementationStakeGoalUpdated, error) {
-	event := new(HermesImplementationStakeGoalUpdated)
-	if err := _HermesImplementation.contract.UnpackLog(event, "StakeGoalUpdated", log); err != nil {
 		return nil, err
 	}
 	return event, nil

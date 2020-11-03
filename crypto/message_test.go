@@ -32,19 +32,21 @@ func getExchangeMessage() ExchangeMessage {
 		AgreementID:    big.NewInt(1),
 		AgreementTotal: big.NewInt(1401),
 		Provider:       "0xf10021ba3b10d023e671668d20daeff821561d09",
-		Signature:      "56493421bd2772cca2ba970da27396e103a08027f1ce49de974f789e322b0d7a3f52b9dd745a34bfa2f330ba2d3c442867ebb3753d1f206811ab572ab7d482dc1b",
+		Signature:      "3310f94760eeb288598d69aaf6214e123766d3cc988f5d3c6a77d5d5b70dc4b6617eeeb0f49df467527ed4a9cdf6f5c7ae3a1477a84f853b9ef8587607d0be431b",
+		ChainID:        1,
+		HermesID:       "0xe10021ba3b10d023e671668d20daeff821561d09",
 	}
 }
 
 func TestGetMessageHash(t *testing.T) {
 	message := getExchangeMessage()
-	expectedHash, _ := hex.DecodeString("c39bda2f6271776edb9d5780210e5f46cfbda7df07d409277cadb452f45cc4ee")
+	expectedHash, _ := hex.DecodeString("e6b89a054f9f1e820fbc06d727209682adca2d6d24b771c9a82edd1809657e39")
 	assert.Equal(t, expectedHash, message.GetMessageHash())
 }
 
 func TestRecoverConsumerIdentity(t *testing.T) {
 	message := getExchangeMessage()
-	expectedSigner := common.HexToAddress("0xf53acdd584ccb85ee4ec1590007ad3c16fdff057")
+	expectedSigner := common.HexToAddress("0xCcad590A7a938Cb086e7414e0F0000eD6a56D833")
 	recoveredSigner, err := message.RecoverConsumerIdentity()
 	assert.Nil(t, err)
 	assert.Equal(t, expectedSigner, recoveredSigner)
@@ -52,7 +54,7 @@ func TestRecoverConsumerIdentity(t *testing.T) {
 
 func TestExchangeMessageValidation(t *testing.T) {
 	message := getExchangeMessage()
-	expectedSigner := common.HexToAddress("0xf53acdd584ccb85ee4ec1590007ad3c16fdff057")
+	expectedSigner := common.HexToAddress("0xCcad590A7a938Cb086e7414e0F0000eD6a56D833")
 	assert.True(t, message.IsMessageValid(expectedSigner))
 
 	wrongSigner := common.HexToAddress("0xf10021ba3b10d023e671668d20daeff821561d09")
@@ -79,10 +81,10 @@ func TestCreateExchangeMessage(t *testing.T) {
 	agreementTotal := big.NewInt(1401)
 	r, _ := hex.DecodeString("5b6b3f31a3acd0e317173d25c8b60503547b741a0e81d6068bb88486967839fa")
 
-	invoice := CreateInvoice(agreementID, agreementTotal, fee, r)
+	invoice := CreateInvoice(agreementID, agreementTotal, fee, r, 1)
 	invoice.Provider = provider
 
-	message, err := CreateExchangeMessage(invoice, amount, channelID, "", ks, account.Address)
+	message, err := CreateExchangeMessage(1, invoice, amount, channelID, "", ks, account.Address)
 	assert.Nil(t, err)
 
 	assert.Equal(t, p.PromiseSignature, message.Promise.Signature)

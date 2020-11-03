@@ -50,19 +50,36 @@ func (e ErrorTransactionReverted) Error() string {
 // In this way, the dry run is always performed before sending the transaction to the network.
 // For convenience, this component proxies read only calls to the underlying blockchain.
 type WithDryRuns struct {
-	bc        blockchain
+	bc        BC
 	ethClient ethClientGetter
 }
 
 // NewWithDryRuns creates a new instance of client with dry runs.
-func NewWithDryRuns(bc blockchain, ethClient ethClientGetter) *WithDryRuns {
+func NewWithDryRuns(bc BC, ethClient ethClientGetter) *WithDryRuns {
 	return &WithDryRuns{
 		bc:        bc,
 		ethClient: ethClient,
 	}
 }
 
-// Estimate estimates the (paid) contract gas price.
+type gasLimitProvider interface {
+	GetGasLimit() uint64
+}
+
+// GetEthBalance gets the current ethereum balance for the address.
+func (cwdr *WithDryRuns) GetEthBalance(address common.Address) (*big.Int, error) {
+	return cwdr.bc.GetEthBalance(address)
+}
+
+func (cwdr *WithDryRuns) GetHermessAvailableBalance(hermesAddress common.Address) (*big.Int, error) {
+	return cwdr.bc.GetHermessAvailableBalance(hermesAddress)
+}
+
+func (cwdr *WithDryRuns) TransferEth(etr EthTransferRequest) (*types.Transaction, error) {
+	// TODO: implement this dry run
+	return cwdr.bc.TransferEth(etr)
+}
+
 func (cwdr *WithDryRuns) Estimate(req Estimatable) (uint64, error) {
 	// If the gas limit is set to 0, ethereum client will do the estimation for us.
 	// We only force the estimation if the gas limit is set to a non zero value.
@@ -225,16 +242,6 @@ func (cwdr *WithDryRuns) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress c
 	return cwdr.bc.SubscribeToConsumerChannelBalanceUpdate(mystSCAddress, channelAddresses)
 }
 
-// SubscribeToProviderChannelBalanceUpdate subscribes to provider channel balance update events
-func (cwdr *WithDryRuns) SubscribeToProviderChannelBalanceUpdate(hermesAddress common.Address, channelAddresses [][32]byte) (sink chan *bindings.HermesImplementationChannelBalanceUpdated, cancel func(), err error) {
-	return cwdr.bc.SubscribeToProviderChannelBalanceUpdate(hermesAddress, channelAddresses)
-}
-
-// SubscribeToChannelOpenedEvents subscribes to provider channel opened events
-func (cwdr *WithDryRuns) SubscribeToChannelOpenedEvents(hermesAddress common.Address) (sink chan *bindings.HermesImplementationChannelOpened, cancel func(), err error) {
-	return cwdr.bc.SubscribeToChannelOpenedEvents(hermesAddress)
-}
-
 // SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events
 func (cwdr *WithDryRuns) SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	return cwdr.bc.SubscribeToPromiseSettledEventByChannelID(hermesID, providerAddresses)
@@ -257,15 +264,6 @@ func (cwdr *WithDryRuns) SettleWithBeneficiary(req SettleWithBeneficiaryRequest)
 	}
 
 	return cwdr.bc.SettleWithBeneficiary(req)
-}
-
-// SetProviderStakeGoal sets provider stake goal.
-func (cwdr *WithDryRuns) SetProviderStakeGoal(req SetProviderStakeGoalRequest) (*types.Transaction, error) {
-	if _, err := cwdr.Estimate(req); err != nil {
-		return nil, err
-	}
-
-	return cwdr.bc.SetProviderStakeGoal(req)
 }
 
 // DecreaseProviderStake decreases provider stake.
@@ -293,4 +291,8 @@ func (cwdr *WithDryRuns) IncreaseProviderStake(req ProviderStakeIncreaseRequest)
 	}
 
 	return cwdr.bc.IncreaseProviderStake(req)
+}
+
+func (cwdr *WithDryRuns) TransactionReceipt(hash common.Hash) (*types.Receipt, error) {
+	return cwdr.bc.TransactionReceipt(hash)
 }

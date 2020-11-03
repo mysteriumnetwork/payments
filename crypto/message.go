@@ -17,6 +17,7 @@
 package crypto
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"fmt"
 	"math/big"
@@ -36,15 +37,40 @@ type ExchangeMessage struct {
 	Provider       string
 	Signature      string
 	HermesID       string
+	ChainID        int64
 }
 
 type hashSigner interface {
 	SignHash(a accounts.Account, hash []byte) ([]byte, error)
 }
 
+func CreateExchangeMessageWithPromise(chainID int64, invoice Invoice, promise *Promise, hermesID string, ks hashSigner, signer common.Address) (*ExchangeMessage, error) {
+	message := ExchangeMessage{
+		Promise:        *promise,
+		AgreementID:    new(big.Int).Set(invoice.AgreementID),
+		AgreementTotal: new(big.Int).Set(invoice.AgreementTotal),
+		Provider:       invoice.Provider,
+		HermesID:       hermesID,
+		ChainID:        chainID,
+	}
+
+	signature, err := message.CreateSignature(ks, signer)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := ReformatSignatureVForBC(signature); err != nil {
+		return nil, fmt.Errorf("failed to reformat signature: %w", err)
+	}
+
+	message.Signature = hex.EncodeToString(signature)
+
+	return &message, nil
+}
+
 // CreateExchangeMessage creates new exchange message with it's promise
-func CreateExchangeMessage(invoice Invoice, promiseAmount *big.Int, channelID, hermesID string, ks hashSigner, signer common.Address) (*ExchangeMessage, error) {
-	promise, err := CreatePromise(channelID, promiseAmount, invoice.TransactorFee, invoice.Hashlock, ks, signer)
+func CreateExchangeMessage(chainID int64, invoice Invoice, promiseAmount *big.Int, channelID, hermesID string, ks hashSigner, signer common.Address) (*ExchangeMessage, error) {
+	promise, err := CreatePromise(channelID, chainID, promiseAmount, invoice.TransactorFee, invoice.Hashlock, ks, signer)
 	if err != nil {
 		return nil, err
 	}
@@ -55,6 +81,7 @@ func CreateExchangeMessage(invoice Invoice, promiseAmount *big.Int, channelID, h
 		AgreementTotal: new(big.Int).Set(invoice.AgreementTotal),
 		Provider:       invoice.Provider,
 		HermesID:       hermesID,
+		ChainID:        invoice.ChainID,
 	}
 
 	signature, err := message.CreateSignature(ks, signer)
@@ -91,6 +118,9 @@ func (m ExchangeMessage) GetSignatureBytesRaw() []byte {
 // GetMessage forms the message of promise exchange request
 func (m ExchangeMessage) GetMessage() []byte {
 	message := []byte{}
+	b := make([]byte, 8)
+	binary.BigEndian.PutUint64(b, uint64(m.ChainID))
+	message = append(message, Pad(b, 32)...)
 	message = append(message, m.Promise.GetHash()...)
 	message = append(message, Pad(math.U256(m.AgreementID).Bytes(), 32)...)
 	message = append(message, Pad(math.U256(m.AgreementTotal).Bytes(), 32)...)
