@@ -17,8 +17,8 @@
 package crypto
 
 import (
+	"encoding/binary"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"math/big"
 	"strings"
@@ -31,27 +31,31 @@ import (
 
 // SetBeneficiaryRequest represents a request for setting new beneficiary.
 type SetBeneficiaryRequest struct {
-	ChannelID   string   `json:"channelID"`
+	ChainID     int64    `json:"chainID"`
+	Registry    string   `json:"registry"`
+	Identity    string   `json:"channelID"`
 	Beneficiary string   `json:"beneficiary"`
 	Nonce       *big.Int `json:"nonce"`
 	Signature   string   `json:"signature"`
 }
 
-func CreateBeneficiaryRequest(channelID, beneficiary string, nonce *big.Int, ks hashSigner, signer common.Address) (*SetBeneficiaryRequest, error) {
-	if hasHexPrefix(channelID) {
-		channelID = channelID[2:]
+func CreateBeneficiaryRequest(chainID int64, identity, registry, beneficiary string, nonce *big.Int, ks hashSigner, signer common.Address) (*SetBeneficiaryRequest, error) {
+	if hasHexPrefix(identity) {
+		identity = identity[2:]
+	}
+
+	if hasHexPrefix(registry) {
+		registry = registry[2:]
 	}
 
 	if hasHexPrefix(beneficiary) {
 		beneficiary = beneficiary[2:]
 	}
 
-	if !isHex(channelID) || !isHex(beneficiary) {
-		return nil, errors.New("channelID and beneficiary have to be proper hex strings")
-	}
-
 	request := SetBeneficiaryRequest{
-		ChannelID:   strings.ToLower(channelID),
+		ChainID:     chainID,
+		Identity:    strings.ToLower(identity),
+		Registry:    strings.ToLower(registry),
 		Beneficiary: strings.ToLower(beneficiary),
 		Nonce:       nonce,
 	}
@@ -70,22 +74,24 @@ func CreateBeneficiaryRequest(channelID, beneficiary string, nonce *big.Int, ks 
 	return &request, nil
 }
 
-func NewBeneficiaryRequest(channelID, beneficiary string, nonce *big.Int, signature string) (*SetBeneficiaryRequest, error) {
-	if hasHexPrefix(channelID) {
-		channelID = channelID[2:]
+func NewBeneficiaryRequest(chainID int64, identity, registry, beneficiary string, nonce *big.Int, signature string) (*SetBeneficiaryRequest, error) {
+	if hasHexPrefix(identity) {
+		identity = identity[2:]
+	}
+
+	if hasHexPrefix(registry) {
+		registry = registry[2:]
 	}
 
 	if hasHexPrefix(beneficiary) {
 		beneficiary = beneficiary[2:]
 	}
 
-	if !isHex(channelID) || !isHex(beneficiary) {
-		return nil, errors.New("channelID and beneficiary have to be proper hex strings")
-	}
-
 	return &SetBeneficiaryRequest{
-		ChannelID:   channelID,
-		Beneficiary: beneficiary,
+		ChainID:     chainID,
+		Identity:    strings.ToLower(identity),
+		Registry:    strings.ToLower(registry),
+		Beneficiary: strings.ToLower(beneficiary),
 		Nonce:       nonce,
 		Signature:   signature,
 	}, nil
@@ -112,10 +118,13 @@ func (r SetBeneficiaryRequest) GetSignatureBytesRaw() []byte {
 // GetMessage forms the message payload given the set beneficiary request.
 func (r SetBeneficiaryRequest) GetMessage() []byte {
 	message := []byte{}
-	message = append(message, common.Hex2Bytes(strings.TrimPrefix(r.ChannelID, "0x"))...)
+	b := make([]byte, 8)
+	binary.BigEndian.PutUint64(b, uint64(r.ChainID))
+	message = append(message, Pad(b, 32)...)
+	message = append(message, common.Hex2Bytes(strings.TrimPrefix(r.Registry, "0x"))...)
+	message = append(message, common.HexToAddress(r.Identity).Bytes()...)
 	message = append(message, common.HexToAddress(r.Beneficiary).Bytes()...)
 	message = append(message, Pad(math.U256(r.Nonce).Bytes(), 32)...)
-
 	return message
 }
 

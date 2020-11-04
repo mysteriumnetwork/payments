@@ -436,8 +436,9 @@ func (bc *Blockchain) IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*
 // SettleIntoStakeRequest represents all the parameters required for settling into stake.
 type SettleIntoStakeRequest struct {
 	WriteRequest
-	Promise  crypto.Promise
-	HermesID common.Address
+	Promise    crypto.Promise
+	HermesID   common.Address
+	ProviderID common.Address
 }
 
 func (r SettleIntoStakeRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
@@ -449,7 +450,7 @@ func (r SettleIntoStakeRequest) toEstimateOps() *bindings.EstimateOpts {
 		From:   r.Identity,
 		Method: "settleIntoStake",
 		Params: []interface{}{
-			toBytes32(r.Promise.ChannelID),
+			r.ProviderID,
 			r.Promise.Amount,
 			r.Promise.Fee,
 			toBytes32(r.Promise.R),
@@ -479,13 +480,14 @@ func (bc *Blockchain) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transa
 	channelID := [32]byte{}
 	copy(channelID[:], req.Promise.ChannelID)
 
-	return t.SettleIntoStake(transactor, req.Identity, amount, fee, lock, req.Promise.Signature)
+	return t.SettleIntoStake(transactor, req.ProviderID, amount, fee, lock, req.Promise.Signature)
 }
 
 // DecreaseProviderStakeRequest represents all the parameters required for decreasing provider stake.
 type DecreaseProviderStakeRequest struct {
 	WriteRequest
-	Request crypto.DecreaseProviderStakeRequest
+	Request    crypto.DecreaseProviderStakeRequest
+	ProviderID common.Address
 }
 
 func (r DecreaseProviderStakeRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
@@ -496,7 +498,7 @@ func (r DecreaseProviderStakeRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
 		From:   r.Identity,
 		Method: "decreaseStake",
-		Params: []interface{}{r.Request.ChannelID, r.Request.Amount, r.Request.TransactorFee, r.Request.Signature},
+		Params: []interface{}{r.ProviderID, r.Request.Amount, r.Request.TransactorFee, r.Request.Signature},
 	}
 }
 
@@ -513,7 +515,7 @@ func (bc *Blockchain) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*
 		return nil, fmt.Errorf("could not get transactor: %w", err)
 	}
 
-	return t.DecreaseStake(transactor, req.Identity, req.Request.Amount, req.Request.TransactorFee, req.Request.Signature)
+	return t.DecreaseStake(transactor, req.ProviderID, req.Request.Amount, req.Request.TransactorFee, req.Request.Signature)
 }
 
 func (bc *Blockchain) getTransactorFromRequest(req WriteRequest) (*bind.TransactOpts, func(), error) {
