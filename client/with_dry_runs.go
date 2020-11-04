@@ -275,6 +275,10 @@ func (cwdr *WithDryRuns) DecreaseProviderStake(req DecreaseProviderStakeRequest)
 	return cwdr.bc.DecreaseProviderStake(req)
 }
 
+func (cwdr *WithDryRuns) GetBeneficiary(registryAddress, identity common.Address) (common.Address, error) {
+	return cwdr.bc.GetBeneficiary(registryAddress, identity)
+}
+
 // SettleIntoStake settles the hermes promise into stake increase.
 func (cwdr *WithDryRuns) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transaction, error) {
 	if _, err := cwdr.Estimate(req); err != nil {

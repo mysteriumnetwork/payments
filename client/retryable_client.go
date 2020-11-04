@@ -62,6 +62,7 @@ type BC interface {
 	TransactionReceipt(hash common.Hash) (*types.Receipt, error)
 	GetHermesURL(registryID, hermesID common.Address) (string, error)
 	GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error)
+	GetBeneficiary(registryAddress, identity common.Address) (common.Address, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -129,6 +130,19 @@ func (bwr *BlockchainWithRetries) GetHermesFee(hermesAddress common.Address) (ui
 		r, err := bwr.bc.GetHermesFee(hermesAddress)
 		if err != nil {
 			return errors.Wrap(err, "could not get hermes fee")
+		}
+		res = r
+		return nil
+	})
+	return res, err
+}
+
+func (bwr *BlockchainWithRetries) GetBeneficiary(registryAddress, identity common.Address) (common.Address, error) {
+	var res common.Address
+	err := bwr.callWithRetry(func() error {
+		r, err := bwr.bc.GetBeneficiary(registryAddress, identity)
+		if err != nil {
+			return errors.Wrap(err, "could not get beneficiary")
 		}
 		res = r
 		return nil

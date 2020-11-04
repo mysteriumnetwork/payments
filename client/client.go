@@ -502,6 +502,21 @@ func (r DecreaseProviderStakeRequest) toEstimateOps() *bindings.EstimateOpts {
 	}
 }
 
+func (bc *Blockchain) GetBeneficiary(registryAddress, identity common.Address) (common.Address, error) {
+	caller, err := bindings.NewRegistryCaller(registryAddress, bc.ethClient.Client())
+	if err != nil {
+		return common.Address{}, err
+	}
+
+	parent := context.Background()
+	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
+	defer cancel()
+	return caller.GetBeneficiary(&bind.CallOpts{
+		Pending: false,
+		Context: ctx,
+	}, identity)
+}
+
 // DecreaseProviderStake decreases provider stake.
 func (bc *Blockchain) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*types.Transaction, error) {
 	t, err := bindings.NewHermesImplementationTransactor(req.Request.HermesID, bc.ethClient.Client())

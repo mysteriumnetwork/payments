@@ -180,6 +180,15 @@ func (mbc *MultichainBlockchainClient) SettleAndRebalance(req SettleAndRebalance
 	return bc.SettleAndRebalance(req)
 }
 
+func (mbc *MultichainBlockchainClient) GetBeneficiary(chainID int64, registryAddress, identity common.Address) (common.Address, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return common.Address{}, err
+	}
+
+	return bc.GetBeneficiary(registryAddress, identity)
+}
+
 func (mbc *MultichainBlockchainClient) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*types.Transaction, error) {
 	bc, err := mbc.getClientByChain(req.Promise.ChainID)
 	if err != nil {
