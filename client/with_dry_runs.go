@@ -279,6 +279,10 @@ func (cwdr *WithDryRuns) GetBeneficiary(registryAddress, identity common.Address
 	return cwdr.bc.GetBeneficiary(registryAddress, identity)
 }
 
+func (cwdr *WithDryRuns) SuggestGasPrice() (*big.Int, error) {
+	return cwdr.bc.SuggestGasPrice()
+}
+
 // SettleIntoStake settles the hermes promise into stake increase.
 func (cwdr *WithDryRuns) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transaction, error) {
 	if _, err := cwdr.Estimate(req); err != nil {

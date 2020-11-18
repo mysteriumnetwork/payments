@@ -862,6 +862,12 @@ func (bc *Blockchain) TransferEth(etr EthTransferRequest) (*types.Transaction, e
 	return signedTx, err
 }
 
+func (bc *Blockchain) SuggestGasPrice() (*big.Int, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+	return bc.ethClient.Client().SuggestGasPrice(ctx)
+}
+
 // NetworkID returns the network id
 func (bc *Blockchain) NetworkID() (*big.Int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)

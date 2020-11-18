@@ -109,6 +109,15 @@ func (mbc *MultichainBlockchainClient) SubscribeToIdentityRegistrationEvents(cha
 
 	return bc.SubscribeToIdentityRegistrationEvents(registryAddress)
 }
+
+func (mbc *MultichainBlockchainClient) SuggestGasPrice(chainID int64) (*big.Int, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.SuggestGasPrice()
+}
+
 func (mbc *MultichainBlockchainClient) SubscribeToConsumerChannelBalanceUpdate(chainID int64, mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error) {
 	bc, err := mbc.getClientByChain(chainID)
 	if err != nil {

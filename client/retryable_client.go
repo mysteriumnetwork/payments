@@ -63,6 +63,7 @@ type BC interface {
 	GetHermesURL(registryID, hermesID common.Address) (string, error)
 	GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error)
 	GetBeneficiary(registryAddress, identity common.Address) (common.Address, error)
+	SuggestGasPrice() (*big.Int, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -85,6 +86,19 @@ func NewBlockchainWithRetries(bc BC, delay time.Duration, maxRetries int) *Block
 		delay:      delay,
 		maxRetries: maxRetries,
 	}
+}
+
+func (bwr *BlockchainWithRetries) SuggestGasPrice() (*big.Int, error) {
+	var res *big.Int
+	err := bwr.callWithRetry(func() error {
+		r, err := bwr.bc.SuggestGasPrice()
+		if err != nil {
+			return errors.Wrap(err, "could not get gas price")
+		}
+		res = r
+		return nil
+	})
+	return res, err
 }
 
 func (bwr *BlockchainWithRetries) callWithRetry(f func() error) error {
