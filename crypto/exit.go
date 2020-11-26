@@ -20,6 +20,14 @@ type ExitRequest struct {
 	Signature   []byte
 }
 
+func NewExitRequest(channelID, beneficiary common.Address, validUntil *big.Int) *ExitRequest {
+	return &ExitRequest{
+		ChannelID:   channelID,
+		Beneficiary: beneficiary,
+		Signature:   make([]byte, 65),
+	}
+}
+
 func (er ExitRequest) GetMessage() []byte {
 	msg := []byte{}
 	msg = append(msg, []byte(ExitPrefix)...)
