@@ -61,6 +61,9 @@ func main() {
 			os.Exit(-1)
 		}
 	}
+
+	var printColor = "\033[1;33m%s\033[0m\n"
+	fmt.Printf(printColor, "Do not forget to update bindings/topics.go if topics have changed")
 }
 
 func writeToOutput(fileName string, genCode, output string) error {

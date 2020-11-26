@@ -24,6 +24,7 @@ func NewExitRequest(channelID, beneficiary common.Address, validUntil *big.Int) 
 	return &ExitRequest{
 		ChannelID:   channelID,
 		Beneficiary: beneficiary,
+		ValidUntil:  validUntil,
 		Signature:   make([]byte, 65),
 	}
 }
