@@ -23,6 +23,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -860,6 +861,21 @@ func (bc *Blockchain) TransferEth(etr EthTransferRequest) (*types.Transaction, e
 	}
 
 	return signedTx, err
+}
+
+// FilterLogs executes a filter query.
+func (bc *Blockchain) FilterLogs(q ethereum.FilterQuery) ([]types.Log, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+	return bc.ethClient.Client().FilterLogs(ctx, q)
+}
+
+// HeaderByNumber returns a block header from the current canonical chain. If number is
+// nil, the latest known header is returned.
+func (bc *Blockchain) HeaderByNumber(number *big.Int) (*types.Header, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+	return bc.ethClient.Client().HeaderByNumber(ctx, number)
 }
 
 func (bc *Blockchain) SuggestGasPrice() (*big.Int, error) {

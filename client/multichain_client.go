@@ -4,6 +4,7 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/mysteriumnetwork/payments/bindings"
@@ -341,4 +342,23 @@ func (mbc *MultichainBlockchainClient) GetStakeThresholds(chainID int64, hermesI
 	}
 
 	return bc.GetStakeThresholds(hermesID)
+}
+
+// FilterLogs executes a filter query.
+func (mbc *MultichainBlockchainClient) FilterLogs(chainID int64, q ethereum.FilterQuery) ([]types.Log, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.FilterLogs(q)
+}
+
+// HeaderByNumber returns a block header from the current canonical chain. If number is
+// nil, the latest known header is returned.
+func (mbc *MultichainBlockchainClient) HeaderByNumber(chainID int64, number *big.Int) (*types.Header, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.HeaderByNumber(number)
 }

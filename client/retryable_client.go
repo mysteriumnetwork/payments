@@ -21,6 +21,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/mysteriumnetwork/payments/bindings"
@@ -64,6 +65,8 @@ type BC interface {
 	GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error)
 	GetBeneficiary(registryAddress, identity common.Address) (common.Address, error)
 	SuggestGasPrice() (*big.Int, error)
+	FilterLogs(q ethereum.FilterQuery) ([]types.Log, error)
+	HeaderByNumber(number *big.Int) (*types.Header, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -86,6 +89,35 @@ func NewBlockchainWithRetries(bc BC, delay time.Duration, maxRetries int) *Block
 		delay:      delay,
 		maxRetries: maxRetries,
 	}
+}
+
+// FilterLogs executes a filter query.
+func (bwr *BlockchainWithRetries) FilterLogs(q ethereum.FilterQuery) ([]types.Log, error) {
+	var res []types.Log
+	err := bwr.callWithRetry(func() error {
+		r, err := bwr.bc.FilterLogs(q)
+		if err != nil {
+			return errors.Wrap(err, "could not filter logs")
+		}
+		res = r
+		return nil
+	})
+	return res, err
+}
+
+// HeaderByNumber returns a block header from the current canonical chain. If number is
+// nil, the latest known header is returned.
+func (bwr *BlockchainWithRetries) HeaderByNumber(number *big.Int) (*types.Header, error) {
+	var res *types.Header
+	err := bwr.callWithRetry(func() error {
+		r, err := bwr.bc.HeaderByNumber(number)
+		if err != nil {
+			return errors.Wrap(err, "could not get header by number")
+		}
+		res = r
+		return nil
+	})
+	return res, err
 }
 
 func (bwr *BlockchainWithRetries) SuggestGasPrice() (*big.Int, error) {
