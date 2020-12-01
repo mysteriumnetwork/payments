@@ -21,6 +21,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/rpc"
@@ -303,4 +304,12 @@ func (cwdr *WithDryRuns) IncreaseProviderStake(req ProviderStakeIncreaseRequest)
 
 func (cwdr *WithDryRuns) TransactionReceipt(hash common.Hash) (*types.Receipt, error) {
 	return cwdr.bc.TransactionReceipt(hash)
+}
+
+func (cwdr *WithDryRuns) FilterLogs(q ethereum.FilterQuery) ([]types.Log, error) {
+	return cwdr.bc.FilterLogs(q)
+}
+
+func (cwdr *WithDryRuns) HeaderByNumber(number *big.Int) (*types.Header, error) {
+	return cwdr.bc.HeaderByNumber(number)
 }
