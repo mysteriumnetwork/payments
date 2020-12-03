@@ -128,6 +128,43 @@ func NewPromise(chainID int64, channelID string, amount, fee *big.Int, preimage 
 	return &promise, nil
 }
 
+// NewRawPromise creates a promise from given params. The promise has no R.
+func NewRawPromise(chainID int64, channelID string, amount, fee *big.Int, hashlock string, signature string) (*Promise, error) {
+	if hasHexPrefix(channelID) {
+		channelID = channelID[2:]
+	}
+
+	if hasHexPrefix(hashlock) {
+		hashlock = hashlock[2:]
+	}
+
+	chID, err := hex.DecodeString(channelID)
+	if err != nil {
+		return nil, errors.Wrap(err, "Problem in decoding channelID")
+	}
+
+	hl, err := hex.DecodeString(hashlock)
+	if err != nil {
+		return nil, errors.Wrap(err, "Problem in decoding preimage")
+	}
+
+	sig, err := hex.DecodeString(signature)
+	if err != nil {
+		return nil, errors.Wrap(err, "Problem in decoding signature")
+	}
+
+	promise := Promise{
+		ChannelID: chID,
+		Amount:    new(big.Int).Set(amount),
+		Fee:       new(big.Int).Set(fee),
+		Hashlock:  hl,
+		Signature: sig,
+		ChainID:   chainID,
+	}
+
+	return &promise, nil
+}
+
 // Sign signs promise with given keystore and signer
 func (p *Promise) Sign(ks *keystore.KeyStore, signer common.Address) error {
 	signature, err := p.CreateSignature(ks, signer)
