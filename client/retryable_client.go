@@ -67,6 +67,7 @@ type BC interface {
 	SuggestGasPrice() (*big.Int, error)
 	FilterLogs(q ethereum.FilterQuery) ([]types.Log, error)
 	HeaderByNumber(number *big.Int) (*types.Header, error)
+	GetLastRegistryNonce(registry common.Address) (*big.Int, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -98,6 +99,19 @@ func (bwr *BlockchainWithRetries) FilterLogs(q ethereum.FilterQuery) ([]types.Lo
 		r, err := bwr.bc.FilterLogs(q)
 		if err != nil {
 			return errors.Wrap(err, "could not filter logs")
+		}
+		res = r
+		return nil
+	})
+	return res, err
+}
+
+func (bwr *BlockchainWithRetries) GetLastRegistryNonce(registry common.Address) (*big.Int, error) {
+	var res *big.Int
+	err := bwr.callWithRetry(func() error {
+		r, err := bwr.bc.GetLastRegistryNonce(registry)
+		if err != nil {
+			return errors.Wrap(err, "could not get registry nonce")
 		}
 		res = r
 		return nil

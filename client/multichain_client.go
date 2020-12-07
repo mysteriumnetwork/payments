@@ -190,6 +190,14 @@ func (mbc *MultichainBlockchainClient) SettleAndRebalance(req SettleAndRebalance
 	return bc.SettleAndRebalance(req)
 }
 
+func (mbc *MultichainBlockchainClient) GetLastRegistryNonce(chainID int64, registry common.Address) (*big.Int, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.GetLastRegistryNonce(registry)
+}
+
 func (mbc *MultichainBlockchainClient) GetBeneficiary(chainID int64, registryAddress, identity common.Address) (common.Address, error) {
 	bc, err := mbc.getClientByChain(chainID)
 	if err != nil {

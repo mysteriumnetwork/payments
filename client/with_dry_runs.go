@@ -302,6 +302,10 @@ func (cwdr *WithDryRuns) IncreaseProviderStake(req ProviderStakeIncreaseRequest)
 	return cwdr.bc.IncreaseProviderStake(req)
 }
 
+func (cwdr *WithDryRuns) GetLastRegistryNonce(registry common.Address) (*big.Int, error) {
+	return cwdr.bc.GetLastRegistryNonce(registry)
+}
+
 func (cwdr *WithDryRuns) TransactionReceipt(hash common.Hash) (*types.Receipt, error) {
 	return cwdr.bc.TransactionReceipt(hash)
 }

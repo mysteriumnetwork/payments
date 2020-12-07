@@ -623,6 +623,22 @@ func toBytes32(arr []byte) (res [32]byte) {
 	return res
 }
 
+// GetLastRegistryNonce returns the last registry nonce.
+func (bc *Blockchain) GetLastRegistryNonce(registry common.Address) (*big.Int, error) {
+	caller, err := bindings.NewRegistryCaller(registry, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.LastNonce(&bind.CallOpts{
+		Pending: false,
+		Context: ctx,
+	})
+}
+
 // GetProviderChannelByID returns the given provider channel information
 func (bc *Blockchain) GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error) {
 	caller, err := bindings.NewHermesImplementationCaller(acc, bc.ethClient.Client())
