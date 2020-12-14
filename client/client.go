@@ -300,6 +300,7 @@ type WriteRequest struct {
 	Signer   bind.SignerFn
 	GasLimit uint64
 	GasPrice *big.Int
+	Nonce    *big.Int
 }
 
 // getGasLimit returns the gas limit
@@ -537,9 +538,13 @@ func (bc *Blockchain) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*
 func (bc *Blockchain) getTransactorFromRequest(req WriteRequest) (*bind.TransactOpts, func(), error) {
 	parent := context.Background()
 	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
-	nonce, err := bc.getNonce(req.Identity)
-	if err != nil {
-		return nil, cancel, errors.Wrap(err, "could not get nonce")
+
+	if req.Nonce == nil {
+		nonce, err := bc.getNonce(req.Identity)
+		if err != nil {
+			return nil, cancel, errors.Wrap(err, "could not get nonce")
+		}
+		req.Nonce = big.NewInt(0).SetUint64(nonce)
 	}
 
 	return &bind.TransactOpts{
@@ -548,7 +553,7 @@ func (bc *Blockchain) getTransactorFromRequest(req WriteRequest) (*bind.Transact
 		Context:  ctx,
 		GasLimit: req.GasLimit,
 		GasPrice: req.GasPrice,
-		Nonce:    big.NewInt(0).SetUint64(nonce),
+		Nonce:    req.Nonce,
 	}, cancel, nil
 }
 
