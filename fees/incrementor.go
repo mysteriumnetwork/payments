@@ -1,0 +1,321 @@
+/* Mysterium network payment library.
+ *
+ * Copyright (C) 2021 BlockDev AG
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package fees
+
+import (
+	"context"
+	"fmt"
+	"math/big"
+	"sync"
+	"time"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
+)
+
+// GasPriceIncremenetor exposes a way automatically increment gas fees
+// for transactions in a preconfigured manner.
+type GasPriceIncremenetor struct {
+	pullInterval time.Duration
+
+	storage Storage
+	bc      MultichainClient
+	sign    SignatureFunc
+	logFn   LogFunc
+
+	syncer *syncer
+
+	stop chan struct{}
+	once sync.Once
+}
+
+// Storage is given to the Incremeter to be used to
+// insert, update or get transactions.
+type Storage interface {
+	// UpsertTransaction is called to upsert a transaction.
+	// It either inserts a new entry or updates existing entries.
+	UpsertTransaction(tx Transaction) error
+
+	// GetTransactionsToCheck returns all transaction that need to rechecked.
+	GetTransactionsToCheck() (tx []Transaction, err error)
+}
+
+// Client handles calls to BC.
+type Client interface {
+	TransactionReceipt(ctx context.Context, hash common.Hash) (*types.Receipt, error)
+	SendTransaction(ctx context.Context, tx *types.Transaction) error
+}
+
+// SignatureFunc is used to sign transactions when resubmitting them.
+type SignatureFunc func(tx *types.Transaction, chainID int64) (*types.Transaction, error)
+
+// LogFunc can be attacheched to Incrementer to enable logging.
+type LogFunc func(Transaction, error)
+
+// MultichainClient is a map of Client for each chain to process.
+type MultichainClient map[int64]Client
+
+// NewGasPriceIncremenetor returns a new incrementer instance.
+func NewGasPriceIncremenetor(pullInterval time.Duration, storage Storage, cl MultichainClient, signer SignatureFunc) *GasPriceIncremenetor {
+	return &GasPriceIncremenetor{
+		pullInterval: pullInterval,
+
+		storage: storage,
+		bc:      cl,
+		sign:    signer,
+
+		syncer: newSyncer(),
+		stop:   make(chan struct{}, 0),
+	}
+}
+
+// Run starts the gas price incrementer.
+//
+// It will query the given storage for any entries that it needs to check
+// for gas increase, trying to check their status.
+func (i *GasPriceIncremenetor) Run() {
+	process := func(txs []Transaction) {
+		for _, tx := range txs {
+			switch tx.State {
+			case TxStateFailed, TxStateSucceed:
+				// Force skip transactions that are finalyzed.
+			default:
+				i.tryWatch(tx)
+			}
+		}
+	}
+
+	for {
+		select {
+		case <-i.stop:
+			return
+
+		case <-time.After(i.pullInterval):
+			txs, err := i.storage.GetTransactionsToCheck()
+			if err != nil {
+				continue
+			}
+			process(txs)
+		}
+	}
+}
+
+// AttachLogFunc attaches a new log func incremeter thread.
+// The given log func is called every time the running incrementer thread
+// created by the `Run` method encouters an error.
+//
+// This method is not thread safe and should be called before Run.
+func (i *GasPriceIncremenetor) AttachLogFunc(logFn LogFunc) {
+	i.logFn = logFn
+}
+
+// Stop stops the execution of GasPriceIncrementer thread created by the Run method.
+func (i *GasPriceIncremenetor) Stop() {
+	i.once.Do(func() {
+		close(i.stop)
+	})
+}
+
+// InsertInitial uses the given storage to insert an new transaction which
+// will later be retreived using `GetTransactionsToCheck` in order to check
+// it's state and retry with higher gas price if needed.
+func (i *GasPriceIncremenetor) InsertInitial(tx *types.Transaction, opts TransactionOpts, chainID int64) error {
+	if err := opts.validate(); err != nil {
+		return fmt.Errorf("invalid opts given: %w", err)
+	}
+	newTx, err := newTransaction(tx, chainID, opts)
+	if err != nil {
+		return fmt.Errorf("failed to create new transaction: %w", err)
+	}
+
+	return i.storage.UpsertTransaction(*newTx)
+}
+
+// tryWatch will try to watch a transaction.
+// If a transaction is already being watched, it will get skipped.
+func (i *GasPriceIncremenetor) tryWatch(tx Transaction) {
+	if i.syncer.txBeingWatched(tx) {
+		// Already watching
+		return
+	}
+	if err := tx.Opts.validate(); err != nil {
+		i.log(tx, fmt.Errorf("can't increment gas price, got wrong tx opts: %w", err))
+		return
+	}
+
+	i.syncer.txMarkBeingWatched(tx)
+	go func() {
+		defer i.syncer.txRemoveWatched(tx)
+		if err := i.watchAndIncrement(tx); err != nil {
+			i.log(tx, err)
+		}
+	}()
+}
+
+func (i *GasPriceIncremenetor) watchAndIncrement(tx Transaction) error {
+	timeout := time.After(tx.Opts.Timeout)
+	incTimer := time.NewTicker(tx.Opts.IncreaseInterval)
+	defer incTimer.Stop()
+
+	checkTimer := time.NewTicker(tx.Opts.CheckInterval)
+	defer checkTimer.Stop()
+
+	for {
+		select {
+		case <-i.stop:
+			return nil
+		case <-checkTimer.C:
+			receipt, err := i.getReceipt(tx)
+			if err != nil {
+				return err
+			}
+			if receipt.Status == types.ReceiptStatusSuccessful {
+				return i.transactionSuccess(tx)
+			}
+		case <-incTimer.C:
+			org, err := tx.getOriginal()
+			if err != nil {
+				return err
+			}
+
+			newGasPrice, _ := new(big.Float).Mul(
+				big.NewFloat(tx.Opts.PriceMultiplier),
+				new(big.Float).SetInt(org.GasPrice()),
+			).Int(nil)
+
+			if newGasPrice.Cmp(tx.Opts.MaxPrice) > 0 {
+				return i.transactionFailed(tx)
+			}
+
+			newTx := tx.rebuiledWithNewGasPrice(org, newGasPrice)
+			if err := i.signAndSend(newTx, tx.ChainID); err != nil {
+				return err
+			}
+
+			tx, err = i.transactionPriceIncreased(tx, newTx)
+			if err != nil {
+				return err
+			}
+		case <-timeout:
+			return i.transactionFailed(tx)
+		}
+	}
+}
+
+func (i *GasPriceIncremenetor) getReceipt(tx Transaction) (*types.Receipt, error) {
+	cl, ok := i.bc[tx.ChainID]
+	if !ok {
+		return nil, fmt.Errorf("no bc client for chain %d can't get receipt", tx.ChainID)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	receipt, err := cl.TransactionReceipt(ctx, common.HexToHash(tx.TxHashHex))
+	if err != nil {
+		return nil, fmt.Errorf("failed to get transaction receipt: %w", err)
+	}
+	return receipt, nil
+}
+
+func (i *GasPriceIncremenetor) signAndSend(tx *types.Transaction, chainID int64) error {
+	signedTx, err := i.sign(tx, chainID)
+	if err != nil {
+		return fmt.Errorf("failed to sign a transaction: %w", err)
+	}
+
+	cl, ok := i.bc[chainID]
+	if !ok {
+		return fmt.Errorf("no bc client for chain %d can't send transaction", chainID)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	if err := cl.SendTransaction(ctx, signedTx); err != nil {
+		return fmt.Errorf("failed send a transaction: %w", err)
+	}
+
+	return nil
+}
+
+func (i *GasPriceIncremenetor) transactionFailed(tx Transaction) error {
+	tx.State = TxStateFailed
+	if err := i.storage.UpsertTransaction(tx); err != nil {
+		return fmt.Errorf("failed marking transaction as failed: %w", err)
+	}
+
+	return nil
+}
+
+func (i *GasPriceIncremenetor) transactionSuccess(tx Transaction) error {
+	tx.State = TxStateSucceed
+	if err := i.storage.UpsertTransaction(tx); err != nil {
+		return fmt.Errorf("failed marking transaction succeed: %w", err)
+	}
+	return nil
+}
+
+func (i *GasPriceIncremenetor) transactionPriceIncreased(tx Transaction, newTx *types.Transaction) (Transaction, error) {
+	var err error
+	tx.State = TxStatePriceIncreased
+	tx.OriginalTx, err = newTx.MarshalJSON()
+	if err != nil {
+		return Transaction{}, fmt.Errorf("failed to marshal internal transaction object: %w", err)
+	}
+
+	if err := i.storage.UpsertTransaction(tx); err != nil {
+		return Transaction{}, fmt.Errorf("failed to update transaction after price increase: %w", err)
+	}
+	return tx, nil
+}
+
+func (i *GasPriceIncremenetor) log(tx Transaction, err error) {
+	if i.logFn != nil {
+		i.logFn(tx, err)
+	}
+}
+
+// syncer is used to sync Incremeter so that
+// we dont start tracking the same transaction multiple times.
+type syncer struct {
+	txs map[string]struct{}
+	m   sync.Mutex
+}
+
+func newSyncer() *syncer {
+	return &syncer{txs: make(map[string]struct{})}
+}
+
+func (s *syncer) txMarkBeingWatched(tx Transaction) {
+	s.m.Lock()
+	defer s.m.Unlock()
+	s.txs[tx.UniqueID] = struct{}{}
+}
+
+func (s *syncer) txBeingWatched(tx Transaction) bool {
+	s.m.Lock()
+	defer s.m.Unlock()
+	_, ok := s.txs[tx.UniqueID]
+	return ok
+}
+
+func (s *syncer) txRemoveWatched(tx Transaction) {
+	s.m.Lock()
+	defer s.m.Unlock()
+	delete(s.txs, tx.UniqueID)
+}

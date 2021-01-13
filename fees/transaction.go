@@ -1,0 +1,118 @@
+/* Mysterium network payment library.
+ *
+ * Copyright (C) 2021 BlockDev AG
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package fees
+
+import (
+	"errors"
+	"fmt"
+	"math/big"
+	"time"
+
+	"github.com/ethereum/go-ethereum/core/types"
+)
+
+// TransactionState marks the current state of a given transaction
+type TransactionState string
+
+const (
+	// TxStateCreated is given to transactions that have been initially inserted.
+	TxStateCreated TransactionState = "created"
+	// TxStatePriceIncreased is given to transactions which have received
+	// a price increase.
+	TxStatePriceIncreased TransactionState = "priceIncreased"
+	// TxStateFailed is given to transactions which have
+	// failed and should not be retried anymore.
+	TxStateFailed TransactionState = "failed"
+	// TxStateSucceed is given to transactions which have
+	// succeeded and should not be retried.
+	TxStateSucceed TransactionState = "succeed"
+)
+
+// Transaction objects is used when handling transactions.
+type Transaction struct {
+	// UniqueID is a combination of Tx hash and chainID.
+	UniqueID   string
+	Opts       TransactionOpts
+	State      TransactionState
+	TxHashHex  string
+	ChainID    int64
+	OriginalTx []byte
+}
+
+// TransactionOpts are provided when creating a new transaction.
+// They're used when handling a transaction.
+type TransactionOpts struct {
+	PriceMultiplier  float64
+	MaxPrice         *big.Int
+	Timeout          time.Duration
+	IncreaseInterval time.Duration
+	CheckInterval    time.Duration
+}
+
+func (t *TransactionOpts) validate() error {
+	if t.PriceMultiplier <= 1 {
+		return errors.New("priceMultiplier must be more than 1")
+	}
+	if t.MaxPrice == nil || t.MaxPrice.Cmp(big.NewInt(0)) <= 0 {
+		return errors.New("max price has to be than 0")
+	}
+	if t.Timeout <= 0 {
+		return errors.New("timeout value must be provided")
+	}
+	if t.IncreaseInterval <= 0 {
+		return errors.New("increase interval value must be provided")
+	}
+	if t.CheckInterval <= 0 {
+		return errors.New("check interval value must be provided")
+	}
+
+	return nil
+}
+
+func newTransaction(tx *types.Transaction, chainID int64, opts TransactionOpts) (*Transaction, error) {
+	hash := tx.Hash().Hex()
+
+	marshaled, err := tx.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+
+	return &Transaction{
+		UniqueID:   fmt.Sprintf("%s|%d", hash, chainID),
+		Opts:       opts,
+		State:      TxStateCreated,
+		TxHashHex:  hash,
+		ChainID:    chainID,
+		OriginalTx: marshaled,
+	}, nil
+}
+
+func (t *Transaction) getOriginal() (*types.Transaction, error) {
+	tx := &types.Transaction{}
+	return tx, tx.UnmarshalJSON(t.OriginalTx)
+}
+
+func (t *Transaction) rebuiledWithNewGasPrice(tx *types.Transaction, newGasPrice *big.Int) *types.Transaction {
+	return types.NewTransaction(
+		tx.Nonce(),
+		*tx.To(),
+		tx.Value(),
+		tx.Gas(),
+		newGasPrice,
+		tx.Data(),
+	)
+}
