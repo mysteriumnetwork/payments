@@ -80,7 +80,7 @@ func (t *TransactionHandler) AttachLogger(fn func(err error)) {
 // and increase the gas price accordingly.
 //
 // This method blocks either until transaction is sent and inserted, or stop channel is closed.
-func (t *TransactionHandler) SendWithGasPriceHandling(stop chan struct{}, wt WatchableTransaction, opts HandlerOpts) (*types.Transaction, error) {
+func (t *TransactionHandler) SendWithGasPriceHandling(stop <-chan struct{}, wt WatchableTransaction, opts HandlerOpts) (*types.Transaction, error) {
 	cancel := func() {}
 	defer cancel()
 	type res struct {

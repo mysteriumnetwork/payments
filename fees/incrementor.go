@@ -17,7 +17,6 @@
 package fees
 
 import (
-	"context"
 	"fmt"
 	"math/big"
 	"sync"
@@ -54,10 +53,10 @@ type Storage interface {
 	GetIncrementorTransactionsToCheck() (tx []Transaction, err error)
 }
 
-// Client handles calls to BC.
-type Client interface {
-	TransactionReceipt(ctx context.Context, hash common.Hash) (*types.Receipt, error)
-	SendTransaction(ctx context.Context, tx *types.Transaction) error
+// MultichainClient handles calls to BC.
+type MultichainClient interface {
+	TransactionReceipt(chainID int64, hash common.Hash) (*types.Receipt, error)
+	SendTransaction(chainID int64, tx *types.Transaction) error
 }
 
 // SignatureFunc is used to sign transactions when resubmitting them.
@@ -65,9 +64,6 @@ type SignatureFunc func(tx *types.Transaction, chainID int64) (*types.Transactio
 
 // LogFunc can be attacheched to Incrementer to enable logging.
 type LogFunc func(Transaction, error)
-
-// MultichainClient is a map of Client for each chain to process.
-type MultichainClient map[int64]Client
 
 // NewGasPriceIncremenetor returns a new incrementer instance.
 func NewGasPriceIncremenetor(pullInterval time.Duration, storage Storage, cl MultichainClient, signer SignatureFunc) *GasPriceIncremenetor {
@@ -92,7 +88,7 @@ func (i *GasPriceIncremenetor) Run() {
 		for _, tx := range txs {
 			switch tx.State {
 			case TxStateFailed, TxStateSucceed:
-				// Force skip transactions that are finalyzed.
+				// Force skip transactions that are finalized.
 			default:
 				i.tryWatch(tx)
 			}
@@ -187,26 +183,8 @@ func (i *GasPriceIncremenetor) watchAndIncrement(tx Transaction) error {
 				return i.transactionSuccess(tx)
 			}
 		case <-incTimer.C:
-			org, err := tx.getOriginal()
-			if err != nil {
-				return err
-			}
-
-			newGasPrice, _ := new(big.Float).Mul(
-				big.NewFloat(tx.Opts.PriceMultiplier),
-				new(big.Float).SetInt(org.GasPrice()),
-			).Int(nil)
-
-			if newGasPrice.Cmp(tx.Opts.MaxPrice) > 0 {
-				return i.transactionFailed(tx)
-			}
-
-			newTx := tx.rebuiledWithNewGasPrice(org, newGasPrice)
-			if err := i.signAndSend(newTx, tx.ChainID); err != nil {
-				return err
-			}
-
-			tx, err = i.transactionPriceIncreased(tx, newTx)
+			var err error
+			tx, err = i.increaseGasPrice(tx)
 			if err != nil {
 				return err
 			}
@@ -216,16 +194,31 @@ func (i *GasPriceIncremenetor) watchAndIncrement(tx Transaction) error {
 	}
 }
 
-func (i *GasPriceIncremenetor) getReceipt(tx Transaction) (*types.Receipt, error) {
-	cl, ok := i.bc[tx.ChainID]
-	if !ok {
-		return nil, fmt.Errorf("no bc client for chain %d can't get receipt", tx.ChainID)
+func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) (Transaction, error) {
+	org, err := tx.getOriginal()
+	if err != nil {
+		return Transaction{}, err
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
+	newGasPrice, _ := new(big.Float).Mul(
+		big.NewFloat(tx.Opts.PriceMultiplier),
+		new(big.Float).SetInt(org.GasPrice()),
+	).Int(nil)
 
-	receipt, err := cl.TransactionReceipt(ctx, common.HexToHash(tx.TxHashHex))
+	if newGasPrice.Cmp(tx.Opts.MaxPrice) > 0 {
+		return Transaction{}, i.transactionFailed(tx)
+	}
+
+	newTx := tx.rebuiledWithNewGasPrice(org, newGasPrice)
+	if err := i.signAndSend(newTx, tx.ChainID); err != nil {
+		return Transaction{}, err
+	}
+
+	return i.transactionPriceIncreased(tx, newTx)
+}
+
+func (i *GasPriceIncremenetor) getReceipt(tx Transaction) (*types.Receipt, error) {
+	receipt, err := i.bc.TransactionReceipt(tx.ChainID, common.HexToHash(tx.TxHashHex))
 	if err != nil {
 		return nil, fmt.Errorf("failed to get transaction receipt: %w", err)
 	}
@@ -238,15 +231,7 @@ func (i *GasPriceIncremenetor) signAndSend(tx *types.Transaction, chainID int64)
 		return fmt.Errorf("failed to sign a transaction: %w", err)
 	}
 
-	cl, ok := i.bc[chainID]
-	if !ok {
-		return fmt.Errorf("no bc client for chain %d can't send transaction", chainID)
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-
-	if err := cl.SendTransaction(ctx, signedTx); err != nil {
+	if err := i.bc.SendTransaction(chainID, signedTx); err != nil {
 		return fmt.Errorf("failed send a transaction: %w", err)
 	}
 

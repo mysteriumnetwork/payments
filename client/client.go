@@ -1030,3 +1030,11 @@ func (bc *Blockchain) GetStakeThresholds(hermesID common.Address) (min, max *big
 		Context: ctx,
 	})
 }
+
+// SendTransaction sends a transaction to the blockchain.
+func (bc *Blockchain) SendTransaction(tx *types.Transaction) error {
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return bc.ethClient.Client().SendTransaction(ctx, tx)
+}

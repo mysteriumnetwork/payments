@@ -68,7 +68,7 @@ func (t *TransactionOpts) validate() error {
 		return errors.New("priceMultiplier must be more than 1")
 	}
 	if t.MaxPrice == nil || t.MaxPrice.Cmp(big.NewInt(0)) <= 0 {
-		return errors.New("max price has to be than 0")
+		return errors.New("max price has to be greater than 0")
 	}
 	if t.Timeout <= 0 {
 		return errors.New("timeout value must be provided")

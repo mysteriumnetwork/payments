@@ -17,7 +17,6 @@
 package fees
 
 import (
-	"context"
 	"math/big"
 	"sync"
 	"testing"
@@ -38,7 +37,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 		c := newClient(big.NewInt(2))
 
 		sg := signer{}
-		inc := NewGasPriceIncremenetor(time.Millisecond, st, map[int64]Client{chid: c}, sg.SignatureFunc)
+		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, sg.SignatureFunc)
 		go inc.Run()
 		inc.InsertInitial(org, opts, chid)
 		assert.Eventually(t, func() bool {
@@ -74,7 +73,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 		c := newClient(big.NewInt(0))
 
 		sg := signer{}
-		inc := NewGasPriceIncremenetor(time.Millisecond, st, map[int64]Client{chid: c}, sg.SignatureFunc)
+		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, sg.SignatureFunc)
 		go inc.Run()
 		inc.InsertInitial(org, opts, chid)
 		assert.Eventually(t, func() bool {
@@ -111,7 +110,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 		c := newClient(new(big.Int).Add(opts.MaxPrice, big.NewInt(5)))
 
 		sg := signer{}
-		inc := NewGasPriceIncremenetor(time.Millisecond, st, map[int64]Client{chid: c}, sg.SignatureFunc)
+		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, sg.SignatureFunc)
 		go inc.Run()
 		inc.InsertInitial(org, opts, chid)
 		assert.Eventually(t, func() bool {
@@ -145,7 +144,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 		c := newClient(nil)
 
 		sg := signer{}
-		inc := NewGasPriceIncremenetor(time.Millisecond, st, map[int64]Client{chid: c}, sg.SignatureFunc)
+		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, sg.SignatureFunc)
 		assert.Error(t, inc.InsertInitial(org, TransactionOpts{}, chid))
 	})
 }
@@ -215,7 +214,7 @@ func newClient(gasTh *big.Int) *mockClient {
 	}
 }
 
-func (c *mockClient) TransactionReceipt(ctx context.Context, hash common.Hash) (*types.Receipt, error) {
+func (c *mockClient) TransactionReceipt(chainID int64, hash common.Hash) (*types.Receipt, error) {
 	c.checked = true
 	if c.currentGas.Cmp(c.gasTreshold) >= 0 {
 		return &types.Receipt{
@@ -228,7 +227,7 @@ func (c *mockClient) TransactionReceipt(ctx context.Context, hash common.Hash) (
 	}, nil
 }
 
-func (c *mockClient) SendTransaction(ctx context.Context, tx *types.Transaction) error {
+func (c *mockClient) SendTransaction(chainID int64, tx *types.Transaction) error {
 	c.currentGas = tx.GasPrice()
 	c.sent = true
 	return nil
