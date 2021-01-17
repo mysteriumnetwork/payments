@@ -42,7 +42,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 		go inc.Run()
 		inc.InsertInitial(org, opts, chid)
 		assert.Eventually(t, func() bool {
-			txs, _ := st.GetTransactionsToCheck()
+			txs, _ := st.GetIncrementorTransactionsToCheck()
 			if len(txs) == 0 {
 				return false
 			}
@@ -78,7 +78,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 		go inc.Run()
 		inc.InsertInitial(org, opts, chid)
 		assert.Eventually(t, func() bool {
-			txs, _ := st.GetTransactionsToCheck()
+			txs, _ := st.GetIncrementorTransactionsToCheck()
 			if len(txs) == 0 {
 				return false
 			}
@@ -115,7 +115,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 		go inc.Run()
 		inc.InsertInitial(org, opts, chid)
 		assert.Eventually(t, func() bool {
-			txs, _ := st.GetTransactionsToCheck()
+			txs, _ := st.GetIncrementorTransactionsToCheck()
 			if len(txs) == 0 {
 				return false
 			}
@@ -179,7 +179,7 @@ type mockStorage struct {
 	m sync.Mutex
 }
 
-func (s *mockStorage) UpsertTransaction(tx Transaction) error {
+func (s *mockStorage) UpsertIncrementorTransaction(tx Transaction) error {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -193,7 +193,7 @@ func (s *mockStorage) UpsertTransaction(tx Transaction) error {
 	return nil
 }
 
-func (s *mockStorage) GetTransactionsToCheck() (tx []Transaction, err error) {
+func (s *mockStorage) GetIncrementorTransactionsToCheck() (tx []Transaction, err error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 	s.pulled = true

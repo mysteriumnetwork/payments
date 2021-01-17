@@ -46,12 +46,12 @@ type GasPriceIncremenetor struct {
 // Storage is given to the Incremeter to be used to
 // insert, update or get transactions.
 type Storage interface {
-	// UpsertTransaction is called to upsert a transaction.
+	// UpsertIncrementorTransaction is called to upsert a transaction.
 	// It either inserts a new entry or updates existing entries.
-	UpsertTransaction(tx Transaction) error
+	UpsertIncrementorTransaction(tx Transaction) error
 
-	// GetTransactionsToCheck returns all transaction that need to rechecked.
-	GetTransactionsToCheck() (tx []Transaction, err error)
+	// GetIncrementorTransactionsToCheck returns all transaction that need to rechecked.
+	GetIncrementorTransactionsToCheck() (tx []Transaction, err error)
 }
 
 // Client handles calls to BC.
@@ -105,7 +105,7 @@ func (i *GasPriceIncremenetor) Run() {
 			return
 
 		case <-time.After(i.pullInterval):
-			txs, err := i.storage.GetTransactionsToCheck()
+			txs, err := i.storage.GetIncrementorTransactionsToCheck()
 			if err != nil {
 				continue
 			}
@@ -142,7 +142,7 @@ func (i *GasPriceIncremenetor) InsertInitial(tx *types.Transaction, opts Transac
 		return fmt.Errorf("failed to create new transaction: %w", err)
 	}
 
-	return i.storage.UpsertTransaction(*newTx)
+	return i.storage.UpsertIncrementorTransaction(*newTx)
 }
 
 // tryWatch will try to watch a transaction.
@@ -255,7 +255,7 @@ func (i *GasPriceIncremenetor) signAndSend(tx *types.Transaction, chainID int64)
 
 func (i *GasPriceIncremenetor) transactionFailed(tx Transaction) error {
 	tx.State = TxStateFailed
-	if err := i.storage.UpsertTransaction(tx); err != nil {
+	if err := i.storage.UpsertIncrementorTransaction(tx); err != nil {
 		return fmt.Errorf("failed marking transaction as failed: %w", err)
 	}
 
@@ -264,7 +264,7 @@ func (i *GasPriceIncremenetor) transactionFailed(tx Transaction) error {
 
 func (i *GasPriceIncremenetor) transactionSuccess(tx Transaction) error {
 	tx.State = TxStateSucceed
-	if err := i.storage.UpsertTransaction(tx); err != nil {
+	if err := i.storage.UpsertIncrementorTransaction(tx); err != nil {
 		return fmt.Errorf("failed marking transaction succeed: %w", err)
 	}
 	return nil
@@ -278,7 +278,7 @@ func (i *GasPriceIncremenetor) transactionPriceIncreased(tx Transaction, newTx *
 		return Transaction{}, fmt.Errorf("failed to marshal internal transaction object: %w", err)
 	}
 
-	if err := i.storage.UpsertTransaction(tx); err != nil {
+	if err := i.storage.UpsertIncrementorTransaction(tx); err != nil {
 		return Transaction{}, fmt.Errorf("failed to update transaction after price increase: %w", err)
 	}
 	return tx, nil
