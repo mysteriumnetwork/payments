@@ -317,3 +317,7 @@ func (cwdr *WithDryRuns) FilterLogs(q ethereum.FilterQuery) ([]types.Log, error)
 func (cwdr *WithDryRuns) HeaderByNumber(number *big.Int) (*types.Header, error) {
 	return cwdr.bc.HeaderByNumber(number)
 }
+
+func (cwdr *WithDryRuns) SendTransaction(tx *types.Transaction) error {
+	return cwdr.bc.SendTransaction(tx)
+}

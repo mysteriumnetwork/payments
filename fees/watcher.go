@@ -1,6 +1,6 @@
 /* Mysterium network payment library.
  *
- * Copyright (C) 2020 BlockDev AG
+ * Copyright (C) 2021 BlockDev AG
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,7 +14,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package client
+package fees
 
 import (
 	"context"
@@ -28,13 +28,9 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type client interface {
+type watchClient interface {
 	TransactionByHash(ctx context.Context, hash common.Hash) (tx *types.Transaction, isPending bool, err error)
 	TransactionReceipt(ctx context.Context, hash common.Hash) (*types.Receipt, error)
-}
-
-type TxWatcherIface interface {
-	EnsureTransactionSuccess(wt WatchableTransaction, initialGasPrice *big.Int) (*types.Transaction, func(), error)
 }
 
 // TxWatcher makes sure that transactions actually get sent to the network.
@@ -44,12 +40,12 @@ type TxWatcher struct {
 	waitBetweenRetries time.Duration
 	percentageIncrease float64
 
-	client        client
+	client        watchClient
 	clientTimeout time.Duration
 }
 
 // NewTxWatcher returns a new instance of tx watcher
-func NewTxWatcher(client client, clientTimeout time.Duration, maxRetries int, waitBetweenRetries time.Duration, percentageIncrease float64) *TxWatcher {
+func NewTxWatcher(client watchClient, clientTimeout time.Duration, maxRetries int, waitBetweenRetries time.Duration, percentageIncrease float64) *TxWatcher {
 	return &TxWatcher{
 		client:             client,
 		clientTimeout:      clientTimeout,

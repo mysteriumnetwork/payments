@@ -68,6 +68,7 @@ type BC interface {
 	FilterLogs(q ethereum.FilterQuery) ([]types.Log, error)
 	HeaderByNumber(number *big.Int) (*types.Header, error)
 	GetLastRegistryNonce(registry common.Address) (*big.Int, error)
+	SendTransaction(tx *types.Transaction) error
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -658,4 +659,13 @@ func (bwr *BlockchainWithRetries) GetStakeThresholds(hermesID common.Address) (m
 		return nil
 	})
 	return min, max, err
+}
+
+func (bwr *BlockchainWithRetries) SendTransaction(tx *types.Transaction) error {
+	return bwr.callWithRetry(func() error {
+		if err := bwr.bc.SendTransaction(tx); err != nil {
+			return errors.Wrap(err, "could not send transaction to bc")
+		}
+		return nil
+	})
 }

@@ -370,3 +370,11 @@ func (mbc *MultichainBlockchainClient) HeaderByNumber(chainID int64, number *big
 	}
 	return bc.HeaderByNumber(number)
 }
+
+func (mbc *MultichainBlockchainClient) SendTransaction(chainID int64, tx *types.Transaction) error {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return err
+	}
+	return bc.SendTransaction(tx)
+}
