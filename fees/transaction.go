@@ -63,6 +63,11 @@ type TransactionOpts struct {
 	CheckInterval    time.Duration
 }
 
+// TransactionUniqueID returns a unique ID for a transaction.
+func TransactionUniqueID(txHashHex string, chainID int64) string {
+	return fmt.Sprintf("%s|%d", txHashHex, chainID)
+}
+
 func (t *TransactionOpts) validate() error {
 	if t.PriceMultiplier <= 1 {
 		return errors.New("priceMultiplier must be more than 1")
@@ -92,7 +97,7 @@ func newTransaction(tx *types.Transaction, chainID int64, opts TransactionOpts) 
 	}
 
 	return &Transaction{
-		UniqueID:   fmt.Sprintf("%s|%d", hash, chainID),
+		UniqueID:   TransactionUniqueID(hash, chainID),
 		Opts:       opts,
 		State:      TxStateCreated,
 		TxHashHex:  hash,
