@@ -14,7 +14,6 @@ require (
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/gorilla/websocket v1.4.1 // indirect
-	github.com/josharian/impl v1.0.0 // indirect
 	github.com/magefile/mage v1.8.0
 	github.com/mattn/go-colorable v0.1.2 // indirect
 	github.com/mysteriumnetwork/go-ci v0.0.0-20200415074834-39fc864b0ed4
@@ -27,5 +26,4 @@ require (
 	github.com/status-im/keycard-go v0.0.0-20190424133014-d95853db0f48 // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/tyler-smith/go-bip39 v1.0.2 // indirect
-	golang.org/x/tools v0.0.0-20201013053347-2db1cd791039 // indirect
 )
