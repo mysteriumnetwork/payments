@@ -63,6 +63,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 
 			st.stateHistory)
 
+		assert.Equal(t, chid, st.tx.ChainID)
 		assert.Equal(t, big.NewInt(2), altered.GasPrice(), "gas price should increase")
 	})
 	t.Run("tx already mined", func(t *testing.T) {
@@ -98,6 +99,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 			st.stateHistory)
 		altered, err := st.tx.getOriginal()
 		assert.NoError(t, err)
+		assert.Equal(t, chid, st.tx.ChainID)
 		assert.Equal(t, originalGasPrice, altered.GasPrice(), "original gas price should stay the same")
 	})
 	t.Run("tx fails if gas price is too big", func(t *testing.T) {
@@ -134,6 +136,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 			st.stateHistory)
 
 		altered, err := st.tx.getOriginal()
+		assert.Equal(t, chid, st.tx.ChainID)
 		assert.NoError(t, err)
 		assert.Equal(t, new(big.Int).SetInt64(4), altered.GasPrice(), "gas price should be increased once")
 	})

@@ -183,11 +183,11 @@ func (i *GasPriceIncremenetor) watchAndIncrement(tx Transaction) error {
 				return i.transactionSuccess(tx)
 			}
 		case <-incTimer.C:
-			var err error
-			tx, err = i.increaseGasPrice(tx)
+			newTx, err := i.increaseGasPrice(tx)
 			if err != nil {
 				return err
 			}
+			tx = newTx
 		case <-timeout:
 			return i.transactionFailed(tx)
 		}
@@ -206,7 +206,11 @@ func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) (Transaction, er
 	).Int(nil)
 
 	if newGasPrice.Cmp(tx.Opts.MaxPrice) > 0 {
-		return Transaction{}, i.transactionFailed(tx)
+		if err := i.transactionFailed(tx); err != nil {
+			return Transaction{}, err
+		}
+
+		return Transaction{}, fmt.Errorf("transaction with hash '%s' failed, gas price limit of %s reached on chain %d", tx.TxHashHex, tx.Opts.MaxPrice.String(), tx.ChainID)
 	}
 
 	newTx := tx.rebuiledWithNewGasPrice(org, newGasPrice)
@@ -266,6 +270,7 @@ func (i *GasPriceIncremenetor) transactionPriceIncreased(tx Transaction, newTx *
 	if err := i.storage.UpsertIncrementorTransaction(tx); err != nil {
 		return Transaction{}, fmt.Errorf("failed to update transaction after price increase: %w", err)
 	}
+
 	return tx, nil
 }
 
