@@ -176,7 +176,7 @@ func (to truffleArtifact) AbiString() string {
 
 const licenseHeader = `/* Mysterium network payment library.
  *
- * Copyright (C) 2020 BlockDev AG
+ * Copyright (C) 2021 BlockDev AG
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by

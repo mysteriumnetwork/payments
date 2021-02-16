@@ -3,6 +3,8 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/magefile/mage/sh"
 	"github.com/mysteriumnetwork/go-ci/commands"
 )
@@ -17,4 +19,7 @@ func Generate() error {
 	return sh.RunV("go", "generate")
 }
 
-
+func GenerateMatic() error {
+	command := `run bindings/abi/abigen.go --localdir=./bindings/matic/abi --contracts=ChildContract.json,RootChainManager.json,RootChain.json --out=bindings/matic --pkg=matic`
+	return sh.RunV("go", strings.Split(command, " ")...)
+}
