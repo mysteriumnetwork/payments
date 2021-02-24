@@ -7,8 +7,10 @@ import (
 	"io/ioutil"
 	"math/big"
 	"net/http"
+	"net/url"
 )
 
+// BlockIncludedResponse represents the block included response.
 type BlockIncludedResponse struct {
 	HeaderBlockNumber string `json:"headerBlockNumber"`
 	BlockNumber       string `json:"blockNumber"`
@@ -18,11 +20,7 @@ type BlockIncludedResponse struct {
 	Root              string `json:"root"`
 	CreatedAt         string `json:"createdAt"`
 	Message           string `json:"message"`
-}
-
-type BlockIncludedResponseError struct {
-	Error   bool   `json:"error"`
-	Message string `json:"message"`
+	Error             bool   `json:"error"`
 }
 
 // API performs requests to various matic APIS.
@@ -31,13 +29,17 @@ type API struct {
 	client  *http.Client
 }
 
+// Network represents the various matic networks
 type Network string
 
 const (
-	NetworkMumbai  Network = "MUMBAI"
+	// NetworkMumbai represents the matic mumbai testnet.
+	NetworkMumbai Network = "MUMBAI"
+	// NetworkMainnet represents the matic mainnet.
 	NetworkMainnet Network = "MAINNET"
 )
 
+// NewAPI creates a new instance of matic API client.
 func NewAPI(network Network, client *http.Client) *API {
 	return &API{
 		network: network,
@@ -52,8 +54,10 @@ func (a *API) getBlockIncludedURI(block *big.Int) string {
 	return fmt.Sprintf("https://apis.matic.network/api/v1/mumbai/block-included/%v", block.String())
 }
 
+// ErrBlockNotIncluded indicates that the block has not been included yet.
 var ErrBlockNotIncluded = errors.New("block not yet included")
 
+// GetBlockIncludedResponse fetches theblock inclusion response from matic api.
 func (a *API) GetBlockIncludedResponse(block *big.Int) (BlockIncludedResponse, error) {
 	resp, err := a.client.Get(a.getBlockIncludedURI(block))
 	if err != nil {
@@ -68,31 +72,45 @@ func (a *API) GetBlockIncludedResponse(block *big.Int) (BlockIncludedResponse, e
 	res := BlockIncludedResponse{}
 	err = json.Unmarshal(body, &res)
 	if err != nil {
-		// this means we might have gotten an error response, try parsing that
-		res := BlockIncludedResponseError{}
-		err2 := json.Unmarshal(body, &res)
-		if err2 != nil {
-			return BlockIncludedResponse{}, fmt.Errorf("could not unmarshal error response %w", fmt.Errorf("could not unmarshal response from block include %w", err))
-		}
-		return BlockIncludedResponse{}, ErrBlockNotIncluded
+		return res, err
 	}
+	
+	if res.Error {
+		return res, ErrBlockNotIncluded
+	}
+
 	return res, nil
 }
 
 func (a *API) getMerkleProofURI(start, end, number *big.Int) string {
-	if a.network == NetworkMainnet {
-		return fmt.Sprintf("https://apis.matic.network/api/v1/matic/fast-merkle-proof?start=%v&end=%v&number=%v", start.String(), end.String(), number.String())
+	url := url.URL{
+		Scheme: "https",
+		Host:   "apis.matic.network",
+		Path:   "api/v1/mumbai/fast-merkle-proof",
 	}
-	return fmt.Sprintf("https://apis.matic.network/api/v1/mumbai/fast-merkle-proof?start=%v&end=%v&number=%v", start.String(), end.String(), number.String())
 
+	q := url.Query()
+	q.Set("start", start.String())
+	q.Set("end", end.String())
+	q.Set("number", number.String())
+	url.RawQuery = q.Encode()
+
+	if a.network == NetworkMainnet {
+		url.Path = "api/v1/matic/fast-merkle-proof"
+		return url.String()
+	}
+	return url.String()
 }
 
+// FastMerkleProofResponse represent the fast merkle proof response.
 type FastMerkleProofResponse struct {
 	Proof string `json:"proof"`
 }
 
+// GetFastMerkleProof fetches the fast merkle proof from matic API.
 func (a *API) GetFastMerkleProof(blockStart, blockEnd, blockNumber *big.Int) (FastMerkleProofResponse, error) {
-	resp, err := a.client.Get(a.getMerkleProofURI(blockStart, blockEnd, blockNumber))
+	uri := a.getMerkleProofURI(blockStart, blockEnd, blockNumber)
+	resp, err := a.client.Get(uri)
 	if err != nil {
 		return FastMerkleProofResponse{}, err
 	}
@@ -104,14 +122,5 @@ func (a *API) GetFastMerkleProof(blockStart, blockEnd, blockNumber *big.Int) (Fa
 
 	res := FastMerkleProofResponse{}
 	err = json.Unmarshal(body, &res)
-	if err != nil {
-		// this means we might have gotten an error response, try parsing that
-		res := FastMerkleProofResponse{}
-		err2 := json.Unmarshal(body, &res)
-		if err2 != nil {
-			return FastMerkleProofResponse{}, fmt.Errorf("could not unmarshal error response %w", fmt.Errorf("could not unmarshal response from fast merkle proof %w", err))
-		}
-		return FastMerkleProofResponse{}, ErrBlockNotIncluded
-	}
-	return res, nil
+	return res, err
 }
