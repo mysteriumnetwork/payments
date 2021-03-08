@@ -158,7 +158,16 @@ func (i *GasPriceIncremenetor) tryWatch(tx Transaction) {
 		defer i.syncer.txRemoveWatched(tx)
 		if err := i.watchAndIncrement(tx); err != nil {
 			i.log(tx, err)
+
+			if !tx.isExpired() {
+				return
+			}
+
+			if err := i.transactionFailed(tx); err != nil {
+				i.log(tx, err)
+			}
 		}
+
 	}()
 }
 
