@@ -17,12 +17,16 @@
 package fees
 
 import (
+	"errors"
+	"fmt"
 	"math/big"
 	"sync"
 	"testing"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -243,4 +247,52 @@ type signer struct {
 func (s *signer) SignatureFunc(tx *types.Transaction, chainID int64) (*types.Transaction, error) {
 	s.signed = true
 	return tx, nil
+}
+
+func TestGasPriceIncremenetor_isReceiptErrorUnhandleable(t *testing.T) {
+	type args struct {
+		err error
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "detects ethereum not found error",
+			args: args{
+				err: fmt.Errorf("tortilla %w", ethereum.NotFound),
+			},
+			want: true,
+		},
+		{
+			name: "detects core nonce too low error",
+			args: args{
+				err: fmt.Errorf("multiwrap %w", fmt.Errorf("tortilla %w", core.ErrNonceTooLow)),
+			},
+			want: true,
+		},
+		{
+			name: "detects nonce too low by string",
+			args: args{
+				err: fmt.Errorf("tortilla %w", errors.New("nonce too low")),
+			},
+			want: true,
+		},
+		{
+			name: "returns false on unknown error",
+			args: args{
+				err: fmt.Errorf("tortilla %w", errors.New("boom")),
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			i := &GasPriceIncremenetor{}
+			if got := i.isReceiptErrorUnhandleable(tt.args.err); got != tt.want {
+				t.Errorf("GasPriceIncremenetor.isReceiptErrorUnhandleable() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }

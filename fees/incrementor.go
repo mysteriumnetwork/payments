@@ -211,7 +211,22 @@ func (i *GasPriceIncremenetor) watchAndIncrement(tx Transaction) error {
 }
 
 func (i *GasPriceIncremenetor) isReceiptErrorUnhandleable(err error) bool {
-	return errors.Is(err, core.ErrNonceTooHigh) || errors.Is(err, core.ErrNonceTooLow) || errors.Is(err, ethereum.NotFound)
+	if errors.Is(err, core.ErrNonceTooHigh) || errors.Is(err, core.ErrNonceTooLow) || errors.Is(err, ethereum.NotFound) {
+		return true
+	}
+
+	unwrapped := errors.Unwrap(err)
+	if unwrapped == nil {
+		return false
+	}
+
+	// ethereum sometimes returns errors from some other, non core package, so resort to string checks
+	switch unwrapped.Error() {
+	case core.ErrNonceTooLow.Error(), core.ErrNonceTooHigh.Error():
+		return true
+	default:
+		return false
+	}
 }
 
 func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) (Transaction, error) {
