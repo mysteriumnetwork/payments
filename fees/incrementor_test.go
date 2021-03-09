@@ -249,7 +249,7 @@ func (s *signer) SignatureFunc(tx *types.Transaction, chainID int64) (*types.Tra
 	return tx, nil
 }
 
-func TestGasPriceIncremenetor_isReceiptErrorUnhandleable(t *testing.T) {
+func TestGasPriceIncremenetor_isBlockchainErrorUnhandleable(t *testing.T) {
 	type args struct {
 		err error
 	}
@@ -279,19 +279,12 @@ func TestGasPriceIncremenetor_isReceiptErrorUnhandleable(t *testing.T) {
 			},
 			want: true,
 		},
-		{
-			name: "returns false on unknown error",
-			args: args{
-				err: fmt.Errorf("tortilla %w", errors.New("boom")),
-			},
-			want: false,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			i := &GasPriceIncremenetor{}
-			if got := i.isReceiptErrorUnhandleable(tt.args.err); got != tt.want {
-				t.Errorf("GasPriceIncremenetor.isReceiptErrorUnhandleable() = %v, want %v", got, tt.want)
+			if got := i.isBlockchainErrorUnhandleable(tt.args.err); got != tt.want {
+				t.Errorf("GasPriceIncremenetor.isBlockchainErrorUnhandleable() = %v, want %v", got, tt.want)
 			}
 		})
 	}

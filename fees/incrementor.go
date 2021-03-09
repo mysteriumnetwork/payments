@@ -189,10 +189,10 @@ func (i *GasPriceIncremenetor) watchAndIncrement(tx Transaction) error {
 		case <-checkTimer.C:
 			receipt, err := i.getReceipt(tx)
 			if err != nil {
-				if !i.isReceiptErrorUnhandleable(err) {
+				if !i.isBlockchainErrorUnhandleable(err) {
 					return err
 				}
-				i.log(tx, fmt.Errorf("received unhandleable error, marking tx as failed: %w", err))
+				i.log(tx, fmt.Errorf("received unhandleable receipt error, marking tx as failed: %w", err))
 				return i.transactionFailed(tx)
 			}
 			if receipt.Status == types.ReceiptStatusSuccessful {
@@ -201,7 +201,11 @@ func (i *GasPriceIncremenetor) watchAndIncrement(tx Transaction) error {
 		case <-incTimer.C:
 			newTx, err := i.increaseGasPrice(tx)
 			if err != nil {
-				return err
+				if !i.isBlockchainErrorUnhandleable(err) {
+					return err
+				}
+				i.log(tx, fmt.Errorf("received unhandleable increase error, marking tx as failed: %w", err))
+				return i.transactionFailed(tx)
 			}
 			tx = newTx
 		case <-timeout:
@@ -210,7 +214,7 @@ func (i *GasPriceIncremenetor) watchAndIncrement(tx Transaction) error {
 	}
 }
 
-func (i *GasPriceIncremenetor) isReceiptErrorUnhandleable(err error) bool {
+func (i *GasPriceIncremenetor) isBlockchainErrorUnhandleable(err error) bool {
 	if errors.Is(err, core.ErrNonceTooHigh) || errors.Is(err, core.ErrNonceTooLow) || errors.Is(err, ethereum.NotFound) {
 		return true
 	}
@@ -250,7 +254,7 @@ func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) (Transaction, er
 
 	newTx := tx.rebuiledWithNewGasPrice(org, newGasPrice)
 	if err := i.signAndSend(newTx, tx.ChainID); err != nil {
-		return Transaction{}, err
+		return Transaction{}, i.transactionFailed(tx)
 	}
 
 	return i.transactionPriceIncreased(tx, newTx)
