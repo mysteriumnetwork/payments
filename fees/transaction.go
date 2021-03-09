@@ -90,7 +90,7 @@ func (t *TransactionOpts) validate() error {
 		return errors.New("check interval value must be provided")
 	}
 	if t.ValidUntil != nil && t.ValidUntil.Before(time.Now()) {
-		return errors.New("if given 'ValidUntil' must be in the future")
+		return errors.New("given 'ValidUntil' must be in the future")
 	}
 
 	return nil
