@@ -61,6 +61,11 @@ type TransactionOpts struct {
 	Timeout          time.Duration
 	IncreaseInterval time.Duration
 	CheckInterval    time.Duration
+
+	// ValidUntil is an optional paremeter which
+	// can be given to invalidate a transaction and mark it as failed
+	// after the given time.Time.
+	ValidUntil *time.Time
 }
 
 // TransactionUniqueID returns a unique ID for a transaction.
@@ -84,6 +89,9 @@ func (t *TransactionOpts) validate() error {
 	if t.CheckInterval <= 0 {
 		return errors.New("check interval value must be provided")
 	}
+	if t.ValidUntil != nil && t.ValidUntil.Before(time.Now()) {
+		return errors.New("given 'ValidUntil' must be in the future")
+	}
 
 	return nil
 }
@@ -104,6 +112,14 @@ func newTransaction(tx *types.Transaction, chainID int64, opts TransactionOpts) 
 		ChainID:    chainID,
 		OriginalTx: marshaled,
 	}, nil
+}
+
+func (t *Transaction) isExpired() bool {
+	if t.Opts.ValidUntil == nil {
+		return false
+	}
+
+	return time.Now().After(*t.Opts.ValidUntil)
 }
 
 func (t *Transaction) getOriginal() (*types.Transaction, error) {

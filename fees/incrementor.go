@@ -17,12 +17,15 @@
 package fees
 
 import (
+	"errors"
 	"fmt"
 	"math/big"
 	"sync"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/types"
 )
 
@@ -158,7 +161,16 @@ func (i *GasPriceIncremenetor) tryWatch(tx Transaction) {
 		defer i.syncer.txRemoveWatched(tx)
 		if err := i.watchAndIncrement(tx); err != nil {
 			i.log(tx, err)
+
+			if !tx.isExpired() {
+				return
+			}
+
+			if err := i.transactionFailed(tx); err != nil {
+				i.log(tx, err)
+			}
 		}
+
 	}()
 }
 
@@ -177,7 +189,11 @@ func (i *GasPriceIncremenetor) watchAndIncrement(tx Transaction) error {
 		case <-checkTimer.C:
 			receipt, err := i.getReceipt(tx)
 			if err != nil {
-				return err
+				if !i.isReceiptErrorUnhandleable(err) {
+					return err
+				}
+				i.log(tx, fmt.Errorf("received unhandleable error, marking tx as failed: %w", err))
+				return i.transactionFailed(tx)
 			}
 			if receipt.Status == types.ReceiptStatusSuccessful {
 				return i.transactionSuccess(tx)
@@ -192,6 +208,10 @@ func (i *GasPriceIncremenetor) watchAndIncrement(tx Transaction) error {
 			return i.transactionFailed(tx)
 		}
 	}
+}
+
+func (i *GasPriceIncremenetor) isReceiptErrorUnhandleable(err error) bool {
+	return errors.Is(err, core.ErrNonceTooHigh) || errors.Is(err, core.ErrNonceTooLow) || errors.Is(err, ethereum.NotFound)
 }
 
 func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) (Transaction, error) {
