@@ -573,6 +573,22 @@ func (bc *Blockchain) GetHermesOperator(hermesID common.Address) (common.Address
 	})
 }
 
+// IsHermesActive determines if hermes is active or not.
+func (bc *Blockchain) IsHermesActive(hermesID common.Address) (bool, error) {
+	caller, err := bindings.NewHermesImplementationCaller(hermesID, bc.ethClient.Client())
+	if err != nil {
+		return false, err
+	}
+
+	parent := context.Background()
+	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
+	defer cancel()
+	return caller.IsHermesActive(&bind.CallOpts{
+		Pending: false,
+		Context: ctx,
+	})
+}
+
 // SettleAndRebalanceRequest represents all the parameters required for settle and rebalance
 type SettleAndRebalanceRequest struct {
 	WriteRequest

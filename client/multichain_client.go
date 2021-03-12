@@ -394,3 +394,11 @@ func (mbc *MultichainBlockchainClient) SendTransaction(chainID int64, tx *types.
 	}
 	return bc.SendTransaction(tx)
 }
+
+func (mbc *MultichainBlockchainClient) IsHermesActive(chainID int64, hermesID common.Address) (bool, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return false, err
+	}
+	return bc.IsHermesActive(hermesID)
+}
