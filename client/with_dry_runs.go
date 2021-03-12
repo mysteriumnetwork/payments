@@ -321,3 +321,7 @@ func (cwdr *WithDryRuns) HeaderByNumber(number *big.Int) (*types.Header, error) 
 func (cwdr *WithDryRuns) SendTransaction(tx *types.Transaction) error {
 	return cwdr.bc.SendTransaction(tx)
 }
+
+func (cwdr *WithDryRuns) IsHermesActive(hermesID common.Address) (bool, error) {
+	return cwdr.bc.IsHermesActive(hermesID)
+}

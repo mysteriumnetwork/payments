@@ -69,6 +69,7 @@ type BC interface {
 	HeaderByNumber(number *big.Int) (*types.Header, error)
 	GetLastRegistryNonce(registry common.Address) (*big.Int, error)
 	SendTransaction(tx *types.Transaction) error
+	IsHermesActive(hermesID common.Address) (bool, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -668,4 +669,17 @@ func (bwr *BlockchainWithRetries) SendTransaction(tx *types.Transaction) error {
 		}
 		return nil
 	})
+}
+
+func (bwr *BlockchainWithRetries) IsHermesActive(hermesID common.Address) (bool, error) {
+	res := false
+	err := bwr.callWithRetry(func() error {
+		r, err := bwr.bc.IsHermesActive(hermesID)
+		if err != nil {
+			return err
+		}
+		res = r
+		return nil
+	})
+	return res, err
 }
