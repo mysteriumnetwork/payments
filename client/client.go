@@ -832,6 +832,54 @@ func (bc *Blockchain) GetHermesURL(registryID, hermesID common.Address) (string,
 	return string(urlBytes), err
 }
 
+// Hermes represents the hermes in registry.
+type Hermes struct {
+	Operator common.Address
+	ImplVer  *big.Int
+	Stake    *big.Int
+	URL      string
+}
+
+// GetHermes returns hermes info from registry
+func (bc *Blockchain) GetHermes(registryID, hermesID common.Address) (Hermes, error) {
+	caller, err := bindings.NewRegistryCaller(registryID, bc.ethClient.Client())
+	if err != nil {
+		return Hermes{}, fmt.Errorf("could not create new registry caller %w", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	status, err := caller.Hermeses(&bind.CallOpts{
+		Context: ctx,
+	}, hermesID)
+	if err != nil {
+		return Hermes{}, err
+	}
+
+	return Hermes{
+		Operator: status.Operator,
+		ImplVer:  status.ImplVer,
+		Stake:    big.NewInt(0).SetBytes(status.Stake[:]),
+		URL:      string(status.Url),
+	}, nil
+}
+
+// GetChannelImplementationByVersion returns the channel implementation for the specified version.
+func (bc *Blockchain) GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error) {
+	caller, err := bindings.NewRegistryCaller(registryID, bc.ethClient.Client())
+	if err != nil {
+		return common.Address{}, fmt.Errorf("could not create new registry caller %w", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.GetChannelImplementation(&bind.CallOpts{
+		Context: ctx,
+	}, version)
+}
+
 // SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events
 func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	caller, err := bindings.NewHermesImplementationFilterer(hermesID, bc.ethClient.Client())

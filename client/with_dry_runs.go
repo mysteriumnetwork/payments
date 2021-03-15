@@ -325,3 +325,11 @@ func (cwdr *WithDryRuns) SendTransaction(tx *types.Transaction) error {
 func (cwdr *WithDryRuns) IsHermesActive(hermesID common.Address) (bool, error) {
 	return cwdr.bc.IsHermesActive(hermesID)
 }
+
+func (cwdr *WithDryRuns) GetHermes(registryID, hermesID common.Address) (Hermes, error) {
+	return cwdr.bc.GetHermes(registryID, hermesID)
+}
+
+func (cwdr *WithDryRuns) GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error) {
+	return cwdr.bc.GetChannelImplementationByVersion(registryID, version)
+}
