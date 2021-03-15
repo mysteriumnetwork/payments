@@ -70,6 +70,8 @@ type BC interface {
 	GetLastRegistryNonce(registry common.Address) (*big.Int, error)
 	SendTransaction(tx *types.Transaction) error
 	IsHermesActive(hermesID common.Address) (bool, error)
+	GetHermes(registryID, hermesID common.Address) (Hermes, error)
+	GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.

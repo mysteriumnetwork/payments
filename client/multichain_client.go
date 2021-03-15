@@ -368,6 +368,24 @@ func (mbc *MultichainBlockchainClient) GetStakeThresholds(chainID int64, hermesI
 	return bc.GetStakeThresholds(hermesID)
 }
 
+func (mbc *MultichainBlockchainClient) GetHermes(chainID int64, registryID, hermesID common.Address) (Hermes, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return Hermes{}, err
+	}
+
+	return bc.GetHermes(registryID, hermesID)
+}
+
+func (mbc *MultichainBlockchainClient) GetChannelImplementationByVersion(chainID int64, registryID common.Address, version *big.Int) (common.Address, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return common.Address{}, err
+	}
+
+	return bc.GetChannelImplementationByVersion(registryID, version)
+}
+
 // FilterLogs executes a filter query.
 func (mbc *MultichainBlockchainClient) FilterLogs(chainID int64, q ethereum.FilterQuery) ([]types.Log, error) {
 	bc, err := mbc.getClientByChain(chainID)
