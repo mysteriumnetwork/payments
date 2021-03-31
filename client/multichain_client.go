@@ -386,6 +386,15 @@ func (mbc *MultichainBlockchainClient) GetChannelImplementationByVersion(chainID
 	return bc.GetChannelImplementationByVersion(registryID, version)
 }
 
+func (mbc *MultichainBlockchainClient) IsChannelOpened(chainID int64, registryID, identity, hermesID common.Address) (bool, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return false, err
+	}
+
+	return bc.IsChannelOpened(registryID, identity, hermesID)
+}
+
 // FilterLogs executes a filter query.
 func (mbc *MultichainBlockchainClient) FilterLogs(chainID int64, q ethereum.FilterQuery) ([]types.Log, error) {
 	bc, err := mbc.getClientByChain(chainID)

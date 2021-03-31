@@ -79,6 +79,52 @@ func NewBlockchainWithCustomNonceTracker(ethClient ethClientGetter, timeout time
 	}
 }
 
+type BC interface {
+	GetHermesFee(hermesAddress common.Address) (uint16, error)
+	CalculateHermesFee(hermesAddress common.Address, value *big.Int) (*big.Int, error)
+	IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck common.Address) (bool, error)
+	GetProviderChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error)
+	IsRegistered(registryAddress, addressToCheck common.Address) (bool, error)
+	SubscribeToPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error)
+	GetMystBalance(mystSCAddress, address common.Address) (*big.Int, error)
+	SubscribeToConsumerBalanceEvent(channel, mystSCAddress common.Address, timeout time.Duration) (chan *bindings.MystTokenTransfer, func(), error)
+	RegisterIdentity(rr RegistrationRequest) (*types.Transaction, error)
+	TransferMyst(req TransferRequest) (tx *types.Transaction, err error)
+	IsHermesRegistered(registryAddress, acccountantID common.Address) (bool, error)
+	GetHermesOperator(hermesID common.Address) (common.Address, error)
+	SettleAndRebalance(req SettleAndRebalanceRequest) (*types.Transaction, error)
+	SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*types.Transaction, error)
+	GetConsumerChannelsHermes(channelAddress common.Address) (ConsumersHermes, error)
+	GetConsumerChannelOperator(channelAddress common.Address) (common.Address, error)
+	GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error)
+	SubscribeToIdentityRegistrationEvents(registryAddress common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error)
+	SubscribeToConsumerChannelBalanceUpdate(mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error)
+	SettlePromise(req SettleRequest) (*types.Transaction, error)
+	SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error)
+	SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error)
+	NetworkID() (*big.Int, error)
+	GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error)
+	GetEthBalance(address common.Address) (*big.Int, error)
+	TransferEth(etr EthTransferRequest) (*types.Transaction, error)
+	GetHermessAvailableBalance(hermesAddress common.Address) (*big.Int, error)
+	DecreaseProviderStake(req DecreaseProviderStakeRequest) (*types.Transaction, error)
+	SettleIntoStake(req SettleIntoStakeRequest) (*types.Transaction, error)
+	IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*types.Transaction, error)
+	TransactionReceipt(hash common.Hash) (*types.Receipt, error)
+	GetHermesURL(registryID, hermesID common.Address) (string, error)
+	GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error)
+	GetBeneficiary(registryAddress, identity common.Address) (common.Address, error)
+	SuggestGasPrice() (*big.Int, error)
+	FilterLogs(q ethereum.FilterQuery) ([]types.Log, error)
+	HeaderByNumber(number *big.Int) (*types.Header, error)
+	GetLastRegistryNonce(registry common.Address) (*big.Int, error)
+	SendTransaction(tx *types.Transaction) error
+	IsHermesActive(hermesID common.Address) (bool, error)
+	GetHermes(registryID, hermesID common.Address) (Hermes, error)
+	GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error)
+	IsChannelOpened(registryID, identity, hermesID common.Address) (bool, error)
+}
+
 // GetHermesFee fetches the hermes fee from blockchain
 func (bc *Blockchain) GetHermesFee(hermesAddress common.Address) (uint16, error) {
 	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
@@ -878,6 +924,20 @@ func (bc *Blockchain) GetChannelImplementationByVersion(registryID common.Addres
 	return caller.GetChannelImplementation(&bind.CallOpts{
 		Context: ctx,
 	}, version)
+}
+
+func (bc *Blockchain) IsChannelOpened(registryID, identity, hermesID common.Address) (bool, error) {
+	caller, err := bindings.NewRegistryCaller(registryID, bc.ethClient.Client())
+	if err != nil {
+		return false, fmt.Errorf("could not create new registry caller %w", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.IsChannelOpened(&bind.CallOpts{
+		Context: ctx,
+	}, identity, hermesID)
 }
 
 // SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events

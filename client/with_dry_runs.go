@@ -333,3 +333,7 @@ func (cwdr *WithDryRuns) GetHermes(registryID, hermesID common.Address) (Hermes,
 func (cwdr *WithDryRuns) GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error) {
 	return cwdr.bc.GetChannelImplementationByVersion(registryID, version)
 }
+
+func (cwdr *WithDryRuns) IsChannelOpened(registryID, identity, hermesID common.Address) (bool, error) {
+	return cwdr.bc.IsChannelOpened(registryID, identity, hermesID)
+}
