@@ -850,7 +850,7 @@ func (bc *Blockchain) GetHermes(registryID, hermesID common.Address) (Hermes, er
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	status, err := caller.Hermeses(&bind.CallOpts{
+	status, err := caller.GetHermes(&bind.CallOpts{
 		Context: ctx,
 	}, hermesID)
 	if err != nil {
