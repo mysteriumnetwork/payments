@@ -73,24 +73,36 @@ func GenerateChannelAddress(identity, hermes, registry, channelImplementation st
 
 // GenerateProviderChannelID generated channelID for provider channels from given identity hash
 func GenerateProviderChannelID(providerIdentity, hermesAddress string) (string, error) {
+	return generateProviderChannelID(providerIdentity, hermesAddress, ProviderChannelTypeDefault)
+}
+
+// GenerateProviderChannelIDForPayAndSettle generated channelID for provider channels from given identity hash
+func GenerateProviderChannelIDForPayAndSettle(providerIdentity, hermesAddress string) (string, error) {
+	return generateProviderChannelID(providerIdentity, hermesAddress, ProviderChannelTypePayAndSettle)
+}
+
+type ProviderChannelType string
+
+const (
+	ProviderChannelTypeDefault      ProviderChannelType = ""
+	ProviderChannelTypePayAndSettle ProviderChannelType = "withdrawal"
+)
+
+func generateProviderChannelID(providerIdentity, hermesAddress string, channelType ProviderChannelType) (string, error) {
 	if !isHexAddress(providerIdentity) || !isHexAddress(hermesAddress) {
 		return "", errors.New("given providerIdentity and hermesAddress params have to be hex addresses")
 	}
 
-	channelID := crypto.Keccak256(append(
+	input := append(
 		common.HexToAddress(providerIdentity).Bytes(),
 		common.HexToAddress(hermesAddress).Bytes()...,
-	))
+	)
 
-	return "0x" + common.Bytes2Hex(channelID), nil
-}
+	if channelType == ProviderChannelTypePayAndSettle {
+		input = append(input, []byte(string(ProviderChannelTypePayAndSettle))...)
+	}
 
-// GenerateProviderChannelIDBytes received provider and accountnat Address
-func GenerateProviderChannelIDBytes(providerIdentity, hermesAddress common.Address) []byte {
-	return crypto.Keccak256(append(
-		providerIdentity.Bytes(),
-		hermesAddress.Bytes()...,
-	))
+	return "0x" + common.Bytes2Hex(crypto.Keccak256(input)), nil
 }
 
 // GenerateHermesAddress generate hermes address from given hermes operator address
