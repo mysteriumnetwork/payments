@@ -420,3 +420,11 @@ func (mbc *MultichainBlockchainClient) IsHermesActive(chainID int64, hermesID co
 	}
 	return bc.IsHermesActive(hermesID)
 }
+
+func (mbc *MultichainBlockchainClient) TransactionByHash(chainID int64, hash common.Hash) (*types.Transaction, bool, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, false, err
+	}
+	return bc.TransactionByHash(hash)
+}

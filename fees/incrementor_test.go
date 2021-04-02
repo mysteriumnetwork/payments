@@ -234,6 +234,10 @@ func (c *mockClient) TransactionReceipt(chainID int64, hash common.Hash) (*types
 	}, nil
 }
 
+func (c *mockClient) TransactionByHash(chainID int64, hash common.Hash) (*types.Transaction, bool, error) {
+	return nil, false, nil
+}
+
 func (c *mockClient) SendTransaction(chainID int64, tx *types.Transaction) error {
 	c.currentGas = tx.GasPrice()
 	c.sent = true
