@@ -333,3 +333,7 @@ func (cwdr *WithDryRuns) GetHermes(registryID, hermesID common.Address) (Hermes,
 func (cwdr *WithDryRuns) GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error) {
 	return cwdr.bc.GetChannelImplementationByVersion(registryID, version)
 }
+
+func (cwdr *WithDryRuns) TransactionByHash(hash common.Hash) (*types.Transaction, bool, error) {
+	return cwdr.bc.TransactionByHash(hash)
+}
