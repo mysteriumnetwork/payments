@@ -686,3 +686,44 @@ func (bwr *BlockchainWithRetries) IsHermesActive(hermesID common.Address) (bool,
 	})
 	return res, err
 }
+
+func (bwr *BlockchainWithRetries) GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error) {
+	var res common.Address
+	err := bwr.callWithRetry(func() error {
+		addr, err := bwr.bc.GetChannelImplementationByVersion(registryID, version)
+		if err != nil {
+			return errors.Wrap(err, "could not get channel implementation version")
+		}
+		res = addr
+		return nil
+	})
+	return res, err
+}
+
+func (bwr *BlockchainWithRetries) GetHermes(registryID, hermesID common.Address) (Hermes, error) {
+	var res Hermes
+	err := bwr.callWithRetry(func() error {
+		h, err := bwr.bc.GetHermes(registryID, hermesID)
+		if err != nil {
+			return errors.Wrap(err, "could not get hermes")
+		}
+		res = h
+		return nil
+	})
+	return res, err
+}
+
+func (bwr *BlockchainWithRetries) TransactionByHash(hash common.Hash) (*types.Transaction, bool, error) {
+	var res *types.Transaction
+	var ok bool
+	err := bwr.callWithRetry(func() error {
+		h, k, err := bwr.bc.TransactionByHash(hash)
+		if err != nil {
+			return errors.Wrap(err, "could not get transaction by hash")
+		}
+		res = h
+		ok = k
+		return nil
+	})
+	return res, ok, err
+}
