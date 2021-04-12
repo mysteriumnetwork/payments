@@ -337,3 +337,15 @@ func (cwdr *WithDryRuns) GetChannelImplementationByVersion(registryID common.Add
 func (cwdr *WithDryRuns) TransactionByHash(hash common.Hash) (*types.Transaction, bool, error) {
 	return cwdr.bc.TransactionByHash(hash)
 }
+
+func (cwdr *WithDryRuns) RewarderTotalPayoutsFor(rewarderAddress common.Address, payoutsFor common.Address) (*big.Int, error) {
+	return cwdr.bc.RewarderTotalPayoutsFor(rewarderAddress, payoutsFor)
+}
+
+func (cwdr *WithDryRuns) RewarderAirDrop(req RewarderAirDrop) (*types.Transaction, error) {
+	return cwdr.bc.RewarderAirDrop(req)
+}
+
+func (cwdr *WithDryRuns) RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transaction, error) {
+	return cwdr.bc.RewarderUpdateRoot(req)
+}
