@@ -429,3 +429,11 @@ func (mbc *MultichainBlockchainClient) IsHermesActive(chainID int64, hermesID co
 	}
 	return bc.IsHermesActive(hermesID)
 }
+
+func (mbc *MultichainBlockchainClient) PayAndSettle(chainID int64, psr PayAndSettleRequest) (*types.Transaction, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.PayAndSettle(psr)
+}

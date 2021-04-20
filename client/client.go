@@ -122,6 +122,7 @@ type BC interface {
 	IsHermesActive(hermesID common.Address) (bool, error)
 	GetHermes(registryID, hermesID common.Address) (Hermes, error)
 	GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error)
+	PayAndSettle(psr PayAndSettleRequest) (*types.Transaction, error)
 	IsChannelOpened(registryID, identity, hermesID common.Address) (bool, error)
 }
 
@@ -319,6 +320,7 @@ func (bc *Blockchain) GetMystBalance(mystAddress, identity common.Address) (*big
 // RegistrationRequest contains all the parameters for the registration request
 type RegistrationRequest struct {
 	WriteRequest
+	ChainID         int64
 	HermesID        common.Address
 	Stake           *big.Int
 	TransactorFee   *big.Int
@@ -385,6 +387,65 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 		rr.TransactorFee,
 		rr.Beneficiary,
 		rr.Signature,
+	)
+	return tx, err
+}
+
+// PayAndSettleRequest allows to pay and settle and exit to l1 via this.
+type PayAndSettleRequest struct {
+	WriteRequest
+	Beneficiary          common.Address
+	HermesID             common.Address
+	ProviderID           common.Address
+	Promise              crypto.Promise
+	BeneficiarySignature []byte
+}
+
+func (psr PayAndSettleRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+	return bindings.NewContractEstimator(psr.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+}
+
+func (psr PayAndSettleRequest) toEstimateOps() *bindings.EstimateOpts {
+	return &bindings.EstimateOpts{
+		From:   psr.Identity,
+		Method: "payAndSettle",
+		Params: []interface{}{psr.ProviderID, psr.Promise.Amount, psr.Promise.Fee, toBytes32(psr.Promise.R), psr.Promise.Signature, psr.Beneficiary, psr.BeneficiarySignature},
+	}
+}
+
+// PayAndSettle registers the given identity on blockchain.
+func (bc *Blockchain) PayAndSettle(psr PayAndSettleRequest) (*types.Transaction, error) {
+	transactor, err := bindings.NewHermesImplementationTransactor(psr.HermesID, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+	parent := context.Background()
+	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
+	defer cancel()
+
+	nonce := psr.Nonce
+	if nonce == nil {
+		nonceUint, err := bc.getNonce(psr.Identity)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get nonce")
+		}
+		nonce = big.NewInt(0).SetUint64(nonceUint)
+	}
+	tx, err := transactor.PayAndSettle(&bind.TransactOpts{
+		From:     psr.Identity,
+		Signer:   psr.Signer,
+		Context:  ctx,
+		GasLimit: psr.GasLimit,
+		GasPrice: psr.GasPrice,
+		Nonce:    nonce,
+	},
+		psr.ProviderID,
+		psr.Promise.Amount,
+		psr.Promise.Fee,
+		toBytes32(psr.Promise.R),
+		psr.Promise.Signature,
+		psr.Beneficiary,
+		psr.BeneficiarySignature,
 	)
 	return tx, err
 }

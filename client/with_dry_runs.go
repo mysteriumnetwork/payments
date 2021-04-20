@@ -276,6 +276,14 @@ func (cwdr *WithDryRuns) DecreaseProviderStake(req DecreaseProviderStakeRequest)
 	return cwdr.bc.DecreaseProviderStake(req)
 }
 
+func (cwdr *WithDryRuns) PayAndSettle(req PayAndSettleRequest) (*types.Transaction, error) {
+	if _, err := cwdr.Estimate(req); err != nil {
+		return nil, err
+	}
+
+	return cwdr.bc.PayAndSettle(req)
+}
+
 func (cwdr *WithDryRuns) GetBeneficiary(registryAddress, identity common.Address) (common.Address, error) {
 	return cwdr.bc.GetBeneficiary(registryAddress, identity)
 }
