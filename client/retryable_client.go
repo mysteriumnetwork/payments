@@ -73,6 +73,9 @@ type BC interface {
 	GetHermes(registryID, hermesID common.Address) (Hermes, error)
 	GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error)
 	TransactionByHash(hash common.Hash) (*types.Transaction, bool, error)
+	RewarderTotalPayoutsFor(rewarderAddress common.Address, payoutsFor common.Address) (*big.Int, error)
+	RewarderAirDrop(req RewarderAirDrop) (*types.Transaction, error)
+	RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transaction, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -726,4 +729,43 @@ func (bwr *BlockchainWithRetries) TransactionByHash(hash common.Hash) (*types.Tr
 		return nil
 	})
 	return res, ok, err
+}
+
+func (bwr *BlockchainWithRetries) RewarderTotalPayoutsFor(rewarderAddress common.Address, payoutsFor common.Address) (*big.Int, error) {
+	var total *big.Int
+	err := bwr.callWithRetry(func() error {
+		t, err := bwr.bc.RewarderTotalPayoutsFor(rewarderAddress, payoutsFor)
+		if err != nil {
+			return errors.Wrap(err, "could send get total payouts for address")
+		}
+		total = t
+		return nil
+	})
+	return total, err
+}
+
+func (bwr *BlockchainWithRetries) RewarderAirDrop(req RewarderAirDrop) (*types.Transaction, error) {
+	var res *types.Transaction
+	err := bwr.callWithRetry(func() error {
+		tx, err := bwr.bc.RewarderAirDrop(req)
+		if err != nil {
+			return errors.Wrap(err, "could send air drop request")
+		}
+		res = tx
+		return nil
+	})
+	return res, err
+}
+
+func (bwr *BlockchainWithRetries) RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transaction, error) {
+	var res *types.Transaction
+	err := bwr.callWithRetry(func() error {
+		tx, err := bwr.bc.RewarderUpdateRoot(req)
+		if err != nil {
+			return errors.Wrap(err, "could send update root request")
+		}
+		res = tx
+		return nil
+	})
+	return res, err
 }

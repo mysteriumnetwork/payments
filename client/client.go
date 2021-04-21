@@ -30,6 +30,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/event"
 	"github.com/mysteriumnetwork/payments/bindings"
+	"github.com/mysteriumnetwork/payments/bindings/rewarder"
 	"github.com/mysteriumnetwork/payments/crypto"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -1107,4 +1108,88 @@ func (bc *Blockchain) SendTransaction(tx *types.Transaction) error {
 	defer cancel()
 
 	return bc.ethClient.Client().SendTransaction(ctx, tx)
+}
+
+type RewarderUpdateRoot struct {
+	WriteRequest
+	RewaderID   common.Address
+	ClaimRoot   []byte
+	BlockNumber *big.Int
+	TotalReward *big.Int
+}
+
+func (bc *Blockchain) RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transaction, error) {
+	transactor, err := rewarder.NewRewarderTransactor(req.RewaderID, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	nonce, err := bc.getNonce(req.Identity)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get nonce")
+	}
+
+	return transactor.UpdateRoot(&bind.TransactOpts{
+		From:     req.Identity,
+		Signer:   req.Signer,
+		Context:  ctx,
+		GasLimit: req.GasLimit,
+		GasPrice: req.GasPrice,
+		Nonce:    big.NewInt(0).SetUint64(nonce),
+	},
+		toBytes32(req.ClaimRoot),
+		req.BlockNumber,
+		req.TotalReward,
+	)
+}
+
+type RewarderAirDrop struct {
+	WriteRequest
+	RewaderID     common.Address
+	Beneficiaries []common.Address
+	TotalEarnings []*big.Int
+}
+
+func (bc *Blockchain) RewarderAirDrop(req RewarderAirDrop) (*types.Transaction, error) {
+	transactor, err := rewarder.NewRewarderTransactor(req.RewaderID, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	nonce, err := bc.getNonce(req.Identity)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get nonce")
+	}
+
+	return transactor.Airdrop(&bind.TransactOpts{
+		From:     req.Identity,
+		Signer:   req.Signer,
+		Context:  ctx,
+		GasLimit: req.GasLimit,
+		GasPrice: req.GasPrice,
+		Nonce:    big.NewInt(0).SetUint64(nonce),
+	},
+		req.Beneficiaries,
+		req.TotalEarnings,
+	)
+}
+
+func (bc *Blockchain) RewarderTotalPayoutsFor(rewarderAddress common.Address, payoutsFor common.Address) (*big.Int, error) {
+	caller, err := rewarder.NewRewarderCaller(rewarderAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.TotalPayoutsFor(&bind.CallOpts{
+		Context: ctx,
+	}, payoutsFor)
 }
