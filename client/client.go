@@ -409,7 +409,7 @@ func (psr PayAndSettleRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
 		From:   psr.Identity,
 		Method: "payAndSettle",
-		Params: []interface{}{psr.ProviderID, psr.Promise.Amount, psr.Promise.Fee, toBytes32(psr.Promise.R), psr.Promise.Signature, psr.Beneficiary, psr.BeneficiarySignature},
+		Params: []interface{}{psr.ProviderID, psr.Promise.Amount, psr.Promise.Fee, ToBytes32(psr.Promise.R), psr.Promise.Signature, psr.Beneficiary, psr.BeneficiarySignature},
 	}
 }
 
@@ -442,7 +442,7 @@ func (bc *Blockchain) PayAndSettle(psr PayAndSettleRequest) (*types.Transaction,
 		psr.ProviderID,
 		psr.Promise.Amount,
 		psr.Promise.Fee,
-		toBytes32(psr.Promise.R),
+		ToBytes32(psr.Promise.R),
 		psr.Promise.Signature,
 		psr.Beneficiary,
 		psr.BeneficiarySignature,
@@ -562,7 +562,7 @@ func (r SettleIntoStakeRequest) toEstimateOps() *bindings.EstimateOpts {
 			r.ProviderID,
 			r.Promise.Amount,
 			r.Promise.Fee,
-			toBytes32(r.Promise.R),
+			ToBytes32(r.Promise.R),
 			r.Promise.Signature,
 		},
 	}
@@ -712,7 +712,7 @@ func (r SettleAndRebalanceRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
 		From:   r.Identity,
 		Method: "settlePromise",
-		Params: []interface{}{r.ProviderID, r.Promise.Amount, r.Promise.Fee, toBytes32(r.Promise.R), r.Promise.Signature},
+		Params: []interface{}{r.ProviderID, r.Promise.Amount, r.Promise.Fee, ToBytes32(r.Promise.R), r.Promise.Signature},
 	}
 }
 
@@ -741,12 +741,12 @@ func (bc *Blockchain) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.
 		req.ProviderID,
 		req.Promise.Amount,
 		req.Promise.Fee,
-		toBytes32(req.Promise.R),
+		ToBytes32(req.Promise.R),
 		req.Promise.Signature,
 	)
 }
 
-func toBytes32(arr []byte) (res [32]byte) {
+func ToBytes32(arr []byte) (res [32]byte) {
 	copy(res[:], arr)
 	return res
 }
@@ -780,7 +780,7 @@ func (bc *Blockchain) GetProviderChannelByID(acc common.Address, chID []byte) (P
 	return caller.Channels(&bind.CallOpts{
 		Pending: false,
 		Context: ctx,
-	}, toBytes32(chID))
+	}, ToBytes32(chID))
 }
 
 // ConsumersHermes represents the consumers hermes
@@ -1140,7 +1140,7 @@ func (r SettleWithBeneficiaryRequest) toEstimateOps() *bindings.EstimateOpts {
 			r.ProviderID,
 			r.Promise.Amount,
 			r.Promise.Fee,
-			toBytes32(r.Promise.R),
+			ToBytes32(r.Promise.R),
 			r.Promise.Signature,
 			r.Beneficiary,
 			r.Signature,
@@ -1194,7 +1194,7 @@ func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*
 		req.ProviderID,
 		req.Promise.Amount,
 		req.Promise.Fee,
-		toBytes32(req.Promise.R),
+		ToBytes32(req.Promise.R),
 		req.Promise.Signature,
 		req.Beneficiary,
 		req.Signature,
