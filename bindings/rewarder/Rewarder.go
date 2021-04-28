@@ -1,3 +1,19 @@
+/* Mysterium network payment library.
+ *
+ * Copyright (C) 2021 BlockDev AG
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 // Code generated - DO NOT EDIT.
 // This file is a generated binding and any manual changes will be lost.
 
@@ -154,7 +170,7 @@ func bindRewarder(address common.Address, caller bind.ContractCaller, transactor
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Rewarder *RewarderRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Rewarder *RewarderRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Rewarder.Contract.RewarderCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -173,7 +189,7 @@ func (_Rewarder *RewarderRaw) Transact(opts *bind.TransactOpts, method string, p
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Rewarder *RewarderCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Rewarder *RewarderCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Rewarder.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -192,12 +208,17 @@ func (_Rewarder *RewarderTransactorRaw) Transact(opts *bind.TransactOpts, method
 //
 // Solidity: function claimRoots(uint256 ) view returns(bytes32)
 func (_Rewarder *RewarderCaller) ClaimRoots(opts *bind.CallOpts, arg0 *big.Int) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _Rewarder.contract.Call(opts, out, "claimRoots", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _Rewarder.contract.Call(opts, &out, "claimRoots", arg0)
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // ClaimRoots is a free data retrieval call binding the contract method 0x7558b6ef.
@@ -218,12 +239,17 @@ func (_Rewarder *RewarderCallerSession) ClaimRoots(arg0 *big.Int) ([32]byte, err
 //
 // Solidity: function custody() view returns(address)
 func (_Rewarder *RewarderCaller) Custody(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Rewarder.contract.Call(opts, out, "custody")
-	return *ret0, err
+	var out []interface{}
+	err := _Rewarder.contract.Call(opts, &out, "custody")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Custody is a free data retrieval call binding the contract method 0xdda79b75.
@@ -244,12 +270,17 @@ func (_Rewarder *RewarderCallerSession) Custody() (common.Address, error) {
 //
 // Solidity: function isValidProof(address _recipient, uint256 _totalEarned, uint256 _blockNumber, bytes32[] _proof) view returns(bool)
 func (_Rewarder *RewarderCaller) IsValidProof(opts *bind.CallOpts, _recipient common.Address, _totalEarned *big.Int, _blockNumber *big.Int, _proof [][32]byte) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Rewarder.contract.Call(opts, out, "isValidProof", _recipient, _totalEarned, _blockNumber, _proof)
-	return *ret0, err
+	var out []interface{}
+	err := _Rewarder.contract.Call(opts, &out, "isValidProof", _recipient, _totalEarned, _blockNumber, _proof)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsValidProof is a free data retrieval call binding the contract method 0xca5a2780.
@@ -270,12 +301,17 @@ func (_Rewarder *RewarderCallerSession) IsValidProof(_recipient common.Address, 
 //
 // Solidity: function lastRootBlock() view returns(uint256)
 func (_Rewarder *RewarderCaller) LastRootBlock(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Rewarder.contract.Call(opts, out, "lastRootBlock")
-	return *ret0, err
+	var out []interface{}
+	err := _Rewarder.contract.Call(opts, &out, "lastRootBlock")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // LastRootBlock is a free data retrieval call binding the contract method 0x8e59d422.
@@ -296,12 +332,17 @@ func (_Rewarder *RewarderCallerSession) LastRootBlock() (*big.Int, error) {
 //
 // Solidity: function owner() view returns(address)
 func (_Rewarder *RewarderCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Rewarder.contract.Call(opts, out, "owner")
-	return *ret0, err
+	var out []interface{}
+	err := _Rewarder.contract.Call(opts, &out, "owner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
@@ -322,12 +363,17 @@ func (_Rewarder *RewarderCallerSession) Owner() (common.Address, error) {
 //
 // Solidity: function token() view returns(address)
 func (_Rewarder *RewarderCaller) Token(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Rewarder.contract.Call(opts, out, "token")
-	return *ret0, err
+	var out []interface{}
+	err := _Rewarder.contract.Call(opts, &out, "token")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Token is a free data retrieval call binding the contract method 0xfc0c546a.
@@ -348,12 +394,17 @@ func (_Rewarder *RewarderCallerSession) Token() (common.Address, error) {
 //
 // Solidity: function totalClaimed() view returns(uint256)
 func (_Rewarder *RewarderCaller) TotalClaimed(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Rewarder.contract.Call(opts, out, "totalClaimed")
-	return *ret0, err
+	var out []interface{}
+	err := _Rewarder.contract.Call(opts, &out, "totalClaimed")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // TotalClaimed is a free data retrieval call binding the contract method 0xd54ad2a1.
@@ -374,12 +425,17 @@ func (_Rewarder *RewarderCallerSession) TotalClaimed() (*big.Int, error) {
 //
 // Solidity: function totalPayoutsFor(address ) view returns(uint256)
 func (_Rewarder *RewarderCaller) TotalPayoutsFor(opts *bind.CallOpts, arg0 common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Rewarder.contract.Call(opts, out, "totalPayoutsFor", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _Rewarder.contract.Call(opts, &out, "totalPayoutsFor", arg0)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // TotalPayoutsFor is a free data retrieval call binding the contract method 0x4d676fa7.
@@ -652,6 +708,7 @@ func (_Rewarder *RewarderFilterer) ParseAirdrop(log types.Log) (*RewarderAirdrop
 	if err := _Rewarder.contract.UnpackLog(event, "Airdrop", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -785,6 +842,7 @@ func (_Rewarder *RewarderFilterer) ParseClaimedChanged(log types.Log) (*Rewarder
 	if err := _Rewarder.contract.UnpackLog(event, "ClaimedChanged", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -937,6 +995,7 @@ func (_Rewarder *RewarderFilterer) ParseOwnershipTransferred(log types.Log) (*Re
 	if err := _Rewarder.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1072,5 +1131,6 @@ func (_Rewarder *RewarderFilterer) ParseRootUpdated(log types.Log) (*RewarderRoo
 	if err := _Rewarder.contract.UnpackLog(event, "RootUpdated", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }

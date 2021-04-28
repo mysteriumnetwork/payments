@@ -1,6 +1,6 @@
 /* Mysterium network payment library.
  *
- * Copyright (C) 2020 BlockDev AG
+ * Copyright (C) 2021 BlockDev AG
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -46,7 +46,7 @@ var (
 const OldMystTokenABI = "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Minted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"Upgrade\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"agent\",\"type\":\"address\"}],\"name\":\"UpgradeAgentSet\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"mintAgents\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"mintingFinished\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalUpgraded\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"upgradeAgent\",\"outputs\":[{\"internalType\":\"contractIUpgradeAgent\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"upgradeMaster\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"remaining\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_addedValue\",\"type\":\"uint256\"}],\"name\":\"addApproval\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_subtractedValue\",\"type\":\"uint256\"}],\"name\":\"subApproval\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"mint\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"state\",\"type\":\"bool\"}],\"name\":\"setMintAgent\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"upgrade\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"agent\",\"type\":\"address\"}],\"name\":\"setUpgradeAgent\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getUpgradeState\",\"outputs\":[{\"internalType\":\"enumOldMystToken.UpgradeState\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"master\",\"type\":\"address\"}],\"name\":\"setUpgradeMaster\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
 
 // OldMystTokenBin is the compiled bytecode used for deploying new contracts.
-var OldMystTokenBin = "0x60806040526001805460ff60a01b1916905534801561001d57600080fd5b5060018054600280546001600160a01b0319908116339081179092559182168117909116811782556000908152600560205260409020805460ff1916909117905561112c8061006d6000396000f3fe608060405234801561001057600080fd5b50600436106101585760003560e01c806370a08231116100c3578063c752ff621161007c578063c752ff6214610412578063d7e7088a1461041a578063dd62ed3e14610440578063e2301d021461046e578063f2fde38b1461049a578063ffeb7d75146104c057610158565b806370a082311461035b5780638444b391146103815780638da5cb5b146103aa57806395d89b41146103b2578063a9059cbb146103ba578063ac3cb72c146103e657610158565b806340c10f191161011557806340c10f191461029057806342c1867b146102be57806343214675146102e457806345977d03146103125780635de4ccb01461032f578063600440cb1461035357610158565b806305d2035b1461015d57806306fdde0314610179578063095ea7b3146101f657806318160ddd1461022257806323b872dd1461023c578063313ce56714610272575b600080fd5b6101656104e6565b604080519115158252519081900360200190f35b6101816104f6565b6040805160208082528351818301528351919283929083019185019080838360005b838110156101bb5781810151838201526020016101a3565b50505050905090810190601f1680156101e85780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b6101656004803603604081101561020c57600080fd5b506001600160a01b038135169060200135610526565b61022a6105ca565b60408051918252519081900360200190f35b6101656004803603606081101561025257600080fd5b506001600160a01b038135811691602081013590911690604001356105d0565b61027a6106cd565b6040805160ff9092168252519081900360200190f35b6102bc600480360360408110156102a657600080fd5b506001600160a01b0381351690602001356106d2565b005b610165600480360360208110156102d457600080fd5b50356001600160a01b0316610892565b6102bc600480360360408110156102fa57600080fd5b506001600160a01b03813516906020013515156108a7565b6102bc6004803603602081101561032857600080fd5b5035610900565b610337610a45565b604080516001600160a01b039092168252519081900360200190f35b610337610a54565b61022a6004803603602081101561037157600080fd5b50356001600160a01b0316610a63565b610389610a7e565b6040518082600481111561039957fe5b815260200191505060405180910390f35b610337610aaf565b610181610abe565b610165600480360360408110156103d057600080fd5b506001600160a01b038135169060200135610adf565b610165600480360360408110156103fc57600080fd5b506001600160a01b038135169060200135610b95565b61022a610c3b565b6102bc6004803603602081101561043057600080fd5b50356001600160a01b0316610c41565b61022a6004803603604081101561045657600080fd5b506001600160a01b0381358116916020013516610e49565b6101656004803603604081101561048457600080fd5b506001600160a01b038135169060200135610e74565b6102bc600480360360208110156104b057600080fd5b50356001600160a01b0316610f4b565b6102bc600480360360208110156104d657600080fd5b50356001600160a01b0316610f90565b600154600160a01b900460ff1681565b604051806040016040528060148152602001732a32b9ba1026bcb9ba32b934bab6903a37b5b2b760611b81525081565b6000811580159061055957503360009081526007602090815260408083206001600160a01b038716845290915290205415155b1561056357600080fd5b3360008181526007602090815260408083206001600160a01b03881680855290835292819020869055805186815290519293927f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925929181900390910190a350600192915050565b60005481565b6001600160a01b0380841660009081526007602090815260408083203384528252808320549386168352600690915281205490919061060f9084610fdc565b6001600160a01b03808616600090815260066020526040808220939093559087168152205461063e9084611049565b6001600160a01b0386166000908152600660205260409020556106618184611049565b6001600160a01b03808716600081815260076020908152604080832033845282529182902094909455805187815290519288169391927fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef929181900390910190a3506001949350505050565b600881565b3360009081526005602052604090205460ff166106ee57600080fd5b600154600160a01b900460ff161561070557600080fd5b8061070f57600080fd5b60005473__SafeMathLib___________________________6366098d4f9091836040518363ffffffff1660e01b8152600401808381526020018281526020019250505060206040518083038186803b15801561076a57600080fd5b505af415801561077e573d6000803e3d6000fd5b505050506040513d602081101561079457600080fd5b505160009081556001600160a01b0383168152600660209081526040918290205482516366098d4f60e01b8152600481019190915260248101849052915173__SafeMathLib___________________________926366098d4f926044808301939192829003018186803b15801561080a57600080fd5b505af415801561081e573d6000803e3d6000fd5b505050506040513d602081101561083457600080fd5b50516001600160a01b03831660008181526006602090815260409182902093909355805191825291810183905281517f30385c845b448a36257a6a1716e6ad2e1bc2cbe333cde1e69fe849ad6511adfe929181900390910190a15050565b60056020526000908152604090205460ff1681565b6001546001600160a01b031633146108be57600080fd5b600154600160a01b900460ff16156108d557600080fd5b6001600160a01b03919091166000908152600560205260409020805460ff1916911515919091179055565b600061090a610a7e565b9050600381600481111561091a57fe5b14806109315750600481600481111561092f57fe5b145b61093a57600080fd5b8161094457600080fd5b3360009081526006602052604090205461095e9083611049565b336000908152600660205260408120919091555461097c9083611049565b60005560045461098c9083610fdc565b60049081556003546040805163753e88e560e01b8152339381019390935260248301859052516001600160a01b039091169163753e88e591604480830192600092919082900301818387803b1580156109e457600080fd5b505af11580156109f8573d6000803e3d6000fd5b50506003546040805186815290516001600160a01b0390921693503392507f7e5c344a8141a805725cb476f76c6953b842222b967edd1f78ddb6e8b3f397ac919081900360200190a35050565b6003546001600160a01b031681565b6002546001600160a01b031681565b6001600160a01b031660009081526006602052604090205490565b6003546000906001600160a01b0316610a9957506002610aac565b600454610aa857506003610aac565b5060045b90565b6001546001600160a01b031681565b60405180604001604052806005815260200164135654d51560da1b81525081565b6000604036604414610af057600080fd5b33600090815260066020526040902054610b0a9084611049565b33600090815260066020526040808220929092556001600160a01b03861681522054610b369084610fdc565b6001600160a01b0385166000818152600660209081526040918290209390935580518681529051919233927fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9281900390910190a35060019392505050565b6000604036604414610ba657600080fd5b3360009081526007602090815260408083206001600160a01b0388168452909152902054610bd48185610fdc565b3360008181526007602090815260408083206001600160a01b038b168085529083529281902085905580519485525191937f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925929081900390910190a3506001949350505050565b60045481565b6002546001600160a01b03163314610c8a5760405162461bcd60e51b815260040180806020018281038252602a8152602001806110a7602a913960400191505060405180910390fd5b6001600160a01b038116610c9d57600080fd5b6004610ca7610a7e565b6004811115610cb257fe5b1415610cef5760405162461bcd60e51b81526004018080602001828103825260268152602001806110d16026913960400191505060405180910390fd5b600380546001600160a01b0319166001600160a01b038381169190911791829055604080516330e9ebd360e11b8152905192909116916361d3d7a691600480820192602092909190829003018186803b158015610d4b57600080fd5b505afa158015610d5f573d6000803e3d6000fd5b505050506040513d6020811015610d7557600080fd5b5051610d8057600080fd5b600054600360009054906101000a90046001600160a01b03166001600160a01b0316634b2ba0dd6040518163ffffffff1660e01b815260040160206040518083038186803b158015610dd157600080fd5b505afa158015610de5573d6000803e3d6000fd5b505050506040513d6020811015610dfb57600080fd5b505114610e0757600080fd5b600354604080516001600160a01b039092168252517f7845d5aa74cc410e35571258d954f23b82276e160fe8c188fa80566580f279cc9181900360200190a150565b6001600160a01b03918216600090815260076020908152604080832093909416825291909152205490565b6000604036604414610e8557600080fd5b3360009081526007602090815260408083206001600160a01b038816845290915290205480841115610eda573360009081526007602090815260408083206001600160a01b0389168452909152812055610ee4565b610bd48185611049565b3360008181526007602090815260408083206001600160a01b038a168085529083529281902054815190815290519293927f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925929181900390910190a3506001949350505050565b6001546001600160a01b03163314610f6257600080fd5b6001600160a01b03811615610f8d57600180546001600160a01b0319166001600160a01b0383161790555b50565b6001600160a01b038116610fa357600080fd5b6002546001600160a01b03163314610fba57600080fd5b600280546001600160a01b0319166001600160a01b0392909216919091179055565b6000828201838110801590610ff15750828110155b611042576040805162461bcd60e51b815260206004820152601b60248201527f536166654d6174683a206164646974696f6e206f766572666c6f770000000000604482015290519081900360640190fd5b9392505050565b6000828211156110a0576040805162461bcd60e51b815260206004820152601e60248201527f536166654d6174683a207375627472616374696f6e206f766572666c6f770000604482015290519081900360640190fd5b5090039056fe4f6e6c792061206d61737465722063616e2064657369676e61746520746865206e657874206167656e74557067726164652068617320616c726561647920626567756e20666f7220616e206167656e74a26469706673582212205653e00f2013287a1490e48babc280a56f4c43452b6faf6d4beea13f3db01e0064736f6c634300060c0033"
+var OldMystTokenBin = "0x60806040526001805460ff60a01b1916905534801561001d57600080fd5b5060018054600280546001600160a01b0319908116339081179092559182168117909116811782556000908152600560205260409020805460ff1916909117905561112c8061006d6000396000f3fe608060405234801561001057600080fd5b50600436106101585760003560e01c806370a08231116100c3578063c752ff621161007c578063c752ff6214610412578063d7e7088a1461041a578063dd62ed3e14610440578063e2301d021461046e578063f2fde38b1461049a578063ffeb7d75146104c057610158565b806370a082311461035b5780638444b391146103815780638da5cb5b146103aa57806395d89b41146103b2578063a9059cbb146103ba578063ac3cb72c146103e657610158565b806340c10f191161011557806340c10f191461029057806342c1867b146102be57806343214675146102e457806345977d03146103125780635de4ccb01461032f578063600440cb1461035357610158565b806305d2035b1461015d57806306fdde0314610179578063095ea7b3146101f657806318160ddd1461022257806323b872dd1461023c578063313ce56714610272575b600080fd5b6101656104e6565b604080519115158252519081900360200190f35b6101816104f6565b6040805160208082528351818301528351919283929083019185019080838360005b838110156101bb5781810151838201526020016101a3565b50505050905090810190601f1680156101e85780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b6101656004803603604081101561020c57600080fd5b506001600160a01b038135169060200135610526565b61022a6105ca565b60408051918252519081900360200190f35b6101656004803603606081101561025257600080fd5b506001600160a01b038135811691602081013590911690604001356105d0565b61027a6106cd565b6040805160ff9092168252519081900360200190f35b6102bc600480360360408110156102a657600080fd5b506001600160a01b0381351690602001356106d2565b005b610165600480360360208110156102d457600080fd5b50356001600160a01b0316610892565b6102bc600480360360408110156102fa57600080fd5b506001600160a01b03813516906020013515156108a7565b6102bc6004803603602081101561032857600080fd5b5035610900565b610337610a45565b604080516001600160a01b039092168252519081900360200190f35b610337610a54565b61022a6004803603602081101561037157600080fd5b50356001600160a01b0316610a63565b610389610a7e565b6040518082600481111561039957fe5b815260200191505060405180910390f35b610337610aaf565b610181610abe565b610165600480360360408110156103d057600080fd5b506001600160a01b038135169060200135610adf565b610165600480360360408110156103fc57600080fd5b506001600160a01b038135169060200135610b95565b61022a610c3b565b6102bc6004803603602081101561043057600080fd5b50356001600160a01b0316610c41565b61022a6004803603604081101561045657600080fd5b506001600160a01b0381358116916020013516610e49565b6101656004803603604081101561048457600080fd5b506001600160a01b038135169060200135610e74565b6102bc600480360360208110156104b057600080fd5b50356001600160a01b0316610f4b565b6102bc600480360360208110156104d657600080fd5b50356001600160a01b0316610f90565b600154600160a01b900460ff1681565b604051806040016040528060148152602001732a32b9ba1026bcb9ba32b934bab6903a37b5b2b760611b81525081565b6000811580159061055957503360009081526007602090815260408083206001600160a01b038716845290915290205415155b1561056357600080fd5b3360008181526007602090815260408083206001600160a01b03881680855290835292819020869055805186815290519293927f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925929181900390910190a350600192915050565b60005481565b6001600160a01b0380841660009081526007602090815260408083203384528252808320549386168352600690915281205490919061060f9084610fdc565b6001600160a01b03808616600090815260066020526040808220939093559087168152205461063e9084611049565b6001600160a01b0386166000908152600660205260409020556106618184611049565b6001600160a01b03808716600081815260076020908152604080832033845282529182902094909455805187815290519288169391927fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef929181900390910190a3506001949350505050565b600881565b3360009081526005602052604090205460ff166106ee57600080fd5b600154600160a01b900460ff161561070557600080fd5b8061070f57600080fd5b60005473__SafeMathLib___________________________6366098d4f9091836040518363ffffffff1660e01b8152600401808381526020018281526020019250505060206040518083038186803b15801561076a57600080fd5b505af415801561077e573d6000803e3d6000fd5b505050506040513d602081101561079457600080fd5b505160009081556001600160a01b0383168152600660209081526040918290205482516366098d4f60e01b8152600481019190915260248101849052915173__SafeMathLib___________________________926366098d4f926044808301939192829003018186803b15801561080a57600080fd5b505af415801561081e573d6000803e3d6000fd5b505050506040513d602081101561083457600080fd5b50516001600160a01b03831660008181526006602090815260409182902093909355805191825291810183905281517f30385c845b448a36257a6a1716e6ad2e1bc2cbe333cde1e69fe849ad6511adfe929181900390910190a15050565b60056020526000908152604090205460ff1681565b6001546001600160a01b031633146108be57600080fd5b600154600160a01b900460ff16156108d557600080fd5b6001600160a01b03919091166000908152600560205260409020805460ff1916911515919091179055565b600061090a610a7e565b9050600381600481111561091a57fe5b14806109315750600481600481111561092f57fe5b145b61093a57600080fd5b8161094457600080fd5b3360009081526006602052604090205461095e9083611049565b336000908152600660205260408120919091555461097c9083611049565b60005560045461098c9083610fdc565b60049081556003546040805163753e88e560e01b8152339381019390935260248301859052516001600160a01b039091169163753e88e591604480830192600092919082900301818387803b1580156109e457600080fd5b505af11580156109f8573d6000803e3d6000fd5b50506003546040805186815290516001600160a01b0390921693503392507f7e5c344a8141a805725cb476f76c6953b842222b967edd1f78ddb6e8b3f397ac919081900360200190a35050565b6003546001600160a01b031681565b6002546001600160a01b031681565b6001600160a01b031660009081526006602052604090205490565b6003546000906001600160a01b0316610a9957506002610aac565b600454610aa857506003610aac565b5060045b90565b6001546001600160a01b031681565b60405180604001604052806005815260200164135654d51560da1b81525081565b6000604036604414610af057600080fd5b33600090815260066020526040902054610b0a9084611049565b33600090815260066020526040808220929092556001600160a01b03861681522054610b369084610fdc565b6001600160a01b0385166000818152600660209081526040918290209390935580518681529051919233927fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9281900390910190a35060019392505050565b6000604036604414610ba657600080fd5b3360009081526007602090815260408083206001600160a01b0388168452909152902054610bd48185610fdc565b3360008181526007602090815260408083206001600160a01b038b168085529083529281902085905580519485525191937f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925929081900390910190a3506001949350505050565b60045481565b6002546001600160a01b03163314610c8a5760405162461bcd60e51b815260040180806020018281038252602a8152602001806110a7602a913960400191505060405180910390fd5b6001600160a01b038116610c9d57600080fd5b6004610ca7610a7e565b6004811115610cb257fe5b1415610cef5760405162461bcd60e51b81526004018080602001828103825260268152602001806110d16026913960400191505060405180910390fd5b600380546001600160a01b0319166001600160a01b038381169190911791829055604080516330e9ebd360e11b8152905192909116916361d3d7a691600480820192602092909190829003018186803b158015610d4b57600080fd5b505afa158015610d5f573d6000803e3d6000fd5b505050506040513d6020811015610d7557600080fd5b5051610d8057600080fd5b600054600360009054906101000a90046001600160a01b03166001600160a01b0316634b2ba0dd6040518163ffffffff1660e01b815260040160206040518083038186803b158015610dd157600080fd5b505afa158015610de5573d6000803e3d6000fd5b505050506040513d6020811015610dfb57600080fd5b505114610e0757600080fd5b600354604080516001600160a01b039092168252517f7845d5aa74cc410e35571258d954f23b82276e160fe8c188fa80566580f279cc9181900360200190a150565b6001600160a01b03918216600090815260076020908152604080832093909416825291909152205490565b6000604036604414610e8557600080fd5b3360009081526007602090815260408083206001600160a01b038816845290915290205480841115610eda573360009081526007602090815260408083206001600160a01b0389168452909152812055610ee4565b610bd48185611049565b3360008181526007602090815260408083206001600160a01b038a168085529083529281902054815190815290519293927f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925929181900390910190a3506001949350505050565b6001546001600160a01b03163314610f6257600080fd5b6001600160a01b03811615610f8d57600180546001600160a01b0319166001600160a01b0383161790555b50565b6001600160a01b038116610fa357600080fd5b6002546001600160a01b03163314610fba57600080fd5b600280546001600160a01b0319166001600160a01b0392909216919091179055565b6000828201838110801590610ff15750828110155b611042576040805162461bcd60e51b815260206004820152601b60248201527f536166654d6174683a206164646974696f6e206f766572666c6f770000000000604482015290519081900360640190fd5b9392505050565b6000828211156110a0576040805162461bcd60e51b815260206004820152601e60248201527f536166654d6174683a207375627472616374696f6e206f766572666c6f770000604482015290519081900360640190fd5b5090039056fe4f6e6c792061206d61737465722063616e2064657369676e61746520746865206e657874206167656e74557067726164652068617320616c726561647920626567756e20666f7220616e206167656e74a2646970667358221220009ae9e564861fe29172473d9292c6ef292fde9ae112774443c1131143a9613b64736f6c634300060c0033"
 
 // DeployOldMystToken deploys a new Ethereum contract, binding an instance of OldMystToken to it.
 func DeployOldMystToken(auth *bind.TransactOpts, backend bind.ContractBackend) (common.Address, *types.Transaction, *OldMystToken, error) {
@@ -170,7 +170,7 @@ func bindOldMystToken(address common.Address, caller bind.ContractCaller, transa
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_OldMystToken *OldMystTokenRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_OldMystToken *OldMystTokenRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _OldMystToken.Contract.OldMystTokenCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -189,7 +189,7 @@ func (_OldMystToken *OldMystTokenRaw) Transact(opts *bind.TransactOpts, method s
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_OldMystToken *OldMystTokenCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_OldMystToken *OldMystTokenCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _OldMystToken.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -208,12 +208,17 @@ func (_OldMystToken *OldMystTokenTransactorRaw) Transact(opts *bind.TransactOpts
 //
 // Solidity: function allowance(address _owner, address _spender) view returns(uint256 remaining)
 func (_OldMystToken *OldMystTokenCaller) Allowance(opts *bind.CallOpts, _owner common.Address, _spender common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _OldMystToken.contract.Call(opts, out, "allowance", _owner, _spender)
-	return *ret0, err
+	var out []interface{}
+	err := _OldMystToken.contract.Call(opts, &out, "allowance", _owner, _spender)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
@@ -234,12 +239,17 @@ func (_OldMystToken *OldMystTokenCallerSession) Allowance(_owner common.Address,
 //
 // Solidity: function balanceOf(address _owner) view returns(uint256 balance)
 func (_OldMystToken *OldMystTokenCaller) BalanceOf(opts *bind.CallOpts, _owner common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _OldMystToken.contract.Call(opts, out, "balanceOf", _owner)
-	return *ret0, err
+	var out []interface{}
+	err := _OldMystToken.contract.Call(opts, &out, "balanceOf", _owner)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
@@ -260,12 +270,17 @@ func (_OldMystToken *OldMystTokenCallerSession) BalanceOf(_owner common.Address)
 //
 // Solidity: function decimals() view returns(uint8)
 func (_OldMystToken *OldMystTokenCaller) Decimals(opts *bind.CallOpts) (uint8, error) {
-	var (
-		ret0 = new(uint8)
-	)
-	out := ret0
-	err := _OldMystToken.contract.Call(opts, out, "decimals")
-	return *ret0, err
+	var out []interface{}
+	err := _OldMystToken.contract.Call(opts, &out, "decimals")
+
+	if err != nil {
+		return *new(uint8), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(uint8)).(*uint8)
+
+	return out0, err
+
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
@@ -286,12 +301,17 @@ func (_OldMystToken *OldMystTokenCallerSession) Decimals() (uint8, error) {
 //
 // Solidity: function getUpgradeState() view returns(uint8)
 func (_OldMystToken *OldMystTokenCaller) GetUpgradeState(opts *bind.CallOpts) (uint8, error) {
-	var (
-		ret0 = new(uint8)
-	)
-	out := ret0
-	err := _OldMystToken.contract.Call(opts, out, "getUpgradeState")
-	return *ret0, err
+	var out []interface{}
+	err := _OldMystToken.contract.Call(opts, &out, "getUpgradeState")
+
+	if err != nil {
+		return *new(uint8), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(uint8)).(*uint8)
+
+	return out0, err
+
 }
 
 // GetUpgradeState is a free data retrieval call binding the contract method 0x8444b391.
@@ -312,12 +332,17 @@ func (_OldMystToken *OldMystTokenCallerSession) GetUpgradeState() (uint8, error)
 //
 // Solidity: function mintAgents(address ) view returns(bool)
 func (_OldMystToken *OldMystTokenCaller) MintAgents(opts *bind.CallOpts, arg0 common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _OldMystToken.contract.Call(opts, out, "mintAgents", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _OldMystToken.contract.Call(opts, &out, "mintAgents", arg0)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // MintAgents is a free data retrieval call binding the contract method 0x42c1867b.
@@ -338,12 +363,17 @@ func (_OldMystToken *OldMystTokenCallerSession) MintAgents(arg0 common.Address) 
 //
 // Solidity: function mintingFinished() view returns(bool)
 func (_OldMystToken *OldMystTokenCaller) MintingFinished(opts *bind.CallOpts) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _OldMystToken.contract.Call(opts, out, "mintingFinished")
-	return *ret0, err
+	var out []interface{}
+	err := _OldMystToken.contract.Call(opts, &out, "mintingFinished")
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // MintingFinished is a free data retrieval call binding the contract method 0x05d2035b.
@@ -364,12 +394,17 @@ func (_OldMystToken *OldMystTokenCallerSession) MintingFinished() (bool, error) 
 //
 // Solidity: function name() view returns(string)
 func (_OldMystToken *OldMystTokenCaller) Name(opts *bind.CallOpts) (string, error) {
-	var (
-		ret0 = new(string)
-	)
-	out := ret0
-	err := _OldMystToken.contract.Call(opts, out, "name")
-	return *ret0, err
+	var out []interface{}
+	err := _OldMystToken.contract.Call(opts, &out, "name")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
 }
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
@@ -390,12 +425,17 @@ func (_OldMystToken *OldMystTokenCallerSession) Name() (string, error) {
 //
 // Solidity: function owner() view returns(address)
 func (_OldMystToken *OldMystTokenCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _OldMystToken.contract.Call(opts, out, "owner")
-	return *ret0, err
+	var out []interface{}
+	err := _OldMystToken.contract.Call(opts, &out, "owner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
@@ -416,12 +456,17 @@ func (_OldMystToken *OldMystTokenCallerSession) Owner() (common.Address, error) 
 //
 // Solidity: function symbol() view returns(string)
 func (_OldMystToken *OldMystTokenCaller) Symbol(opts *bind.CallOpts) (string, error) {
-	var (
-		ret0 = new(string)
-	)
-	out := ret0
-	err := _OldMystToken.contract.Call(opts, out, "symbol")
-	return *ret0, err
+	var out []interface{}
+	err := _OldMystToken.contract.Call(opts, &out, "symbol")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
 }
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
@@ -442,12 +487,17 @@ func (_OldMystToken *OldMystTokenCallerSession) Symbol() (string, error) {
 //
 // Solidity: function totalSupply() view returns(uint256)
 func (_OldMystToken *OldMystTokenCaller) TotalSupply(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _OldMystToken.contract.Call(opts, out, "totalSupply")
-	return *ret0, err
+	var out []interface{}
+	err := _OldMystToken.contract.Call(opts, &out, "totalSupply")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
@@ -468,12 +518,17 @@ func (_OldMystToken *OldMystTokenCallerSession) TotalSupply() (*big.Int, error) 
 //
 // Solidity: function totalUpgraded() view returns(uint256)
 func (_OldMystToken *OldMystTokenCaller) TotalUpgraded(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _OldMystToken.contract.Call(opts, out, "totalUpgraded")
-	return *ret0, err
+	var out []interface{}
+	err := _OldMystToken.contract.Call(opts, &out, "totalUpgraded")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // TotalUpgraded is a free data retrieval call binding the contract method 0xc752ff62.
@@ -494,12 +549,17 @@ func (_OldMystToken *OldMystTokenCallerSession) TotalUpgraded() (*big.Int, error
 //
 // Solidity: function upgradeAgent() view returns(address)
 func (_OldMystToken *OldMystTokenCaller) UpgradeAgent(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _OldMystToken.contract.Call(opts, out, "upgradeAgent")
-	return *ret0, err
+	var out []interface{}
+	err := _OldMystToken.contract.Call(opts, &out, "upgradeAgent")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // UpgradeAgent is a free data retrieval call binding the contract method 0x5de4ccb0.
@@ -520,12 +580,17 @@ func (_OldMystToken *OldMystTokenCallerSession) UpgradeAgent() (common.Address, 
 //
 // Solidity: function upgradeMaster() view returns(address)
 func (_OldMystToken *OldMystTokenCaller) UpgradeMaster(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _OldMystToken.contract.Call(opts, out, "upgradeMaster")
-	return *ret0, err
+	var out []interface{}
+	err := _OldMystToken.contract.Call(opts, &out, "upgradeMaster")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // UpgradeMaster is a free data retrieval call binding the contract method 0x600440cb.
@@ -923,6 +988,7 @@ func (_OldMystToken *OldMystTokenFilterer) ParseApproval(log types.Log) (*OldMys
 	if err := _OldMystToken.contract.UnpackLog(event, "Approval", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1057,6 +1123,7 @@ func (_OldMystToken *OldMystTokenFilterer) ParseMinted(log types.Log) (*OldMystT
 	if err := _OldMystToken.contract.UnpackLog(event, "Minted", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1210,6 +1277,7 @@ func (_OldMystToken *OldMystTokenFilterer) ParseTransfer(log types.Log) (*OldMys
 	if err := _OldMystToken.contract.UnpackLog(event, "Transfer", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1363,6 +1431,7 @@ func (_OldMystToken *OldMystTokenFilterer) ParseUpgrade(log types.Log) (*OldMyst
 	if err := _OldMystToken.contract.UnpackLog(event, "Upgrade", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1496,5 +1565,6 @@ func (_OldMystToken *OldMystTokenFilterer) ParseUpgradeAgentSet(log types.Log) (
 	if err := _OldMystToken.contract.UnpackLog(event, "UpgradeAgentSet", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }

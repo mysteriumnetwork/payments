@@ -1,6 +1,6 @@
 /* Mysterium network payment library.
  *
- * Copyright (C) 2020 BlockDev AG
+ * Copyright (C) 2021 BlockDev AG
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -170,7 +170,7 @@ func bindRegistry(address common.Address, caller bind.ContractCaller, transactor
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Registry *RegistryRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Registry *RegistryRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Registry.Contract.RegistryCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -189,7 +189,7 @@ func (_Registry *RegistryRaw) Transact(opts *bind.TransactOpts, method string, p
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Registry *RegistryCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Registry *RegistryCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Registry.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -208,12 +208,17 @@ func (_Registry *RegistryTransactorRaw) Transact(opts *bind.TransactOpts, method
 //
 // Solidity: function dex() view returns(address)
 func (_Registry *RegistryCaller) Dex(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "dex")
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "dex")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Dex is a free data retrieval call binding the contract method 0x692058c2.
@@ -234,12 +239,17 @@ func (_Registry *RegistryCallerSession) Dex() (common.Address, error) {
 //
 // Solidity: function getBeneficiary(address _identity) view returns(address)
 func (_Registry *RegistryCaller) GetBeneficiary(opts *bind.CallOpts, _identity common.Address) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "getBeneficiary", _identity)
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "getBeneficiary", _identity)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetBeneficiary is a free data retrieval call binding the contract method 0x505a1b31.
@@ -260,12 +270,17 @@ func (_Registry *RegistryCallerSession) GetBeneficiary(_identity common.Address)
 //
 // Solidity: function getChannelAddress(address _identity, address _hermesId) view returns(address)
 func (_Registry *RegistryCaller) GetChannelAddress(opts *bind.CallOpts, _identity common.Address, _hermesId common.Address) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "getChannelAddress", _identity, _hermesId)
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "getChannelAddress", _identity, _hermesId)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetChannelAddress is a free data retrieval call binding the contract method 0xe617aaac.
@@ -286,12 +301,17 @@ func (_Registry *RegistryCallerSession) GetChannelAddress(_identity common.Addre
 //
 // Solidity: function getChannelImplementation(uint256 _implVer) view returns(address)
 func (_Registry *RegistryCaller) GetChannelImplementation(opts *bind.CallOpts, _implVer *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "getChannelImplementation", _implVer)
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "getChannelImplementation", _implVer)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetChannelImplementation is a free data retrieval call binding the contract method 0x41ca71ab.
@@ -312,12 +332,17 @@ func (_Registry *RegistryCallerSession) GetChannelImplementation(_implVer *big.I
 //
 // Solidity: function getChannelImplementation() view returns(address)
 func (_Registry *RegistryCaller) GetChannelImplementation0(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "getChannelImplementation0")
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "getChannelImplementation0")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetChannelImplementation0 is a free data retrieval call binding the contract method 0x7c671a21.
@@ -338,12 +363,17 @@ func (_Registry *RegistryCallerSession) GetChannelImplementation0() (common.Addr
 //
 // Solidity: function getFundsDestination() view returns(address)
 func (_Registry *RegistryCaller) GetFundsDestination(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "getFundsDestination")
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "getFundsDestination")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
@@ -364,12 +394,17 @@ func (_Registry *RegistryCallerSession) GetFundsDestination() (common.Address, e
 //
 // Solidity: function getHermesAddress(address _hermesOperator, uint256 _implVer) view returns(address)
 func (_Registry *RegistryCaller) GetHermesAddress(opts *bind.CallOpts, _hermesOperator common.Address, _implVer *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "getHermesAddress", _hermesOperator, _implVer)
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "getHermesAddress", _hermesOperator, _implVer)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetHermesAddress is a free data retrieval call binding the contract method 0x4b6bd6be.
@@ -390,12 +425,17 @@ func (_Registry *RegistryCallerSession) GetHermesAddress(_hermesOperator common.
 //
 // Solidity: function getHermesAddress(address _hermesOperator) view returns(address)
 func (_Registry *RegistryCaller) GetHermesAddress0(opts *bind.CallOpts, _hermesOperator common.Address) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "getHermesAddress0", _hermesOperator)
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "getHermesAddress0", _hermesOperator)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetHermesAddress0 is a free data retrieval call binding the contract method 0xacc831d0.
@@ -416,12 +456,17 @@ func (_Registry *RegistryCallerSession) GetHermesAddress0(_hermesOperator common
 //
 // Solidity: function getHermesImplementation(uint256 _implVer) view returns(address)
 func (_Registry *RegistryCaller) GetHermesImplementation(opts *bind.CallOpts, _implVer *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "getHermesImplementation", _implVer)
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "getHermesImplementation", _implVer)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetHermesImplementation is a free data retrieval call binding the contract method 0x8cfef547.
@@ -442,12 +487,17 @@ func (_Registry *RegistryCallerSession) GetHermesImplementation(_implVer *big.In
 //
 // Solidity: function getHermesImplementation() view returns(address)
 func (_Registry *RegistryCaller) GetHermesImplementation0(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "getHermesImplementation0")
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "getHermesImplementation0")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetHermesImplementation0 is a free data retrieval call binding the contract method 0x9936a87b.
@@ -468,12 +518,17 @@ func (_Registry *RegistryCallerSession) GetHermesImplementation0() (common.Addre
 //
 // Solidity: function getHermesURL(address _hermesId) view returns(bytes)
 func (_Registry *RegistryCaller) GetHermesURL(opts *bind.CallOpts, _hermesId common.Address) ([]byte, error) {
-	var (
-		ret0 = new([]byte)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "getHermesURL", _hermesId)
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "getHermesURL", _hermesId)
+
+	if err != nil {
+		return *new([]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]byte)).(*[]byte)
+
+	return out0, err
+
 }
 
 // GetHermesURL is a free data retrieval call binding the contract method 0xbf1eb88a.
@@ -494,12 +549,17 @@ func (_Registry *RegistryCallerSession) GetHermesURL(_hermesId common.Address) (
 //
 // Solidity: function getLastImplVer() view returns(uint256)
 func (_Registry *RegistryCaller) GetLastImplVer(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "getLastImplVer")
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "getLastImplVer")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetLastImplVer is a free data retrieval call binding the contract method 0x6332b080.
@@ -520,12 +580,17 @@ func (_Registry *RegistryCallerSession) GetLastImplVer() (*big.Int, error) {
 //
 // Solidity: function getProxyCode(address _implementation) pure returns(bytes)
 func (_Registry *RegistryCaller) GetProxyCode(opts *bind.CallOpts, _implementation common.Address) ([]byte, error) {
-	var (
-		ret0 = new([]byte)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "getProxyCode", _implementation)
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "getProxyCode", _implementation)
+
+	if err != nil {
+		return *new([]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]byte)).(*[]byte)
+
+	return out0, err
+
 }
 
 // GetProxyCode is a free data retrieval call binding the contract method 0xab867213.
@@ -546,12 +611,17 @@ func (_Registry *RegistryCallerSession) GetProxyCode(_implementation common.Addr
 //
 // Solidity: function hasParentRegistry(address ) pure returns(bool)
 func (_Registry *RegistryCaller) HasParentRegistry(opts *bind.CallOpts, arg0 common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "hasParentRegistry", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "hasParentRegistry", arg0)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // HasParentRegistry is a free data retrieval call binding the contract method 0x332ff7bd.
@@ -577,15 +647,26 @@ func (_Registry *RegistryCaller) Hermeses(opts *bind.CallOpts, arg0 common.Addre
 	Stake    [24]byte
 	Url      []byte
 }, error) {
-	ret := new(struct {
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "hermeses", arg0)
+
+	outstruct := new(struct {
 		Operator common.Address
 		ImplVer  *big.Int
 		Stake    [24]byte
 		Url      []byte
 	})
-	out := ret
-	err := _Registry.contract.Call(opts, out, "hermeses", arg0)
-	return *ret, err
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.Operator = *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+	outstruct.ImplVer = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+	outstruct.Stake = *abi.ConvertType(out[2], new([24]byte)).(*[24]byte)
+	outstruct.Url = *abi.ConvertType(out[3], new([]byte)).(*[]byte)
+
+	return *outstruct, err
+
 }
 
 // Hermeses is a free data retrieval call binding the contract method 0x03fb422f.
@@ -616,12 +697,17 @@ func (_Registry *RegistryCallerSession) Hermeses(arg0 common.Address) (struct {
 //
 // Solidity: function isHermes(address _hermesId) view returns(bool)
 func (_Registry *RegistryCaller) IsHermes(opts *bind.CallOpts, _hermesId common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "isHermes", _hermesId)
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "isHermes", _hermesId)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsHermes is a free data retrieval call binding the contract method 0xcdd596e0.
@@ -642,12 +728,17 @@ func (_Registry *RegistryCallerSession) IsHermes(_hermesId common.Address) (bool
 //
 // Solidity: function isRegistered(address _identity) view returns(bool)
 func (_Registry *RegistryCaller) IsRegistered(opts *bind.CallOpts, _identity common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "isRegistered", _identity)
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "isRegistered", _identity)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsRegistered is a free data retrieval call binding the contract method 0xc3c5a547.
@@ -668,12 +759,17 @@ func (_Registry *RegistryCallerSession) IsRegistered(_identity common.Address) (
 //
 // Solidity: function lastNonce() view returns(uint256)
 func (_Registry *RegistryCaller) LastNonce(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "lastNonce")
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "lastNonce")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // LastNonce is a free data retrieval call binding the contract method 0x52631ab4.
@@ -694,12 +790,17 @@ func (_Registry *RegistryCallerSession) LastNonce() (*big.Int, error) {
 //
 // Solidity: function minimalHermesStake() view returns(uint256)
 func (_Registry *RegistryCaller) MinimalHermesStake(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "minimalHermesStake")
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "minimalHermesStake")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // MinimalHermesStake is a free data retrieval call binding the contract method 0x66cf5875.
@@ -720,12 +821,17 @@ func (_Registry *RegistryCallerSession) MinimalHermesStake() (*big.Int, error) {
 //
 // Solidity: function owner() view returns(address)
 func (_Registry *RegistryCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "owner")
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "owner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
@@ -746,12 +852,17 @@ func (_Registry *RegistryCallerSession) Owner() (common.Address, error) {
 //
 // Solidity: function token() view returns(address)
 func (_Registry *RegistryCaller) Token(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Registry.contract.Call(opts, out, "token")
-	return *ret0, err
+	var out []interface{}
+	err := _Registry.contract.Call(opts, &out, "token")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Token is a free data retrieval call binding the contract method 0xfc0c546a.
@@ -1140,6 +1251,7 @@ func (_Registry *RegistryFilterer) ParseBeneficiaryChanged(log types.Log) (*Regi
 	if err := _Registry.contract.UnpackLog(event, "BeneficiaryChanged", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1293,6 +1405,7 @@ func (_Registry *RegistryFilterer) ParseConsumerChannelCreated(log types.Log) (*
 	if err := _Registry.contract.UnpackLog(event, "ConsumerChannelCreated", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1445,6 +1558,7 @@ func (_Registry *RegistryFilterer) ParseDestinationChanged(log types.Log) (*Regi
 	if err := _Registry.contract.UnpackLog(event, "DestinationChanged", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1589,6 +1703,7 @@ func (_Registry *RegistryFilterer) ParseHermesURLUpdated(log types.Log) (*Regist
 	if err := _Registry.contract.UnpackLog(event, "HermesURLUpdated", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1741,6 +1856,7 @@ func (_Registry *RegistryFilterer) ParseOwnershipTransferred(log types.Log) (*Re
 	if err := _Registry.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1886,6 +2002,7 @@ func (_Registry *RegistryFilterer) ParseRegisteredHermes(log types.Log) (*Regist
 	if err := _Registry.contract.UnpackLog(event, "RegisteredHermes", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -2030,5 +2147,6 @@ func (_Registry *RegistryFilterer) ParseRegisteredIdentity(log types.Log) (*Regi
 	if err := _Registry.contract.UnpackLog(event, "RegisteredIdentity", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }

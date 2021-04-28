@@ -931,18 +931,13 @@ func (bc *Blockchain) TransferEth(etr EthTransferRequest) (*types.Transaction, e
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	id, err := bc.NetworkID()
-	if err != nil {
-		return nil, fmt.Errorf("could not get network id: %w", err)
-	}
-
 	nonceUint, err := bc.getNonce(etr.Identity)
 	if err != nil {
 		return nil, fmt.Errorf("could not get nonce: %w", err)
 	}
 
 	tx := types.NewTransaction(nonceUint, etr.To, etr.Amount, etr.GasLimit, etr.GasPrice, nil)
-	signedTx, err := etr.Signer(types.NewEIP155Signer(id), etr.Identity, tx)
+	signedTx, err := etr.Signer(etr.Identity, tx)
 	if err != nil {
 		return nil, fmt.Errorf("could not sign tx: %w", err)
 	}

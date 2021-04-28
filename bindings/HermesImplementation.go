@@ -1,6 +1,6 @@
 /* Mysterium network payment library.
  *
- * Copyright (C) 2020 BlockDev AG
+ * Copyright (C) 2021 BlockDev AG
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -170,7 +170,7 @@ func bindHermesImplementation(address common.Address, caller bind.ContractCaller
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_HermesImplementation *HermesImplementationRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_HermesImplementation *HermesImplementationRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _HermesImplementation.Contract.HermesImplementationCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -189,7 +189,7 @@ func (_HermesImplementation *HermesImplementationRaw) Transact(opts *bind.Transa
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_HermesImplementation *HermesImplementationCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_HermesImplementation *HermesImplementationCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _HermesImplementation.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -208,12 +208,17 @@ func (_HermesImplementation *HermesImplementationTransactorRaw) Transact(opts *b
 //
 // Solidity: function availableBalance() view returns(uint256)
 func (_HermesImplementation *HermesImplementationCaller) AvailableBalance(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "availableBalance")
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "availableBalance")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // AvailableBalance is a free data retrieval call binding the contract method 0xab2f0e51.
@@ -234,12 +239,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) AvailableBalance
 //
 // Solidity: function calculateHermesFee(uint256 _amount) view returns(uint256)
 func (_HermesImplementation *HermesImplementationCaller) CalculateHermesFee(opts *bind.CallOpts, _amount *big.Int) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "calculateHermesFee", _amount)
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "calculateHermesFee", _amount)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // CalculateHermesFee is a free data retrieval call binding the contract method 0x1f4f12c6.
@@ -265,15 +275,26 @@ func (_HermesImplementation *HermesImplementationCaller) Channels(opts *bind.Cal
 	LastUsedNonce *big.Int
 	Timelock      *big.Int
 }, error) {
-	ret := new(struct {
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "channels", arg0)
+
+	outstruct := new(struct {
 		Settled       *big.Int
 		Stake         *big.Int
 		LastUsedNonce *big.Int
 		Timelock      *big.Int
 	})
-	out := ret
-	err := _HermesImplementation.contract.Call(opts, out, "channels", arg0)
-	return *ret, err
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.Settled = *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+	outstruct.Stake = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+	outstruct.LastUsedNonce = *abi.ConvertType(out[2], new(*big.Int)).(**big.Int)
+	outstruct.Timelock = *abi.ConvertType(out[3], new(*big.Int)).(**big.Int)
+
+	return *outstruct, err
+
 }
 
 // Channels is a free data retrieval call binding the contract method 0x7a7ebd7b.
@@ -304,12 +325,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) Channels(arg0 [3
 //
 // Solidity: function getActiveFee() view returns(uint256)
 func (_HermesImplementation *HermesImplementationCaller) GetActiveFee(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "getActiveFee")
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "getActiveFee")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetActiveFee is a free data retrieval call binding the contract method 0x8d886fac.
@@ -330,12 +356,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) GetActiveFee() (
 //
 // Solidity: function getChannelId(address _identity) view returns(bytes32)
 func (_HermesImplementation *HermesImplementationCaller) GetChannelId(opts *bind.CallOpts, _identity common.Address) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "getChannelId", _identity)
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "getChannelId", _identity)
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // GetChannelId is a free data retrieval call binding the contract method 0xeb295b27.
@@ -356,12 +387,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) GetChannelId(_id
 //
 // Solidity: function getFundsDestination() view returns(address)
 func (_HermesImplementation *HermesImplementationCaller) GetFundsDestination(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "getFundsDestination")
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "getFundsDestination")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
@@ -382,12 +418,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) GetFundsDestinat
 //
 // Solidity: function getHermesStake() view returns(uint256)
 func (_HermesImplementation *HermesImplementationCaller) GetHermesStake(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "getHermesStake")
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "getHermesStake")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetHermesStake is a free data retrieval call binding the contract method 0x306db49b.
@@ -408,12 +449,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) GetHermesStake()
 //
 // Solidity: function getOperator() view returns(address)
 func (_HermesImplementation *HermesImplementationCaller) GetOperator(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "getOperator")
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "getOperator")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetOperator is a free data retrieval call binding the contract method 0xe7f43c68.
@@ -434,12 +480,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) GetOperator() (c
 //
 // Solidity: function getRegistry() view returns(address)
 func (_HermesImplementation *HermesImplementationCaller) GetRegistry(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "getRegistry")
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "getRegistry")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetRegistry is a free data retrieval call binding the contract method 0x5ab1bd53.
@@ -460,16 +511,18 @@ func (_HermesImplementation *HermesImplementationCallerSession) GetRegistry() (c
 //
 // Solidity: function getStakeThresholds() view returns(uint256, uint256)
 func (_HermesImplementation *HermesImplementationCaller) GetStakeThresholds(opts *bind.CallOpts) (*big.Int, *big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-		ret1 = new(*big.Int)
-	)
-	out := &[]interface{}{
-		ret0,
-		ret1,
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "getStakeThresholds")
+
+	if err != nil {
+		return *new(*big.Int), *new(*big.Int), err
 	}
-	err := _HermesImplementation.contract.Call(opts, out, "getStakeThresholds")
-	return *ret0, *ret1, err
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+	out1 := *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+
+	return out0, out1, err
+
 }
 
 // GetStakeThresholds is a free data retrieval call binding the contract method 0x9ed9903e.
@@ -490,12 +543,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) GetStakeThreshol
 //
 // Solidity: function getStatus() view returns(uint8)
 func (_HermesImplementation *HermesImplementationCaller) GetStatus(opts *bind.CallOpts) (uint8, error) {
-	var (
-		ret0 = new(uint8)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "getStatus")
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "getStatus")
+
+	if err != nil {
+		return *new(uint8), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(uint8)).(*uint8)
+
+	return out0, err
+
 }
 
 // GetStatus is a free data retrieval call binding the contract method 0x4e69d560.
@@ -516,12 +574,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) GetStatus() (uin
 //
 // Solidity: function isChannelOpened(bytes32 _channelId) view returns(bool)
 func (_HermesImplementation *HermesImplementationCaller) IsChannelOpened(opts *bind.CallOpts, _channelId [32]byte) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "isChannelOpened", _channelId)
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "isChannelOpened", _channelId)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsChannelOpened is a free data retrieval call binding the contract method 0x6e9094ea.
@@ -542,12 +605,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) IsChannelOpened(
 //
 // Solidity: function isHermesActive() view returns(bool)
 func (_HermesImplementation *HermesImplementationCaller) IsHermesActive(opts *bind.CallOpts) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "isHermesActive")
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "isHermesActive")
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsHermesActive is a free data retrieval call binding the contract method 0xbc96a1e9.
@@ -568,12 +636,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) IsHermesActive()
 //
 // Solidity: function isInitialized() view returns(bool)
 func (_HermesImplementation *HermesImplementationCaller) IsInitialized(opts *bind.CallOpts) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "isInitialized")
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "isInitialized")
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsInitialized is a free data retrieval call binding the contract method 0x392e53cd.
@@ -597,13 +670,22 @@ func (_HermesImplementation *HermesImplementationCaller) LastFee(opts *bind.Call
 	Value     uint16
 	ValidFrom uint64
 }, error) {
-	ret := new(struct {
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "lastFee")
+
+	outstruct := new(struct {
 		Value     uint16
 		ValidFrom uint64
 	})
-	out := ret
-	err := _HermesImplementation.contract.Call(opts, out, "lastFee")
-	return *ret, err
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.Value = *abi.ConvertType(out[0], new(uint16)).(*uint16)
+	outstruct.ValidFrom = *abi.ConvertType(out[1], new(uint64)).(*uint64)
+
+	return *outstruct, err
+
 }
 
 // LastFee is a free data retrieval call binding the contract method 0x9801134e.
@@ -630,12 +712,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) LastFee() (struc
 //
 // Solidity: function minimalExpectedBalance() view returns(uint256)
 func (_HermesImplementation *HermesImplementationCaller) MinimalExpectedBalance(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "minimalExpectedBalance")
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "minimalExpectedBalance")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // MinimalExpectedBalance is a free data retrieval call binding the contract method 0x94c7915d.
@@ -656,12 +743,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) MinimalExpectedB
 //
 // Solidity: function owner() view returns(address)
 func (_HermesImplementation *HermesImplementationCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "owner")
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "owner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
@@ -685,13 +777,22 @@ func (_HermesImplementation *HermesImplementationCaller) PreviousFee(opts *bind.
 	Value     uint16
 	ValidFrom uint64
 }, error) {
-	ret := new(struct {
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "previousFee")
+
+	outstruct := new(struct {
 		Value     uint16
 		ValidFrom uint64
 	})
-	out := ret
-	err := _HermesImplementation.contract.Call(opts, out, "previousFee")
-	return *ret, err
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.Value = *abi.ConvertType(out[0], new(uint16)).(*uint16)
+	outstruct.ValidFrom = *abi.ConvertType(out[1], new(uint64)).(*uint64)
+
+	return *outstruct, err
+
 }
 
 // PreviousFee is a free data retrieval call binding the contract method 0xe1c66487.
@@ -721,13 +822,22 @@ func (_HermesImplementation *HermesImplementationCaller) Punishment(opts *bind.C
 	ActivationBlock *big.Int
 	Amount          *big.Int
 }, error) {
-	ret := new(struct {
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "punishment")
+
+	outstruct := new(struct {
 		ActivationBlock *big.Int
 		Amount          *big.Int
 	})
-	out := ret
-	err := _HermesImplementation.contract.Call(opts, out, "punishment")
-	return *ret, err
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.ActivationBlock = *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+	outstruct.Amount = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+
+	return *outstruct, err
+
 }
 
 // Punishment is a free data retrieval call binding the contract method 0x0684cd20.
@@ -754,12 +864,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) Punishment() (st
 //
 // Solidity: function token() view returns(address)
 func (_HermesImplementation *HermesImplementationCaller) Token(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "token")
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "token")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Token is a free data retrieval call binding the contract method 0xfc0c546a.
@@ -780,12 +895,17 @@ func (_HermesImplementation *HermesImplementationCallerSession) Token() (common.
 //
 // Solidity: function validatePromise(bytes32 _channelId, uint256 _amount, uint256 _transactorFee, bytes32 _preimage, bytes _signature) view returns(bool)
 func (_HermesImplementation *HermesImplementationCaller) ValidatePromise(opts *bind.CallOpts, _channelId [32]byte, _amount *big.Int, _transactorFee *big.Int, _preimage [32]byte, _signature []byte) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _HermesImplementation.contract.Call(opts, out, "validatePromise", _channelId, _amount, _transactorFee, _preimage, _signature)
-	return *ret0, err
+	var out []interface{}
+	err := _HermesImplementation.contract.Call(opts, &out, "validatePromise", _channelId, _amount, _transactorFee, _preimage, _signature)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // ValidatePromise is a free data retrieval call binding the contract method 0x70603a7f.
@@ -1393,6 +1513,7 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseChannelOpeningAc
 	if err := _HermesImplementation.contract.UnpackLog(event, "ChannelOpeningActivated", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1525,6 +1646,7 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseChannelOpeningPa
 	if err := _HermesImplementation.contract.UnpackLog(event, "ChannelOpeningPaused", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1677,6 +1799,7 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseDestinationChang
 	if err := _HermesImplementation.contract.UnpackLog(event, "DestinationChanged", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1811,6 +1934,7 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseFundsWithdrawned
 	if err := _HermesImplementation.contract.UnpackLog(event, "FundsWithdrawned", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1944,6 +2068,7 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseHermesClosed(log
 	if err := _HermesImplementation.contract.UnpackLog(event, "HermesClosed", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -2078,6 +2203,7 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseHermesFeeUpdated
 	if err := _HermesImplementation.contract.UnpackLog(event, "HermesFeeUpdated", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -2211,6 +2337,7 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseHermesPunishment
 	if err := _HermesImplementation.contract.UnpackLog(event, "HermesPunishmentActivated", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -2343,6 +2470,7 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseHermesPunishment
 	if err := _HermesImplementation.contract.UnpackLog(event, "HermesPunishmentDeactivated", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -2476,6 +2604,7 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseHermesStakeIncre
 	if err := _HermesImplementation.contract.UnpackLog(event, "HermesStakeIncreased", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -2609,6 +2738,7 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseMaxStakeValueUpd
 	if err := _HermesImplementation.contract.UnpackLog(event, "MaxStakeValueUpdated", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -2742,6 +2872,7 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseMinStakeValueUpd
 	if err := _HermesImplementation.contract.UnpackLog(event, "MinStakeValueUpdated", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -2886,6 +3017,7 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseNewStake(log typ
 	if err := _HermesImplementation.contract.UnpackLog(event, "NewStake", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -3038,6 +3170,7 @@ func (_HermesImplementation *HermesImplementationFilterer) ParseOwnershipTransfe
 	if err := _HermesImplementation.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -3192,5 +3325,6 @@ func (_HermesImplementation *HermesImplementationFilterer) ParsePromiseSettled(l
 	if err := _HermesImplementation.contract.UnpackLog(event, "PromiseSettled", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }

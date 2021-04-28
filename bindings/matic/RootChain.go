@@ -153,7 +153,7 @@ func bindRootChain(address common.Address, caller bind.ContractCaller, transacto
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_RootChain *RootChainRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_RootChain *RootChainRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _RootChain.Contract.RootChainCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -172,7 +172,7 @@ func (_RootChain *RootChainRaw) Transact(opts *bind.TransactOpts, method string,
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_RootChain *RootChainCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_RootChain *RootChainCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _RootChain.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -191,12 +191,17 @@ func (_RootChain *RootChainTransactorRaw) Transact(opts *bind.TransactOpts, meth
 //
 // Solidity: function CHAINID() view returns(uint256)
 func (_RootChain *RootChainCaller) CHAINID(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _RootChain.contract.Call(opts, out, "CHAINID")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChain.contract.Call(opts, &out, "CHAINID")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // CHAINID is a free data retrieval call binding the contract method 0xcc79f97b.
@@ -217,12 +222,17 @@ func (_RootChain *RootChainCallerSession) CHAINID() (*big.Int, error) {
 //
 // Solidity: function VOTE_TYPE() view returns(uint8)
 func (_RootChain *RootChainCaller) VOTETYPE(opts *bind.CallOpts) (uint8, error) {
-	var (
-		ret0 = new(uint8)
-	)
-	out := ret0
-	err := _RootChain.contract.Call(opts, out, "VOTE_TYPE")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChain.contract.Call(opts, &out, "VOTE_TYPE")
+
+	if err != nil {
+		return *new(uint8), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(uint8)).(*uint8)
+
+	return out0, err
+
 }
 
 // VOTETYPE is a free data retrieval call binding the contract method 0xd5b844eb.
@@ -243,12 +253,17 @@ func (_RootChain *RootChainCallerSession) VOTETYPE() (uint8, error) {
 //
 // Solidity: function _nextHeaderBlock() view returns(uint256)
 func (_RootChain *RootChainCaller) NextHeaderBlock(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _RootChain.contract.Call(opts, out, "_nextHeaderBlock")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChain.contract.Call(opts, &out, "_nextHeaderBlock")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // NextHeaderBlock is a free data retrieval call binding the contract method 0x8d978d88.
@@ -269,12 +284,17 @@ func (_RootChain *RootChainCallerSession) NextHeaderBlock() (*big.Int, error) {
 //
 // Solidity: function currentHeaderBlock() view returns(uint256)
 func (_RootChain *RootChainCaller) CurrentHeaderBlock(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _RootChain.contract.Call(opts, out, "currentHeaderBlock")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChain.contract.Call(opts, &out, "currentHeaderBlock")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // CurrentHeaderBlock is a free data retrieval call binding the contract method 0xec7e4855.
@@ -295,12 +315,17 @@ func (_RootChain *RootChainCallerSession) CurrentHeaderBlock() (*big.Int, error)
 //
 // Solidity: function getLastChildBlock() view returns(uint256)
 func (_RootChain *RootChainCaller) GetLastChildBlock(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _RootChain.contract.Call(opts, out, "getLastChildBlock")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChain.contract.Call(opts, &out, "getLastChildBlock")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetLastChildBlock is a free data retrieval call binding the contract method 0xb87e1b66.
@@ -327,16 +352,28 @@ func (_RootChain *RootChainCaller) HeaderBlocks(opts *bind.CallOpts, arg0 *big.I
 	CreatedAt *big.Int
 	Proposer  common.Address
 }, error) {
-	ret := new(struct {
+	var out []interface{}
+	err := _RootChain.contract.Call(opts, &out, "headerBlocks", arg0)
+
+	outstruct := new(struct {
 		Root      [32]byte
 		Start     *big.Int
 		End       *big.Int
 		CreatedAt *big.Int
 		Proposer  common.Address
 	})
-	out := ret
-	err := _RootChain.contract.Call(opts, out, "headerBlocks", arg0)
-	return *ret, err
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.Root = *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+	outstruct.Start = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+	outstruct.End = *abi.ConvertType(out[2], new(*big.Int)).(**big.Int)
+	outstruct.CreatedAt = *abi.ConvertType(out[3], new(*big.Int)).(**big.Int)
+	outstruct.Proposer = *abi.ConvertType(out[4], new(common.Address)).(*common.Address)
+
+	return *outstruct, err
+
 }
 
 // HeaderBlocks is a free data retrieval call binding the contract method 0x41539d4a.
@@ -369,12 +406,17 @@ func (_RootChain *RootChainCallerSession) HeaderBlocks(arg0 *big.Int) (struct {
 //
 // Solidity: function heimdallId() view returns(bytes32)
 func (_RootChain *RootChainCaller) HeimdallId(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _RootChain.contract.Call(opts, out, "heimdallId")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChain.contract.Call(opts, &out, "heimdallId")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // HeimdallId is a free data retrieval call binding the contract method 0xfbc3dd36.
@@ -395,12 +437,17 @@ func (_RootChain *RootChainCallerSession) HeimdallId() ([32]byte, error) {
 //
 // Solidity: function isOwner() view returns(bool)
 func (_RootChain *RootChainCaller) IsOwner(opts *bind.CallOpts) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _RootChain.contract.Call(opts, out, "isOwner")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChain.contract.Call(opts, &out, "isOwner")
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsOwner is a free data retrieval call binding the contract method 0x8f32d59b.
@@ -421,12 +468,17 @@ func (_RootChain *RootChainCallerSession) IsOwner() (bool, error) {
 //
 // Solidity: function networkId() view returns(bytes)
 func (_RootChain *RootChainCaller) NetworkId(opts *bind.CallOpts) ([]byte, error) {
-	var (
-		ret0 = new([]byte)
-	)
-	out := ret0
-	err := _RootChain.contract.Call(opts, out, "networkId")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChain.contract.Call(opts, &out, "networkId")
+
+	if err != nil {
+		return *new([]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]byte)).(*[]byte)
+
+	return out0, err
+
 }
 
 // NetworkId is a free data retrieval call binding the contract method 0x9025e64c.
@@ -447,12 +499,17 @@ func (_RootChain *RootChainCallerSession) NetworkId() ([]byte, error) {
 //
 // Solidity: function owner() view returns(address)
 func (_RootChain *RootChainCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _RootChain.contract.Call(opts, out, "owner")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChain.contract.Call(opts, &out, "owner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
@@ -798,6 +855,7 @@ func (_RootChain *RootChainFilterer) ParseNewHeaderBlock(log types.Log) (*RootCh
 	if err := _RootChain.contract.UnpackLog(event, "NewHeaderBlock", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -950,6 +1008,7 @@ func (_RootChain *RootChainFilterer) ParseOwnershipTransferred(log types.Log) (*
 	if err := _RootChain.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1102,5 +1161,6 @@ func (_RootChain *RootChainFilterer) ParseResetHeaderBlock(log types.Log) (*Root
 	if err := _RootChain.contract.UnpackLog(event, "ResetHeaderBlock", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
