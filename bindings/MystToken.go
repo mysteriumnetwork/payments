@@ -1,6 +1,6 @@
 /* Mysterium network payment library.
  *
- * Copyright (C) 2020 BlockDev AG
+ * Copyright (C) 2021 BlockDev AG
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -170,7 +170,7 @@ func bindMystToken(address common.Address, caller bind.ContractCaller, transacto
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_MystToken *MystTokenRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_MystToken *MystTokenRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _MystToken.Contract.MystTokenCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -189,7 +189,7 @@ func (_MystToken *MystTokenRaw) Transact(opts *bind.TransactOpts, method string,
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_MystToken *MystTokenCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_MystToken *MystTokenCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _MystToken.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -208,12 +208,17 @@ func (_MystToken *MystTokenTransactorRaw) Transact(opts *bind.TransactOpts, meth
 //
 // Solidity: function DOMAIN_SEPARATOR() view returns(bytes32)
 func (_MystToken *MystTokenCaller) DOMAINSEPARATOR(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "DOMAIN_SEPARATOR")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "DOMAIN_SEPARATOR")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // DOMAINSEPARATOR is a free data retrieval call binding the contract method 0x3644e515.
@@ -234,12 +239,17 @@ func (_MystToken *MystTokenCallerSession) DOMAINSEPARATOR() ([32]byte, error) {
 //
 // Solidity: function PERMIT_TYPEHASH() view returns(bytes32)
 func (_MystToken *MystTokenCaller) PERMITTYPEHASH(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "PERMIT_TYPEHASH")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "PERMIT_TYPEHASH")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // PERMITTYPEHASH is a free data retrieval call binding the contract method 0x30adf81f.
@@ -260,12 +270,17 @@ func (_MystToken *MystTokenCallerSession) PERMITTYPEHASH() ([32]byte, error) {
 //
 // Solidity: function allowance(address holder, address spender) view returns(uint256)
 func (_MystToken *MystTokenCaller) Allowance(opts *bind.CallOpts, holder common.Address, spender common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "allowance", holder, spender)
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "allowance", holder, spender)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
@@ -286,12 +301,17 @@ func (_MystToken *MystTokenCallerSession) Allowance(holder common.Address, spend
 //
 // Solidity: function balanceOf(address tokenHolder) view returns(uint256)
 func (_MystToken *MystTokenCaller) BalanceOf(opts *bind.CallOpts, tokenHolder common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "balanceOf", tokenHolder)
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "balanceOf", tokenHolder)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
@@ -312,12 +332,17 @@ func (_MystToken *MystTokenCallerSession) BalanceOf(tokenHolder common.Address) 
 //
 // Solidity: function decimals() view returns(uint8)
 func (_MystToken *MystTokenCaller) Decimals(opts *bind.CallOpts) (uint8, error) {
-	var (
-		ret0 = new(uint8)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "decimals")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "decimals")
+
+	if err != nil {
+		return *new(uint8), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(uint8)).(*uint8)
+
+	return out0, err
+
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
@@ -338,12 +363,17 @@ func (_MystToken *MystTokenCallerSession) Decimals() (uint8, error) {
 //
 // Solidity: function getFundsDestination() view returns(address)
 func (_MystToken *MystTokenCaller) GetFundsDestination(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "getFundsDestination")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "getFundsDestination")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
@@ -364,12 +394,17 @@ func (_MystToken *MystTokenCallerSession) GetFundsDestination() (common.Address,
 //
 // Solidity: function getUpgradeState() view returns(uint8)
 func (_MystToken *MystTokenCaller) GetUpgradeState(opts *bind.CallOpts) (uint8, error) {
-	var (
-		ret0 = new(uint8)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "getUpgradeState")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "getUpgradeState")
+
+	if err != nil {
+		return *new(uint8), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(uint8)).(*uint8)
+
+	return out0, err
+
 }
 
 // GetUpgradeState is a free data retrieval call binding the contract method 0x8444b391.
@@ -390,12 +425,17 @@ func (_MystToken *MystTokenCallerSession) GetUpgradeState() (uint8, error) {
 //
 // Solidity: function isUpgradeAgent() view returns(bool)
 func (_MystToken *MystTokenCaller) IsUpgradeAgent(opts *bind.CallOpts) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "isUpgradeAgent")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "isUpgradeAgent")
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsUpgradeAgent is a free data retrieval call binding the contract method 0x61d3d7a6.
@@ -416,12 +456,17 @@ func (_MystToken *MystTokenCallerSession) IsUpgradeAgent() (bool, error) {
 //
 // Solidity: function name() view returns(string)
 func (_MystToken *MystTokenCaller) Name(opts *bind.CallOpts) (string, error) {
-	var (
-		ret0 = new(string)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "name")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "name")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
 }
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
@@ -442,12 +487,17 @@ func (_MystToken *MystTokenCallerSession) Name() (string, error) {
 //
 // Solidity: function nonces(address ) view returns(uint256)
 func (_MystToken *MystTokenCaller) Nonces(opts *bind.CallOpts, arg0 common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "nonces", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "nonces", arg0)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // Nonces is a free data retrieval call binding the contract method 0x7ecebe00.
@@ -468,12 +518,17 @@ func (_MystToken *MystTokenCallerSession) Nonces(arg0 common.Address) (*big.Int,
 //
 // Solidity: function originalSupply() view returns(uint256)
 func (_MystToken *MystTokenCaller) OriginalSupply(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "originalSupply")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "originalSupply")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // OriginalSupply is a free data retrieval call binding the contract method 0x4b2ba0dd.
@@ -494,12 +549,17 @@ func (_MystToken *MystTokenCallerSession) OriginalSupply() (*big.Int, error) {
 //
 // Solidity: function originalToken() view returns(address)
 func (_MystToken *MystTokenCaller) OriginalToken(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "originalToken")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "originalToken")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // OriginalToken is a free data retrieval call binding the contract method 0x0e7c1cb5.
@@ -520,12 +580,17 @@ func (_MystToken *MystTokenCallerSession) OriginalToken() (common.Address, error
 //
 // Solidity: function symbol() view returns(string)
 func (_MystToken *MystTokenCaller) Symbol(opts *bind.CallOpts) (string, error) {
-	var (
-		ret0 = new(string)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "symbol")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "symbol")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
 }
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
@@ -546,12 +611,17 @@ func (_MystToken *MystTokenCallerSession) Symbol() (string, error) {
 //
 // Solidity: function totalSupply() view returns(uint256)
 func (_MystToken *MystTokenCaller) TotalSupply(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "totalSupply")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "totalSupply")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
@@ -572,12 +642,17 @@ func (_MystToken *MystTokenCallerSession) TotalSupply() (*big.Int, error) {
 //
 // Solidity: function totalUpgraded() view returns(uint256)
 func (_MystToken *MystTokenCaller) TotalUpgraded(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "totalUpgraded")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "totalUpgraded")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // TotalUpgraded is a free data retrieval call binding the contract method 0xc752ff62.
@@ -598,12 +673,17 @@ func (_MystToken *MystTokenCallerSession) TotalUpgraded() (*big.Int, error) {
 //
 // Solidity: function upgradeAgent() view returns(address)
 func (_MystToken *MystTokenCaller) UpgradeAgent(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "upgradeAgent")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "upgradeAgent")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // UpgradeAgent is a free data retrieval call binding the contract method 0x5de4ccb0.
@@ -624,12 +704,17 @@ func (_MystToken *MystTokenCallerSession) UpgradeAgent() (common.Address, error)
 //
 // Solidity: function upgradeMaster() view returns(address)
 func (_MystToken *MystTokenCaller) UpgradeMaster(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _MystToken.contract.Call(opts, out, "upgradeMaster")
-	return *ret0, err
+	var out []interface{}
+	err := _MystToken.contract.Call(opts, &out, "upgradeMaster")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // UpgradeMaster is a free data retrieval call binding the contract method 0x600440cb.
@@ -1090,6 +1175,7 @@ func (_MystToken *MystTokenFilterer) ParseApproval(log types.Log) (*MystTokenApp
 	if err := _MystToken.contract.UnpackLog(event, "Approval", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1234,6 +1320,7 @@ func (_MystToken *MystTokenFilterer) ParseBurned(log types.Log) (*MystTokenBurne
 	if err := _MystToken.contract.UnpackLog(event, "Burned", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1386,6 +1473,7 @@ func (_MystToken *MystTokenFilterer) ParseFundsRecoveryDestinationChanged(log ty
 	if err := _MystToken.contract.UnpackLog(event, "FundsRecoveryDestinationChanged", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1530,6 +1618,7 @@ func (_MystToken *MystTokenFilterer) ParseMinted(log types.Log) (*MystTokenMinte
 	if err := _MystToken.contract.UnpackLog(event, "Minted", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1683,6 +1772,7 @@ func (_MystToken *MystTokenFilterer) ParseTransfer(log types.Log) (*MystTokenTra
 	if err := _MystToken.contract.UnpackLog(event, "Transfer", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1828,6 +1918,7 @@ func (_MystToken *MystTokenFilterer) ParseUpgrade(log types.Log) (*MystTokenUpgr
 	if err := _MystToken.contract.UnpackLog(event, "Upgrade", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1961,6 +2052,7 @@ func (_MystToken *MystTokenFilterer) ParseUpgradeAgentSet(log types.Log) (*MystT
 	if err := _MystToken.contract.UnpackLog(event, "UpgradeAgentSet", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -2094,5 +2186,6 @@ func (_MystToken *MystTokenFilterer) ParseUpgradeMasterSet(log types.Log) (*Myst
 	if err := _MystToken.contract.UnpackLog(event, "UpgradeMasterSet", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }

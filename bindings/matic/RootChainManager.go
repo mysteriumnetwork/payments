@@ -153,7 +153,7 @@ func bindRootChainManager(address common.Address, caller bind.ContractCaller, tr
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_RootChainManager *RootChainManagerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_RootChainManager *RootChainManagerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _RootChainManager.Contract.RootChainManagerCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -172,7 +172,7 @@ func (_RootChainManager *RootChainManagerRaw) Transact(opts *bind.TransactOpts, 
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_RootChainManager *RootChainManagerCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_RootChainManager *RootChainManagerCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _RootChainManager.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -191,12 +191,17 @@ func (_RootChainManager *RootChainManagerTransactorRaw) Transact(opts *bind.Tran
 //
 // Solidity: function DEFAULT_ADMIN_ROLE() view returns(bytes32)
 func (_RootChainManager *RootChainManagerCaller) DEFAULTADMINROLE(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "DEFAULT_ADMIN_ROLE")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "DEFAULT_ADMIN_ROLE")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // DEFAULTADMINROLE is a free data retrieval call binding the contract method 0xa217fddf.
@@ -217,12 +222,17 @@ func (_RootChainManager *RootChainManagerCallerSession) DEFAULTADMINROLE() ([32]
 //
 // Solidity: function DEPOSIT() view returns(bytes32)
 func (_RootChainManager *RootChainManagerCaller) DEPOSIT(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "DEPOSIT")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "DEPOSIT")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // DEPOSIT is a free data retrieval call binding the contract method 0xd81c8e52.
@@ -243,12 +253,17 @@ func (_RootChainManager *RootChainManagerCallerSession) DEPOSIT() ([32]byte, err
 //
 // Solidity: function ERC712_VERSION() view returns(string)
 func (_RootChainManager *RootChainManagerCaller) ERC712VERSION(opts *bind.CallOpts) (string, error) {
-	var (
-		ret0 = new(string)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "ERC712_VERSION")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "ERC712_VERSION")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
 }
 
 // ERC712VERSION is a free data retrieval call binding the contract method 0x0f7e5970.
@@ -269,12 +284,17 @@ func (_RootChainManager *RootChainManagerCallerSession) ERC712VERSION() (string,
 //
 // Solidity: function ETHER_ADDRESS() view returns(address)
 func (_RootChainManager *RootChainManagerCaller) ETHERADDRESS(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "ETHER_ADDRESS")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "ETHER_ADDRESS")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // ETHERADDRESS is a free data retrieval call binding the contract method 0xcf1d21c0.
@@ -295,12 +315,17 @@ func (_RootChainManager *RootChainManagerCallerSession) ETHERADDRESS() (common.A
 //
 // Solidity: function MAPPER_ROLE() view returns(bytes32)
 func (_RootChainManager *RootChainManagerCaller) MAPPERROLE(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "MAPPER_ROLE")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "MAPPER_ROLE")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // MAPPERROLE is a free data retrieval call binding the contract method 0x568b80b5.
@@ -321,12 +346,17 @@ func (_RootChainManager *RootChainManagerCallerSession) MAPPERROLE() ([32]byte, 
 //
 // Solidity: function MAP_TOKEN() view returns(bytes32)
 func (_RootChainManager *RootChainManagerCaller) MAPTOKEN(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "MAP_TOKEN")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "MAP_TOKEN")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // MAPTOKEN is a free data retrieval call binding the contract method 0x886a69ba.
@@ -347,12 +377,17 @@ func (_RootChainManager *RootChainManagerCallerSession) MAPTOKEN() ([32]byte, er
 //
 // Solidity: function checkpointManagerAddress() view returns(address)
 func (_RootChainManager *RootChainManagerCaller) CheckpointManagerAddress(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "checkpointManagerAddress")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "checkpointManagerAddress")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // CheckpointManagerAddress is a free data retrieval call binding the contract method 0x3138b6f1.
@@ -373,12 +408,17 @@ func (_RootChainManager *RootChainManagerCallerSession) CheckpointManagerAddress
 //
 // Solidity: function childChainManagerAddress() view returns(address)
 func (_RootChainManager *RootChainManagerCaller) ChildChainManagerAddress(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "childChainManagerAddress")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "childChainManagerAddress")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // ChildChainManagerAddress is a free data retrieval call binding the contract method 0x04967702.
@@ -399,12 +439,17 @@ func (_RootChainManager *RootChainManagerCallerSession) ChildChainManagerAddress
 //
 // Solidity: function childToRootToken(address ) view returns(address)
 func (_RootChainManager *RootChainManagerCaller) ChildToRootToken(opts *bind.CallOpts, arg0 common.Address) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "childToRootToken", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "childToRootToken", arg0)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // ChildToRootToken is a free data retrieval call binding the contract method 0x6e86b770.
@@ -425,12 +470,17 @@ func (_RootChainManager *RootChainManagerCallerSession) ChildToRootToken(arg0 co
 //
 // Solidity: function getChainId() pure returns(uint256)
 func (_RootChainManager *RootChainManagerCaller) GetChainId(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "getChainId")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "getChainId")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetChainId is a free data retrieval call binding the contract method 0x3408e470.
@@ -451,12 +501,17 @@ func (_RootChainManager *RootChainManagerCallerSession) GetChainId() (*big.Int, 
 //
 // Solidity: function getDomainSeperator() view returns(bytes32)
 func (_RootChainManager *RootChainManagerCaller) GetDomainSeperator(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "getDomainSeperator")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "getDomainSeperator")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // GetDomainSeperator is a free data retrieval call binding the contract method 0x20379ee5.
@@ -477,12 +532,17 @@ func (_RootChainManager *RootChainManagerCallerSession) GetDomainSeperator() ([3
 //
 // Solidity: function getNonce(address user) view returns(uint256 nonce)
 func (_RootChainManager *RootChainManagerCaller) GetNonce(opts *bind.CallOpts, user common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "getNonce", user)
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "getNonce", user)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetNonce is a free data retrieval call binding the contract method 0x2d0335ab.
@@ -503,12 +563,17 @@ func (_RootChainManager *RootChainManagerCallerSession) GetNonce(user common.Add
 //
 // Solidity: function getRoleAdmin(bytes32 role) view returns(bytes32)
 func (_RootChainManager *RootChainManagerCaller) GetRoleAdmin(opts *bind.CallOpts, role [32]byte) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "getRoleAdmin", role)
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "getRoleAdmin", role)
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // GetRoleAdmin is a free data retrieval call binding the contract method 0x248a9ca3.
@@ -529,12 +594,17 @@ func (_RootChainManager *RootChainManagerCallerSession) GetRoleAdmin(role [32]by
 //
 // Solidity: function getRoleMember(bytes32 role, uint256 index) view returns(address)
 func (_RootChainManager *RootChainManagerCaller) GetRoleMember(opts *bind.CallOpts, role [32]byte, index *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "getRoleMember", role, index)
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "getRoleMember", role, index)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetRoleMember is a free data retrieval call binding the contract method 0x9010d07c.
@@ -555,12 +625,17 @@ func (_RootChainManager *RootChainManagerCallerSession) GetRoleMember(role [32]b
 //
 // Solidity: function getRoleMemberCount(bytes32 role) view returns(uint256)
 func (_RootChainManager *RootChainManagerCaller) GetRoleMemberCount(opts *bind.CallOpts, role [32]byte) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "getRoleMemberCount", role)
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "getRoleMemberCount", role)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetRoleMemberCount is a free data retrieval call binding the contract method 0xca15c873.
@@ -581,12 +656,17 @@ func (_RootChainManager *RootChainManagerCallerSession) GetRoleMemberCount(role 
 //
 // Solidity: function hasRole(bytes32 role, address account) view returns(bool)
 func (_RootChainManager *RootChainManagerCaller) HasRole(opts *bind.CallOpts, role [32]byte, account common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "hasRole", role, account)
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "hasRole", role, account)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // HasRole is a free data retrieval call binding the contract method 0x91d14854.
@@ -607,12 +687,17 @@ func (_RootChainManager *RootChainManagerCallerSession) HasRole(role [32]byte, a
 //
 // Solidity: function processedExits(bytes32 ) view returns(bool)
 func (_RootChainManager *RootChainManagerCaller) ProcessedExits(opts *bind.CallOpts, arg0 [32]byte) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "processedExits", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "processedExits", arg0)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // ProcessedExits is a free data retrieval call binding the contract method 0x607f2d42.
@@ -633,12 +718,17 @@ func (_RootChainManager *RootChainManagerCallerSession) ProcessedExits(arg0 [32]
 //
 // Solidity: function rootToChildToken(address ) view returns(address)
 func (_RootChainManager *RootChainManagerCaller) RootToChildToken(opts *bind.CallOpts, arg0 common.Address) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "rootToChildToken", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "rootToChildToken", arg0)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // RootToChildToken is a free data retrieval call binding the contract method 0xea60c7c4.
@@ -659,12 +749,17 @@ func (_RootChainManager *RootChainManagerCallerSession) RootToChildToken(arg0 co
 //
 // Solidity: function stateSenderAddress() view returns(address)
 func (_RootChainManager *RootChainManagerCaller) StateSenderAddress(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "stateSenderAddress")
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "stateSenderAddress")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // StateSenderAddress is a free data retrieval call binding the contract method 0xe2c49de1.
@@ -685,12 +780,17 @@ func (_RootChainManager *RootChainManagerCallerSession) StateSenderAddress() (co
 //
 // Solidity: function tokenToType(address ) view returns(bytes32)
 func (_RootChainManager *RootChainManagerCaller) TokenToType(opts *bind.CallOpts, arg0 common.Address) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "tokenToType", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "tokenToType", arg0)
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // TokenToType is a free data retrieval call binding the contract method 0xe43009a6.
@@ -711,12 +811,17 @@ func (_RootChainManager *RootChainManagerCallerSession) TokenToType(arg0 common.
 //
 // Solidity: function typeToPredicate(bytes32 ) view returns(address)
 func (_RootChainManager *RootChainManagerCaller) TypeToPredicate(opts *bind.CallOpts, arg0 [32]byte) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _RootChainManager.contract.Call(opts, out, "typeToPredicate", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _RootChainManager.contract.Call(opts, &out, "typeToPredicate", arg0)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // TypeToPredicate is a free data retrieval call binding the contract method 0xe66f9603.
@@ -1222,6 +1327,7 @@ func (_RootChainManager *RootChainManagerFilterer) ParseMetaTransactionExecuted(
 	if err := _RootChainManager.contract.UnpackLog(event, "MetaTransactionExecuted", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1374,6 +1480,7 @@ func (_RootChainManager *RootChainManagerFilterer) ParsePredicateRegistered(log 
 	if err := _RootChainManager.contract.UnpackLog(event, "PredicateRegistered", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1535,6 +1642,7 @@ func (_RootChainManager *RootChainManagerFilterer) ParseRoleAdminChanged(log typ
 	if err := _RootChainManager.contract.UnpackLog(event, "RoleAdminChanged", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1696,6 +1804,7 @@ func (_RootChainManager *RootChainManagerFilterer) ParseRoleGranted(log types.Lo
 	if err := _RootChainManager.contract.UnpackLog(event, "RoleGranted", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1857,6 +1966,7 @@ func (_RootChainManager *RootChainManagerFilterer) ParseRoleRevoked(log types.Lo
 	if err := _RootChainManager.contract.UnpackLog(event, "RoleRevoked", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -2018,5 +2128,6 @@ func (_RootChainManager *RootChainManagerFilterer) ParseTokenMapped(log types.Lo
 	if err := _RootChainManager.contract.UnpackLog(event, "TokenMapped", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }

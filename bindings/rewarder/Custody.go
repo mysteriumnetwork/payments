@@ -1,3 +1,19 @@
+/* Mysterium network payment library.
+ *
+ * Copyright (C) 2021 BlockDev AG
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 // Code generated - DO NOT EDIT.
 // This file is a generated binding and any manual changes will be lost.
 
@@ -154,7 +170,7 @@ func bindCustody(address common.Address, caller bind.ContractCaller, transactor 
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Custody *CustodyRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Custody *CustodyRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Custody.Contract.CustodyCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -173,7 +189,7 @@ func (_Custody *CustodyRaw) Transact(opts *bind.TransactOpts, method string, par
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Custody *CustodyCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Custody *CustodyCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Custody.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -192,12 +208,17 @@ func (_Custody *CustodyTransactorRaw) Transact(opts *bind.TransactOpts, method s
 //
 // Solidity: function authorized(address ) view returns(bool)
 func (_Custody *CustodyCaller) Authorized(opts *bind.CallOpts, arg0 common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Custody.contract.Call(opts, out, "authorized", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _Custody.contract.Call(opts, &out, "authorized", arg0)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // Authorized is a free data retrieval call binding the contract method 0xb9181611.
@@ -218,12 +239,17 @@ func (_Custody *CustodyCallerSession) Authorized(arg0 common.Address) (bool, err
 //
 // Solidity: function owner() view returns(address)
 func (_Custody *CustodyCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Custody.contract.Call(opts, out, "owner")
-	return *ret0, err
+	var out []interface{}
+	err := _Custody.contract.Call(opts, &out, "owner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
@@ -244,12 +270,17 @@ func (_Custody *CustodyCallerSession) Owner() (common.Address, error) {
 //
 // Solidity: function token() view returns(address)
 func (_Custody *CustodyCaller) Token(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Custody.contract.Call(opts, out, "token")
-	return *ret0, err
+	var out []interface{}
+	err := _Custody.contract.Call(opts, &out, "token")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Token is a free data retrieval call binding the contract method 0xfc0c546a.
@@ -583,5 +614,6 @@ func (_Custody *CustodyFilterer) ParseOwnershipTransferred(log types.Log) (*Cust
 	if err := _Custody.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
