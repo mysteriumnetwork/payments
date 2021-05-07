@@ -349,3 +349,8 @@ func (cwdr *WithDryRuns) RewarderAirDrop(req RewarderAirDrop) (*types.Transactio
 func (cwdr *WithDryRuns) RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transaction, error) {
 	return cwdr.bc.RewarderUpdateRoot(req)
 }
+
+// RewarderTotalClaimed is a free lookup in the blockchain for the total amount of claimed tokens in the blockchain.
+func (cwdr *WithDryRuns) RewarderTotalClaimed(rewarderAddress common.Address) (*big.Int, error) {
+	return cwdr.bc.RewarderTotalClaimed(rewarderAddress)
+}

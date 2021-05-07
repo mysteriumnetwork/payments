@@ -76,6 +76,7 @@ type BC interface {
 	RewarderTotalPayoutsFor(rewarderAddress common.Address, payoutsFor common.Address) (*big.Int, error)
 	RewarderAirDrop(req RewarderAirDrop) (*types.Transaction, error)
 	RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transaction, error)
+	RewarderTotalClaimed(rewarderAddress common.Address) (*big.Int, error)
 }
 
 // BlockchainWithRetries takes in the plain blockchain implementation and exposes methods that will retry the underlying bc methods before giving up.
@@ -736,7 +737,7 @@ func (bwr *BlockchainWithRetries) RewarderTotalPayoutsFor(rewarderAddress common
 	err := bwr.callWithRetry(func() error {
 		t, err := bwr.bc.RewarderTotalPayoutsFor(rewarderAddress, payoutsFor)
 		if err != nil {
-			return errors.Wrap(err, "could send get total payouts for address")
+			return errors.Wrap(err, "could get total payouts for address")
 		}
 		total = t
 		return nil
@@ -768,4 +769,18 @@ func (bwr *BlockchainWithRetries) RewarderUpdateRoot(req RewarderUpdateRoot) (*t
 		return nil
 	})
 	return res, err
+}
+
+// RewarderTotalClaimed is a free lookup in the blockchain for the total amount of claimed tokens in the blockchain.
+func (bwr *BlockchainWithRetries) RewarderTotalClaimed(chainID int64, rewarderAddress common.Address) (*big.Int, error) {
+	var total *big.Int
+	err := bwr.callWithRetry(func() error {
+		t, err := bwr.bc.RewarderTotalClaimed(rewarderAddress)
+		if err != nil {
+			return errors.Wrap(err, "could get total claimed")
+		}
+		total = t
+		return nil
+	})
+	return total, err
 }
