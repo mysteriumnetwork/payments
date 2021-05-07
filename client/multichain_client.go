@@ -437,3 +437,35 @@ func (mbc *MultichainBlockchainClient) PayAndSettle(chainID int64, psr PayAndSet
 	}
 	return bc.PayAndSettle(psr)
 }
+
+func (mbc *MultichainBlockchainClient) TransactionByHash(chainID int64, hash common.Hash) (*types.Transaction, bool, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, false, err
+	}
+	return bc.TransactionByHash(hash)
+}
+
+func (mbc *MultichainBlockchainClient) RewarderTotalPayoutsFor(chainID int64, rewarderAddress common.Address, payoutsFor common.Address) (*big.Int, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.RewarderTotalPayoutsFor(rewarderAddress, payoutsFor)
+}
+
+func (mbc *MultichainBlockchainClient) RewarderAirDrop(chainID int64, req RewarderAirDrop) (*types.Transaction, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.RewarderAirDrop(req)
+}
+
+func (mbc *MultichainBlockchainClient) RewarderUpdateRoot(chainID int64, req RewarderUpdateRoot) (*types.Transaction, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.RewarderUpdateRoot(req)
+}

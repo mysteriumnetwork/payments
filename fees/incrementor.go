@@ -60,6 +60,7 @@ type Storage interface {
 type MultichainClient interface {
 	TransactionReceipt(chainID int64, hash common.Hash) (*types.Receipt, error)
 	SendTransaction(chainID int64, tx *types.Transaction) error
+	TransactionByHash(chainID int64, hash common.Hash) (*types.Transaction, bool, error)
 }
 
 // SignatureFunc is used to sign transactions when resubmitting them.
@@ -187,7 +188,7 @@ func (i *GasPriceIncremenetor) watchAndIncrement(tx Transaction) error {
 		case <-i.stop:
 			return nil
 		case <-checkTimer.C:
-			receipt, err := i.getReceipt(tx)
+			status, err := i.getTxStatus(tx)
 			if err != nil {
 				if !i.isBlockchainErrorUnhandleable(err) {
 					return err
@@ -195,7 +196,7 @@ func (i *GasPriceIncremenetor) watchAndIncrement(tx Transaction) error {
 				i.log(tx, fmt.Errorf("received unhandleable receipt error, marking tx as failed: %w", err))
 				return i.transactionFailed(tx)
 			}
-			if receipt.Status == types.ReceiptStatusSuccessful {
+			if status == StatusSucceeded {
 				return i.transactionSuccess(tx)
 			}
 		case <-incTimer.C:
@@ -260,12 +261,46 @@ func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) (Transaction, er
 	return i.transactionPriceIncreased(tx, newTx)
 }
 
-func (i *GasPriceIncremenetor) getReceipt(tx Transaction) (*types.Receipt, error) {
+// BCTxStatus represents the status of tx on blockchain.
+type BCTxStatus string
+
+const (
+	// StatusPending indicates that the tx is still pending.
+	StatusPending BCTxStatus = "Pending"
+	// StatusFailed indicates that the tx has failed.
+	StatusFailed BCTxStatus = "Failed"
+	// StatusSucceeded indicates that the tx has suceeded.
+	StatusSucceeded BCTxStatus = "Succeeded"
+)
+
+func (i *GasPriceIncremenetor) getTxStatus(tx Transaction) (BCTxStatus, error) {
+	_, pending, err := i.bc.TransactionByHash(tx.ChainID, common.HexToHash(tx.TxHashHex))
+	if err != nil {
+		return StatusFailed, fmt.Errorf("failed to get transaction by hash: %w", err)
+	}
+
+	if pending {
+		return StatusPending, nil
+	}
+
 	receipt, err := i.bc.TransactionReceipt(tx.ChainID, common.HexToHash(tx.TxHashHex))
 	if err != nil {
-		return nil, fmt.Errorf("failed to get transaction receipt: %w", err)
+		return StatusFailed, fmt.Errorf("failed to get transaction receipt: %w", err)
 	}
-	return receipt, nil
+
+	return i.bcTxStatusFromReceipt(tx, receipt), nil
+}
+
+func (i *GasPriceIncremenetor) bcTxStatusFromReceipt(tx Transaction, rcp *types.Receipt) BCTxStatus {
+	switch rcp.Status {
+	case types.ReceiptStatusSuccessful:
+		return StatusSucceeded
+	case types.ReceiptStatusFailed:
+		return StatusFailed
+	default:
+		i.log(tx, fmt.Errorf("received unknown receipt status %v for tx %v", rcp.Status, tx.TxHashHex))
+		return StatusFailed
+	}
 }
 
 func (i *GasPriceIncremenetor) signAndSend(tx *types.Transaction, chainID int64) error {

@@ -170,7 +170,7 @@ func bindChannelImplementation(address common.Address, caller bind.ContractCalle
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_ChannelImplementation *ChannelImplementationRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_ChannelImplementation *ChannelImplementationRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _ChannelImplementation.Contract.ChannelImplementationCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -189,7 +189,7 @@ func (_ChannelImplementation *ChannelImplementationRaw) Transact(opts *bind.Tran
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_ChannelImplementation *ChannelImplementationCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_ChannelImplementation *ChannelImplementationCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _ChannelImplementation.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -211,13 +211,22 @@ func (_ChannelImplementation *ChannelImplementationCaller) ExitRequest(opts *bin
 	Timelock    *big.Int
 	Beneficiary common.Address
 }, error) {
-	ret := new(struct {
+	var out []interface{}
+	err := _ChannelImplementation.contract.Call(opts, &out, "exitRequest")
+
+	outstruct := new(struct {
 		Timelock    *big.Int
 		Beneficiary common.Address
 	})
-	out := ret
-	err := _ChannelImplementation.contract.Call(opts, out, "exitRequest")
-	return *ret, err
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.Timelock = *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+	outstruct.Beneficiary = *abi.ConvertType(out[1], new(common.Address)).(*common.Address)
+
+	return *outstruct, err
+
 }
 
 // ExitRequest is a free data retrieval call binding the contract method 0xf4b3a197.
@@ -244,12 +253,17 @@ func (_ChannelImplementation *ChannelImplementationCallerSession) ExitRequest() 
 //
 // Solidity: function getFundsDestination() view returns(address)
 func (_ChannelImplementation *ChannelImplementationCaller) GetFundsDestination(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ChannelImplementation.contract.Call(opts, out, "getFundsDestination")
-	return *ret0, err
+	var out []interface{}
+	err := _ChannelImplementation.contract.Call(opts, &out, "getFundsDestination")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetFundsDestination is a free data retrieval call binding the contract method 0xf58c5b6e.
@@ -274,14 +288,24 @@ func (_ChannelImplementation *ChannelImplementationCaller) Hermes(opts *bind.Cal
 	ContractAddress common.Address
 	Settled         *big.Int
 }, error) {
-	ret := new(struct {
+	var out []interface{}
+	err := _ChannelImplementation.contract.Call(opts, &out, "hermes")
+
+	outstruct := new(struct {
 		Operator        common.Address
 		ContractAddress common.Address
 		Settled         *big.Int
 	})
-	out := ret
-	err := _ChannelImplementation.contract.Call(opts, out, "hermes")
-	return *ret, err
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.Operator = *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+	outstruct.ContractAddress = *abi.ConvertType(out[1], new(common.Address)).(*common.Address)
+	outstruct.Settled = *abi.ConvertType(out[2], new(*big.Int)).(**big.Int)
+
+	return *outstruct, err
+
 }
 
 // Hermes is a free data retrieval call binding the contract method 0xd8092c92.
@@ -310,12 +334,17 @@ func (_ChannelImplementation *ChannelImplementationCallerSession) Hermes() (stru
 //
 // Solidity: function isInitialized() view returns(bool)
 func (_ChannelImplementation *ChannelImplementationCaller) IsInitialized(opts *bind.CallOpts) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _ChannelImplementation.contract.Call(opts, out, "isInitialized")
-	return *ret0, err
+	var out []interface{}
+	err := _ChannelImplementation.contract.Call(opts, &out, "isInitialized")
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsInitialized is a free data retrieval call binding the contract method 0x392e53cd.
@@ -336,12 +365,17 @@ func (_ChannelImplementation *ChannelImplementationCallerSession) IsInitialized(
 //
 // Solidity: function operator() view returns(address)
 func (_ChannelImplementation *ChannelImplementationCaller) Operator(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ChannelImplementation.contract.Call(opts, out, "operator")
-	return *ret0, err
+	var out []interface{}
+	err := _ChannelImplementation.contract.Call(opts, &out, "operator")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Operator is a free data retrieval call binding the contract method 0x570ca735.
@@ -362,12 +396,17 @@ func (_ChannelImplementation *ChannelImplementationCallerSession) Operator() (co
 //
 // Solidity: function owner() view returns(address)
 func (_ChannelImplementation *ChannelImplementationCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ChannelImplementation.contract.Call(opts, out, "owner")
-	return *ret0, err
+	var out []interface{}
+	err := _ChannelImplementation.contract.Call(opts, &out, "owner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
@@ -388,12 +427,17 @@ func (_ChannelImplementation *ChannelImplementationCallerSession) Owner() (commo
 //
 // Solidity: function token() view returns(address)
 func (_ChannelImplementation *ChannelImplementationCaller) Token(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ChannelImplementation.contract.Call(opts, out, "token")
-	return *ret0, err
+	var out []interface{}
+	err := _ChannelImplementation.contract.Call(opts, &out, "token")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Token is a free data retrieval call binding the contract method 0xfc0c546a.
@@ -790,6 +834,7 @@ func (_ChannelImplementation *ChannelImplementationFilterer) ParseDestinationCha
 	if err := _ChannelImplementation.contract.UnpackLog(event, "DestinationChanged", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -923,6 +968,7 @@ func (_ChannelImplementation *ChannelImplementationFilterer) ParseExitRequested(
 	if err := _ChannelImplementation.contract.UnpackLog(event, "ExitRequested", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1075,6 +1121,7 @@ func (_ChannelImplementation *ChannelImplementationFilterer) ParseOwnershipTrans
 	if err := _ChannelImplementation.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1210,6 +1257,7 @@ func (_ChannelImplementation *ChannelImplementationFilterer) ParsePromiseSettled
 	if err := _ChannelImplementation.contract.UnpackLog(event, "PromiseSettled", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -1344,5 +1392,6 @@ func (_ChannelImplementation *ChannelImplementationFilterer) ParseWithdraw(log t
 	if err := _ChannelImplementation.contract.UnpackLog(event, "Withdraw", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
