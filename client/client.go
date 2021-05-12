@@ -129,6 +129,7 @@ type BC interface {
 	RewarderTotalPayoutsFor(rewarderAddress common.Address, payoutsFor common.Address) (*big.Int, error)
 	RewarderAirDrop(req RewarderAirDrop) (*types.Transaction, error)
 	RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transaction, error)
+	RewarderTotalClaimed(rewarderAddress common.Address) (*big.Int, error)
 }
 
 // GetHermesFee fetches the hermes fee from blockchain
@@ -1312,4 +1313,19 @@ func (bc *Blockchain) RewarderTotalPayoutsFor(rewarderAddress common.Address, pa
 	return caller.TotalPayoutsFor(&bind.CallOpts{
 		Context: ctx,
 	}, payoutsFor)
+}
+
+// RewarderTotalClaimed is a free lookup in the blockchain for the total amount of claimed tokens in the blockchain.
+func (bc *Blockchain) RewarderTotalClaimed(rewarderAddress common.Address) (*big.Int, error) {
+	caller, err := rewarder.NewRewarderCaller(rewarderAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.TotalClaimed(&bind.CallOpts{
+		Context: ctx,
+	})
 }

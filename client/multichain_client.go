@@ -469,3 +469,12 @@ func (mbc *MultichainBlockchainClient) RewarderUpdateRoot(chainID int64, req Rew
 	}
 	return bc.RewarderUpdateRoot(req)
 }
+
+// RewarderTotalClaimed is a free lookup in the blockchain for the total amount of claimed tokens in the blockchain.
+func (mbc *MultichainBlockchainClient) RewarderTotalClaimed(chainID int64, rewarderAddress common.Address) (*big.Int, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.RewarderTotalClaimed(rewarderAddress)
+}
