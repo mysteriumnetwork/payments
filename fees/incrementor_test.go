@@ -59,7 +59,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 		assert.True(t, c.sent, "should be sent")
 		assert.True(t, c.checked, "should be checked")
 		assert.True(t, sg.signed, "should be signed")
-		altered, err := st.tx.getOriginal()
+		altered, err := st.tx.getLatestTx()
 		assert.NoError(t, err)
 
 		assert.Equal(t,
@@ -101,7 +101,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 			[]TransactionState{TxStateCreated, TxStateSucceed},
 
 			st.stateHistory)
-		altered, err := st.tx.getOriginal()
+		altered, err := st.tx.getLatestTx()
 		assert.NoError(t, err)
 		assert.Equal(t, chid, st.tx.ChainID)
 		assert.Equal(t, originalGasPrice, altered.GasPrice(), "original gas price should stay the same")
@@ -139,7 +139,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 
 			st.stateHistory)
 
-		altered, err := st.tx.getOriginal()
+		altered, err := st.tx.getLatestTx()
 		assert.Equal(t, chid, st.tx.ChainID)
 		assert.NoError(t, err)
 		assert.Equal(t, new(big.Int).SetInt64(4), altered.GasPrice(), "gas price should be increased once")

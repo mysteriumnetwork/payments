@@ -235,7 +235,7 @@ func (i *GasPriceIncremenetor) isBlockchainErrorUnhandleable(err error) bool {
 }
 
 func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) (Transaction, error) {
-	org, err := tx.getOriginal()
+	org, err := tx.getLatestTx()
 	if err != nil {
 		return Transaction{}, err
 	}
@@ -250,11 +250,11 @@ func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) (Transaction, er
 			return Transaction{}, err
 		}
 
-		return Transaction{}, fmt.Errorf("transaction with hash '%s' failed, gas price limit of %s reached on chain %d", tx.TxHashHex, tx.Opts.MaxPrice.String(), tx.ChainID)
+		return Transaction{}, fmt.Errorf("transaction with uniqueID '%s' failed, gas price limit of %s reached on chain %d", tx.UniqueID, tx.Opts.MaxPrice.String(), tx.ChainID)
 	}
 
-	newTx := tx.rebuiledWithNewGasPrice(org, newGasPrice)
-	if err := i.signAndSend(newTx, tx.ChainID); err != nil {
+	newTx, err := i.signAndSend(tx.rebuiledWithNewGasPrice(org, newGasPrice), tx.ChainID)
+	if err != nil {
 		return Transaction{}, i.transactionFailed(tx)
 	}
 
@@ -274,7 +274,13 @@ const (
 )
 
 func (i *GasPriceIncremenetor) getTxStatus(tx Transaction) (BCTxStatus, error) {
-	_, pending, err := i.bc.TransactionByHash(tx.ChainID, common.HexToHash(tx.TxHashHex))
+	org, err := tx.getLatestTx()
+	if err != nil {
+		return StatusFailed, fmt.Errorf("can't get tx status, malformed internal tx object: %w", err)
+	}
+
+	hash := org.Hash()
+	_, pending, err := i.bc.TransactionByHash(tx.ChainID, hash)
 	if err != nil {
 		return StatusFailed, fmt.Errorf("failed to get transaction by hash: %w", err)
 	}
@@ -283,7 +289,7 @@ func (i *GasPriceIncremenetor) getTxStatus(tx Transaction) (BCTxStatus, error) {
 		return StatusPending, nil
 	}
 
-	receipt, err := i.bc.TransactionReceipt(tx.ChainID, common.HexToHash(tx.TxHashHex))
+	receipt, err := i.bc.TransactionReceipt(tx.ChainID, hash)
 	if err != nil {
 		return StatusFailed, fmt.Errorf("failed to get transaction receipt: %w", err)
 	}
@@ -298,22 +304,27 @@ func (i *GasPriceIncremenetor) bcTxStatusFromReceipt(tx Transaction, rcp *types.
 	case types.ReceiptStatusFailed:
 		return StatusFailed
 	default:
-		i.log(tx, fmt.Errorf("received unknown receipt status %v for tx %v", rcp.Status, tx.TxHashHex))
+		hash := ""
+		if org, err := tx.getLatestTx(); err == nil {
+			hash = org.Hash().Hex()
+		}
+
+		i.log(tx, fmt.Errorf("received unknown receipt status %v for tx uniqueID: '%v', lastHash: '%v'", rcp.Status, tx.UniqueID, hash))
 		return StatusFailed
 	}
 }
 
-func (i *GasPriceIncremenetor) signAndSend(tx *types.Transaction, chainID int64) error {
+func (i *GasPriceIncremenetor) signAndSend(tx *types.Transaction, chainID int64) (*types.Transaction, error) {
 	signedTx, err := i.sign(tx, chainID)
 	if err != nil {
-		return fmt.Errorf("failed to sign a transaction: %w", err)
+		return nil, fmt.Errorf("failed to sign a transaction: %w", err)
 	}
 
 	if err := i.bc.SendTransaction(chainID, signedTx); err != nil {
-		return fmt.Errorf("failed send a transaction: %w", err)
+		return nil, fmt.Errorf("failed send a transaction: %w", err)
 	}
 
-	return nil
+	return signedTx, nil
 }
 
 func (i *GasPriceIncremenetor) transactionFailed(tx Transaction) error {
@@ -336,7 +347,7 @@ func (i *GasPriceIncremenetor) transactionSuccess(tx Transaction) error {
 func (i *GasPriceIncremenetor) transactionPriceIncreased(tx Transaction, newTx *types.Transaction) (Transaction, error) {
 	var err error
 	tx.State = TxStatePriceIncreased
-	tx.OriginalTx, err = newTx.MarshalJSON()
+	tx.LatestTx, err = newTx.MarshalJSON()
 	if err != nil {
 		return Transaction{}, fmt.Errorf("failed to marshal internal transaction object: %w", err)
 	}
