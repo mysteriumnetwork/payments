@@ -461,3 +461,11 @@ func (mbc *MultichainBlockchainClient) RewarderTotalClaimed(chainID int64, rewar
 	}
 	return bc.RewarderTotalClaimed(rewarderAddress)
 }
+
+func (mbc *MultichainBlockchainClient) CustodyTransferTokens(chainID int64, req CustodyTokensTransfer) (*types.Transaction, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.CustodyTransferTokens(req)
+}
