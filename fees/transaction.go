@@ -44,13 +44,13 @@ const (
 
 // Transaction objects is used when handling transactions.
 type Transaction struct {
-	// UniqueID is a combination of Tx hash and chainID.
-	UniqueID   string
-	Opts       TransactionOpts
-	State      TransactionState
-	TxHashHex  string
-	ChainID    int64
-	OriginalTx []byte
+	// UniqueID is a combination of the original tx hash and chainID.
+	UniqueID       string
+	Opts           TransactionOpts
+	State          TransactionState
+	OrignalHashHex string
+	ChainID        int64
+	LatestTx       []byte
 }
 
 // TransactionOpts are provided when creating a new transaction.
@@ -69,8 +69,8 @@ type TransactionOpts struct {
 }
 
 // TransactionUniqueID returns a unique ID for a transaction.
-func TransactionUniqueID(txHashHex string, chainID int64) string {
-	return fmt.Sprintf("%s|%d", txHashHex, chainID)
+func TransactionUniqueID(orignalHash string, chainID int64) string {
+	return fmt.Sprintf("%s|%d", orignalHash, chainID)
 }
 
 func (t *TransactionOpts) validate() error {
@@ -105,12 +105,12 @@ func newTransaction(tx *types.Transaction, chainID int64, opts TransactionOpts) 
 	}
 
 	return &Transaction{
-		UniqueID:   TransactionUniqueID(hash, chainID),
-		Opts:       opts,
-		State:      TxStateCreated,
-		TxHashHex:  hash,
-		ChainID:    chainID,
-		OriginalTx: marshaled,
+		UniqueID:       TransactionUniqueID(hash, chainID),
+		Opts:           opts,
+		State:          TxStateCreated,
+		OrignalHashHex: hash,
+		ChainID:        chainID,
+		LatestTx:       marshaled,
 	}, nil
 }
 
@@ -122,9 +122,9 @@ func (t *Transaction) isExpired() bool {
 	return time.Now().After(*t.Opts.ValidUntil)
 }
 
-func (t *Transaction) getOriginal() (*types.Transaction, error) {
+func (t *Transaction) getLatestTx() (*types.Transaction, error) {
 	tx := &types.Transaction{}
-	return tx, tx.UnmarshalJSON(t.OriginalTx)
+	return tx, tx.UnmarshalJSON(t.LatestTx)
 }
 
 func (t *Transaction) rebuiledWithNewGasPrice(tx *types.Transaction, newGasPrice *big.Int) *types.Transaction {
