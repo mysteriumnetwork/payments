@@ -14,3 +14,11 @@ func NewStaticStation(price *big.Int) *StaticStation {
 func (s *StaticStation) GetAverageGasPrice() (*big.Int, error) {
 	return new(big.Int).Set(s.staticPrice), nil
 }
+
+func (s *StaticStation) GetFastGasPrice() (*big.Int, error) {
+	return new(big.Int).Set(s.staticPrice), nil
+}
+
+func (s *StaticStation) GetLowGasPrice() (*big.Int, error) {
+	return new(big.Int).Set(s.staticPrice), nil
+}
