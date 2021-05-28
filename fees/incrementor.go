@@ -36,7 +36,7 @@ type GasPriceIncremenetor struct {
 
 	storage Storage
 	bc      MultichainClient
-	sign    SignatureFunc
+	signers Signers
 	logFn   LogFunc
 
 	syncer *syncer
@@ -66,17 +66,20 @@ type MultichainClient interface {
 // SignatureFunc is used to sign transactions when resubmitting them.
 type SignatureFunc func(tx *types.Transaction, chainID int64) (*types.Transaction, error)
 
+// Signers is a map that holds all possible signers to sign transactions when resending to the blockchain.
+type Signers map[common.Address]SignatureFunc
+
 // LogFunc can be attacheched to Incrementer to enable logging.
 type LogFunc func(Transaction, error)
 
 // NewGasPriceIncremenetor returns a new incrementer instance.
-func NewGasPriceIncremenetor(pullInterval time.Duration, storage Storage, cl MultichainClient, signer SignatureFunc) *GasPriceIncremenetor {
+func NewGasPriceIncremenetor(pullInterval time.Duration, storage Storage, cl MultichainClient, signers Signers) *GasPriceIncremenetor {
 	return &GasPriceIncremenetor{
 		pullInterval: pullInterval,
 
 		storage: storage,
 		bc:      cl,
-		sign:    signer,
+		signers: signers,
 
 		syncer: newSyncer(),
 		stop:   make(chan struct{}, 0),
@@ -133,11 +136,11 @@ func (i *GasPriceIncremenetor) Stop() {
 // InsertInitial uses the given storage to insert an new transaction which
 // will later be retreived using `GetTransactionsToCheck` in order to check
 // it's state and retry with higher gas price if needed.
-func (i *GasPriceIncremenetor) InsertInitial(tx *types.Transaction, opts TransactionOpts, chainID int64) error {
+func (i *GasPriceIncremenetor) InsertInitial(tx *types.Transaction, opts TransactionOpts, senderAddress common.Address) error {
 	if err := opts.validate(); err != nil {
 		return fmt.Errorf("invalid opts given: %w", err)
 	}
-	newTx, err := newTransaction(tx, chainID, opts)
+	newTx, err := newTransaction(tx, senderAddress, opts)
 	if err != nil {
 		return fmt.Errorf("failed to create new transaction: %w", err)
 	}
@@ -253,7 +256,7 @@ func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) (Transaction, er
 		return Transaction{}, fmt.Errorf("transaction with uniqueID '%s' failed, gas price limit of %s reached on chain %d", tx.UniqueID, tx.Opts.MaxPrice.String(), tx.ChainID)
 	}
 
-	newTx, err := i.signAndSend(tx.rebuiledWithNewGasPrice(org, newGasPrice), tx.ChainID)
+	newTx, err := i.signAndSend(tx.rebuiledWithNewGasPrice(org, newGasPrice), tx.ChainID, tx.SenderAddressHex)
 	if err != nil {
 		return Transaction{}, i.transactionFailed(tx)
 	}
@@ -314,8 +317,27 @@ func (i *GasPriceIncremenetor) bcTxStatusFromReceipt(tx Transaction, rcp *types.
 	}
 }
 
-func (i *GasPriceIncremenetor) signAndSend(tx *types.Transaction, chainID int64) (*types.Transaction, error) {
-	signedTx, err := i.sign(tx, chainID)
+func (i *GasPriceIncremenetor) getSigner(senderAddressHex string) (SignatureFunc, bool) {
+	// TODO: Remove later. Left for backwards compatability.
+	// If only one signer is present and senderAddress is `""` return first signer.
+	if len(i.signers) == 1 && senderAddressHex == "" {
+		for _, v := range i.signers {
+			return v, true
+		}
+	}
+
+	addr := common.HexToAddress(senderAddressHex)
+	signer, ok := i.signers[addr]
+	return signer, ok
+}
+
+func (i *GasPriceIncremenetor) signAndSend(tx *types.Transaction, chainID int64, senderAddrHex string) (*types.Transaction, error) {
+	signer, ok := i.getSigner(senderAddrHex)
+	if !ok {
+		return nil, fmt.Errorf("can't retry, no signer for address: %s", senderAddrHex)
+	}
+
+	signedTx, err := signer(tx, chainID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to sign a transaction: %w", err)
 	}
@@ -365,7 +387,7 @@ func (i *GasPriceIncremenetor) log(tx Transaction, err error) {
 	}
 }
 
-// syncer is used to sync Incremeter so that
+// syncer is used to sync Incrementor so that
 // we dont start tracking the same transaction multiple times.
 type syncer struct {
 	txs map[string]struct{}
