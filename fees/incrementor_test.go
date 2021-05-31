@@ -32,7 +32,7 @@ import (
 )
 
 func TestGasPriceIncrementor(t *testing.T) {
-	chid := int64(1)
+	chid := int64(9223372036854775790)
 	t.Run("gas price is increased and tx is successfull", func(t *testing.T) {
 		originalGasPrice := big.NewInt(1)
 		org := types.NewTransaction(1, common.HexToAddress("0x1"), big.NewInt(1), 1, originalGasPrice, []byte{})
@@ -40,10 +40,13 @@ func TestGasPriceIncrementor(t *testing.T) {
 		st := &mockStorage{}
 		c := newClient(big.NewInt(2))
 
+		sender := common.HexToAddress("")
 		sg := signer{}
-		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, sg.SignatureFunc)
+		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, map[common.Address]SignatureFunc{
+			sender: sg.SignatureFunc,
+		})
 		go inc.Run()
-		inc.InsertInitial(org, opts, chid)
+		inc.InsertInitial(org, opts, sender)
 		assert.Eventually(t, func() bool {
 			txs, _ := st.GetIncrementorTransactionsToCheck()
 			if len(txs) == 0 {
@@ -77,10 +80,13 @@ func TestGasPriceIncrementor(t *testing.T) {
 		st := &mockStorage{}
 		c := newClient(big.NewInt(0))
 
+		sender := common.HexToAddress("")
 		sg := signer{}
-		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, sg.SignatureFunc)
+		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, map[common.Address]SignatureFunc{
+			sender: sg.SignatureFunc,
+		})
 		go inc.Run()
-		inc.InsertInitial(org, opts, chid)
+		inc.InsertInitial(org, opts, sender)
 		assert.Eventually(t, func() bool {
 			txs, _ := st.GetIncrementorTransactionsToCheck()
 			if len(txs) == 0 {
@@ -115,10 +121,13 @@ func TestGasPriceIncrementor(t *testing.T) {
 		st := &mockStorage{}
 		c := newClient(new(big.Int).Add(opts.MaxPrice, big.NewInt(5)))
 
+		sender := common.HexToAddress("")
 		sg := signer{}
-		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, sg.SignatureFunc)
+		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, map[common.Address]SignatureFunc{
+			sender: sg.SignatureFunc,
+		})
 		go inc.Run()
-		inc.InsertInitial(org, opts, chid)
+		inc.InsertInitial(org, opts, sender)
 		assert.Eventually(t, func() bool {
 			txs, _ := st.GetIncrementorTransactionsToCheck()
 			if len(txs) == 0 {
@@ -150,9 +159,12 @@ func TestGasPriceIncrementor(t *testing.T) {
 		st := &mockStorage{}
 		c := newClient(nil)
 
+		sender := common.HexToAddress("")
 		sg := signer{}
-		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, sg.SignatureFunc)
-		assert.Error(t, inc.InsertInitial(org, TransactionOpts{}, chid))
+		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, map[common.Address]SignatureFunc{
+			sender: sg.SignatureFunc,
+		})
+		assert.Error(t, inc.InsertInitial(org, TransactionOpts{}, sender))
 	})
 }
 

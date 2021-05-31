@@ -19,8 +19,8 @@ package fees
 import (
 	"errors"
 	"fmt"
-	"math/big"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 )
 
@@ -31,39 +31,33 @@ import (
 // handleded and started by the caller hitself
 // as it only sends and inserts transactions.
 type TransactionHandler struct {
-	txWatchers map[int64]TxWatcherIface
-	inc        GasPriceIncremenetorIface
-
+	inc   GasPriceIncremenetorIface
 	logFn func(error)
 }
 
 // HandlerOpts are given when sending
 // a new transaction.
 type HandlerOpts struct {
-	ChainID         int64
-	InitGasPrice    *big.Int
+	SenderAddress   common.Address
 	GasPriceIncOpts TransactionOpts
 }
 
-// TxWatcherIface abstract any transaction watcher.
-type TxWatcherIface interface {
-	EnsureTransactionSuccess(wt WatchableTransaction, initialGasPrice *big.Int) (*types.Transaction, func(), error)
-}
+// TransactionSendFn wraps a transaction execution which should result
+// in a transaction being returned if it was successfull.
+//
+// It allows to wrap different kinds of contract methods which
+// all result in producing a transaction.
+type TransactionSendFn func() (*types.Transaction, error)
 
 // GasPriceIncremenetorIface abstracts gas pricei incrementor.
 type GasPriceIncremenetorIface interface {
-	InsertInitial(tx *types.Transaction, opts TransactionOpts, chainID int64) error
+	InsertInitial(tx *types.Transaction, opts TransactionOpts, senderAddress common.Address) error
 }
 
-// ErrOperationStopped is returned if called action is cut short (not finished)
-// and the result of the called action is unknown.
-var ErrOperationStopped = errors.New("operation cut short, result unknown")
-
 // NewTransactionhandler returns a new transaction handler
-func NewTransactionhandler(watchers map[int64]TxWatcherIface, inc GasPriceIncremenetorIface) *TransactionHandler {
+func NewTransactionhandler(inc GasPriceIncremenetorIface) *TransactionHandler {
 	return &TransactionHandler{
-		txWatchers: watchers,
-		inc:        inc,
+		inc: inc,
 	}
 }
 
@@ -71,52 +65,36 @@ func NewTransactionhandler(watchers map[int64]TxWatcherIface, inc GasPriceIncrem
 // Logger logs non critical errors or warnings that happen during transaction
 // handling.
 //
-// This method is not thread safe and should be called before `SendWithgasPriceHandling`.
+// This method is not thread safe and should be called before `SendWithGasPriceHandling`.
 func (t *TransactionHandler) AttachLogger(fn func(err error)) {
 	t.logFn = fn
 }
 
 // SendWithGasPriceHandling given a new watchable transaction with options will send the transaction
 // and increase the gas price accordingly.
-//
-// This method blocks either until transaction is sent and inserted, or stop channel is closed.
-func (t *TransactionHandler) SendWithGasPriceHandling(stop <-chan struct{}, wt WatchableTransaction, opts HandlerOpts) (*types.Transaction, error) {
-	cancel := func() {}
-	defer cancel()
-	type res struct {
-		tx  *types.Transaction
-		err error
+func (t *TransactionHandler) SendWithGasPriceHandling(txSend TransactionSendFn, opts HandlerOpts) (*types.Transaction, error) {
+	if err := opts.validate(); err != nil {
+		return nil, err
 	}
 
-	watcher, ok := t.txWatchers[opts.ChainID]
-	if !ok {
-		return nil, fmt.Errorf("no tx watcher for chain ID %v", opts.ChainID)
+	tx, err := txSend()
+	if err != nil {
+		return nil, err
 	}
 
-	resChan := make(chan res)
-	go func() {
-		tx, c, err := watcher.EnsureTransactionSuccess(wt, opts.InitGasPrice)
-		cancel = c
-		resChan <- res{
-			tx:  tx,
-			err: err,
-		}
-	}()
-
-	select {
-	case <-stop:
-		return nil, ErrOperationStopped
-	case r := <-resChan:
-		if r.err != nil {
-			return r.tx, r.err
-		}
-
-		if err := t.inc.InsertInitial(r.tx, opts.GasPriceIncOpts, opts.ChainID); err != nil {
-			t.log(fmt.Errorf("failed to insert initial entry for gas price incremenetor: %w", err))
-		}
-
-		return r.tx, nil
+	if err := t.inc.InsertInitial(tx, opts.GasPriceIncOpts, opts.SenderAddress); err != nil {
+		t.log(fmt.Errorf("failed to insert initial entry for gas price incremenetor: %w", err))
 	}
+
+	return tx, nil
+}
+
+func (opts *HandlerOpts) validate() error {
+	if opts.SenderAddress == common.HexToAddress("") {
+		return errors.New("sender address must be specified")
+	}
+
+	return nil
 }
 
 func (t *TransactionHandler) log(err error) {

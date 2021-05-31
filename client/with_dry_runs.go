@@ -366,3 +366,7 @@ func (cwdr *WithDryRuns) RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Tran
 func (cwdr *WithDryRuns) RewarderTotalClaimed(rewarderAddress common.Address) (*big.Int, error) {
 	return cwdr.bc.RewarderTotalClaimed(rewarderAddress)
 }
+
+func (cwdr *WithDryRuns) CustodyTransferTokens(req CustodyTokensTransfer) (*types.Transaction, error) {
+	return cwdr.bc.CustodyTransferTokens(req)
+}
