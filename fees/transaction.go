@@ -22,6 +22,7 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 )
 
@@ -45,12 +46,15 @@ const (
 // Transaction objects is used when handling transactions.
 type Transaction struct {
 	// UniqueID is a combination of the original tx hash and chainID.
-	UniqueID       string
-	Opts           TransactionOpts
-	State          TransactionState
-	OrignalHashHex string
-	ChainID        int64
-	LatestTx       []byte
+	UniqueID string
+	Opts     TransactionOpts
+	State    TransactionState
+
+	OrignalHashHex   string
+	SenderAddressHex string
+	ChainID          int64
+
+	LatestTx []byte
 }
 
 // TransactionOpts are provided when creating a new transaction.
@@ -96,7 +100,7 @@ func (t *TransactionOpts) validate() error {
 	return nil
 }
 
-func newTransaction(tx *types.Transaction, chainID int64, opts TransactionOpts) (*Transaction, error) {
+func newTransaction(tx *types.Transaction, senderAddress common.Address, opts TransactionOpts) (*Transaction, error) {
 	hash := tx.Hash().Hex()
 
 	marshaled, err := tx.MarshalJSON()
@@ -105,12 +109,13 @@ func newTransaction(tx *types.Transaction, chainID int64, opts TransactionOpts) 
 	}
 
 	return &Transaction{
-		UniqueID:       TransactionUniqueID(hash, chainID),
-		Opts:           opts,
-		State:          TxStateCreated,
-		OrignalHashHex: hash,
-		ChainID:        chainID,
-		LatestTx:       marshaled,
+		UniqueID:         TransactionUniqueID(hash, tx.ChainId().Int64()),
+		Opts:             opts,
+		State:            TxStateCreated,
+		OrignalHashHex:   hash,
+		SenderAddressHex: senderAddress.Hex(),
+		ChainID:          tx.ChainId().Int64(),
+		LatestTx:         marshaled,
 	}, nil
 }
 
