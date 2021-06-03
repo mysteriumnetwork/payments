@@ -67,4 +67,7 @@ type BC interface {
 	RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transaction, error)
 	RewarderTotalClaimed(rewarderAddress common.Address) (*big.Int, error)
 	CustodyTransferTokens(req CustodyTokensTransfer) (*types.Transaction, error)
+
+	PayAndSettle(psr PayAndSettleRequest) (*types.Transaction, error)
+	IsChannelOpened(registryID, identity, hermesID common.Address) (bool, error)
 }
