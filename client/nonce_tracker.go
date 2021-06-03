@@ -21,18 +21,21 @@ import (
 	"sync"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 // NonceTracker keeps track of nonces atomically.
 type NonceTracker struct {
-	client    *ethclient.Client
+	client    client
 	nonces    map[common.Address]uint64
 	nonceLock sync.Mutex
 }
 
+type client interface {
+	PendingNonceAt(ctx context.Context, account common.Address) (uint64, error)
+}
+
 // NewNonceTracker returns a new nonce tracker.
-func NewNonceTracker(client *ethclient.Client) *NonceTracker {
+func NewNonceTracker(client client) *NonceTracker {
 	return &NonceTracker{
 		client: client,
 		nonces: make(map[common.Address]uint64),
