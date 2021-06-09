@@ -48,7 +48,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 		go inc.Run()
 		inc.InsertInitial(org, opts, sender)
 		assert.Eventually(t, func() bool {
-			txs, _ := st.GetIncrementorTransactionsToCheck()
+			txs, _ := st.GetIncrementorTransactionsToCheck([]string{sender.Hex()})
 			if len(txs) == 0 {
 				return false
 			}
@@ -88,7 +88,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 		go inc.Run()
 		inc.InsertInitial(org, opts, sender)
 		assert.Eventually(t, func() bool {
-			txs, _ := st.GetIncrementorTransactionsToCheck()
+			txs, _ := st.GetIncrementorTransactionsToCheck([]string{sender.Hex()})
 			if len(txs) == 0 {
 				return false
 			}
@@ -129,7 +129,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 		go inc.Run()
 		inc.InsertInitial(org, opts, sender)
 		assert.Eventually(t, func() bool {
-			txs, _ := st.GetIncrementorTransactionsToCheck()
+			txs, _ := st.GetIncrementorTransactionsToCheck([]string{sender.Hex()})
 			if len(txs) == 0 {
 				return false
 			}
@@ -211,7 +211,7 @@ func (s *mockStorage) UpsertIncrementorTransaction(tx Transaction) error {
 	return nil
 }
 
-func (s *mockStorage) GetIncrementorTransactionsToCheck() (tx []Transaction, err error) {
+func (s *mockStorage) GetIncrementorTransactionsToCheck(signers []string) (tx []Transaction, err error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 	s.pulled = true
