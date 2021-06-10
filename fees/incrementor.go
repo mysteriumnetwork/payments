@@ -36,7 +36,7 @@ type GasPriceIncremenetor struct {
 
 	storage Storage
 	bc      MultichainClient
-	signers Signers
+	signers safeSigners
 	logFn   LogFunc
 
 	syncer *syncer
@@ -53,7 +53,10 @@ type Storage interface {
 	UpsertIncrementorTransaction(tx Transaction) error
 
 	// GetIncrementorTransactionsToCheck returns all transaction that need to rechecked.
-	GetIncrementorTransactionsToCheck() (tx []Transaction, err error)
+	//
+	// Entries should be filtered by possible signers. If incrementor cannot sign the transaction
+	// it should not received it.
+	GetIncrementorTransactionsToCheck(possibleSigners []string) (tx []Transaction, err error)
 }
 
 // MultichainClient handles calls to BC.
@@ -62,12 +65,6 @@ type MultichainClient interface {
 	SendTransaction(chainID int64, tx *types.Transaction) error
 	TransactionByHash(chainID int64, hash common.Hash) (*types.Transaction, bool, error)
 }
-
-// SignatureFunc is used to sign transactions when resubmitting them.
-type SignatureFunc func(tx *types.Transaction, chainID int64) (*types.Transaction, error)
-
-// Signers is a map that holds all possible signers to sign transactions when resending to the blockchain.
-type Signers map[common.Address]SignatureFunc
 
 // LogFunc can be attacheched to Incrementer to enable logging.
 type LogFunc func(Transaction, error)
@@ -79,7 +76,9 @@ func NewGasPriceIncremenetor(pullInterval time.Duration, storage Storage, cl Mul
 
 		storage: storage,
 		bc:      cl,
-		signers: signers,
+		signers: safeSigners{
+			signers: signers,
+		},
 
 		syncer: newSyncer(),
 		stop:   make(chan struct{}, 0),
@@ -108,7 +107,7 @@ func (i *GasPriceIncremenetor) Run() {
 			return
 
 		case <-time.After(i.pullInterval):
-			txs, err := i.storage.GetIncrementorTransactionsToCheck()
+			txs, err := i.storage.GetIncrementorTransactionsToCheck(i.signers.getSigners())
 			if err != nil {
 				continue
 			}
@@ -317,22 +316,8 @@ func (i *GasPriceIncremenetor) bcTxStatusFromReceipt(tx Transaction, rcp *types.
 	}
 }
 
-func (i *GasPriceIncremenetor) getSigner(senderAddressHex string) (SignatureFunc, bool) {
-	// TODO: Remove later. Left for backwards compatability.
-	// If only one signer is present and senderAddress is `""` return first signer.
-	if len(i.signers) == 1 && senderAddressHex == "" {
-		for _, v := range i.signers {
-			return v, true
-		}
-	}
-
-	addr := common.HexToAddress(senderAddressHex)
-	signer, ok := i.signers[addr]
-	return signer, ok
-}
-
 func (i *GasPriceIncremenetor) signAndSend(tx *types.Transaction, chainID int64, senderAddrHex string) (*types.Transaction, error) {
-	signer, ok := i.getSigner(senderAddrHex)
+	signer, ok := i.signers.getSignerFunc(senderAddrHex)
 	if !ok {
 		return nil, fmt.Errorf("can't retry, no signer for address: %s", senderAddrHex)
 	}
@@ -415,4 +400,43 @@ func (s *syncer) txRemoveWatched(tx Transaction) {
 	s.m.Lock()
 	defer s.m.Unlock()
 	delete(s.txs, tx.UniqueID)
+}
+
+// SignatureFunc is used to sign transactions when resubmitting them.
+type SignatureFunc func(tx *types.Transaction, chainID int64) (*types.Transaction, error)
+
+// Signers is a map that holds all possible signers to sign transactions when resending to the blockchain.
+type Signers map[common.Address]SignatureFunc
+
+type safeSigners struct {
+	signers map[common.Address]SignatureFunc
+	m       sync.Mutex
+}
+
+func (s *safeSigners) getSignerFunc(senderAddressHex string) (SignatureFunc, bool) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	// TODO: Remove later. Left for backwards compatability.
+	// If only one signer is present and senderAddress is `""` return first signer.
+	if len(s.signers) == 1 && senderAddressHex == "" {
+		for _, v := range s.signers {
+			return v, true
+		}
+	}
+
+	addr := common.HexToAddress(senderAddressHex)
+	signer, ok := s.signers[addr]
+	return signer, ok
+}
+
+func (s *safeSigners) getSigners() []string {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	signers := make([]string, 0)
+	for signer := range s.signers {
+		signers = append(signers, signer.Hex())
+	}
+	return signers
 }
