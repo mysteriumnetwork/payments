@@ -32,17 +32,22 @@ import (
 // GasPriceIncremenetor exposes a way automatically increment gas fees
 // for transactions in a preconfigured manner.
 type GasPriceIncremenetor struct {
-	pullInterval time.Duration
-
 	storage Storage
 	bc      MultichainClient
+
+	cfg     GasIncrementorConfig
 	signers safeSigners
-	logFn   LogFunc
 
 	syncer *syncer
+	logFn  LogFunc
+	stop   chan struct{}
+	once   sync.Once
+}
 
-	stop chan struct{}
-	once sync.Once
+// GasIncrementorConfig is provided to the incrementor to configure it.
+type GasIncrementorConfig struct {
+	PullInterval      time.Duration
+	MaxQueuePerSigner int
 }
 
 // Storage is given to the Incremeter to be used to
@@ -57,6 +62,9 @@ type Storage interface {
 	// Entries should be filtered by possible signers. If incrementor cannot sign the transaction
 	// it should not received it.
 	GetIncrementorTransactionsToCheck(possibleSigners []string) (tx []Transaction, err error)
+
+	// GasIncrementorSenderQueue returns the length of a queue for a single sender.
+	GetIncrementorSenderQueue(sender string) (length int, err error)
 }
 
 // MultichainClient handles calls to BC.
@@ -70,12 +78,12 @@ type MultichainClient interface {
 type LogFunc func(Transaction, error)
 
 // NewGasPriceIncremenetor returns a new incrementer instance.
-func NewGasPriceIncremenetor(pullInterval time.Duration, storage Storage, cl MultichainClient, signers Signers) *GasPriceIncremenetor {
+func NewGasPriceIncremenetor(cfg GasIncrementorConfig, storage Storage, cl MultichainClient, signers Signers) *GasPriceIncremenetor {
 	return &GasPriceIncremenetor{
-		pullInterval: pullInterval,
-
 		storage: storage,
 		bc:      cl,
+
+		cfg: cfg,
 		signers: safeSigners{
 			signers: signers,
 		},
@@ -106,7 +114,7 @@ func (i *GasPriceIncremenetor) Run() {
 		case <-i.stop:
 			return
 
-		case <-time.After(i.pullInterval):
+		case <-time.After(i.cfg.PullInterval):
 			txs, err := i.storage.GetIncrementorTransactionsToCheck(i.signers.getSigners())
 			if err != nil {
 				continue
@@ -145,6 +153,22 @@ func (i *GasPriceIncremenetor) InsertInitial(tx *types.Transaction, opts Transac
 	}
 
 	return i.storage.UpsertIncrementorTransaction(*newTx)
+}
+
+// CanSign returns if incrementor is able to sign transactions for the given sender.
+func (i *GasPriceIncremenetor) CanSign(sender common.Address) bool {
+	_, ok := i.signers.getSignerFunc(sender.Hex())
+	return ok
+}
+
+// CanQueue returns if incrementor is able to queue a transaction
+func (i *GasPriceIncremenetor) CanQueue(sender common.Address) (bool, error) {
+	length, err := i.storage.GetIncrementorSenderQueue(sender.Hex())
+	if err != nil {
+		return false, err
+	}
+
+	return length < i.cfg.MaxQueuePerSigner, nil
 }
 
 // tryWatch will try to watch a transaction.
@@ -419,7 +443,7 @@ func (s *safeSigners) getSignerFunc(senderAddressHex string) (SignatureFunc, boo
 
 	// TODO: Remove later. Left for backwards compatability.
 	// If only one signer is present and senderAddress is `""` return first signer.
-	if len(s.signers) == 1 && senderAddressHex == "" {
+	if len(s.signers) == 1 && (senderAddressHex == "" || senderAddressHex == common.HexToAddress("").Hex()) {
 		for _, v := range s.signers {
 			return v, true
 		}
