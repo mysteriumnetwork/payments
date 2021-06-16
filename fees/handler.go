@@ -27,19 +27,21 @@ import (
 // TransactionHandler wraps gas price increasers
 // exposing a send method which handles gas prices when sending a transaction.
 //
-// TransactionHandler expects watchers and increasers to be
-// handleded and started by the caller hitself
-// as it only sends and inserts transactions.
+// TransactionHandler expects the gas price increaser to be
+// handleded and started by the caller himself.
 type TransactionHandler struct {
 	inc   GasPriceIncremenetorIface
 	logFn func(error)
 }
 
-// HandlerOpts are given when sending
-// a new transaction.
+// HandlerOpts are given when sending a new transaction.
 type HandlerOpts struct {
-	SenderAddress   common.Address
+	// SenderAddress is the address of the sender who is making the trasaction.
+	SenderAddress common.Address
+	// GasPriceIncOpts will be used to increase the gas price using an incrementor.
 	GasPriceIncOpts TransactionOpts
+	// Optional: ForceQueue allows to bypass the check if transaction is able to queue.
+	ForceQueue bool
 }
 
 // TransactionSendFn wraps a transaction execution which should result
@@ -49,9 +51,23 @@ type HandlerOpts struct {
 // all result in producing a transaction.
 type TransactionSendFn func() (*types.Transaction, error)
 
-// GasPriceIncremenetorIface abstracts gas pricei incrementor.
+// ErrQueueFull is returned if the current queue is full and incremeting gas price will be impossible.
+// Transactions which receive this error should be retried later.
+var ErrQueueFull = errors.New("failed to send a transaction, queue is full")
+
+// ErrNoSigners is returned if there are no signers to use for incrementing this transaction.
+var ErrNoSigners = errors.New("failed to send a transaction, no signers for incrementing")
+
+// GasPriceIncremenetorIface abstracts gas price incrementor.
 type GasPriceIncremenetorIface interface {
+	// InsertInitial inserts a new transaction to the queue.
 	InsertInitial(tx *types.Transaction, opts TransactionOpts, senderAddress common.Address) error
+
+	// CanQueue returns true if another transaction can be queue in to the incrementor.
+	CanQueue(sender common.Address) (bool, error)
+
+	// CanSign returns if incrementor can sign this transaction when incrementing gas price.
+	CanSign(sender common.Address) bool
 }
 
 // NewTransactionhandler returns a new transaction handler
@@ -77,6 +93,10 @@ func (t *TransactionHandler) SendWithGasPriceHandling(txSend TransactionSendFn, 
 		return nil, err
 	}
 
+	if err := t.canQueue(opts); err != nil {
+		return nil, err
+	}
+
 	tx, err := txSend()
 	if err != nil {
 		return nil, err
@@ -89,9 +109,32 @@ func (t *TransactionHandler) SendWithGasPriceHandling(txSend TransactionSendFn, 
 	return tx, nil
 }
 
+func (t *TransactionHandler) canQueue(opts HandlerOpts) error {
+	if opts.ForceQueue {
+		return nil
+	}
+
+	canQ, err := t.inc.CanQueue(opts.SenderAddress)
+	if err != nil {
+		return err
+	}
+	if !canQ {
+		return ErrQueueFull
+	}
+
+	if !t.inc.CanSign(opts.SenderAddress) {
+		return ErrNoSigners
+	}
+
+	return nil
+}
+
 func (opts *HandlerOpts) validate() error {
 	if opts.SenderAddress == common.HexToAddress("") {
 		return errors.New("sender address must be specified")
+	}
+	if err := opts.GasPriceIncOpts.validate(); err != nil {
+		return err
 	}
 
 	return nil

@@ -33,6 +33,10 @@ import (
 
 func TestGasPriceIncrementor(t *testing.T) {
 	chid := int64(9223372036854775790)
+	cfg := GasIncrementorConfig{
+		PullInterval:      time.Millisecond,
+		MaxQueuePerSigner: 100,
+	}
 	t.Run("gas price is increased and tx is successfull", func(t *testing.T) {
 		originalGasPrice := big.NewInt(1)
 		org := types.NewTransaction(1, common.HexToAddress("0x1"), big.NewInt(1), 1, originalGasPrice, []byte{})
@@ -42,7 +46,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 
 		sender := common.HexToAddress("")
 		sg := signer{}
-		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, map[common.Address]SignatureFunc{
+		inc := NewGasPriceIncremenetor(cfg, st, c, map[common.Address]SignatureFunc{
 			sender: sg.SignatureFunc,
 		})
 		go inc.Run()
@@ -82,7 +86,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 
 		sender := common.HexToAddress("")
 		sg := signer{}
-		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, map[common.Address]SignatureFunc{
+		inc := NewGasPriceIncremenetor(cfg, st, c, map[common.Address]SignatureFunc{
 			sender: sg.SignatureFunc,
 		})
 		go inc.Run()
@@ -123,7 +127,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 
 		sender := common.HexToAddress("")
 		sg := signer{}
-		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, map[common.Address]SignatureFunc{
+		inc := NewGasPriceIncremenetor(cfg, st, c, map[common.Address]SignatureFunc{
 			sender: sg.SignatureFunc,
 		})
 		go inc.Run()
@@ -161,7 +165,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 
 		sender := common.HexToAddress("")
 		sg := signer{}
-		inc := NewGasPriceIncremenetor(time.Millisecond, st, c, map[common.Address]SignatureFunc{
+		inc := NewGasPriceIncremenetor(cfg, st, c, map[common.Address]SignatureFunc{
 			sender: sg.SignatureFunc,
 		})
 		assert.Error(t, inc.InsertInitial(org, TransactionOpts{}, sender))
@@ -217,6 +221,10 @@ func (s *mockStorage) GetIncrementorTransactionsToCheck(signers []string) (tx []
 	s.pulled = true
 	give := []Transaction{s.tx}
 	return give, nil
+}
+
+func (s *mockStorage) GetIncrementorSenderQueue(sender string) (length int, err error) {
+	return 0, nil
 }
 
 type mockClient struct {
