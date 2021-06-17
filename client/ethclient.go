@@ -63,7 +63,7 @@ func (c *ReconnectableEthClient) Reconnect() error {
 	}
 
 	c.client.Close()
-	c.client = client
+	*c.client = *client
 
 	return nil
 }
