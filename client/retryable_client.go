@@ -722,7 +722,7 @@ func (bwr *BlockchainWithRetries) RewarderUpdateRoot(req RewarderUpdateRoot) (*t
 }
 
 // RewarderTotalClaimed is a free lookup in the blockchain for the total amount of claimed tokens in the blockchain.
-func (bwr *BlockchainWithRetries) RewarderTotalClaimed(chainID int64, rewarderAddress common.Address) (*big.Int, error) {
+func (bwr *BlockchainWithRetries) RewarderTotalClaimed(rewarderAddress common.Address) (*big.Int, error) {
 	var total *big.Int
 	err := bwr.callWithRetry(func() error {
 		t, err := bwr.bc.RewarderTotalClaimed(rewarderAddress)
