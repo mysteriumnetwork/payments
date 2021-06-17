@@ -35,5 +35,6 @@ func TestReconnectableEthClientCreatesNewClient(t *testing.T) {
 	assert.Nil(t, err)
 
 	c3 := client.Client()
-	assert.NotEqual(t, c1, c3)
+	assert.Equal(t, c1, c3)
+	assert.Equal(t, c2, c3)
 }
