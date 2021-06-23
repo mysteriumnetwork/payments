@@ -281,6 +281,15 @@ func (bc *Blockchain) SubscribeToPromiseSettledEvent(providerID, hermesID common
 	return bc.SubscribeToPromiseSettledEventByChannelID(hermesID, [][32]byte{addr})
 }
 
+// SubscribeToWithdrawalPromiseSettledEvent subscribes to withdrawal promise settled events
+func (bc *Blockchain) SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+	addr, err := bc.getProviderChannelAddressForWithdrawalBytes(hermesID, providerID)
+	if err != nil {
+		return sink, cancel, errors.Wrap(err, "could not get provider channel address")
+	}
+	return bc.SubscribeToPromiseSettledEventByChannelID(hermesID, [][32]byte{addr})
+}
+
 // IsRegistered checks wether the given identity is registered or not
 func (bc *Blockchain) IsRegistered(registryAddress, addressToCheck common.Address) (bool, error) {
 	caller, err := bindings.NewRegistryCaller(registryAddress, bc.ethClient.Client())

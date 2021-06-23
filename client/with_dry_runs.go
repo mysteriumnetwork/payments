@@ -374,3 +374,7 @@ func (cwdr *WithDryRuns) CustodyTransferTokens(req CustodyTokensTransfer) (*type
 func (cwdr *WithDryRuns) GetProvidersWithdrawalChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
 	return cwdr.bc.GetProvidersWithdrawalChannel(hermesAddress, addressToCheck, pending)
 }
+
+func (cwdr *WithDryRuns) SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+	return cwdr.bc.SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID)
+}

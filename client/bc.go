@@ -32,6 +32,7 @@ type BC interface {
 	GetLastRegistryNonce(registry common.Address) (*big.Int, error)
 	GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error)
 	GetProvidersWithdrawalChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error)
+	SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error)
 
 	IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck common.Address) (bool, error)
 	IsRegistered(registryAddress, addressToCheck common.Address) (bool, error)

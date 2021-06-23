@@ -494,3 +494,11 @@ func (mbc *MultichainBlockchainClient) GetProvidersWithdrawalChannel(chainID int
 	}
 	return bc.GetProvidersWithdrawalChannel(hermesAddress, addressToCheck, pending)
 }
+
+func (mbc *MultichainBlockchainClient) SubscribeToWithdrawalPromiseSettledEvent(chainID int64, providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, func() {}, err
+	}
+	return bc.SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID)
+}
