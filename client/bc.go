@@ -31,6 +31,7 @@ type BC interface {
 	GetBeneficiary(registryAddress, identity common.Address) (common.Address, error)
 	GetLastRegistryNonce(registry common.Address) (*big.Int, error)
 	GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error)
+	GetProvidersWithdrawalChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error)
 
 	IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck common.Address) (bool, error)
 	IsRegistered(registryAddress, addressToCheck common.Address) (bool, error)

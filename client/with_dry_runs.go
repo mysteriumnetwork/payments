@@ -370,3 +370,7 @@ func (cwdr *WithDryRuns) RewarderTotalClaimed(rewarderAddress common.Address) (*
 func (cwdr *WithDryRuns) CustodyTransferTokens(req CustodyTokensTransfer) (*types.Transaction, error) {
 	return cwdr.bc.CustodyTransferTokens(req)
 }
+
+func (cwdr *WithDryRuns) GetProvidersWithdrawalChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+	return cwdr.bc.GetProvidersWithdrawalChannel(hermesAddress, addressToCheck, pending)
+}

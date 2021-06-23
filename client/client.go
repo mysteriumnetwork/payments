@@ -208,6 +208,27 @@ func (bc *Blockchain) GetProviderChannel(hermesAddress common.Address, addressTo
 	return ch, errors.Wrap(err, "could not get provider channel from bc")
 }
 
+// GetProviderChannel returns the provider channel
+func (bc *Blockchain) GetProvidersWithdrawalChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+	addressBytes, err := bc.getProviderChannelAddressForWithdrawalBytes(hermesAddress, addressToCheck)
+	if err != nil {
+		return ProviderChannel{}, errors.Wrap(err, "could not calculate provider channel address")
+	}
+	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
+	if err != nil {
+		return ProviderChannel{}, errors.Wrap(err, "could not create hermes caller")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	ch, err := caller.Channels(&bind.CallOpts{
+		Pending: pending,
+		Context: ctx,
+	}, addressBytes)
+	return ch, errors.Wrap(err, "could not get provider channel from bc")
+}
+
 func (bc *Blockchain) getProviderChannelStake(hermesAddress common.Address, addressToCheck common.Address) (*big.Int, error) {
 	ch, err := bc.GetProviderChannel(hermesAddress, addressToCheck, false)
 	return ch.Stake, errors.Wrap(err, "could not get provider channel from bc")
@@ -229,6 +250,19 @@ func (bc *Blockchain) getProviderChannelAddressBytes(hermesAddress, addressToChe
 	addressBytes := [32]byte{}
 
 	addr, err := crypto.GenerateProviderChannelID(addressToCheck.Hex(), hermesAddress.Hex())
+	if err != nil {
+		return addressBytes, errors.Wrap(err, "could not generate channel address")
+	}
+
+	copy(addressBytes[:], crypto.Pad(common.Hex2Bytes(strings.TrimPrefix(addr, "0x")), 32))
+
+	return addressBytes, nil
+}
+
+func (bc *Blockchain) getProviderChannelAddressForWithdrawalBytes(hermesAddress, addressToCheck common.Address) ([32]byte, error) {
+	addressBytes := [32]byte{}
+
+	addr, err := crypto.GenerateProviderChannelIDForPayAndSettle(addressToCheck.Hex(), hermesAddress.Hex())
 	if err != nil {
 		return addressBytes, errors.Wrap(err, "could not generate channel address")
 	}

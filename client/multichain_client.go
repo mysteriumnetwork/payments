@@ -486,3 +486,11 @@ func (mbc *MultichainBlockchainClient) CustodyTransferTokens(chainID int64, req 
 	}
 	return bc.CustodyTransferTokens(req)
 }
+
+func (mbc *MultichainBlockchainClient) GetProvidersWithdrawalChannel(chainID int64, hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return ProviderChannel{}, err
+	}
+	return bc.GetProvidersWithdrawalChannel(hermesAddress, addressToCheck, pending)
+}
