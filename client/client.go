@@ -27,7 +27,6 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/event"
 	"github.com/mysteriumnetwork/payments/bindings"
 	"github.com/mysteriumnetwork/payments/bindings/rewarder"
@@ -47,13 +46,9 @@ type ProviderChannel struct {
 	Timelock      *big.Int
 }
 
-type ethClientGetter interface {
-	Client() *ethclient.Client
-}
-
 // Blockchain contains all the useful blockchain utilities for the payment off chain messaging
 type Blockchain struct {
-	ethClient ethClientGetter
+	ethClient EthClientGetter
 	bcTimeout time.Duration
 	nonceFunc nonceFunc
 }
@@ -61,7 +56,7 @@ type Blockchain struct {
 type nonceFunc func(ctx context.Context, account common.Address) (uint64, error)
 
 // NewBlockchain returns a new instance of blockchain
-func NewBlockchain(ethClient ethClientGetter, timeout time.Duration) *Blockchain {
+func NewBlockchain(ethClient EthClientGetter, timeout time.Duration) *Blockchain {
 	return &Blockchain{
 		ethClient: ethClient,
 		bcTimeout: timeout,
@@ -72,7 +67,7 @@ func NewBlockchain(ethClient ethClientGetter, timeout time.Duration) *Blockchain
 }
 
 // NewBlockchainWithCustomNonceTracker returns a new instance of blockchain with the provided nonce tracking func
-func NewBlockchainWithCustomNonceTracker(ethClient ethClientGetter, timeout time.Duration, nonceFunc nonceFunc) *Blockchain {
+func NewBlockchainWithCustomNonceTracker(ethClient EthClientGetter, timeout time.Duration, nonceFunc nonceFunc) *Blockchain {
 	return &Blockchain{
 		ethClient: ethClient,
 		bcTimeout: timeout,
@@ -289,7 +284,7 @@ type RegistrationRequest struct {
 	Nonce           *big.Int
 }
 
-func (r RegistrationRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+func (r RegistrationRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
 	return bindings.NewContractEstimator(r.RegistryAddress, bindings.RegistryABI, ethClient.Client())
 }
 
@@ -358,7 +353,7 @@ type TransferRequest struct {
 	WriteRequest
 }
 
-func (r TransferRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+func (r TransferRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
 	return bindings.NewContractEstimator(r.MystAddress, bindings.MystTokenABI, ethClient.Client())
 }
 
@@ -414,7 +409,7 @@ type ProviderStakeIncreaseRequest struct {
 	Amount    *big.Int
 }
 
-func (r ProviderStakeIncreaseRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+func (r ProviderStakeIncreaseRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
 	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
 }
 
@@ -450,7 +445,7 @@ type SettleIntoStakeRequest struct {
 	ProviderID common.Address
 }
 
-func (r SettleIntoStakeRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+func (r SettleIntoStakeRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
 	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
 }
 
@@ -499,7 +494,7 @@ type DecreaseProviderStakeRequest struct {
 	ProviderID common.Address
 }
 
-func (r DecreaseProviderStakeRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+func (r DecreaseProviderStakeRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
 	return bindings.NewContractEstimator(r.Request.HermesID, bindings.HermesImplementationABI, ethClient.Client())
 }
 
@@ -604,7 +599,7 @@ type SettleAndRebalanceRequest struct {
 	Promise    crypto.Promise
 }
 
-func (r SettleAndRebalanceRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+func (r SettleAndRebalanceRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
 	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
 }
 
@@ -768,7 +763,7 @@ type SettleRequest struct {
 	Promise   crypto.Promise
 }
 
-func (r SettleRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+func (r SettleRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
 	return bindings.NewContractEstimator(r.ChannelID, bindings.ChannelImplementationABI, ethClient.Client())
 }
 
@@ -1009,7 +1004,7 @@ type SettleWithBeneficiaryRequest struct {
 	Signature   []byte
 }
 
-func (r SettleWithBeneficiaryRequest) toEstimator(ethClient ethClientGetter) (*bindings.ContractEstimator, error) {
+func (r SettleWithBeneficiaryRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
 	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
 }
 
