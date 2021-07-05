@@ -18,15 +18,20 @@
 package client
 
 import (
+	"context"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 // NewReconnectableEthClient creates new ethereum client that can reconnect.
-func NewReconnectableEthClient(address string) (*ReconnectableEthClient, error) {
-	ec, err := ethclient.Dial(address)
+func NewReconnectableEthClient(address string, connectTimeout time.Duration) (*ReconnectableEthClient, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
+	defer cancel()
+
+	ec, err := ethclient.DialContext(ctx, address)
 	if err != nil {
 		return nil, fmt.Errorf("ethereum client failed to connect: %w", err)
 	}
@@ -53,11 +58,14 @@ func (c *ReconnectableEthClient) Client() *ethclient.Client {
 }
 
 // Reconnect creates new ethereum client and replaces the current one.
-func (c *ReconnectableEthClient) Reconnect() error {
+func (c *ReconnectableEthClient) Reconnect(connectTimeout time.Duration) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	client, err := ethclient.Dial(c.address)
+	ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
+	defer cancel()
+
+	client, err := ethclient.DialContext(ctx, c.address)
 	if err != nil {
 		return fmt.Errorf("ethereum client failed to dial: %w", err)
 	}
