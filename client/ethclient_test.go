@@ -19,19 +19,20 @@ package client
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestReconnectableEthClientCreatesNewClient(t *testing.T) {
-	client, err := NewReconnectableEthClient("http://127.0.0.1:1234")
+	client, err := NewReconnectableEthClient("http://127.0.0.1:1234", time.Second)
 	assert.Nil(t, err)
 
 	c1 := client.Client()
 	c2 := client.Client()
 	assert.Equal(t, c1, c2)
 
-	err = client.Reconnect()
+	err = client.Reconnect(time.Second)
 	assert.Nil(t, err)
 
 	c3 := client.Client()

@@ -142,7 +142,7 @@ func Test_EthMultiClient(t *testing.T) {
 		getter := NewDefaultEthClientGetter("first", cl)
 		getter2 := NewDefaultEthClientGetter("second", cl2)
 
-		notificationReceived := false
+		notificationReceived := make(chan struct{})
 		notify := make(chan string, 0)
 		testCtx, cancel := context.WithCancel(context.TODO())
 		defer cancel()
@@ -151,7 +151,7 @@ func Test_EthMultiClient(t *testing.T) {
 			case <-testCtx.Done():
 				return
 			case result := <-notify:
-				notificationReceived = true
+				notificationReceived <- struct{}{}
 				assert.Equal(t, "first", result)
 			}
 		}()
@@ -168,7 +168,12 @@ func Test_EthMultiClient(t *testing.T) {
 		assert.True(t, len(cl.ChainIDCalls()) == 1)
 		assert.True(t, len(cl2.ChainIDCalls()) == 1)
 		assert.Eventually(t, func() bool {
-			return notificationReceived
+			select {
+			case <-notificationReceived:
+				return true
+			default:
+				return false
+			}
 		}, time.Second/2, time.Second/200)
 	})
 
