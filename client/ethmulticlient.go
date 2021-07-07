@@ -40,10 +40,16 @@ type EthMultiClient struct {
 	clients []EthClientGetter
 
 	// notifyDown is an optional channel.
+	//
 	// If given updates will be sent to this channel
 	// when a certain client goes down.
-	notifyDown chan<- string
+	notifyDown *safeChannel
 
+	mu sync.Mutex
+}
+
+type safeChannel struct {
+	ch chan<- string
 	mu sync.Mutex
 }
 
@@ -56,25 +62,29 @@ func NewEthMultiClient(defaulTimeout time.Duration, clients []EthClientGetter) (
 	}
 
 	return &EthMultiClient{
-		timeout:    defaulTimeout,
-		clients:    clients,
-		notifyDown: nil,
+		timeout: defaulTimeout,
+		clients: clients,
+		notifyDown: &safeChannel{
+			ch: nil,
+		},
 	}, nil
 }
 
 // NewEthMultiClientNotifyDown creates a new multi clients eth client.
 //
 // Channel `notifications` must be given and will be used to push notifications to the
-// client if any nodes go down. The channel is closed when all the
+// client if any nodes go down. The channel is closed when before the clients are closed.
 func NewEthMultiClientNotifyDown(defaulTimeout time.Duration, clients []EthClientGetter, notifications chan<- string) (*EthMultiClient, error) {
 	if len(clients) == 0 {
 		return nil, errors.New("expected more than 0 clients to use")
 	}
 
 	return &EthMultiClient{
-		timeout:    defaulTimeout,
-		clients:    clients,
-		notifyDown: notifications,
+		timeout: defaulTimeout,
+		clients: clients,
+		notifyDown: &safeChannel{
+			ch: notifications,
+		},
 	}, nil
 }
 
@@ -633,27 +643,30 @@ func (c *EthMultiClient) doWithMultipleClients(ctx context.Context, do func(ctx 
 }
 
 func (c *EthMultiClient) notifyDowntime(address string) {
+	c.notifyDown.mu.Lock()
+	defer c.notifyDown.mu.Unlock()
+
 	// If no channel is given, just return.
-	if c.notifyDown == nil {
+	if c.notifyDown.ch == nil {
 		return
 	}
 
 	// If channel is full, drop the notification.
 	select {
-	case c.notifyDown <- address:
+	case c.notifyDown.ch <- address:
 	default:
 	}
 }
 
 func (c *EthMultiClient) closeNotify() {
-	c.mu.Lock()
-	defer c.mu.Unlock()
+	c.notifyDown.mu.Lock()
+	defer c.notifyDown.mu.Unlock()
 
-	if c.notifyDown != nil {
-		close(c.notifyDown)
+	if c.notifyDown.ch != nil {
+		close(c.notifyDown.ch)
 		// Set equal to `nil` so that any hanging queries dont
 		// get broadcasted as failure on client close.
-		c.notifyDown = nil
+		c.notifyDown.ch = nil
 	}
 }
 
