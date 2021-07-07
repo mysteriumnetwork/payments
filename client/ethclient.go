@@ -57,6 +57,14 @@ func (c *ReconnectableEthClient) Client() *ethclient.Client {
 	return c.client
 }
 
+// Address returns the current address which was used to create the client.
+func (c *ReconnectableEthClient) Address() *ethclient.Client {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	return c.client
+}
+
 // Reconnect creates new ethereum client and replaces the current one.
 func (c *ReconnectableEthClient) Reconnect(connectTimeout time.Duration) error {
 	c.mu.Lock()
