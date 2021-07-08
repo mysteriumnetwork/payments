@@ -14,7 +14,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fees
+package transfer
 
 import (
 	"errors"
@@ -51,9 +51,9 @@ type HandlerOpts struct {
 // all result in producing a transaction.
 type TransactionSendFn func() (*types.Transaction, error)
 
-// ErrQueueFull is returned if the current queue is full and incremeting gas price will be impossible.
+// ErrBlockchainQueueFull is returned if the current queue is full and incremeting gas price will be impossible.
 // Transactions which receive this error should be retried later.
-var ErrQueueFull = errors.New("failed to send a transaction, queue is full")
+var ErrBlockchainQueueFull = errors.New("failed to send a transaction, blockchain queue is full")
 
 // ErrNoSigners is returned if there are no signers to use for incrementing this transaction.
 var ErrNoSigners = errors.New("failed to send a transaction, no signers for incrementing")
@@ -119,7 +119,7 @@ func (t *TransactionHandler) canQueue(opts HandlerOpts) error {
 		return err
 	}
 	if !canQ {
-		return ErrQueueFull
+		return ErrBlockchainQueueFull
 	}
 
 	if !t.inc.CanSign(opts.SenderAddress) {
