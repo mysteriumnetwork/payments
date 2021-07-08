@@ -50,7 +50,7 @@ type ReconnectableEthClient struct {
 }
 
 // Client returns the currently connected ethereum client.
-func (c *ReconnectableEthClient) Client() *ethclient.Client {
+func (c *ReconnectableEthClient) Client() EtherClient {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -58,11 +58,11 @@ func (c *ReconnectableEthClient) Client() *ethclient.Client {
 }
 
 // Address returns the current address which was used to create the client.
-func (c *ReconnectableEthClient) Address() *ethclient.Client {
+func (c *ReconnectableEthClient) Address() string {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	return c.client
+	return c.address
 }
 
 // Reconnect creates new ethereum client and replaces the current one.
