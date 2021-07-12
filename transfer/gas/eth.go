@@ -101,17 +101,17 @@ func (dpa *EthStation) defiRequest() (*GasStationResponse, error) {
 	return &res, nil
 }
 
-func (dpa *EthStation) result(p int64) *big.Int {
-	pb := float64(p) / 10.0
+func (dpa *EthStation) result(p float64) *big.Int {
+	pb := p / 10.0
 	return priceMaxUpperBound(units.FloatGweiToBigIntWei(pb), dpa.upperBound)
 }
 
 // GasStationResponse returns the gas station response.
 type GasStationResponse struct {
-	Fast          int64         `json:"fast"`
-	Fastest       int64         `json:"fastest"`
-	SafeLow       int64         `json:"safeLow"`
-	Average       int64         `json:"average"`
+	Fast          float64       `json:"fast"`
+	Fastest       float64       `json:"fastest"`
+	SafeLow       float64       `json:"safeLow"`
+	Average       float64       `json:"average"`
 	BlockTime     float64       `json:"block_time"`
 	BlockNum      int64         `json:"blockNum"`
 	Speed         float64       `json:"speed"`

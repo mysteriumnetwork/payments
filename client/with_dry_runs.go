@@ -31,7 +31,7 @@ import (
 
 type Estimatable interface {
 	getGasLimit() uint64
-	toEstimator(ethClientGetter) (*bindings.ContractEstimator, error)
+	toEstimator(EthClientGetter) (*bindings.ContractEstimator, error)
 	toEstimateOps() *bindings.EstimateOpts
 }
 
@@ -52,11 +52,11 @@ func (e ErrorTransactionReverted) Error() string {
 // For convenience, this component proxies read only calls to the underlying blockchain.
 type WithDryRuns struct {
 	bc        BC
-	ethClient ethClientGetter
+	ethClient EthClientGetter
 }
 
 // NewWithDryRuns creates a new instance of client with dry runs.
-func NewWithDryRuns(bc BC, ethClient ethClientGetter) *WithDryRuns {
+func NewWithDryRuns(bc BC, ethClient EthClientGetter) *WithDryRuns {
 	return &WithDryRuns{
 		bc:        bc,
 		ethClient: ethClient,
