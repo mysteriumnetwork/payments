@@ -1,5 +1,6 @@
 stages:
   - check
+  - test
 
 variables:
   BUILD_COMMIT: $CI_COMMIT_SHORT_SHA
@@ -23,7 +24,7 @@ generate:
   tags: [go]
   script: go run mage.go -v generate
 
-copyright:
-  stage: check
+test:
+  stage: test
   tags: [go]
-  script: go run mage.go -v checkCopyright
+  script: go run mage.go -v test
