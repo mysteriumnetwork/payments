@@ -28,7 +28,7 @@ import (
 
 func Test_EthMultiClient(t *testing.T) {
 	t.Run("no clients produces an error", func(t *testing.T) {
-		_, err := NewEthMultiClient(time.Second, []EthClientGetter{})
+		_, err := NewEthMultiClient(time.Second, []AddressableEthClientGetter{})
 		assert.Error(t, err)
 	})
 
@@ -38,8 +38,8 @@ func Test_EthMultiClient(t *testing.T) {
 				return big.NewInt(1), nil
 			},
 		}
-		getter := NewDefaultEthClientGetter("", cl)
-		multi, err := NewEthMultiClient(time.Second, []EthClientGetter{getter})
+		getter := NewDefaultAddressableEthClientGetter("", cl)
+		multi, err := NewEthMultiClient(time.Second, []AddressableEthClientGetter{getter})
 		assert.NoError(t, err)
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Second*2)
@@ -62,8 +62,8 @@ func Test_EthMultiClient(t *testing.T) {
 				return big.NewInt(1), nil
 			},
 		}
-		getter := NewDefaultEthClientGetter("", cl)
-		multi, err := NewEthMultiClient(time.Second*2, []EthClientGetter{getter})
+		getter := NewDefaultAddressableEthClientGetter("", cl)
+		multi, err := NewEthMultiClient(time.Second*2, []AddressableEthClientGetter{getter})
 		assert.NoError(t, err)
 
 		chainID, err := multi.ChainID(context.TODO())
@@ -83,10 +83,10 @@ func Test_EthMultiClient(t *testing.T) {
 				return big.NewInt(1), nil
 			},
 		}
-		getter := NewDefaultEthClientGetter("", cl)
-		getter2 := NewDefaultEthClientGetter("", cl2)
+		getter := NewDefaultAddressableEthClientGetter("", cl)
+		getter2 := NewDefaultAddressableEthClientGetter("", cl2)
 
-		multi, err := NewEthMultiClient(time.Second, []EthClientGetter{getter, getter2})
+		multi, err := NewEthMultiClient(time.Second, []AddressableEthClientGetter{getter, getter2})
 		assert.NoError(t, err)
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Second*2)
@@ -111,10 +111,10 @@ func Test_EthMultiClient(t *testing.T) {
 				return big.NewInt(2), nil
 			},
 		}
-		getter := NewDefaultEthClientGetter("", cl)
-		getter2 := NewDefaultEthClientGetter("", cl2)
+		getter := NewDefaultAddressableEthClientGetter("", cl)
+		getter2 := NewDefaultAddressableEthClientGetter("", cl2)
 
-		multi, err := NewEthMultiClient(time.Second, []EthClientGetter{getter, getter2})
+		multi, err := NewEthMultiClient(time.Second, []AddressableEthClientGetter{getter, getter2})
 		assert.NoError(t, err)
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Second/4)
@@ -139,8 +139,8 @@ func Test_EthMultiClient(t *testing.T) {
 				return big.NewInt(2), nil
 			},
 		}
-		getter := NewDefaultEthClientGetter("first", cl)
-		getter2 := NewDefaultEthClientGetter("second", cl2)
+		getter := NewDefaultAddressableEthClientGetter("first", cl)
+		getter2 := NewDefaultAddressableEthClientGetter("second", cl2)
 
 		notificationReceived := make(chan struct{})
 		notify := make(chan string, 0)
@@ -156,7 +156,7 @@ func Test_EthMultiClient(t *testing.T) {
 			}
 		}()
 
-		multi, err := NewEthMultiClientNotifyDown(time.Second, []EthClientGetter{getter, getter2}, notify)
+		multi, err := NewEthMultiClientNotifyDown(time.Second, []AddressableEthClientGetter{getter, getter2}, notify)
 		assert.NoError(t, err)
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Second/4)
@@ -195,11 +195,11 @@ func Test_EthMultiClient(t *testing.T) {
 				return big.NewInt(2), nil
 			},
 		}
-		getter := NewDefaultEthClientGetter("first", cl)
-		getter2 := NewDefaultEthClientGetter("second", cl2)
-		getter3 := NewDefaultEthClientGetter("third", cl3)
+		getter := NewDefaultAddressableEthClientGetter("first", cl)
+		getter2 := NewDefaultAddressableEthClientGetter("second", cl2)
+		getter3 := NewDefaultAddressableEthClientGetter("third", cl3)
 
-		multi, err := NewEthMultiClient(time.Second*2, []EthClientGetter{getter, getter2, getter3})
+		multi, err := NewEthMultiClient(time.Second*2, []AddressableEthClientGetter{getter, getter2, getter3})
 		assert.NoError(t, err)
 
 		order := multi.CurrentClientOrder()

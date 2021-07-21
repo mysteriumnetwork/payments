@@ -37,7 +37,7 @@ type EthMultiClient struct {
 	timeout time.Duration
 
 	// clients holds all the possible clients to call.
-	clients []EthClientGetter
+	clients []AddressableEthClientGetter
 
 	// notifyDown is an optional channel.
 	//
@@ -56,7 +56,7 @@ type safeChannel struct {
 type doFunc func(ctx context.Context, c EtherClient)
 
 // NewEthMultiClient creates a new multi clients eth client.
-func NewEthMultiClient(defaulTimeout time.Duration, clients []EthClientGetter) (*EthMultiClient, error) {
+func NewEthMultiClient(defaulTimeout time.Duration, clients []AddressableEthClientGetter) (*EthMultiClient, error) {
 	if len(clients) == 0 {
 		return nil, errors.New("expected more than 0 clients to use")
 	}
@@ -70,11 +70,16 @@ func NewEthMultiClient(defaulTimeout time.Duration, clients []EthClientGetter) (
 	}, nil
 }
 
+// Client implements the EthClientGetter interface and returns itself as a EtherClient.
+func (c *EthMultiClient) Client() EtherClient {
+	return c
+}
+
 // NewEthMultiClientNotifyDown creates a new multi clients eth client.
 //
 // Channel `notifications` must be given and will be used to push notifications to the
 // client if any nodes go down. The channel is closed when before the clients are closed.
-func NewEthMultiClientNotifyDown(defaulTimeout time.Duration, clients []EthClientGetter, notifications chan<- string) (*EthMultiClient, error) {
+func NewEthMultiClientNotifyDown(defaulTimeout time.Duration, clients []AddressableEthClientGetter, notifications chan<- string) (*EthMultiClient, error) {
 	if len(clients) == 0 {
 		return nil, errors.New("expected more than 0 clients to use")
 	}
@@ -557,7 +562,7 @@ func (c *EthMultiClient) ReorderClients(addresses []string) error {
 		return fmt.Errorf("can't reorder: given %d addresses to use when reordering but have %d clients", len(addresses), len(c.clients))
 	}
 
-	newClients := make([]EthClientGetter, len(c.clients))
+	newClients := make([]AddressableEthClientGetter, len(c.clients))
 	for i, addr := range addresses {
 		found := false
 		for _, cl := range c.clients {

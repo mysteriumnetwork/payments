@@ -191,11 +191,16 @@ type EtherClient interface {
 	SendTransaction(ctx context.Context, tx *types.Transaction) error
 }
 
-// EthClientGetter wraps any eth clients.
+// EthClientGetter wraps any eth client.
 type EthClientGetter interface {
 	// Client returns a client to use for making call to the eth blockchain.
 	Client() EtherClient
+}
 
+// AddressableEthClientGetter wraps any eth client and is able to return the address
+// used to create the client and the client itself.
+type AddressableEthClientGetter interface {
+	EthClientGetter
 	// Address returns an address which was used to create a particular client
 	Address() string
 }
@@ -205,10 +210,9 @@ type DefaultEthClientGetter struct {
 	address string
 }
 
-func NewDefaultEthClientGetter(address string, cl EtherClient) EthClientGetter {
+func NewDefaultEthClientGetter(cl EtherClient) EthClientGetter {
 	return &DefaultEthClientGetter{
-		client:  cl,
-		address: address,
+		client: cl,
 	}
 }
 
@@ -216,6 +220,20 @@ func (eth *DefaultEthClientGetter) Client() EtherClient {
 	return eth.client
 }
 
-func (eth *DefaultEthClientGetter) Address() string {
+type DefaultAddressableEthClientGetter struct {
+	address string
+	*DefaultEthClientGetter
+}
+
+func NewDefaultAddressableEthClientGetter(address string, cl EtherClient) AddressableEthClientGetter {
+	return &DefaultAddressableEthClientGetter{
+		DefaultEthClientGetter: &DefaultEthClientGetter{
+			client: cl,
+		},
+		address: address,
+	}
+}
+
+func (eth *DefaultAddressableEthClientGetter) Address() string {
 	return eth.address
 }
