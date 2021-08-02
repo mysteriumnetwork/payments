@@ -135,6 +135,15 @@ func (mbc *MultichainBlockchainClient) SuggestGasPrice(chainID int64) (*big.Int,
 	return bc.SuggestGasPrice()
 }
 
+func (mbc *MultichainBlockchainClient) FilterPromiseSettledEventByChannelID(chainID int64, from uint64, to *uint64, hermesID common.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+
+	return bc.FilterPromiseSettledEventByChannelID(from, to, hermesID, providerAddresses)
+}
+
 func (mbc *MultichainBlockchainClient) SubscribeToConsumerChannelBalanceUpdate(chainID int64, mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error) {
 	bc, err := mbc.getClientByChain(chainID)
 	if err != nil {
