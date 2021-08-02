@@ -1024,6 +1024,30 @@ func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID common.
 	return sink, sub.Unsubscribe, nil
 }
 
+// FilterPromiseSettledEventByChannelID filters promise settled events
+func (bc *Blockchain) FilterPromiseSettledEventByChannelID(from uint64, to *uint64, hermesID common.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error) {
+	caller, err := bindings.NewHermesImplementationFilterer(hermesID, bc.ethClient.Client())
+	if err != nil {
+		return nil, errors.Wrap(err, "could not create hermes caller")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+	iter, err := caller.FilterPromiseSettled(&bind.FilterOpts{
+		Start:   from,
+		End:     to,
+		Context: ctx,
+	}, providerAddresses, []common.Address{})
+	if err != nil {
+		return nil, err
+	}
+	res := make([]bindings.HermesImplementationPromiseSettled, 0)
+	for iter.Next() {
+		ev := iter.Event
+		res = append(res, *ev)
+	}
+	return res, nil
+}
+
 // GetEthBalance gets the current ethereum balance for the address.
 func (bc *Blockchain) GetEthBalance(address common.Address) (*big.Int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)

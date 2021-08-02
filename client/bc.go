@@ -90,6 +90,7 @@ type BC interface {
 
 	PayAndSettle(psr PayAndSettleRequest) (*types.Transaction, error)
 	IsChannelOpened(registryID, identity, hermesID common.Address) (bool, error)
+	FilterPromiseSettledEventByChannelID(from uint64, to *uint64, hermesID common.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error)
 }
 
 // EtherClient interface implements all methods required for a EtherClient to work
