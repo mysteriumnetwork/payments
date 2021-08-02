@@ -276,6 +276,14 @@ func (cwdr *WithDryRuns) DecreaseProviderStake(req DecreaseProviderStakeRequest)
 	return cwdr.bc.DecreaseProviderStake(req)
 }
 
+func (cwdr *WithDryRuns) PayAndSettle(req PayAndSettleRequest) (*types.Transaction, error) {
+	if _, err := cwdr.Estimate(req); err != nil {
+		return nil, err
+	}
+
+	return cwdr.bc.PayAndSettle(req)
+}
+
 func (cwdr *WithDryRuns) GetBeneficiary(registryAddress, identity common.Address) (common.Address, error) {
 	return cwdr.bc.GetBeneficiary(registryAddress, identity)
 }
@@ -334,6 +342,10 @@ func (cwdr *WithDryRuns) GetChannelImplementationByVersion(registryID common.Add
 	return cwdr.bc.GetChannelImplementationByVersion(registryID, version)
 }
 
+func (cwdr *WithDryRuns) IsChannelOpened(registryID, identity, hermesID common.Address) (bool, error) {
+	return cwdr.bc.IsChannelOpened(registryID, identity, hermesID)
+}
+
 func (cwdr *WithDryRuns) TransactionByHash(hash common.Hash) (*types.Transaction, bool, error) {
 	return cwdr.bc.TransactionByHash(hash)
 }
@@ -357,4 +369,12 @@ func (cwdr *WithDryRuns) RewarderTotalClaimed(rewarderAddress common.Address) (*
 
 func (cwdr *WithDryRuns) CustodyTransferTokens(req CustodyTokensTransfer) (*types.Transaction, error) {
 	return cwdr.bc.CustodyTransferTokens(req)
+}
+
+func (cwdr *WithDryRuns) GetProvidersWithdrawalChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+	return cwdr.bc.GetProvidersWithdrawalChannel(hermesAddress, addressToCheck, pending)
+}
+
+func (cwdr *WithDryRuns) SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+	return cwdr.bc.SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID)
 }

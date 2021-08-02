@@ -20,6 +20,8 @@ import (
 	"errors"
 	"math/big"
 	"strings"
+
+	"github.com/ethereum/go-ethereum/common"
 )
 
 // Myst represents a single myst ERC 777 token.
@@ -41,6 +43,14 @@ func FloatToBigMyst(input float64) *big.Int {
 	multiplied := new(big.Float).Mul(new(big.Float).SetFloat64(input), bigMyst)
 	res, _ := multiplied.Int(nil)
 	return res
+}
+
+func HexToBytes(str string) []byte {
+	if hasHexPrefix(str) {
+		return common.Hex2Bytes(str[2:])
+	}
+
+	return common.Hex2Bytes(str)
 }
 
 func hasHexPrefix(str string) bool {

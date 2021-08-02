@@ -135,6 +135,15 @@ func (mbc *MultichainBlockchainClient) SuggestGasPrice(chainID int64) (*big.Int,
 	return bc.SuggestGasPrice()
 }
 
+func (mbc *MultichainBlockchainClient) FilterPromiseSettledEventByChannelID(chainID int64, from uint64, to *uint64, hermesID common.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+
+	return bc.FilterPromiseSettledEventByChannelID(from, to, hermesID, providerAddresses)
+}
+
 func (mbc *MultichainBlockchainClient) SubscribeToConsumerChannelBalanceUpdate(chainID int64, mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error) {
 	bc, err := mbc.getClientByChain(chainID)
 	if err != nil {
@@ -386,6 +395,15 @@ func (mbc *MultichainBlockchainClient) GetChannelImplementationByVersion(chainID
 	return bc.GetChannelImplementationByVersion(registryID, version)
 }
 
+func (mbc *MultichainBlockchainClient) IsChannelOpened(chainID int64, registryID, identity, hermesID common.Address) (bool, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return false, err
+	}
+
+	return bc.IsChannelOpened(registryID, identity, hermesID)
+}
+
 // FilterLogs executes a filter query.
 func (mbc *MultichainBlockchainClient) FilterLogs(chainID int64, q ethereum.FilterQuery) ([]types.Log, error) {
 	bc, err := mbc.getClientByChain(chainID)
@@ -419,6 +437,14 @@ func (mbc *MultichainBlockchainClient) IsHermesActive(chainID int64, hermesID co
 		return false, err
 	}
 	return bc.IsHermesActive(hermesID)
+}
+
+func (mbc *MultichainBlockchainClient) PayAndSettle(chainID int64, psr PayAndSettleRequest) (*types.Transaction, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.PayAndSettle(psr)
 }
 
 func (mbc *MultichainBlockchainClient) TransactionByHash(chainID int64, hash common.Hash) (*types.Transaction, bool, error) {
@@ -468,4 +494,20 @@ func (mbc *MultichainBlockchainClient) CustodyTransferTokens(chainID int64, req 
 		return nil, err
 	}
 	return bc.CustodyTransferTokens(req)
+}
+
+func (mbc *MultichainBlockchainClient) GetProvidersWithdrawalChannel(chainID int64, hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return ProviderChannel{}, err
+	}
+	return bc.GetProvidersWithdrawalChannel(hermesAddress, addressToCheck, pending)
+}
+
+func (mbc *MultichainBlockchainClient) SubscribeToWithdrawalPromiseSettledEvent(chainID int64, providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, func() {}, err
+	}
+	return bc.SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID)
 }

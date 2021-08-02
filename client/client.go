@@ -203,6 +203,27 @@ func (bc *Blockchain) GetProviderChannel(hermesAddress common.Address, addressTo
 	return ch, errors.Wrap(err, "could not get provider channel from bc")
 }
 
+// GetProviderChannel returns the provider channel
+func (bc *Blockchain) GetProvidersWithdrawalChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+	addressBytes, err := bc.getProviderChannelAddressForWithdrawalBytes(hermesAddress, addressToCheck)
+	if err != nil {
+		return ProviderChannel{}, errors.Wrap(err, "could not calculate provider channel address")
+	}
+	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
+	if err != nil {
+		return ProviderChannel{}, errors.Wrap(err, "could not create hermes caller")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	ch, err := caller.Channels(&bind.CallOpts{
+		Pending: pending,
+		Context: ctx,
+	}, addressBytes)
+	return ch, errors.Wrap(err, "could not get provider channel from bc")
+}
+
 func (bc *Blockchain) getProviderChannelStake(hermesAddress common.Address, addressToCheck common.Address) (*big.Int, error) {
 	ch, err := bc.GetProviderChannel(hermesAddress, addressToCheck, false)
 	return ch.Stake, errors.Wrap(err, "could not get provider channel from bc")
@@ -233,9 +254,31 @@ func (bc *Blockchain) getProviderChannelAddressBytes(hermesAddress, addressToChe
 	return addressBytes, nil
 }
 
+func (bc *Blockchain) getProviderChannelAddressForWithdrawalBytes(hermesAddress, addressToCheck common.Address) ([32]byte, error) {
+	addressBytes := [32]byte{}
+
+	addr, err := crypto.GenerateProviderChannelIDForPayAndSettle(addressToCheck.Hex(), hermesAddress.Hex())
+	if err != nil {
+		return addressBytes, errors.Wrap(err, "could not generate channel address")
+	}
+
+	copy(addressBytes[:], crypto.Pad(common.Hex2Bytes(strings.TrimPrefix(addr, "0x")), 32))
+
+	return addressBytes, nil
+}
+
 // SubscribeToPromiseSettledEvent subscribes to promise settled events
 func (bc *Blockchain) SubscribeToPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	addr, err := bc.getProviderChannelAddressBytes(hermesID, providerID)
+	if err != nil {
+		return sink, cancel, errors.Wrap(err, "could not get provider channel address")
+	}
+	return bc.SubscribeToPromiseSettledEventByChannelID(hermesID, [][32]byte{addr})
+}
+
+// SubscribeToWithdrawalPromiseSettledEvent subscribes to withdrawal promise settled events
+func (bc *Blockchain) SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+	addr, err := bc.getProviderChannelAddressForWithdrawalBytes(hermesID, providerID)
 	if err != nil {
 		return sink, cancel, errors.Wrap(err, "could not get provider channel address")
 	}
@@ -275,6 +318,7 @@ func (bc *Blockchain) GetMystBalance(mystAddress, identity common.Address) (*big
 // RegistrationRequest contains all the parameters for the registration request
 type RegistrationRequest struct {
 	WriteRequest
+	ChainID         int64
 	HermesID        common.Address
 	Stake           *big.Int
 	TransactorFee   *big.Int
@@ -341,6 +385,65 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 		rr.TransactorFee,
 		rr.Beneficiary,
 		rr.Signature,
+	)
+	return tx, err
+}
+
+// PayAndSettleRequest allows to pay and settle and exit to l1 via this.
+type PayAndSettleRequest struct {
+	WriteRequest
+	Beneficiary          common.Address
+	HermesID             common.Address
+	ProviderID           common.Address
+	Promise              crypto.Promise
+	BeneficiarySignature []byte
+}
+
+func (psr PayAndSettleRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
+	return bindings.NewContractEstimator(psr.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+}
+
+func (psr PayAndSettleRequest) toEstimateOps() *bindings.EstimateOpts {
+	return &bindings.EstimateOpts{
+		From:   psr.Identity,
+		Method: "payAndSettle",
+		Params: []interface{}{psr.ProviderID, psr.Promise.Amount, psr.Promise.Fee, ToBytes32(psr.Promise.R), psr.Promise.Signature, psr.Beneficiary, psr.BeneficiarySignature},
+	}
+}
+
+// PayAndSettle registers the given identity on blockchain.
+func (bc *Blockchain) PayAndSettle(psr PayAndSettleRequest) (*types.Transaction, error) {
+	transactor, err := bindings.NewHermesImplementationTransactor(psr.HermesID, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+	parent := context.Background()
+	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
+	defer cancel()
+
+	nonce := psr.Nonce
+	if nonce == nil {
+		nonceUint, err := bc.getNonce(psr.Identity)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get nonce")
+		}
+		nonce = big.NewInt(0).SetUint64(nonceUint)
+	}
+	tx, err := transactor.PayAndSettle(&bind.TransactOpts{
+		From:     psr.Identity,
+		Signer:   psr.Signer,
+		Context:  ctx,
+		GasLimit: psr.GasLimit,
+		GasPrice: psr.GasPrice,
+		Nonce:    nonce,
+	},
+		psr.ProviderID,
+		psr.Promise.Amount,
+		psr.Promise.Fee,
+		ToBytes32(psr.Promise.R),
+		psr.Promise.Signature,
+		psr.Beneficiary,
+		psr.BeneficiarySignature,
 	)
 	return tx, err
 }
@@ -457,7 +560,7 @@ func (r SettleIntoStakeRequest) toEstimateOps() *bindings.EstimateOpts {
 			r.ProviderID,
 			r.Promise.Amount,
 			r.Promise.Fee,
-			toBytes32(r.Promise.R),
+			ToBytes32(r.Promise.R),
 			r.Promise.Signature,
 		},
 	}
@@ -607,7 +710,7 @@ func (r SettleAndRebalanceRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
 		From:   r.Identity,
 		Method: "settlePromise",
-		Params: []interface{}{r.ProviderID, r.Promise.Amount, r.Promise.Fee, toBytes32(r.Promise.R), r.Promise.Signature},
+		Params: []interface{}{r.ProviderID, r.Promise.Amount, r.Promise.Fee, ToBytes32(r.Promise.R), r.Promise.Signature},
 	}
 }
 
@@ -636,12 +739,12 @@ func (bc *Blockchain) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.
 		req.ProviderID,
 		req.Promise.Amount,
 		req.Promise.Fee,
-		toBytes32(req.Promise.R),
+		ToBytes32(req.Promise.R),
 		req.Promise.Signature,
 	)
 }
 
-func toBytes32(arr []byte) (res [32]byte) {
+func ToBytes32(arr []byte) (res [32]byte) {
 	copy(res[:], arr)
 	return res
 }
@@ -675,7 +778,7 @@ func (bc *Blockchain) GetProviderChannelByID(acc common.Address, chID []byte) (P
 	return caller.Channels(&bind.CallOpts{
 		Pending: false,
 		Context: ctx,
-	}, toBytes32(chID))
+	}, ToBytes32(chID))
 }
 
 // ConsumersHermes represents the consumers hermes
@@ -852,7 +955,7 @@ func (bc *Blockchain) GetHermes(registryID, hermesID common.Address) (Hermes, er
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	status, err := caller.Hermeses(&bind.CallOpts{
+	status, err := caller.GetHermes(&bind.CallOpts{
 		Context: ctx,
 	}, hermesID)
 	if err != nil {
@@ -882,6 +985,20 @@ func (bc *Blockchain) GetChannelImplementationByVersion(registryID common.Addres
 	}, version)
 }
 
+func (bc *Blockchain) IsChannelOpened(registryID, identity, hermesID common.Address) (bool, error) {
+	caller, err := bindings.NewRegistryCaller(registryID, bc.ethClient.Client())
+	if err != nil {
+		return false, fmt.Errorf("could not create new registry caller %w", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.IsChannelOpened(&bind.CallOpts{
+		Context: ctx,
+	}, identity, hermesID)
+}
+
 // SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events
 func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	caller, err := bindings.NewHermesImplementationFilterer(hermesID, bc.ethClient.Client())
@@ -905,6 +1022,30 @@ func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID common.
 	}()
 
 	return sink, sub.Unsubscribe, nil
+}
+
+// FilterPromiseSettledEventByChannelID filters promise settled events
+func (bc *Blockchain) FilterPromiseSettledEventByChannelID(from uint64, to *uint64, hermesID common.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error) {
+	caller, err := bindings.NewHermesImplementationFilterer(hermesID, bc.ethClient.Client())
+	if err != nil {
+		return nil, errors.Wrap(err, "could not create hermes caller")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+	iter, err := caller.FilterPromiseSettled(&bind.FilterOpts{
+		Start:   from,
+		End:     to,
+		Context: ctx,
+	}, providerAddresses, []common.Address{})
+	if err != nil {
+		return nil, err
+	}
+	res := make([]bindings.HermesImplementationPromiseSettled, 0)
+	for iter.Next() {
+		ev := iter.Event
+		res = append(res, *ev)
+	}
+	return res, nil
 }
 
 // GetEthBalance gets the current ethereum balance for the address.
@@ -1016,7 +1157,7 @@ func (r SettleWithBeneficiaryRequest) toEstimateOps() *bindings.EstimateOpts {
 			r.ProviderID,
 			r.Promise.Amount,
 			r.Promise.Fee,
-			toBytes32(r.Promise.R),
+			ToBytes32(r.Promise.R),
 			r.Promise.Signature,
 			r.Beneficiary,
 			r.Signature,
@@ -1070,7 +1211,7 @@ func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*
 		req.ProviderID,
 		req.Promise.Amount,
 		req.Promise.Fee,
-		toBytes32(req.Promise.R),
+		ToBytes32(req.Promise.R),
 		req.Promise.Signature,
 		req.Beneficiary,
 		req.Signature,
@@ -1130,7 +1271,7 @@ func (bc *Blockchain) RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transac
 		GasPrice: req.GasPrice,
 		Nonce:    big.NewInt(0).SetUint64(nonce),
 	},
-		toBytes32(req.ClaimRoot),
+		ToBytes32(req.ClaimRoot),
 		req.BlockNumber,
 		req.TotalReward,
 	)

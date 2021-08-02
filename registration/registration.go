@@ -27,6 +27,7 @@ import (
 
 // Request represent a request to register
 type Request struct {
+	ChainID         int64    `json:"chainID"`
 	HermesID        string   `json:"hermesID"`
 	Stake           *big.Int `json:"stake"`
 	Fee             *big.Int `json:"fee"`
@@ -55,6 +56,7 @@ func (r Request) GetSignatureBytesRaw() []byte {
 // GetMessage forms the message payload given the registration request
 func (r Request) GetMessage() []byte {
 	message := []byte{}
+	message = append(message, crypto.Pad(math.U256Bytes(big.NewInt(r.ChainID)), 32)...)
 	message = append(message, common.HexToAddress(r.RegistryAddress).Bytes()...)
 	message = append(message, common.HexToAddress(r.HermesID).Bytes()...)
 	message = append(message, crypto.Pad(math.U256(r.Stake).Bytes(), 32)...)
