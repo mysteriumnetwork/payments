@@ -38,15 +38,16 @@ type GasPriceIncremenetor struct {
 	cfg     GasIncrementorConfig
 	signers safeSigners
 
-	syncer *syncer
-	logFn  LogFunc
-	stop   chan struct{}
-	once   sync.Once
+	logFn LogFunc
+	stop  chan struct{}
+	once  sync.Once
 }
 
 // GasIncrementorConfig is provided to the incrementor to configure it.
 type GasIncrementorConfig struct {
+	WorkerCount       int
 	PullInterval      time.Duration
+	PullEntryCount    int64
 	MaxQueuePerSigner int
 }
 
@@ -61,7 +62,7 @@ type Storage interface {
 	//
 	// Entries should be filtered by possible signers. If incrementor cannot sign the transaction
 	// it should not received it.
-	GetIncrementorTransactionsToCheck(possibleSigners []string) (tx []Transaction, err error)
+	GetIncrementorTransactionsToCheck(maxEntries int64, possibleSigners []string) (tx []Transaction, err error)
 
 	// GasIncrementorSenderQueue returns the length of a queue for a single sender.
 	GetIncrementorSenderQueue(sender string) (length int, err error)
@@ -79,6 +80,13 @@ type LogFunc func(Transaction, error)
 
 // NewGasPriceIncremenetor returns a new incrementer instance.
 func NewGasPriceIncremenetor(cfg GasIncrementorConfig, storage Storage, cl MultichainClient, signers Signers) *GasPriceIncremenetor {
+	if cfg.WorkerCount <= 0 {
+		cfg.WorkerCount = 1
+	}
+	if cfg.PullEntryCount <= 0 {
+		cfg.PullEntryCount = 1
+	}
+
 	return &GasPriceIncremenetor{
 		storage: storage,
 		bc:      cl,
@@ -88,8 +96,7 @@ func NewGasPriceIncremenetor(cfg GasIncrementorConfig, storage Storage, cl Multi
 			signers: signers,
 		},
 
-		syncer: newSyncer(),
-		stop:   make(chan struct{}, 0),
+		stop: make(chan struct{}, 0),
 	}
 }
 
@@ -98,28 +105,86 @@ func NewGasPriceIncremenetor(cfg GasIncrementorConfig, storage Storage, cl Multi
 // It will query the given storage for any entries that it needs to check
 // for gas increase, trying to check their status.
 func (i *GasPriceIncremenetor) Run() {
-	process := func(txs []Transaction) {
-		for _, tx := range txs {
-			switch tx.State {
-			case TxStateFailed, TxStateSucceed:
-				// Force skip transactions that are finalized.
-			default:
-				i.tryWatch(tx)
-			}
-		}
-	}
-
 	for {
 		select {
 		case <-i.stop:
 			return
 
 		case <-time.After(i.cfg.PullInterval):
-			txs, err := i.storage.GetIncrementorTransactionsToCheck(i.signers.getSigners())
+			txs, err := i.storage.GetIncrementorTransactionsToCheck(i.cfg.PullEntryCount, i.signers.getSigners())
 			if err != nil {
 				continue
 			}
-			process(txs)
+
+			i.queueWork(txs)
+		}
+	}
+}
+
+func (i *GasPriceIncremenetor) watchOrIncrease(work chan Transaction) {
+	for tx := range work {
+		// Force skip transactions that are done in case the provider doesn't.
+		switch tx.State {
+		case TxStateCreated, TxStatePriceIncreased:
+		default:
+			continue
+		}
+
+		now := time.Now().UTC()
+
+		if tx.isExpired() {
+			i.transactionExpired(tx)
+			continue
+		}
+
+		ok, err := i.checkIfSuccess(tx)
+		if err != nil {
+			i.log(tx, fmt.Errorf("status check failed: %w", err))
+			if !errors.Is(err, ethereum.NotFound) {
+				continue
+			}
+		}
+
+		// If transaction was not a success and a certain amount of time
+		// has passed since last increase - increase gas price again.
+		if !ok && now.After(tx.NextIncreaseAfterUTC) {
+			if err := i.increaseGasPrice(tx); err != nil {
+				if i.isBlockchainErrorUnhandleable(err) {
+					i.log(tx, fmt.Errorf("received unhandleable increase error, marking tx as failed: %w", err))
+					i.transactionFailed(tx)
+					continue
+				}
+
+				i.log(tx, fmt.Errorf("gas price increase failed: %w", err))
+			}
+		}
+	}
+}
+
+func (i *GasPriceIncremenetor) queueWork(txs []Transaction) {
+	work := make(chan Transaction)
+
+	var wg sync.WaitGroup
+	for in := 0; in < i.cfg.WorkerCount; in++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			i.watchOrIncrease(work)
+		}()
+	}
+
+	// Close and wait on func exit
+	defer func() {
+		close(work)
+		wg.Wait()
+	}()
+
+	for _, o := range txs {
+		select {
+		case <-i.stop:
+			return
+		default:
+			work <- o
 		}
 	}
 }
@@ -171,78 +236,45 @@ func (i *GasPriceIncremenetor) CanQueue(sender common.Address) (bool, error) {
 	return length < i.cfg.MaxQueuePerSigner, nil
 }
 
-// tryWatch will try to watch a transaction.
-// If a transaction is already being watched, it will get skipped.
-func (i *GasPriceIncremenetor) tryWatch(tx Transaction) {
-	if i.syncer.txBeingWatched(tx) {
-		// Already watching
-		return
-	}
-	if err := tx.Opts.validate(); err != nil {
-		i.log(tx, fmt.Errorf("can't increment gas price, got wrong tx opts: %w", err))
-		return
+func (i *GasPriceIncremenetor) checkIfSuccess(tx Transaction) (bool, error) {
+	status, err := i.getTxStatus(tx)
+	if err != nil {
+		return false, err
 	}
 
-	i.syncer.txMarkBeingWatched(tx)
-	go func() {
-		defer i.syncer.txRemoveWatched(tx)
-		if err := i.watchAndIncrement(tx); err != nil {
-			i.log(tx, err)
-
-			if !tx.isExpired() {
-				return
-			}
-
-			if err := i.transactionFailed(tx); err != nil {
-				i.log(tx, err)
-			}
-		}
-
-	}()
+	switch status {
+	case StatusSucceeded:
+		return true, i.transactionSuccess(tx)
+	default:
+		return false, i.transactionSetNextCheck(tx)
+	}
 }
 
-func (i *GasPriceIncremenetor) watchAndIncrement(tx Transaction) error {
-	timeout := time.After(tx.Opts.Timeout)
-	incTimer := time.NewTicker(tx.Opts.IncreaseInterval)
-	defer incTimer.Stop()
-
-	checkTimer := time.NewTicker(tx.Opts.CheckInterval)
-	defer checkTimer.Stop()
-
-	for {
-		select {
-		case <-i.stop:
-			return nil
-		case <-checkTimer.C:
-			status, err := i.getTxStatus(tx)
-			if err != nil {
-				if !i.isBlockchainErrorUnhandleable(err) {
-					return err
-				}
-				i.log(tx, fmt.Errorf("received unhandleable receipt error, marking tx as failed: %w", err))
-				return i.transactionFailed(tx)
-			}
-			if status == StatusSucceeded {
-				return i.transactionSuccess(tx)
-			}
-		case <-incTimer.C:
-			newTx, err := i.increaseGasPrice(tx)
-			if err != nil {
-				if !i.isBlockchainErrorUnhandleable(err) {
-					return err
-				}
-				i.log(tx, fmt.Errorf("received unhandleable increase error, marking tx as failed: %w", err))
-				return i.transactionFailed(tx)
-			}
-			tx = newTx
-		case <-timeout:
-			return i.transactionFailed(tx)
-		}
+func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) error {
+	org, err := tx.getLatestTx()
+	if err != nil {
+		return err
 	}
+
+	newGasPrice, _ := new(big.Float).Mul(
+		big.NewFloat(tx.Opts.PriceMultiplier),
+		new(big.Float).SetInt(org.GasPrice()),
+	).Int(nil)
+
+	if newGasPrice.Cmp(tx.Opts.MaxPrice) > 0 {
+		return fmt.Errorf("transaction with uniqueID '%s' failed, gas price limit of %s reached on chain %d", tx.UniqueID, tx.Opts.MaxPrice.String(), tx.ChainID)
+	}
+
+	newTx, err := i.signAndSend(tx.rebuiledWithNewGasPrice(org, newGasPrice), tx.ChainID, tx.SenderAddressHex)
+	if err != nil {
+		return err
+	}
+
+	return i.transactionPriceIncreased(tx, newTx)
 }
 
 func (i *GasPriceIncremenetor) isBlockchainErrorUnhandleable(err error) bool {
-	if errors.Is(err, core.ErrNonceTooHigh) || errors.Is(err, core.ErrNonceTooLow) || errors.Is(err, ethereum.NotFound) {
+	if errors.Is(err, core.ErrNonceTooHigh) || errors.Is(err, core.ErrNonceTooLow) {
 		return true
 	}
 
@@ -258,33 +290,6 @@ func (i *GasPriceIncremenetor) isBlockchainErrorUnhandleable(err error) bool {
 	default:
 		return false
 	}
-}
-
-func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) (Transaction, error) {
-	org, err := tx.getLatestTx()
-	if err != nil {
-		return Transaction{}, err
-	}
-
-	newGasPrice, _ := new(big.Float).Mul(
-		big.NewFloat(tx.Opts.PriceMultiplier),
-		new(big.Float).SetInt(org.GasPrice()),
-	).Int(nil)
-
-	if newGasPrice.Cmp(tx.Opts.MaxPrice) > 0 {
-		if err := i.transactionFailed(tx); err != nil {
-			return Transaction{}, err
-		}
-
-		return Transaction{}, fmt.Errorf("transaction with uniqueID '%s' failed, gas price limit of %s reached on chain %d", tx.UniqueID, tx.Opts.MaxPrice.String(), tx.ChainID)
-	}
-
-	newTx, err := i.signAndSend(tx.rebuiledWithNewGasPrice(org, newGasPrice), tx.ChainID, tx.SenderAddressHex)
-	if err != nil {
-		return Transaction{}, i.transactionFailed(tx)
-	}
-
-	return i.transactionPriceIncreased(tx, newTx)
 }
 
 // BCTxStatus represents the status of tx on blockchain.
@@ -358,12 +363,29 @@ func (i *GasPriceIncremenetor) signAndSend(tx *types.Transaction, chainID int64,
 	return signedTx, nil
 }
 
-func (i *GasPriceIncremenetor) transactionFailed(tx Transaction) error {
+func (i *GasPriceIncremenetor) transactionFailed(tx Transaction) {
 	tx.State = TxStateFailed
-	if err := i.storage.UpsertIncrementorTransaction(tx); err != nil {
-		return fmt.Errorf("failed marking transaction as failed: %w", err)
-	}
 
+	err := i.storage.UpsertIncrementorTransaction(tx)
+	if err != nil {
+		i.log(tx, fmt.Errorf("failed marking transaction as failed: %w", err))
+	}
+}
+
+func (i *GasPriceIncremenetor) transactionExpired(tx Transaction) {
+	tx.State = TxStateExpired
+
+	err := i.storage.UpsertIncrementorTransaction(tx)
+	if err != nil {
+		i.log(tx, fmt.Errorf("failed marking transaction as expired: %w", err))
+	}
+}
+
+func (i *GasPriceIncremenetor) transactionSetNextCheck(tx Transaction) error {
+	tx.NextCheckAfterUTC = time.Now().UTC().Add(tx.Opts.CheckInterval)
+	if err := i.storage.UpsertIncrementorTransaction(tx); err != nil {
+		return fmt.Errorf("failed marking transaction succeed: %w", err)
+	}
 	return nil
 }
 
@@ -375,55 +397,26 @@ func (i *GasPriceIncremenetor) transactionSuccess(tx Transaction) error {
 	return nil
 }
 
-func (i *GasPriceIncremenetor) transactionPriceIncreased(tx Transaction, newTx *types.Transaction) (Transaction, error) {
-	var err error
-	tx.State = TxStatePriceIncreased
-	tx.LatestTx, err = newTx.MarshalJSON()
+func (i *GasPriceIncremenetor) transactionPriceIncreased(tx Transaction, newTx *types.Transaction) error {
+	blob, err := newTx.MarshalJSON()
 	if err != nil {
-		return Transaction{}, fmt.Errorf("failed to marshal internal transaction object: %w", err)
+		return fmt.Errorf("failed to marshal internal transaction object: %w", err)
 	}
 
+	tx.State = TxStatePriceIncreased
+	tx.NextIncreaseAfterUTC = time.Now().UTC().Add(tx.Opts.IncreaseInterval)
+	tx.LatestTx = blob
 	if err := i.storage.UpsertIncrementorTransaction(tx); err != nil {
-		return Transaction{}, fmt.Errorf("failed to update transaction after price increase: %w", err)
+		return fmt.Errorf("failed to update transaction after price increase: %w", err)
 	}
 
-	return tx, nil
+	return nil
 }
 
 func (i *GasPriceIncremenetor) log(tx Transaction, err error) {
 	if i.logFn != nil {
 		i.logFn(tx, err)
 	}
-}
-
-// syncer is used to sync Incrementor so that
-// we dont start tracking the same transaction multiple times.
-type syncer struct {
-	txs map[string]struct{}
-	m   sync.Mutex
-}
-
-func newSyncer() *syncer {
-	return &syncer{txs: make(map[string]struct{})}
-}
-
-func (s *syncer) txMarkBeingWatched(tx Transaction) {
-	s.m.Lock()
-	defer s.m.Unlock()
-	s.txs[tx.UniqueID] = struct{}{}
-}
-
-func (s *syncer) txBeingWatched(tx Transaction) bool {
-	s.m.Lock()
-	defer s.m.Unlock()
-	_, ok := s.txs[tx.UniqueID]
-	return ok
-}
-
-func (s *syncer) txRemoveWatched(tx Transaction) {
-	s.m.Lock()
-	defer s.m.Unlock()
-	delete(s.txs, tx.UniqueID)
 }
 
 // SignatureFunc is used to sign transactions when resubmitting them.

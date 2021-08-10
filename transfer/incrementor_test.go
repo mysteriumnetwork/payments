@@ -24,7 +24,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -34,7 +33,9 @@ import (
 func TestGasPriceIncrementor(t *testing.T) {
 	chid := int64(9223372036854775790)
 	cfg := GasIncrementorConfig{
-		PullInterval:      time.Millisecond,
+		WorkerCount:       2,
+		PullEntryCount:    100,
+		PullInterval:      time.Millisecond * 3,
 		MaxQueuePerSigner: 100,
 	}
 	t.Run("gas price is increased and tx is successfull", func(t *testing.T) {
@@ -49,18 +50,25 @@ func TestGasPriceIncrementor(t *testing.T) {
 		inc := NewGasPriceIncremenetor(cfg, st, c, map[common.Address]SignatureFunc{
 			sender: sg.SignatureFunc,
 		})
-		go inc.Run()
-		inc.InsertInitial(org, opts, sender)
-		assert.Eventually(t, func() bool {
-			txs, _ := st.GetIncrementorTransactionsToCheck([]string{sender.Hex()})
-			if len(txs) == 0 {
-				return false
-			}
-			tx := txs[0]
-			return TxStateSucceed == tx.State
-		}, time.Second, time.Millisecond*10)
+		err := inc.InsertInitial(org, opts, sender)
+		assert.NoError(t, err)
 
-		inc.Stop()
+		for i := 0; i < 10; i++ {
+			<-time.After(cfg.PullInterval)
+			txs, _ := st.GetIncrementorTransactionsToCheck(10, []string{sender.Hex()})
+			assert.Len(t, txs, 1)
+			tx := txs[0]
+
+			work := make(chan Transaction, 1)
+			work <- tx
+			close(work)
+			inc.watchOrIncrease(work)
+
+			if TxStateSucceed == tx.State {
+				break
+			}
+		}
+
 		assert.True(t, st.inserted)
 		assert.True(t, st.pulled)
 		assert.True(t, c.sent, "should be sent")
@@ -69,10 +77,14 @@ func TestGasPriceIncrementor(t *testing.T) {
 		altered, err := st.tx.getLatestTx()
 		assert.NoError(t, err)
 
-		assert.Equal(t,
-			[]TransactionState{TxStateCreated, TxStatePriceIncreased, TxStateSucceed},
-
-			st.stateHistory)
+		priceIncreased := 0
+		for _, s := range st.stateHistory {
+			if s == TxStatePriceIncreased {
+				priceIncreased++
+			}
+		}
+		assert.Equal(t, 1, priceIncreased)
+		assert.Equal(t, TxStateSucceed, st.stateHistory[len(st.stateHistory)-1])
 
 		assert.Equal(t, chid, st.tx.ChainID)
 		assert.Equal(t, big.NewInt(2), altered.GasPrice(), "gas price should increase")
@@ -89,73 +101,42 @@ func TestGasPriceIncrementor(t *testing.T) {
 		inc := NewGasPriceIncremenetor(cfg, st, c, map[common.Address]SignatureFunc{
 			sender: sg.SignatureFunc,
 		})
-		go inc.Run()
-		inc.InsertInitial(org, opts, sender)
-		assert.Eventually(t, func() bool {
-			txs, _ := st.GetIncrementorTransactionsToCheck([]string{sender.Hex()})
-			if len(txs) == 0 {
-				return false
-			}
+		assert.NoError(t, inc.InsertInitial(org, opts, sender))
+
+		for i := 0; i < 10; i++ {
+			<-time.After(cfg.PullInterval)
+			txs, _ := st.GetIncrementorTransactionsToCheck(10, []string{sender.Hex()})
+			assert.Len(t, txs, 1)
 			tx := txs[0]
 
-			return TxStateSucceed == tx.State
-		}, time.Second, time.Millisecond*10)
+			work := make(chan Transaction, 1)
+			work <- tx
+			close(work)
+			inc.watchOrIncrease(work)
 
-		inc.Stop()
+			if TxStateSucceed == tx.State {
+				break
+			}
+		}
+
 		assert.True(t, st.inserted)
 		assert.True(t, st.pulled)
 		assert.False(t, c.sent, "already mind, should not check")
 		assert.False(t, sg.signed, "tx should not be signed")
 		assert.True(t, c.checked, "should be checked")
-		assert.Equal(t,
-			[]TransactionState{TxStateCreated, TxStateSucceed},
+		priceIncreased := 0
+		for _, s := range st.stateHistory {
+			if s == TxStatePriceIncreased {
+				priceIncreased++
+			}
+		}
+		assert.Equal(t, 0, priceIncreased)
+		assert.Equal(t, TxStateSucceed, st.stateHistory[len(st.stateHistory)-1])
 
-			st.stateHistory)
 		altered, err := st.tx.getLatestTx()
 		assert.NoError(t, err)
 		assert.Equal(t, chid, st.tx.ChainID)
 		assert.Equal(t, originalGasPrice, altered.GasPrice(), "original gas price should stay the same")
-	})
-	t.Run("tx fails if gas price is too big", func(t *testing.T) {
-		originalGasPrice := big.NewInt(2)
-		org := types.NewTransaction(1, common.HexToAddress("0x1"), big.NewInt(1), 1, originalGasPrice, []byte{})
-		opts := defaultOpts()
-		opts.MaxPrice = new(big.Int).SetInt64(5)
-
-		st := &mockStorage{}
-		c := newClient(new(big.Int).Add(opts.MaxPrice, big.NewInt(5)))
-
-		sender := common.HexToAddress("")
-		sg := signer{}
-		inc := NewGasPriceIncremenetor(cfg, st, c, map[common.Address]SignatureFunc{
-			sender: sg.SignatureFunc,
-		})
-		go inc.Run()
-		inc.InsertInitial(org, opts, sender)
-		assert.Eventually(t, func() bool {
-			txs, _ := st.GetIncrementorTransactionsToCheck([]string{sender.Hex()})
-			if len(txs) == 0 {
-				return false
-			}
-			tx := txs[0]
-
-			return TxStateFailed == tx.State
-		}, time.Second, time.Millisecond*10)
-
-		inc.Stop()
-		assert.True(t, st.inserted)
-		assert.True(t, st.pulled)
-		assert.True(t, c.sent, "should be sent once")
-		assert.True(t, sg.signed, "tx should be signed")
-		assert.Equal(t,
-			[]TransactionState{TxStateCreated, TxStatePriceIncreased, TxStateFailed},
-
-			st.stateHistory)
-
-		altered, err := st.tx.getLatestTx()
-		assert.Equal(t, chid, st.tx.ChainID)
-		assert.NoError(t, err)
-		assert.Equal(t, new(big.Int).SetInt64(4), altered.GasPrice(), "gas price should be increased once")
 	})
 	t.Run("invalid opts, not inserted", func(t *testing.T) {
 		org := types.NewTransaction(1, common.HexToAddress("0x1"), big.NewInt(1), 1, big.NewInt(1), []byte{})
@@ -172,23 +153,12 @@ func TestGasPriceIncrementor(t *testing.T) {
 	})
 }
 
-func Test_syncer(t *testing.T) {
-	s := newSyncer()
-
-	tx := Transaction{UniqueID: "0x0"}
-	s.txMarkBeingWatched(tx)
-	assert.True(t, s.txBeingWatched(tx), "transaction should be watched")
-	s.txRemoveWatched(tx)
-	assert.False(t, s.txBeingWatched(tx), "transaction should no longer be watched")
-}
-
 func defaultOpts() TransactionOpts {
 	return TransactionOpts{
 		PriceMultiplier:  2.0,
 		MaxPrice:         new(big.Int).SetInt64(100),
-		Timeout:          time.Minute,
-		IncreaseInterval: time.Millisecond * 60,
-		CheckInterval:    time.Millisecond * 40,
+		IncreaseInterval: time.Millisecond * 2,
+		CheckInterval:    time.Millisecond * 1,
 	}
 }
 
@@ -215,7 +185,7 @@ func (s *mockStorage) UpsertIncrementorTransaction(tx Transaction) error {
 	return nil
 }
 
-func (s *mockStorage) GetIncrementorTransactionsToCheck(signers []string) (tx []Transaction, err error) {
+func (s *mockStorage) GetIncrementorTransactionsToCheck(count int64, signers []string) (tx []Transaction, err error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 	s.pulled = true
@@ -282,13 +252,6 @@ func TestGasPriceIncremenetor_isBlockchainErrorUnhandleable(t *testing.T) {
 		args args
 		want bool
 	}{
-		{
-			name: "detects ethereum not found error",
-			args: args{
-				err: fmt.Errorf("tortilla %w", ethereum.NotFound),
-			},
-			want: true,
-		},
 		{
 			name: "detects core nonce too low error",
 			args: args{

@@ -38,6 +38,9 @@ const (
 	// TxStateFailed is given to transactions which have
 	// failed and should not be retried anymore.
 	TxStateFailed TransactionState = "failed"
+	// TxStateExpired is given to transaction that have expired
+	// and should not be retried anymore.
+	TxStateExpired TransactionState = "expired"
 	// TxStateSucceed is given to transactions which have
 	// succeeded and should not be retried.
 	TxStateSucceed TransactionState = "succeed"
@@ -55,6 +58,9 @@ type Transaction struct {
 	ChainID          int64
 
 	LatestTx []byte
+
+	NextCheckAfterUTC    time.Time
+	NextIncreaseAfterUTC time.Time
 }
 
 // TransactionOpts are provided when creating a new transaction.
@@ -62,7 +68,6 @@ type Transaction struct {
 type TransactionOpts struct {
 	PriceMultiplier  float64
 	MaxPrice         *big.Int
-	Timeout          time.Duration
 	IncreaseInterval time.Duration
 	CheckInterval    time.Duration
 
@@ -84,9 +89,6 @@ func (t *TransactionOpts) validate() error {
 	if t.MaxPrice == nil || t.MaxPrice.Cmp(big.NewInt(0)) <= 0 {
 		return errors.New("max price has to be greater than 0")
 	}
-	if t.Timeout <= 0 {
-		return errors.New("timeout value must be provided")
-	}
 	if t.IncreaseInterval <= 0 {
 		return errors.New("increase interval value must be provided")
 	}
@@ -95,6 +97,9 @@ func (t *TransactionOpts) validate() error {
 	}
 	if t.ValidUntil != nil && t.ValidUntil.Before(time.Now()) {
 		return errors.New("given 'ValidUntil' must be in the future")
+	}
+	if t.IncreaseInterval < t.CheckInterval {
+		return errors.New("increase interval should always be less than check interval")
 	}
 
 	return nil
@@ -109,13 +114,15 @@ func newTransaction(tx *types.Transaction, senderAddress common.Address, opts Tr
 	}
 
 	return &Transaction{
-		UniqueID:         TransactionUniqueID(hash, tx.ChainId().Int64()),
-		Opts:             opts,
-		State:            TxStateCreated,
-		OrignalHashHex:   hash,
-		SenderAddressHex: senderAddress.Hex(),
-		ChainID:          tx.ChainId().Int64(),
-		LatestTx:         marshaled,
+		UniqueID:             TransactionUniqueID(hash, tx.ChainId().Int64()),
+		Opts:                 opts,
+		State:                TxStateCreated,
+		OrignalHashHex:       hash,
+		SenderAddressHex:     senderAddress.Hex(),
+		ChainID:              tx.ChainId().Int64(),
+		LatestTx:             marshaled,
+		NextCheckAfterUTC:    time.Now().UTC().Add(opts.CheckInterval),
+		NextIncreaseAfterUTC: time.Now().Add(opts.IncreaseInterval),
 	}, nil
 }
 
