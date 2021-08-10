@@ -378,3 +378,7 @@ func (cwdr *WithDryRuns) GetProvidersWithdrawalChannel(hermesAddress common.Addr
 func (cwdr *WithDryRuns) SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	return cwdr.bc.SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID)
 }
+
+func (cwdr *WithDryRuns) FilterPromiseSettledEventByChannelID(chainID int64, from uint64, to *uint64, hermesID common.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error) {
+	return cwdr.bc.FilterPromiseSettledEventByChannelID(from, to, hermesID, providerAddresses)
+}
