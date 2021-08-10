@@ -123,6 +123,13 @@ func (i *GasPriceIncremenetor) Run() {
 
 func (i *GasPriceIncremenetor) watchOrIncrease(work chan Transaction) {
 	for tx := range work {
+		// Force skip transactions that are done in case the provider doesn't.
+		switch tx.State {
+		case TxStateCreated, TxStatePriceIncreased:
+		default:
+			continue
+		}
+
 		now := time.Now().UTC()
 
 		if tx.isExpired() {

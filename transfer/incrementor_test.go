@@ -50,19 +50,25 @@ func TestGasPriceIncrementor(t *testing.T) {
 		inc := NewGasPriceIncremenetor(cfg, st, c, map[common.Address]SignatureFunc{
 			sender: sg.SignatureFunc,
 		})
-		go inc.Run()
 		err := inc.InsertInitial(org, opts, sender)
 		assert.NoError(t, err)
-		assert.Eventually(t, func() bool {
-			txs, _ := st.GetIncrementorTransactionsToCheck(10, []string{sender.Hex()})
-			if len(txs) == 0 {
-				return false
-			}
-			tx := txs[0]
-			return TxStateSucceed == tx.State
-		}, time.Second, time.Millisecond*10)
 
-		inc.Stop()
+		for i := 0; i < 10; i++ {
+			<-time.After(cfg.PullInterval)
+			txs, _ := st.GetIncrementorTransactionsToCheck(10, []string{sender.Hex()})
+			assert.Len(t, txs, 1)
+			tx := txs[0]
+
+			work := make(chan Transaction, 1)
+			work <- tx
+			close(work)
+			inc.watchOrIncrease(work)
+
+			if TxStateSucceed == tx.State {
+				break
+			}
+		}
+
 		assert.True(t, st.inserted)
 		assert.True(t, st.pulled)
 		assert.True(t, c.sent, "should be sent")
@@ -95,19 +101,24 @@ func TestGasPriceIncrementor(t *testing.T) {
 		inc := NewGasPriceIncremenetor(cfg, st, c, map[common.Address]SignatureFunc{
 			sender: sg.SignatureFunc,
 		})
-		go inc.Run()
-		inc.InsertInitial(org, opts, sender)
-		assert.Eventually(t, func() bool {
+		assert.NoError(t, inc.InsertInitial(org, opts, sender))
+
+		for i := 0; i < 10; i++ {
+			<-time.After(cfg.PullInterval)
 			txs, _ := st.GetIncrementorTransactionsToCheck(10, []string{sender.Hex()})
-			if len(txs) == 0 {
-				return false
-			}
+			assert.Len(t, txs, 1)
 			tx := txs[0]
 
-			return TxStateSucceed == tx.State
-		}, time.Second, time.Millisecond*10)
+			work := make(chan Transaction, 1)
+			work <- tx
+			close(work)
+			inc.watchOrIncrease(work)
 
-		inc.Stop()
+			if TxStateSucceed == tx.State {
+				break
+			}
+		}
+
 		assert.True(t, st.inserted)
 		assert.True(t, st.pulled)
 		assert.False(t, c.sent, "already mind, should not check")
@@ -146,8 +157,8 @@ func defaultOpts() TransactionOpts {
 	return TransactionOpts{
 		PriceMultiplier:  2.0,
 		MaxPrice:         new(big.Int).SetInt64(100),
-		IncreaseInterval: time.Millisecond * 15,
-		CheckInterval:    time.Millisecond * 10,
+		IncreaseInterval: time.Millisecond * 2,
+		CheckInterval:    time.Millisecond * 1,
 	}
 }
 
