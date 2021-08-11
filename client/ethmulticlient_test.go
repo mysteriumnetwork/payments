@@ -23,6 +23,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mysteriumnetwork/payments/client/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -33,7 +34,7 @@ func Test_EthMultiClient(t *testing.T) {
 	})
 
 	t.Run("only one client passed is used", func(t *testing.T) {
-		cl := &EtherClientMock{
+		cl := &mocks.EtherClientMock{
 			ChainIDFunc: func(ctx context.Context) (*big.Int, error) {
 				return big.NewInt(1), nil
 			},
@@ -52,7 +53,7 @@ func Test_EthMultiClient(t *testing.T) {
 	})
 
 	t.Run("context with no timeout gets one assigned", func(t *testing.T) {
-		cl := &EtherClientMock{
+		cl := &mocks.EtherClientMock{
 			ChainIDFunc: func(ctx context.Context) (*big.Int, error) {
 				ded, ok := ctx.Deadline()
 				assert.True(t, ok)
@@ -73,12 +74,12 @@ func Test_EthMultiClient(t *testing.T) {
 	})
 
 	t.Run("two clients passed first one works, second never called", func(t *testing.T) {
-		cl := &EtherClientMock{
+		cl := &mocks.EtherClientMock{
 			ChainIDFunc: func(ctx context.Context) (*big.Int, error) {
 				return big.NewInt(1), nil
 			},
 		}
-		cl2 := &EtherClientMock{
+		cl2 := &mocks.EtherClientMock{
 			ChainIDFunc: func(ctx context.Context) (*big.Int, error) {
 				return big.NewInt(1), nil
 			},
@@ -100,13 +101,13 @@ func Test_EthMultiClient(t *testing.T) {
 	})
 
 	t.Run("two clients passed first breaks, second is used", func(t *testing.T) {
-		cl := &EtherClientMock{
+		cl := &mocks.EtherClientMock{
 			ChainIDFunc: func(ctx context.Context) (*big.Int, error) {
 				time.Sleep(time.Second / 6)
 				return big.NewInt(1), ctx.Err()
 			},
 		}
-		cl2 := &EtherClientMock{
+		cl2 := &mocks.EtherClientMock{
 			ChainIDFunc: func(ctx context.Context) (*big.Int, error) {
 				return big.NewInt(2), nil
 			},
@@ -128,13 +129,13 @@ func Test_EthMultiClient(t *testing.T) {
 	})
 
 	t.Run("two clients passed first breaks, notification received", func(t *testing.T) {
-		cl := &EtherClientMock{
+		cl := &mocks.EtherClientMock{
 			ChainIDFunc: func(ctx context.Context) (*big.Int, error) {
 				time.Sleep(time.Second / 6)
 				return big.NewInt(1), ctx.Err()
 			},
 		}
-		cl2 := &EtherClientMock{
+		cl2 := &mocks.EtherClientMock{
 			ChainIDFunc: func(ctx context.Context) (*big.Int, error) {
 				return big.NewInt(2), nil
 			},
@@ -143,7 +144,7 @@ func Test_EthMultiClient(t *testing.T) {
 		getter2 := NewDefaultAddressableEthClientGetter("second", cl2)
 
 		notificationReceived := make(chan struct{})
-		notify := make(chan string, 0)
+		notify := make(chan Notification, 0)
 		testCtx, cancel := context.WithCancel(context.TODO())
 		defer cancel()
 		go func() {
@@ -152,7 +153,7 @@ func Test_EthMultiClient(t *testing.T) {
 				return
 			case result := <-notify:
 				notificationReceived <- struct{}{}
-				assert.Equal(t, "first", result)
+				assert.Equal(t, "first", result.Address)
 			}
 		}()
 
@@ -177,20 +178,54 @@ func Test_EthMultiClient(t *testing.T) {
 		}, time.Second/2, time.Second/200)
 	})
 
+	t.Run("two clients, callin specific one works", func(t *testing.T) {
+		cl := &mocks.EtherClientMock{
+			BlockNumberFunc: func(ctx context.Context) (uint64, error) {
+				return 1, nil
+			},
+		}
+		cl2 := &mocks.EtherClientMock{
+			BlockNumberFunc: func(ctx context.Context) (uint64, error) {
+				return 2, nil
+			},
+		}
+		getter := NewDefaultAddressableEthClientGetter("first", cl)
+		getter2 := NewDefaultAddressableEthClientGetter("second", cl2)
+
+		multi, err := NewEthMultiClient(time.Second, []AddressableEthClientGetter{getter, getter2})
+		assert.NoError(t, err)
+
+		var blockNumber uint64
+		multi.CallSpecificClient("second", func(c EtherClient) error {
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
+			defer cancel()
+
+			bn, err := c.BlockNumber(ctx)
+			if err != nil {
+				return err
+			}
+
+			blockNumber = bn
+			return nil
+		})
+
+		assert.Equal(t, 2, int(blockNumber), "blocknumber should be received from second client")
+	})
+
 	t.Run("multiple clients sorting", func(t *testing.T) {
-		cl := &EtherClientMock{
+		cl := &mocks.EtherClientMock{
 			ChainIDFunc: func(ctx context.Context) (*big.Int, error) {
 				return big.NewInt(1), nil
 			},
 		}
 
-		cl2 := &EtherClientMock{
+		cl2 := &mocks.EtherClientMock{
 			ChainIDFunc: func(ctx context.Context) (*big.Int, error) {
 				return big.NewInt(2), nil
 			},
 		}
 
-		cl3 := &EtherClientMock{
+		cl3 := &mocks.EtherClientMock{
 			ChainIDFunc: func(ctx context.Context) (*big.Int, error) {
 				return big.NewInt(2), nil
 			},
