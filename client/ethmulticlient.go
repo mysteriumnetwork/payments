@@ -48,12 +48,19 @@ type EthMultiClient struct {
 	mu sync.Mutex
 }
 
+type Notification struct {
+	Address string
+	Error   error
+}
+
 type safeChannel struct {
-	ch chan<- string
+	ch chan<- Notification
 	mu sync.Mutex
 }
 
 type doFunc func(ctx context.Context, c EtherClient)
+
+var ErrClientNoConnection = errors.New("failed to connect to the eth client with a given address")
 
 // NewEthMultiClient creates a new multi clients eth client.
 func NewEthMultiClient(defaulTimeout time.Duration, clients []AddressableEthClientGetter) (*EthMultiClient, error) {
@@ -79,7 +86,7 @@ func (c *EthMultiClient) Client() EtherClient {
 //
 // Channel `notifications` must be given and will be used to push notifications to the
 // client if any nodes go down. The channel is closed when before the clients are closed.
-func NewEthMultiClientNotifyDown(defaulTimeout time.Duration, clients []AddressableEthClientGetter, notifications chan<- string) (*EthMultiClient, error) {
+func NewEthMultiClientNotifyDown(defaulTimeout time.Duration, clients []AddressableEthClientGetter, notifications chan<- Notification) (*EthMultiClient, error) {
 	if len(clients) == 0 {
 		return nil, errors.New("expected more than 0 clients to use")
 	}
@@ -594,6 +601,26 @@ func (c *EthMultiClient) CurrentClientOrder() []string {
 	return result
 }
 
+// CallSpecificClient allows to call a spefific client by a given address.
+func (c *EthMultiClient) CallSpecificClient(address string, call func(c EtherClient) error) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	var client EtherClient
+	for _, cl := range c.clients {
+		if cl.Address() == address {
+			client = cl.Client()
+			break
+		}
+	}
+
+	if client == nil {
+		return errors.New("client not found")
+	}
+
+	return call(client)
+}
+
 // doWithMultipleClientsCtx will execute a given function with all clients.
 //
 // If parent context is cancel or receives a timeout, all calls will be also cancels and the
@@ -656,9 +683,13 @@ func (c *EthMultiClient) notifyDowntime(address string) {
 		return
 	}
 
+	payload := Notification{
+		Address: address,
+		Error:   ErrClientNoConnection,
+	}
 	// If channel is full, drop the notification.
 	select {
-	case c.notifyDown.ch <- address:
+	case c.notifyDown.ch <- payload:
 	default:
 	}
 }
