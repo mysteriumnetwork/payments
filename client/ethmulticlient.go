@@ -22,6 +22,7 @@ import (
 	"errors"
 	"fmt"
 	"math/big"
+	"strings"
 	"sync"
 	"time"
 
@@ -60,7 +61,10 @@ type safeChannel struct {
 
 type doFunc func(ctx context.Context, c EtherClient)
 
-var ErrClientNoConnection = errors.New("failed to connect to the eth client with a given address")
+var (
+	ErrClientNoConnection    = errors.New("failed to connect to the eth client with a given address")
+	ErrClientTooManyRequests = errors.New("failed to call eth client, too many requests")
+)
 
 // NewEthMultiClient creates a new multi clients eth client.
 func NewEthMultiClient(defaulTimeout time.Duration, clients []AddressableEthClientGetter) (*EthMultiClient, error) {
@@ -657,11 +661,7 @@ func (c *EthMultiClient) doWithMultipleClients(ctx context.Context, do func(ctx 
 
 			err = do(childCtx, cl.Client())
 			if err != nil {
-				if errors.Is(err, context.DeadlineExceeded) {
-					// If parent context wasn't canceled that means that we've timed out on this node.
-					if ctx.Err() == nil {
-						c.notifyDowntime(cl.Address())
-					}
+				if c.tryNotify(ctx, cl.Address(), err) {
 					continue
 				}
 				return err
@@ -674,7 +674,23 @@ func (c *EthMultiClient) doWithMultipleClients(ctx context.Context, do func(ctx 
 	return err
 }
 
-func (c *EthMultiClient) notifyDowntime(address string) {
+func (c *EthMultiClient) tryNotify(parentCtx context.Context, clientAddress string, err error) bool {
+	switch {
+	case errors.Is(err, context.DeadlineExceeded):
+		// If parent context wasn't canceled that means that we've timed out on this node.
+		if parentCtx.Err() == nil {
+			c.notify(clientAddress, ErrClientNoConnection)
+		}
+	case strings.Contains(strings.ToLower(err.Error()), "429 too many requests"):
+		c.notify(clientAddress, ErrClientTooManyRequests)
+	default:
+		return false
+	}
+
+	return true
+}
+
+func (c *EthMultiClient) notify(address string, err error) {
 	c.notifyDown.mu.Lock()
 	defer c.notifyDown.mu.Unlock()
 
@@ -685,7 +701,7 @@ func (c *EthMultiClient) notifyDowntime(address string) {
 
 	payload := Notification{
 		Address: address,
-		Error:   ErrClientNoConnection,
+		Error:   err,
 	}
 	// If channel is full, drop the notification.
 	select {
