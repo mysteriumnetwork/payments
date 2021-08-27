@@ -82,7 +82,7 @@ func DefaultByBlockSize(cl SortableClient) {
 // DefaultByAvailability will sort by connection problems received from notifications.
 // Other errors are ignored.
 func DefaultByAvailability(not client.Notification, clients SortableClient) {
-	if !errors.Is(not.Error, client.ErrClientNoConnection) {
+	if !errors.Is(not.Error, client.ErrClientNoConnection) && !errors.Is(not.Error, client.ErrClientTooManyRequests) {
 		return
 	}
 
