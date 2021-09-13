@@ -22,10 +22,16 @@ import (
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/shopspring/decimal"
 )
 
 // Myst represents a single myst ERC 777 token.
 const Myst uint64 = 1000_000_000_000_000_000
+
+// MystSize defines MYST size - precision for floating points.
+const MystSize uint = 18
+
+const mystSizeInt32 int32 = int32(MystSize)
 
 var bigMyst = big.NewFloat(0).SetUint64(Myst)
 
@@ -35,6 +41,23 @@ func BigMystToFloat(input *big.Int) float64 {
 	divided := f.Quo(f, bigMyst)
 	r, _ := divided.Float64()
 	return r
+}
+
+// DecimalToBigMyst is an accurate conversion between a decimal and big int.
+// If number has greater precision than `MystSize` it will get truncated.
+func DecimalToBigMyst(input decimal.Decimal) *big.Int {
+	cleaned := input.Truncate(mystSizeInt32)
+	if cleaned.IsZero() {
+		return new(big.Int)
+	}
+
+	shifted := input.Shift(mystSizeInt32)
+	return shifted.BigInt()
+}
+
+// BigMystToDecimal converts a BigMyst to a decimal.
+func BigMystToDecimal(input *big.Int) decimal.Decimal {
+	return decimal.NewFromBigInt(input, -mystSizeInt32)
 }
 
 // FloatToBigMyst takes in a float converts it to a big int representation.
