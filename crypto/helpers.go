@@ -31,6 +31,8 @@ const Myst uint64 = 1000_000_000_000_000_000
 // MystSize defines MYST size - precision for floating points.
 const MystSize uint = 18
 
+const mystSizeInt32 int32 = int32(MystSize)
+
 var bigMyst = big.NewFloat(0).SetUint64(Myst)
 
 // BigMystToFloat takes in a big int and returns a float64 representation of the myst.
@@ -44,18 +46,18 @@ func BigMystToFloat(input *big.Int) float64 {
 // DecimalToBigMyst is an accurate conversion between a decimal and big int.
 // If number has greater precision than `MystSize` it will get truncated.
 func DecimalToBigMyst(input decimal.Decimal) *big.Int {
-	cleaned := input.Truncate(int32(MystSize))
+	cleaned := input.Truncate(mystSizeInt32)
 	if cleaned.IsZero() {
 		return new(big.Int)
 	}
 
-	shifted := input.Shift(int32(MystSize))
+	shifted := input.Shift(mystSizeInt32)
 	return shifted.BigInt()
 }
 
 // BigMystToDecimal converts a BigMyst to a decimal.
 func BigMystToDecimal(input *big.Int) decimal.Decimal {
-	return decimal.NewFromBigInt(input, -int32(MystSize))
+	return decimal.NewFromBigInt(input, -mystSizeInt32)
 }
 
 // FloatToBigMyst takes in a float converts it to a big int representation.
