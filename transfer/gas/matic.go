@@ -41,28 +41,17 @@ func NewMaticStation(apiURL string, upperBound *big.Int) *MaticStation {
 	}
 }
 
-func (m *MaticStation) GetAverageGasPrice() (*big.Int, error) {
+func (m *MaticStation) GetGasPrices() (*GasPrices, error) {
 	resp, err := m.request()
 	if err != nil {
 		return nil, err
 	}
-	return m.result(resp.Standard), nil
-}
-
-func (m *MaticStation) GetLowGasPrice() (*big.Int, error) {
-	resp, err := m.request()
-	if err != nil {
-		return nil, err
+	prices := GasPrices{
+		SafeLow: m.result(resp.SafeLow),
+		Average: m.result(resp.Standard),
+		Fast:    m.result(resp.Fast),
 	}
-	return m.result(resp.SafeLow), nil
-}
-
-func (m *MaticStation) GetFastGasPrice() (*big.Int, error) {
-	resp, err := m.request()
-	if err != nil {
-		return nil, err
-	}
-	return m.result(resp.Fast), nil
+	return &prices, nil
 }
 
 func (m *MaticStation) result(price float64) *big.Int {

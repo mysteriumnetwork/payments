@@ -11,14 +11,11 @@ func NewStaticStation(price *big.Int) *StaticStation {
 	return &StaticStation{staticPrice: price}
 }
 
-func (s *StaticStation) GetAverageGasPrice() (*big.Int, error) {
-	return new(big.Int).Set(s.staticPrice), nil
-}
-
-func (s *StaticStation) GetFastGasPrice() (*big.Int, error) {
-	return new(big.Int).Set(s.staticPrice), nil
-}
-
-func (s *StaticStation) GetLowGasPrice() (*big.Int, error) {
-	return new(big.Int).Set(s.staticPrice), nil
+func (s *StaticStation) GetGasPrices() (*GasPrices, error) {
+	prices := GasPrices{
+		SafeLow: new(big.Int).Set(s.staticPrice),
+		Average: new(big.Int).Set(s.staticPrice),
+		Fast:    new(big.Int).Set(s.staticPrice),
+	}
+	return &prices, nil
 }

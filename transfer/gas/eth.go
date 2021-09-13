@@ -52,28 +52,17 @@ func NewEthStation(apiKey, endpointURI string, upperBound *big.Int) *EthStation 
 	}
 }
 
-func (dpa *EthStation) GetAverageGasPrice() (*big.Int, error) {
+func (dpa *EthStation) GetGasPrices() (*GasPrices, error) {
 	res, err := dpa.defiRequest()
 	if err != nil {
 		return nil, err
 	}
-	return dpa.result(res.Average), nil
-}
-
-func (dpa *EthStation) GetLowGasPrice() (*big.Int, error) {
-	res, err := dpa.defiRequest()
-	if err != nil {
-		return nil, err
+	prices := GasPrices{
+		SafeLow: dpa.result(res.SafeLow),
+		Average: dpa.result(res.Average),
+		Fast:    dpa.result(res.Fast),
 	}
-	return dpa.result(res.SafeLow), nil
-}
-
-func (dpa *EthStation) GetFastGasPrice() (*big.Int, error) {
-	res, err := dpa.defiRequest()
-	if err != nil {
-		return nil, err
-	}
-	return dpa.result(res.Fast), nil
+	return &prices, nil
 }
 
 func (dpa *EthStation) defiRequest() (*GasStationResponse, error) {
