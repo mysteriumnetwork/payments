@@ -46,6 +46,15 @@ func (mbc *MultichainBlockchainClient) getClientByChain(chainID int64) (BC, erro
 	return nil, ErrUnknownChain
 }
 
+func (mbc *MultichainBlockchainClient) GetSupportedChains() []int64 {
+	res := make([]int64, 0)
+	for k := range mbc.clients {
+		res = append(res, k)
+	}
+
+	return res
+}
+
 func (mbc *MultichainBlockchainClient) GetHermesFee(chainID int64, hermesAddress common.Address) (uint16, error) {
 	bc, err := mbc.getClientByChain(chainID)
 	if err != nil {
