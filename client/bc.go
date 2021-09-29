@@ -19,7 +19,9 @@ package client
 
 import (
 	"context"
+	"errors"
 	"math/big"
+	"net"
 	"time"
 
 	"github.com/ethereum/go-ethereum"
@@ -190,6 +192,25 @@ type EtherClient interface {
 	// If the transaction was a contract creation use the TransactionReceipt method to get the
 	// contract address after the transaction has been mined.
 	SendTransaction(ctx context.Context, tx *types.Transaction) error
+}
+
+// IsErrConnectionFailed returns true if the error represents
+// a failure to reach blockchain client.
+func IsErrConnectionFailed(err error) bool {
+	if errors.Is(err, context.DeadlineExceeded) {
+		return true
+	}
+
+	if errors.Is(err, context.Canceled) {
+		return true
+	}
+
+	var e net.Error
+	if errors.As(err, &e) {
+		return e.Timeout()
+	}
+
+	return false
 }
 
 // EthClientGetter wraps any eth client.
