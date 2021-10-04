@@ -27,7 +27,7 @@ type EtherscanStation struct {
 }
 
 // NewEtherscanStation returns a new instance of etherscan api for gas price checks.
-func NewEtherscanStation(apiKey, endpointURI string, upperBound *big.Int) *EtherscanStation {
+func NewEtherscanStation(timeout time.Duration, apiKey, endpointURI string, upperBound *big.Int) *EtherscanStation {
 	endpoint := endpointURI
 	if !strings.HasSuffix(endpoint, "/") {
 		endpoint += "/"
@@ -35,7 +35,7 @@ func NewEtherscanStation(apiKey, endpointURI string, upperBound *big.Int) *Ether
 
 	return &EtherscanStation{
 		client: &http.Client{
-			Timeout: 10 * time.Second,
+			Timeout: timeout,
 		},
 		endpointURI: endpointURI,
 		upperBound:  upperBound,
