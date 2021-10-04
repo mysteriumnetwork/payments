@@ -27,7 +27,7 @@ type EthStation struct {
 }
 
 // NewEthStation returns a new instance of defi pulse api for gas price checks.
-func NewEthStation(apiKey, endpointURI string, upperBound *big.Int) *EthStation {
+func NewEthStation(timeout time.Duration, apiKey, endpointURI string, upperBound *big.Int) *EthStation {
 	endpoint := endpointURI
 	if !strings.HasSuffix(endpoint, "/") {
 		endpoint += "/"
@@ -44,7 +44,7 @@ func NewEthStation(apiKey, endpointURI string, upperBound *big.Int) *EthStation 
 				ExpectContinueTimeout: 4 * time.Second,
 				ResponseHeaderTimeout: 3 * time.Second,
 			},
-			Timeout: 10 * time.Second,
+			Timeout: timeout,
 		},
 		APIKey:      apiKey,
 		EndpointURI: endpoint,
