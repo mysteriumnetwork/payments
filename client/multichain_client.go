@@ -520,3 +520,51 @@ func (mbc *MultichainBlockchainClient) SubscribeToWithdrawalPromiseSettledEvent(
 	}
 	return bc.SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID)
 }
+
+func (mbc *MultichainBlockchainClient) TopperupperTopupToken(chainID int64, req TopperupperTopupTokenReq) (*types.Transaction, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.TopperupperTopupToken(req)
+}
+
+func (mbc *MultichainBlockchainClient) TopperupperTopupNative(chainID int64, req TopperupperTopupNativeReq) (*types.Transaction, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.TopperupperTopupNative(req)
+}
+
+func (mbc *MultichainBlockchainClient) TopperupperSetModerators(chainID int64, req TopperupperModeratorsReq) (*types.Transaction, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.TopperupperSetModerators(req)
+}
+
+func (mbc *MultichainBlockchainClient) TopperupperApproveAddresses(chainID int64, req TopperupperApproveAddressesReq) (*types.Transaction, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.TopperupperApproveAddresses(req)
+}
+
+func (mbc *MultichainBlockchainClient) TopperupperApprovedAddress(chainID int64, topperupperAddress common.Address, forAddress common.Address) (*ApprovedAddress, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.TopperupperApprovedAddress(topperupperAddress, forAddress)
+}
+
+func (mbc *MultichainBlockchainClient) TopperupperCurrentLimits(chainID int64, topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.TopperupperCurrentLimits(topperupperAddress, forAddress)
+}
