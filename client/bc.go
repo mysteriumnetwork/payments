@@ -93,6 +93,13 @@ type BC interface {
 	PayAndSettle(psr PayAndSettleRequest) (*types.Transaction, error)
 	IsChannelOpened(registryID, identity, hermesID common.Address) (bool, error)
 	FilterPromiseSettledEventByChannelID(from uint64, to *uint64, hermesID common.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error)
+
+	TopperupperTopupToken(req TopperupperTopupTokenReq) (*types.Transaction, error)
+	TopperupperTopupNative(req TopperupperTopupNativeReq) (*types.Transaction, error)
+	TopperupperSetModerators(req TopperupperModeratorsReq) (*types.Transaction, error)
+	TopperupperApproveAddresses(req TopperupperApproveAddressesReq) (*types.Transaction, error)
+	TopperupperApprovedAddress(topperupperAddress common.Address, forAddress common.Address) (*ApprovedAddress, error)
+	TopperupperCurrentLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error)
 }
 
 // EtherClient interface implements all methods required for a EtherClient to work
@@ -182,6 +189,9 @@ type EtherClient interface {
 	// SuggestGasPrice retrieves the currently suggested gas price to allow a timely
 	// execution of a transaction.
 	SuggestGasPrice(ctx context.Context) (*big.Int, error)
+	// SuggestGasTipCap retrieves the currently suggested 1559 priority fee to allow
+	// a timely execution of a transaction.
+	SuggestGasTipCap(ctx context.Context) (*big.Int, error)
 	// EstimateGas tries to estimate the gas needed to execute a specific transaction based on
 	// the current pending state of the backend blockchain. There is no guarantee that this is
 	// the true gas limit requirement as other transactions may be added or removed by miners,
