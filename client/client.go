@@ -1011,7 +1011,7 @@ func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID common.
 	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
 		return caller.WatchPromiseSettled(&bind.WatchOpts{
 			Context: ctx,
-		}, sink, providerAddresses, []common.Address{})
+		}, sink, []common.Address{}, providerAddresses, []common.Address{})
 	})
 	go func() {
 		subErr := <-sub.Err()
@@ -1037,7 +1037,7 @@ func (bc *Blockchain) FilterPromiseSettledEventByChannelID(from uint64, to *uint
 		Start:   from,
 		End:     to,
 		Context: ctx,
-	}, providerAddresses, []common.Address{})
+	}, []common.Address{}, providerAddresses, []common.Address{})
 	if err != nil {
 		return nil, err
 	}
