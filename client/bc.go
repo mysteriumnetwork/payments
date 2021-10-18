@@ -96,10 +96,11 @@ type BC interface {
 
 	TopperupperTopupToken(req TopperupperTopupTokenReq) (*types.Transaction, error)
 	TopperupperTopupNative(req TopperupperTopupNativeReq) (*types.Transaction, error)
-	TopperupperSetModerators(req TopperupperModeratorsReq) (*types.Transaction, error)
+	TopperupperSetManagers(req TopperupperModeratorsReq) (*types.Transaction, error)
 	TopperupperApproveAddresses(req TopperupperApproveAddressesReq) (*types.Transaction, error)
 	TopperupperApprovedAddress(topperupperAddress common.Address, forAddress common.Address) (*ApprovedAddress, error)
-	TopperupperCurrentLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error)
+	TopperupperNativeLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error)
+	TopperupperTokenLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error)
 }
 
 // EtherClient interface implements all methods required for a EtherClient to work

@@ -391,8 +391,8 @@ func (cwdr *WithDryRuns) TopperupperTopupNative(req TopperupperTopupNativeReq) (
 	return cwdr.bc.TopperupperTopupNative(req)
 }
 
-func (cwdr *WithDryRuns) TopperupperSetModerators(req TopperupperModeratorsReq) (*types.Transaction, error) {
-	return cwdr.bc.TopperupperSetModerators(req)
+func (cwdr *WithDryRuns) TopperupperSetManagers(req TopperupperModeratorsReq) (*types.Transaction, error) {
+	return cwdr.bc.TopperupperSetManagers(req)
 }
 
 func (cwdr *WithDryRuns) TopperupperApproveAddresses(req TopperupperApproveAddressesReq) (*types.Transaction, error) {
@@ -403,6 +403,10 @@ func (cwdr *WithDryRuns) TopperupperApprovedAddress(topperupperAddress common.Ad
 	return cwdr.bc.TopperupperApprovedAddress(topperupperAddress, forAddress)
 }
 
-func (cwdr *WithDryRuns) TopperupperCurrentLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
-	return cwdr.bc.TopperupperCurrentLimits(topperupperAddress, forAddress)
+func (cwdr *WithDryRuns) TopperupperNativeLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
+	return cwdr.bc.TopperupperNativeLimits(topperupperAddress, forAddress)
+}
+
+func (cwdr *WithDryRuns) TopperupperTokenLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
+	return cwdr.bc.TopperupperTokenLimits(topperupperAddress, forAddress)
 }

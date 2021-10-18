@@ -1406,13 +1406,11 @@ func (bc *Blockchain) TopperupperApprovedAddress(topperupperAddress common.Addre
 }
 
 type CurrentLimits struct {
-	Native     *big.Int
-	Token      *big.Int
-	StartBlock *big.Int
-	EndBlock   *big.Int
+	Limit           *big.Int
+	ValidUntilBlock *big.Int
 }
 
-func (bc *Blockchain) TopperupperCurrentLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
+func (bc *Blockchain) TopperupperNativeLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
 	caller, err := topperupper.NewTopperUpperCaller(topperupperAddress, bc.ethClient.Client())
 	if err != nil {
 		return nil, err
@@ -1421,7 +1419,7 @@ func (bc *Blockchain) TopperupperCurrentLimits(topperupperAddress common.Address
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	res, err := caller.CurrentLimits(&bind.CallOpts{
+	res, err := caller.NativeLimits(&bind.CallOpts{
 		Context: ctx,
 	}, forAddress)
 	if err != nil {
@@ -1429,10 +1427,30 @@ func (bc *Blockchain) TopperupperCurrentLimits(topperupperAddress common.Address
 	}
 
 	return &CurrentLimits{
-		Native:     res.Native,
-		Token:      res.Token,
-		StartBlock: res.StartBlock,
-		EndBlock:   res.EndBlock,
+		Limit:           res.Amount,
+		ValidUntilBlock: res.ValidTill,
+	}, nil
+}
+
+func (bc *Blockchain) TopperupperTokenLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
+	caller, err := topperupper.NewTopperUpperCaller(topperupperAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	res, err := caller.TokenLimits(&bind.CallOpts{
+		Context: ctx,
+	}, forAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	return &CurrentLimits{
+		Limit:           res.Amount,
+		ValidUntilBlock: res.ValidTill,
 	}, nil
 }
 
@@ -1478,10 +1496,10 @@ func (bc *Blockchain) TopperupperApproveAddresses(req TopperupperApproveAddresse
 type TopperupperModeratorsReq struct {
 	WriteRequest
 	ContractAddress common.Address
-	Moderators      []common.Address
+	Managers        []common.Address
 }
 
-func (bc *Blockchain) TopperupperSetModerators(req TopperupperModeratorsReq) (*types.Transaction, error) {
+func (bc *Blockchain) TopperupperSetManagers(req TopperupperModeratorsReq) (*types.Transaction, error) {
 	transactor, err := topperupper.NewTopperUpperTransactor(req.ContractAddress, bc.ethClient.Client())
 	if err != nil {
 		return nil, err
@@ -1495,7 +1513,7 @@ func (bc *Blockchain) TopperupperSetModerators(req TopperupperModeratorsReq) (*t
 		return nil, errors.Wrap(err, "could not get nonce")
 	}
 
-	return transactor.SetModerators(
+	return transactor.SetManagers(
 		&bind.TransactOpts{
 			From:     req.Identity,
 			Signer:   req.Signer,
@@ -1504,7 +1522,7 @@ func (bc *Blockchain) TopperupperSetModerators(req TopperupperModeratorsReq) (*t
 			GasPrice: req.GasPrice,
 			Nonce:    big.NewInt(0).SetUint64(nonce),
 		},
-		req.Moderators,
+		req.Managers,
 	)
 }
 
@@ -1546,7 +1564,6 @@ func (bc *Blockchain) TopperupperTopupNative(req TopperupperTopupNativeReq) (*ty
 type TopperupperTopupTokenReq struct {
 	WriteRequest
 	ContractAddress common.Address
-	TokenAddress    common.Address
 	To              common.Address
 	Amount          *big.Int
 }
@@ -1574,7 +1591,6 @@ func (bc *Blockchain) TopperupperTopupToken(req TopperupperTopupTokenReq) (*type
 			GasPrice: req.GasPrice,
 			Nonce:    big.NewInt(0).SetUint64(nonce),
 		},
-		req.TokenAddress,
 		req.To,
 		req.Amount,
 	)

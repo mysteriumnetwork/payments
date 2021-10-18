@@ -537,12 +537,12 @@ func (mbc *MultichainBlockchainClient) TopperupperTopupNative(chainID int64, req
 	return bc.TopperupperTopupNative(req)
 }
 
-func (mbc *MultichainBlockchainClient) TopperupperSetModerators(chainID int64, req TopperupperModeratorsReq) (*types.Transaction, error) {
+func (mbc *MultichainBlockchainClient) TopperupperSetManagers(chainID int64, req TopperupperModeratorsReq) (*types.Transaction, error) {
 	bc, err := mbc.getClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
-	return bc.TopperupperSetModerators(req)
+	return bc.TopperupperSetManagers(req)
 }
 
 func (mbc *MultichainBlockchainClient) TopperupperApproveAddresses(chainID int64, req TopperupperApproveAddressesReq) (*types.Transaction, error) {
@@ -561,10 +561,18 @@ func (mbc *MultichainBlockchainClient) TopperupperApprovedAddress(chainID int64,
 	return bc.TopperupperApprovedAddress(topperupperAddress, forAddress)
 }
 
-func (mbc *MultichainBlockchainClient) TopperupperCurrentLimits(chainID int64, topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
+func (mbc *MultichainBlockchainClient) TopperupperNativeLimits(chainID int64, topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
 	bc, err := mbc.getClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
-	return bc.TopperupperCurrentLimits(topperupperAddress, forAddress)
+	return bc.TopperupperNativeLimits(topperupperAddress, forAddress)
+}
+
+func (mbc *MultichainBlockchainClient) TopperupperTokenLimits(chainID int64, topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.TopperupperTokenLimits(topperupperAddress, forAddress)
 }
