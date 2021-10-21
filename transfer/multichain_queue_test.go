@@ -62,8 +62,8 @@ func TestMultichainQueue(t *testing.T) {
 	})
 	t.Run("chain does not exist", func(t *testing.T) {
 		mq := NewMultichainQueue()
-		q1 := NewQueue(1)
-		q2 := NewQueue(1)
+		q1 := NewQueue(1, 0)
+		q2 := NewQueue(1, 0)
 		mq.AddQueue(1, q1)
 		mq.AddQueue(2, q2)
 		go q1.Run()

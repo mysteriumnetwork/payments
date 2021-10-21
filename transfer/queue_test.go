@@ -12,7 +12,7 @@ import (
 
 func TestQueue(t *testing.T) {
 	t.Run("green path", func(t *testing.T) {
-		q := NewQueue(1)
+		q := NewQueue(1, 0)
 		go q.Run()
 		defer q.Stop()
 		fn := func() (*types.Transaction, error) {
@@ -28,7 +28,7 @@ func TestQueue(t *testing.T) {
 		assert.Equal(t, uint64(0x1), tx.Nonce())
 	})
 	t.Run("exec produced an error", func(t *testing.T) {
-		q := NewQueue(1)
+		q := NewQueue(1, 0)
 		go q.Run()
 		defer q.Stop()
 		fn := func() (*types.Transaction, error) {
@@ -43,7 +43,7 @@ func TestQueue(t *testing.T) {
 		assert.Nil(t, tx)
 	})
 	t.Run("closed queue returns an error", func(t *testing.T) {
-		q := NewQueue(1)
+		q := NewQueue(1, 0)
 		q.Stop()
 		fn := func() (*types.Transaction, error) {
 			return types.NewTransaction(1, common.Address{}, big.NewInt(1), 10, big.NewInt(1), []byte{}), nil
