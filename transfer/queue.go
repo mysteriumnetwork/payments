@@ -20,6 +20,7 @@ package transfer
 import (
 	"errors"
 	"sync"
+	"time"
 
 	"github.com/ethereum/go-ethereum/core/types"
 )
@@ -30,7 +31,8 @@ type Queue struct {
 	queue chan queueEntry
 	stop  chan struct{}
 
-	once sync.Once
+	debounce time.Duration
+	once     sync.Once
 }
 
 // ErrQueueClosed is returned when queue is closed and transaction was not processed.
@@ -46,10 +48,11 @@ type queueEntry struct {
 
 // NewQueue returns a new queue. Size for the queue can be given
 // so that more than 1 transaction could be queued at a time.
-func NewQueue(size uint) *Queue {
+func NewQueue(size uint, debounceTime time.Duration) *Queue {
 	return &Queue{
-		queue: make(chan queueEntry, size),
-		stop:  make(chan struct{}, 0),
+		queue:    make(chan queueEntry, size),
+		debounce: debounceTime,
+		stop:     make(chan struct{}, 0),
 	}
 }
 
@@ -67,7 +70,19 @@ func (q *Queue) Run() {
 		case entry := <-q.queue:
 			tx, err := entry.exec()
 			q.resp(tx, err, entry.resp)
+			q.waitAfterSend()
 		}
+	}
+}
+
+func (q *Queue) waitAfterSend() {
+	if q.debounce == 0 {
+		return
+	}
+
+	select {
+	case <-q.stop:
+	case <-time.After(q.debounce):
 	}
 }
 
