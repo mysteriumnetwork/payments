@@ -30,6 +30,7 @@ import (
 	"github.com/ethereum/go-ethereum/event"
 	"github.com/mysteriumnetwork/payments/bindings"
 	"github.com/mysteriumnetwork/payments/bindings/rewarder"
+	"github.com/mysteriumnetwork/payments/bindings/topperupper"
 	"github.com/mysteriumnetwork/payments/crypto"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -1010,7 +1011,7 @@ func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID common.
 	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
 		return caller.WatchPromiseSettled(&bind.WatchOpts{
 			Context: ctx,
-		}, sink, providerAddresses, []common.Address{})
+		}, sink, []common.Address{}, providerAddresses, []common.Address{})
 	})
 	go func() {
 		subErr := <-sub.Err()
@@ -1036,7 +1037,7 @@ func (bc *Blockchain) FilterPromiseSettledEventByChannelID(from uint64, to *uint
 		Start:   from,
 		End:     to,
 		Context: ctx,
-	}, providerAddresses, []common.Address{})
+	}, []common.Address{}, providerAddresses, []common.Address{})
 	if err != nil {
 		return nil, err
 	}
@@ -1372,5 +1373,225 @@ func (bc *Blockchain) CustodyTransferTokens(req CustodyTokensTransfer) (*types.T
 		},
 		req.Recipients,
 		req.Amounts,
+	)
+}
+
+type ApprovedAddress struct {
+	Native       *big.Int
+	Token        *big.Int
+	BlocksWindow *big.Int
+}
+
+func (bc *Blockchain) TopperupperApprovedAddress(topperupperAddress common.Address, forAddress common.Address) (*ApprovedAddress, error) {
+	caller, err := topperupper.NewTopperUpperCaller(topperupperAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	res, err := caller.ApprovedAddresses(&bind.CallOpts{
+		Context: ctx,
+	}, forAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ApprovedAddress{
+		Native:       res.Native,
+		Token:        res.Token,
+		BlocksWindow: res.BlocksWindow,
+	}, nil
+}
+
+type CurrentLimits struct {
+	Limit           *big.Int
+	ValidUntilBlock *big.Int
+}
+
+func (bc *Blockchain) TopperupperNativeLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
+	caller, err := topperupper.NewTopperUpperCaller(topperupperAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	res, err := caller.NativeLimits(&bind.CallOpts{
+		Context: ctx,
+	}, forAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	return &CurrentLimits{
+		Limit:           res.Amount,
+		ValidUntilBlock: res.ValidTill,
+	}, nil
+}
+
+func (bc *Blockchain) TopperupperTokenLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
+	caller, err := topperupper.NewTopperUpperCaller(topperupperAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	res, err := caller.TokenLimits(&bind.CallOpts{
+		Context: ctx,
+	}, forAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	return &CurrentLimits{
+		Limit:           res.Amount,
+		ValidUntilBlock: res.ValidTill,
+	}, nil
+}
+
+type TopperupperApproveAddressesReq struct {
+	WriteRequest
+	ContractAddress common.Address
+	Address         common.Address
+	LimitsNative    *big.Int
+	LimitsToken     *big.Int
+	BlockWindow     *big.Int
+}
+
+func (bc *Blockchain) TopperupperApproveAddresses(req TopperupperApproveAddressesReq) (*types.Transaction, error) {
+	transactor, err := topperupper.NewTopperUpperTransactor(req.ContractAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	nonce, err := bc.getNonce(req.Identity)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get nonce")
+	}
+
+	return transactor.ApproveAddresses(
+		&bind.TransactOpts{
+			From:     req.Identity,
+			Signer:   req.Signer,
+			Context:  ctx,
+			GasLimit: req.GasLimit,
+			GasPrice: req.GasPrice,
+			Nonce:    big.NewInt(0).SetUint64(nonce),
+		},
+		[]common.Address{req.Address},
+		[]*big.Int{req.LimitsNative},
+		[]*big.Int{req.LimitsToken},
+		[]*big.Int{req.BlockWindow},
+	)
+}
+
+type TopperupperModeratorsReq struct {
+	WriteRequest
+	ContractAddress common.Address
+	Managers        []common.Address
+}
+
+func (bc *Blockchain) TopperupperSetManagers(req TopperupperModeratorsReq) (*types.Transaction, error) {
+	transactor, err := topperupper.NewTopperUpperTransactor(req.ContractAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	nonce, err := bc.getNonce(req.Identity)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get nonce")
+	}
+
+	return transactor.SetManagers(
+		&bind.TransactOpts{
+			From:     req.Identity,
+			Signer:   req.Signer,
+			Context:  ctx,
+			GasLimit: req.GasLimit,
+			GasPrice: req.GasPrice,
+			Nonce:    big.NewInt(0).SetUint64(nonce),
+		},
+		req.Managers,
+	)
+}
+
+type TopperupperTopupNativeReq struct {
+	WriteRequest
+	ContractAddress common.Address
+	To              common.Address
+	Amount          *big.Int
+}
+
+func (bc *Blockchain) TopperupperTopupNative(req TopperupperTopupNativeReq) (*types.Transaction, error) {
+	transactor, err := topperupper.NewTopperUpperTransactor(req.ContractAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	nonce, err := bc.getNonce(req.Identity)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get nonce")
+	}
+
+	return transactor.TopupNative(
+		&bind.TransactOpts{
+			From:     req.Identity,
+			Signer:   req.Signer,
+			Context:  ctx,
+			GasLimit: req.GasLimit,
+			GasPrice: req.GasPrice,
+			Nonce:    big.NewInt(0).SetUint64(nonce),
+		},
+		req.To,
+		req.Amount,
+	)
+}
+
+type TopperupperTopupTokenReq struct {
+	WriteRequest
+	ContractAddress common.Address
+	To              common.Address
+	Amount          *big.Int
+}
+
+func (bc *Blockchain) TopperupperTopupToken(req TopperupperTopupTokenReq) (*types.Transaction, error) {
+	transactor, err := topperupper.NewTopperUpperTransactor(req.ContractAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	nonce, err := bc.getNonce(req.Identity)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get nonce")
+	}
+
+	return transactor.TopupToken(
+		&bind.TransactOpts{
+			From:     req.Identity,
+			Signer:   req.Signer,
+			Context:  ctx,
+			GasLimit: req.GasLimit,
+			GasPrice: req.GasPrice,
+			Nonce:    big.NewInt(0).SetUint64(nonce),
+		},
+		req.To,
+		req.Amount,
 	)
 }

@@ -552,6 +552,21 @@ func (c *EthMultiClient) EstimateGas(ctx context.Context, msg ethereum.CallMsg) 
 	})
 }
 
+// SuggestGasTipCap retrieves the currently suggested 1559 priority fee to allow
+// a timely execution of a transaction.
+func (c *EthMultiClient) SuggestGasTipCap(ctx context.Context) (*big.Int, error) {
+	var res *big.Int
+	return res, c.doWithMultipleClients(ctx, func(ctx context.Context, c EtherClient) error {
+		val, err := c.SuggestGasTipCap(ctx)
+		if err != nil {
+			return err
+		}
+
+		res = val
+		return nil
+	})
+}
+
 // SendTransaction injects a signed transaction into the pending pool for execution.
 //
 // If the transaction was a contract creation use the TransactionReceipt method to get the

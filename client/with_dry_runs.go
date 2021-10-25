@@ -382,3 +382,31 @@ func (cwdr *WithDryRuns) SubscribeToWithdrawalPromiseSettledEvent(providerID, he
 func (cwdr *WithDryRuns) FilterPromiseSettledEventByChannelID(from uint64, to *uint64, hermesID common.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error) {
 	return cwdr.bc.FilterPromiseSettledEventByChannelID(from, to, hermesID, providerAddresses)
 }
+
+func (cwdr *WithDryRuns) TopperupperTopupToken(req TopperupperTopupTokenReq) (*types.Transaction, error) {
+	return cwdr.bc.TopperupperTopupToken(req)
+}
+
+func (cwdr *WithDryRuns) TopperupperTopupNative(req TopperupperTopupNativeReq) (*types.Transaction, error) {
+	return cwdr.bc.TopperupperTopupNative(req)
+}
+
+func (cwdr *WithDryRuns) TopperupperSetManagers(req TopperupperModeratorsReq) (*types.Transaction, error) {
+	return cwdr.bc.TopperupperSetManagers(req)
+}
+
+func (cwdr *WithDryRuns) TopperupperApproveAddresses(req TopperupperApproveAddressesReq) (*types.Transaction, error) {
+	return cwdr.bc.TopperupperApproveAddresses(req)
+}
+
+func (cwdr *WithDryRuns) TopperupperApprovedAddress(topperupperAddress common.Address, forAddress common.Address) (*ApprovedAddress, error) {
+	return cwdr.bc.TopperupperApprovedAddress(topperupperAddress, forAddress)
+}
+
+func (cwdr *WithDryRuns) TopperupperNativeLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
+	return cwdr.bc.TopperupperNativeLimits(topperupperAddress, forAddress)
+}
+
+func (cwdr *WithDryRuns) TopperupperTokenLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
+	return cwdr.bc.TopperupperTokenLimits(topperupperAddress, forAddress)
+}

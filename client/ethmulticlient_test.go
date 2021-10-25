@@ -34,6 +34,8 @@ func Test_EthMultiClient(t *testing.T) {
 	})
 
 	t.Run("only one client passed is used", func(t *testing.T) {
+		// https://github.com/matryer/moq
+		// moq -out ./client/mocks/etherclient.go  ./client EtherClient
 		cl := &mocks.EtherClientMock{
 			ChainIDFunc: func(ctx context.Context) (*big.Int, error) {
 				return big.NewInt(1), nil
