@@ -9,6 +9,7 @@ require (
 	github.com/go-kit/kit v0.9.0 // indirect
 	github.com/magefile/mage v1.8.0
 	github.com/mysteriumnetwork/go-ci v0.0.0-20200415074834-39fc864b0ed4
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/tsdb v0.10.0 // indirect
 	github.com/rjeczalik/notify v0.9.2 // indirect
