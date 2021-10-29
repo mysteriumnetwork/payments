@@ -153,6 +153,65 @@ func TestGasPriceIncrementor(t *testing.T) {
 	})
 }
 
+func Test_caclulateGasPrice(t *testing.T) {
+	for _, test := range []struct {
+		tx           Transaction
+		currentPrice *big.Int
+
+		expect *big.Int
+		noErr  bool
+	}{
+		{
+			tx: Transaction{
+				Opts: TransactionOpts{
+					PriceMultiplier: 2,
+					MaxPrice:        big.NewInt(1000),
+				},
+			},
+			currentPrice: big.NewInt(100),
+			expect:       big.NewInt(200),
+			noErr:        true,
+		},
+		{
+			tx: Transaction{
+				Opts: TransactionOpts{
+					PriceMultiplier: 2,
+					MaxPrice:        big.NewInt(1000),
+				},
+			},
+			currentPrice: big.NewInt(900),
+			expect:       big.NewInt(1000),
+			noErr:        true,
+		},
+		{
+			tx: Transaction{
+				Opts: TransactionOpts{
+					PriceMultiplier: 2,
+					MaxPrice:        big.NewInt(1000),
+				},
+			},
+			currentPrice: big.NewInt(1000),
+			expect:       nil,
+			noErr:        false,
+		},
+		{
+			tx: Transaction{
+				Opts: TransactionOpts{
+					PriceMultiplier: 2,
+					MaxPrice:        big.NewInt(1000),
+				},
+			},
+			currentPrice: big.NewInt(1200),
+			expect:       nil,
+			noErr:        false,
+		},
+	} {
+		got, err := calculateGasPrice(test.tx, test.currentPrice)
+		assert.Equal(t, test.expect, got)
+		assert.Equal(t, test.noErr, err == nil)
+	}
+}
+
 func defaultOpts() TransactionOpts {
 	return TransactionOpts{
 		PriceMultiplier:  2.0,
