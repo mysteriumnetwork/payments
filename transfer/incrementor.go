@@ -256,13 +256,9 @@ func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) error {
 		return err
 	}
 
-	newGasPrice, _ := new(big.Float).Mul(
-		big.NewFloat(tx.Opts.PriceMultiplier),
-		new(big.Float).SetInt(org.GasPrice()),
-	).Int(nil)
-
-	if newGasPrice.Cmp(tx.Opts.MaxPrice) > 0 {
-		return fmt.Errorf("transaction with uniqueID '%s' failed, gas price limit of %s reached on chain %d", tx.UniqueID, tx.Opts.MaxPrice.String(), tx.ChainID)
+	newGasPrice, err := calculateGasPrice(tx, org.GasPrice())
+	if err != nil {
+		return err
 	}
 
 	newTx, err := i.signAndSend(tx.rebuiledWithNewGasPrice(org, newGasPrice), tx.ChainID, tx.SenderAddressHex)
@@ -417,6 +413,27 @@ func (i *GasPriceIncremenetor) log(tx Transaction, err error) {
 	if i.logFn != nil {
 		i.logFn(tx, err)
 	}
+}
+
+func calculateGasPrice(tx Transaction, currentPrice *big.Int) (*big.Int, error) {
+	if currentPrice.Cmp(tx.Opts.MaxPrice) > 0 {
+		return nil, fmt.Errorf("transaction with uniqueID '%s' failed, gas price limit of %s reached on chain %d", tx.UniqueID, tx.Opts.MaxPrice.String(), tx.ChainID)
+	}
+
+	newGasPrice, _ := new(big.Float).Mul(
+		big.NewFloat(tx.Opts.PriceMultiplier),
+		new(big.Float).SetInt(currentPrice),
+	).Int(nil)
+
+	if newGasPrice.Cmp(tx.Opts.MaxPrice) > 0 {
+		if currentPrice.Cmp(tx.Opts.MaxPrice) < 0 {
+			return tx.Opts.MaxPrice, nil
+		}
+
+		return nil, fmt.Errorf("transaction with uniqueID '%s' failed, gas price limit of %s reached on chain %d", tx.UniqueID, tx.Opts.MaxPrice.String(), tx.ChainID)
+	}
+
+	return newGasPrice, nil
 }
 
 // SignatureFunc is used to sign transactions when resubmitting them.
