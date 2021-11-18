@@ -424,6 +424,9 @@ func calculateGasPrice(tx Transaction, currentPrice *big.Int) (*big.Int, error) 
 		big.NewFloat(tx.Opts.PriceMultiplier),
 		new(big.Float).SetInt(currentPrice),
 	).Int(nil)
+	if newGasPrice == nil {
+		return tx.Opts.MaxPrice, nil
+	}
 
 	if newGasPrice.Cmp(tx.Opts.MaxPrice) > 0 {
 		if currentPrice.Cmp(tx.Opts.MaxPrice) < 0 {
