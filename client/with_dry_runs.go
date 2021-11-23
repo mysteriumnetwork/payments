@@ -253,6 +253,11 @@ func (cwdr *WithDryRuns) NetworkID() (*big.Int, error) {
 	return cwdr.bc.NetworkID()
 }
 
+// BlockNumber returns the last known block number
+func (cwdr *WithDryRuns) BlockNumber() (uint64, error) {
+	return cwdr.bc.BlockNumber()
+}
+
 // GetStakeThresholds returns the stake tresholds for the given hermes.
 func (cwdr *WithDryRuns) GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error) {
 	return cwdr.bc.GetStakeThresholds(hermesID)

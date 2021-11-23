@@ -74,6 +74,7 @@ type BC interface {
 	FilterLogs(q ethereum.FilterQuery) ([]types.Log, error)
 
 	NetworkID() (*big.Int, error)
+	BlockNumber() (uint64, error)
 	SuggestGasPrice() (*big.Int, error)
 	HeaderByNumber(number *big.Int) (*types.Header, error)
 
