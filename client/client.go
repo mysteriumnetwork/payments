@@ -1108,6 +1108,13 @@ func (bc *Blockchain) SuggestGasPrice() (*big.Int, error) {
 	return bc.ethClient.Client().SuggestGasPrice(ctx)
 }
 
+// BlockNumber returns the last known block number
+func (bc *Blockchain) BlockNumber() (uint64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+	return bc.ethClient.Client().BlockNumber(ctx)
+}
+
 // NetworkID returns the network id
 func (bc *Blockchain) NetworkID() (*big.Int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)

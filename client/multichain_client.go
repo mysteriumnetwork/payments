@@ -286,6 +286,16 @@ func (mbc *MultichainBlockchainClient) SettlePromise(req SettleRequest) (*types.
 	return bc.SettlePromise(req)
 }
 
+// BlockNumber returns the last known block number
+func (mbc *MultichainBlockchainClient) BlockNumber(chainID int64) (uint64, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return 0, err
+	}
+
+	return bc.BlockNumber()
+}
+
 // NetworkID method is really not that useful, as chain id == networkid
 func (mbc *MultichainBlockchainClient) NetworkID(chainID int64) (*big.Int, error) {
 	bc, err := mbc.getClientByChain(chainID)
