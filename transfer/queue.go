@@ -18,11 +18,15 @@
 package transfer
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/rs/zerolog/log"
 )
 
 // Queue is channel queue which is able to
@@ -31,8 +35,9 @@ type Queue struct {
 	queue chan queueEntry
 	stop  chan struct{}
 
-	debounce time.Duration
-	once     sync.Once
+	bc      QueueMultichainClient
+	timeout time.Duration
+	once    sync.Once
 }
 
 // ErrQueueClosed is returned when queue is closed and transaction was not processed.
@@ -41,6 +46,13 @@ var ErrQueueClosed = errors.New("queue was closed")
 // ErrQueueMissingResult is returned if neither an error or a transaction exists in the queue response.
 var ErrQueueMissingResult = errors.New("transaction missing with no previous error, state unknown")
 
+// ErrTrasactionMissing is returned if a transaction was send to BC, but never found or confirmed.
+var ErrTrasactionMissing = errors.New("transaction missing, state unknown")
+
+type QueueMultichainClient interface {
+	TransactionByHash(chainID int64, hash common.Hash) (*types.Transaction, bool, error)
+}
+
 type queueEntry struct {
 	exec TransactionSendFn
 	resp chan<- QueueResponse
@@ -48,11 +60,12 @@ type queueEntry struct {
 
 // NewQueue returns a new queue. Size for the queue can be given
 // so that more than 1 transaction could be queued at a time.
-func NewQueue(size uint, debounceTime time.Duration) *Queue {
+func NewQueue(size uint, cl QueueMultichainClient, timeout time.Duration) *Queue {
 	return &Queue{
-		queue:    make(chan queueEntry, size),
-		debounce: debounceTime,
-		stop:     make(chan struct{}, 0),
+		queue:   make(chan queueEntry, size),
+		bc:      cl,
+		timeout: timeout,
+		stop:    make(chan struct{}, 0),
 	}
 }
 
@@ -69,20 +82,42 @@ func (q *Queue) Run() {
 			return
 		case entry := <-q.queue:
 			tx, err := entry.exec()
+			if err != nil {
+				q.resp(nil, err, entry.resp)
+				continue
+			}
+
+			err = q.waitAfterSend(tx.ChainId().Int64(), tx.Hash())
 			q.resp(tx, err, entry.resp)
-			q.waitAfterSend()
 		}
 	}
 }
 
-func (q *Queue) waitAfterSend() {
-	if q.debounce == 0 {
-		return
-	}
+func (q *Queue) waitAfterSend(chainID int64, txHash common.Hash) error {
+	ctx, cancel := context.WithTimeout(context.Background(), q.timeout)
+	defer cancel()
 
-	select {
-	case <-q.stop:
-	case <-time.After(q.debounce):
+	return q.checkIfTransactionExists(ctx, chainID, txHash)
+}
+
+func (q *Queue) checkIfTransactionExists(ctx context.Context, chainID int64, txHash common.Hash) error {
+	for {
+		select {
+		case <-ctx.Done():
+			return fmt.Errorf("transaction %q failed in queue: %w", txHash, ErrTrasactionMissing)
+		case <-q.stop:
+			return nil
+		case <-time.After(time.Second):
+			_, pending, err := q.bc.TransactionByHash(chainID, txHash)
+			if err != nil {
+				log.Err(err).Str("tx_hash", txHash.Hex()).Msg("failed to get transaction by hash in queue")
+				continue
+			}
+
+			if !pending {
+				return nil
+			}
+		}
 	}
 }
 
