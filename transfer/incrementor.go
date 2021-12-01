@@ -78,6 +78,8 @@ type MultichainClient interface {
 // LogFunc can be attacheched to Incrementer to enable logging.
 type LogFunc func(Transaction, error)
 
+var errMaxLimitReached = errors.New("max gas limit reached")
+
 // NewGasPriceIncremenetor returns a new incrementer instance.
 func NewGasPriceIncremenetor(cfg GasIncrementorConfig, storage Storage, cl MultichainClient, signers Signers) *GasPriceIncremenetor {
 	if cfg.WorkerCount <= 0 {
@@ -137,25 +139,23 @@ func (i *GasPriceIncremenetor) watchOrIncrease(work chan Transaction) {
 			continue
 		}
 
-		ok, err := i.checkIfSuccess(tx)
+		i.transactionSetNextCheck(tx)
+
+		status, err := i.getTxStatus(tx)
 		if err != nil {
-			i.log(tx, fmt.Errorf("status check failed: %w", err))
-			if !errors.Is(err, ethereum.NotFound) {
-				continue
-			}
+			i.log(tx, fmt.Errorf("failed to check tx status: %w", err))
+			continue
 		}
 
-		// If transaction was not a success and a certain amount of time
-		// has passed since last increase - increase gas price again.
-		if !ok && now.After(tx.NextIncreaseAfterUTC) {
-			if err := i.increaseGasPrice(tx); err != nil {
-				if i.isBlockchainErrorUnhandleable(err) {
-					i.log(tx, fmt.Errorf("received unhandleable increase error, marking tx as failed: %w", err))
-					i.transactionFailed(tx)
-					continue
-				}
-
-				i.log(tx, fmt.Errorf("gas price increase failed: %w", err))
+		switch status {
+		case StatusSucceeded:
+			i.transactionSuccess(tx)
+		case StatusFailed:
+			i.log(tx, fmt.Errorf("transaction failed: %w", err))
+			i.transactionFailed(tx)
+		case StatusPending, StatusGone:
+			if now.After(tx.NextIncreaseAfterUTC) {
+				i.handleResend(tx, status == StatusGone)
 			}
 		}
 	}
@@ -236,21 +236,7 @@ func (i *GasPriceIncremenetor) CanQueue(sender common.Address) (bool, error) {
 	return length < i.cfg.MaxQueuePerSigner, nil
 }
 
-func (i *GasPriceIncremenetor) checkIfSuccess(tx Transaction) (bool, error) {
-	status, err := i.getTxStatus(tx)
-	if err != nil {
-		return false, err
-	}
-
-	switch status {
-	case StatusSucceeded:
-		return true, i.transactionSuccess(tx)
-	default:
-		return false, i.transactionSetNextCheck(tx)
-	}
-}
-
-func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) error {
+func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction, force bool) error {
 	org, err := tx.getLatestTx()
 	if err != nil {
 		return err
@@ -258,7 +244,12 @@ func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction) error {
 
 	newGasPrice, err := calculateGasPrice(tx, org.GasPrice())
 	if err != nil {
-		return err
+		if errors.Is(err, errMaxLimitReached) && force {
+			// If we force a transaction, dont care that max limit is reached, just send.
+			newGasPrice = tx.Opts.MaxPrice
+		} else {
+			return err
+		}
 	}
 
 	newTx, err := i.signAndSend(tx.rebuiledWithNewGasPrice(org, newGasPrice), tx.ChainID, tx.SenderAddressHex)
@@ -288,10 +279,24 @@ func (i *GasPriceIncremenetor) isBlockchainErrorUnhandleable(err error) bool {
 	}
 }
 
+func (i *GasPriceIncremenetor) handleResend(tx Transaction, force bool) {
+	if err := i.increaseGasPrice(tx, force); err != nil {
+		if i.isBlockchainErrorUnhandleable(err) {
+			i.log(tx, fmt.Errorf("received unhandleable increase error, marking tx as failed: %w", err))
+			i.transactionFailed(tx)
+			return
+		}
+
+		i.log(tx, fmt.Errorf("gas price increase failed: %w", err))
+	}
+}
+
 // BCTxStatus represents the status of tx on blockchain.
 type BCTxStatus string
 
 const (
+	// StatusGone indicates that the tx is gone.
+	StatusGone BCTxStatus = "Gone"
 	// StatusPending indicates that the tx is still pending.
 	StatusPending BCTxStatus = "Pending"
 	// StatusFailed indicates that the tx has failed.
@@ -309,6 +314,11 @@ func (i *GasPriceIncremenetor) getTxStatus(tx Transaction) (BCTxStatus, error) {
 	hash := org.Hash()
 	_, pending, err := i.bc.TransactionByHash(tx.ChainID, hash)
 	if err != nil {
+		if errors.Is(err, ethereum.NotFound) {
+			i.log(tx, errors.New("transaction missing, will resend"))
+			return StatusGone, nil
+		}
+
 		return StatusFailed, fmt.Errorf("failed to get transaction by hash: %w", err)
 	}
 
@@ -318,6 +328,10 @@ func (i *GasPriceIncremenetor) getTxStatus(tx Transaction) (BCTxStatus, error) {
 
 	receipt, err := i.bc.TransactionReceipt(tx.ChainID, hash)
 	if err != nil {
+		if errors.Is(err, ethereum.NotFound) {
+			return StatusPending, nil
+		}
+
 		return StatusFailed, fmt.Errorf("failed to get transaction receipt: %w", err)
 	}
 
@@ -417,7 +431,7 @@ func (i *GasPriceIncremenetor) log(tx Transaction, err error) {
 
 func calculateGasPrice(tx Transaction, currentPrice *big.Int) (*big.Int, error) {
 	if currentPrice.Cmp(tx.Opts.MaxPrice) > 0 {
-		return nil, fmt.Errorf("transaction with uniqueID '%s' failed, gas price limit of %s reached on chain %d", tx.UniqueID, tx.Opts.MaxPrice.String(), tx.ChainID)
+		return nil, errMaxLimitReached
 	}
 
 	newGasPrice, _ := new(big.Float).Mul(
@@ -433,7 +447,7 @@ func calculateGasPrice(tx Transaction, currentPrice *big.Int) (*big.Int, error) 
 			return tx.Opts.MaxPrice, nil
 		}
 
-		return nil, fmt.Errorf("transaction with uniqueID '%s' failed, gas price limit of %s reached on chain %d", tx.UniqueID, tx.Opts.MaxPrice.String(), tx.ChainID)
+		return nil, errMaxLimitReached
 	}
 
 	return newGasPrice, nil

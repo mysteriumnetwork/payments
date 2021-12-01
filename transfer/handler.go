@@ -19,6 +19,7 @@ package transfer
 import (
 	"errors"
 	"fmt"
+	"sync"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -32,6 +33,10 @@ import (
 type TransactionHandler struct {
 	inc   GasPriceIncremenetorIface
 	logFn func(error)
+
+	cl         HandlerBC
+	nonces     map[common.Address]uint64
+	nonceMutex sync.Mutex
 }
 
 // HandlerOpts are given when sending a new transaction.
@@ -49,7 +54,7 @@ type HandlerOpts struct {
 //
 // It allows to wrap different kinds of contract methods which
 // all result in producing a transaction.
-type TransactionSendFn func() (*types.Transaction, error)
+type TransactionSendFn func(nonce uint64) (*types.Transaction, error)
 
 // ErrBlockchainQueueFull is returned if the current queue is full and incremeting gas price will be impossible.
 // Transactions which receive this error should be retried later.
@@ -70,10 +75,18 @@ type GasPriceIncremenetorIface interface {
 	CanSign(sender common.Address) bool
 }
 
+// HandlerBC abstracts a blockchain client for nonce handling.
+type HandlerBC interface {
+	PendingNonceAt(chainID int64, account common.Address) (uint64, error)
+}
+
 // NewTransactionhandler returns a new transaction handler
-func NewTransactionhandler(inc GasPriceIncremenetorIface) *TransactionHandler {
+func NewTransactionhandler(inc GasPriceIncremenetorIface, c HandlerBC) *TransactionHandler {
 	return &TransactionHandler{
+		cl:  c,
 		inc: inc,
+
+		nonces: make(map[common.Address]uint64),
 	}
 }
 
@@ -88,7 +101,9 @@ func (t *TransactionHandler) AttachLogger(fn func(err error)) {
 
 // SendWithGasPriceHandling given a new watchable transaction with options will send the transaction
 // and increase the gas price accordingly.
-func (t *TransactionHandler) SendWithGasPriceHandling(txSend TransactionSendFn, opts HandlerOpts) (*types.Transaction, error) {
+//
+// It will also provide a valid nonce for that transaction.
+func (t *TransactionHandler) SendWithGasPriceHandling(chainID int64, opts HandlerOpts, txSend TransactionSendFn) (*types.Transaction, error) {
 	if err := opts.validate(); err != nil {
 		return nil, err
 	}
@@ -97,7 +112,7 @@ func (t *TransactionHandler) SendWithGasPriceHandling(txSend TransactionSendFn, 
 		return nil, err
 	}
 
-	tx, err := txSend()
+	tx, err := t.sendWithNonceTracking(chainID, opts.SenderAddress, txSend)
 	if err != nil {
 		return nil, err
 	}
@@ -105,6 +120,29 @@ func (t *TransactionHandler) SendWithGasPriceHandling(txSend TransactionSendFn, 
 	if err := t.inc.InsertInitial(tx, opts.GasPriceIncOpts, opts.SenderAddress); err != nil {
 		t.log(fmt.Errorf("failed to insert initial entry for gas price incremenetor: %w", err))
 	}
+
+	return tx, nil
+}
+
+func (t *TransactionHandler) sendWithNonceTracking(chainID int64, account common.Address, sendFn TransactionSendFn) (*types.Transaction, error) {
+	t.nonceMutex.Lock()
+	defer t.nonceMutex.Unlock()
+
+	nonce, ok := t.nonces[account]
+	if !ok {
+		no, err := t.cl.PendingNonceAt(chainID, account)
+		if err != nil {
+			return nil, fmt.Errorf("could not get nonce: %w", err)
+		}
+		nonce = no
+	}
+
+	tx, err := sendFn(nonce)
+	if err != nil {
+		return nil, fmt.Errorf("handler failed to send transaction: %w", err)
+	}
+	nonce += 1
+	t.nonces[account] = nonce
 
 	return tx, nil
 }

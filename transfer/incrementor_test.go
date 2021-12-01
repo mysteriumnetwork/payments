@@ -83,7 +83,7 @@ func TestGasPriceIncrementor(t *testing.T) {
 				priceIncreased++
 			}
 		}
-		assert.Equal(t, 1, priceIncreased)
+		assert.Equal(t, 2, priceIncreased)
 		assert.Equal(t, TxStateSucceed, st.stateHistory[len(st.stateHistory)-1])
 
 		assert.Equal(t, chid, st.tx.ChainID)
@@ -284,7 +284,11 @@ func (c *mockClient) TransactionReceipt(chainID int64, hash common.Hash) (*types
 }
 
 func (c *mockClient) TransactionByHash(chainID int64, hash common.Hash) (*types.Transaction, bool, error) {
-	return nil, false, nil
+	if c.currentGas.Cmp(c.gasTreshold) >= 0 {
+		return nil, false, nil
+	}
+
+	return nil, true, nil
 }
 
 func (c *mockClient) SendTransaction(chainID int64, tx *types.Transaction) error {
