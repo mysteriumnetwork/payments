@@ -242,6 +242,12 @@ func (bc *Blockchain) TransactionReceipt(hash common.Hash) (*types.Receipt, erro
 	return bc.ethClient.Client().TransactionReceipt(ctx, hash)
 }
 
+func (bc *Blockchain) PendingNonceAt(account common.Address) (uint64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+	return bc.ethClient.Client().PendingNonceAt(ctx, account)
+}
+
 func (bc *Blockchain) getProviderChannelAddressBytes(hermesAddress, addressToCheck common.Address) ([32]byte, error) {
 	addressBytes := [32]byte{}
 

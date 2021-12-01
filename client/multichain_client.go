@@ -332,6 +332,14 @@ func (mbc *MultichainBlockchainClient) TransactionReceipt(chainID int64, hash co
 	return bc.TransactionReceipt(hash)
 }
 
+func (mbc *MultichainBlockchainClient) PendingNonceAt(chainID int64, account common.Address) (uint64, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return 0, err
+	}
+	return bc.PendingNonceAt(account)
+}
+
 func (mbc *MultichainBlockchainClient) TransferEth(chainID int64, etr EthTransferRequest) (*types.Transaction, error) {
 	bc, err := mbc.getClientByChain(chainID)
 	if err != nil {
