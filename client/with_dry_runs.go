@@ -415,3 +415,7 @@ func (cwdr *WithDryRuns) TopperupperNativeLimits(topperupperAddress common.Addre
 func (cwdr *WithDryRuns) TopperupperTokenLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
 	return cwdr.bc.TopperupperTokenLimits(topperupperAddress, forAddress)
 }
+
+func (cwdr *WithDryRuns) PendingNonceAt(account common.Address) (uint64, error) {
+	return cwdr.bc.PendingNonceAt(account)
+}

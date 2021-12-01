@@ -77,6 +77,7 @@ type BC interface {
 	BlockNumber() (uint64, error)
 	SuggestGasPrice() (*big.Int, error)
 	HeaderByNumber(number *big.Int) (*types.Header, error)
+	PendingNonceAt(account common.Address) (uint64, error)
 
 	TransferMyst(req TransferRequest) (tx *types.Transaction, err error)
 	TransferEth(etr EthTransferRequest) (*types.Transaction, error)
