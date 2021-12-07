@@ -139,8 +139,21 @@ func (t *TransactionHandler) sendWithNonceTracking(chainID int64, account common
 
 	tx, err := sendFn(nonce)
 	if err != nil {
-		return nil, fmt.Errorf("handler failed to send transaction: %w", err)
+		if !isNonceError(err) {
+			return nil, fmt.Errorf("handler failed to send transaction: %w", err)
+		}
+
+		// Try to recover the nonce and resend the transaction
+		nonce, err = t.cl.PendingNonceAt(chainID, account)
+		if err != nil {
+			return nil, fmt.Errorf("could not get nonce: %w", err)
+		}
+		tx, err = sendFn(nonce)
+		if err != nil {
+			return nil, fmt.Errorf("handler recovered nonce but still failed to send transaction: %w", err)
+		}
 	}
+
 	nonce += 1
 	t.nonces[account] = nonce
 
