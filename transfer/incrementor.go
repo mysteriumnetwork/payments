@@ -260,7 +260,7 @@ func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction, force bool) erro
 	return i.transactionPriceIncreased(tx, newTx)
 }
 
-func (i *GasPriceIncremenetor) isBlockchainErrorUnhandleable(err error) bool {
+func isNonceError(err error) bool {
 	if errors.Is(err, core.ErrNonceTooHigh) || errors.Is(err, core.ErrNonceTooLow) {
 		return true
 	}
@@ -281,7 +281,7 @@ func (i *GasPriceIncremenetor) isBlockchainErrorUnhandleable(err error) bool {
 
 func (i *GasPriceIncremenetor) handleResend(tx Transaction, force bool) {
 	if err := i.increaseGasPrice(tx, force); err != nil {
-		if i.isBlockchainErrorUnhandleable(err) {
+		if isNonceError(err) {
 			i.log(tx, fmt.Errorf("received unhandleable increase error, marking tx as failed: %w", err))
 			i.transactionFailed(tx)
 			return
