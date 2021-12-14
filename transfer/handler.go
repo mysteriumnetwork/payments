@@ -35,7 +35,7 @@ type TransactionHandler struct {
 	logFn func(error)
 
 	cl         HandlerBC
-	nonces     map[common.Address]uint64
+	nonces     map[string]uint64
 	nonceMutex sync.Mutex
 }
 
@@ -86,7 +86,7 @@ func NewTransactionhandler(inc GasPriceIncremenetorIface, c HandlerBC) *Transact
 		cl:  c,
 		inc: inc,
 
-		nonces: make(map[common.Address]uint64),
+		nonces: make(map[string]uint64),
 	}
 }
 
@@ -128,7 +128,8 @@ func (t *TransactionHandler) sendWithNonceTracking(chainID int64, account common
 	t.nonceMutex.Lock()
 	defer t.nonceMutex.Unlock()
 
-	nonce, ok := t.nonces[account]
+	noncekey := fmt.Sprintf("%v|%v", chainID, account.Hex())
+	nonce, ok := t.nonces[noncekey]
 	if !ok {
 		no, err := t.cl.PendingNonceAt(chainID, account)
 		if err != nil {
@@ -155,7 +156,7 @@ func (t *TransactionHandler) sendWithNonceTracking(chainID int64, account common
 	}
 
 	nonce += 1
-	t.nonces[account] = nonce
+	t.nonces[noncekey] = nonce
 
 	return tx, nil
 }
