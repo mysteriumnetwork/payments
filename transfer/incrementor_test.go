@@ -332,8 +332,7 @@ func TestGasPriceIncremenetor_isBlockchainErrorUnhandleable(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			i := &GasPriceIncremenetor{}
-			if got := i.isBlockchainErrorUnhandleable(tt.args.err); got != tt.want {
+			if got := isNonceError(tt.args.err); got != tt.want {
 				t.Errorf("GasPriceIncremenetor.isBlockchainErrorUnhandleable() = %v, want %v", got, tt.want)
 			}
 		})

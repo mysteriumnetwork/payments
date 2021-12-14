@@ -254,6 +254,10 @@ func (i *GasPriceIncremenetor) increaseGasPrice(tx Transaction, force bool) erro
 
 	newTx, err := i.signAndSend(tx.rebuiledWithNewGasPrice(org, newGasPrice), tx.ChainID, tx.SenderAddressHex)
 	if err != nil {
+		if errors.Is(err, core.ErrAlreadyKnown) {
+			return i.transactionSetNextIncrease(tx)
+		}
+
 		return err
 	}
 
@@ -393,6 +397,14 @@ func (i *GasPriceIncremenetor) transactionExpired(tx Transaction) {
 
 func (i *GasPriceIncremenetor) transactionSetNextCheck(tx Transaction) error {
 	tx.NextCheckAfterUTC = time.Now().UTC().Add(tx.Opts.CheckInterval)
+	if err := i.storage.UpsertIncrementorTransaction(tx); err != nil {
+		return fmt.Errorf("failed marking transaction succeed: %w", err)
+	}
+	return nil
+}
+
+func (i *GasPriceIncremenetor) transactionSetNextIncrease(tx Transaction) error {
+	tx.NextIncreaseAfterUTC = time.Now().UTC().Add(tx.Opts.IncreaseInterval)
 	if err := i.storage.UpsertIncrementorTransaction(tx); err != nil {
 		return fmt.Errorf("failed marking transaction succeed: %w", err)
 	}
