@@ -419,3 +419,6 @@ func (cwdr *WithDryRuns) TopperupperTokenLimits(topperupperAddress common.Addres
 func (cwdr *WithDryRuns) PendingNonceAt(account common.Address) (uint64, error) {
 	return cwdr.bc.PendingNonceAt(account)
 }
+func (cwdr *WithDryRuns) NonceAt(account common.Address, blockNum *big.Int) (uint64, error) {
+	return cwdr.bc.NonceAt(account, blockNum)
+}
