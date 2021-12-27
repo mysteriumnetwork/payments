@@ -30,21 +30,22 @@ func NewDepotNonceTracker(nonceTrackerBC nonceTrackerBC, ds DepotStorage) *Depot
 	}
 }
 
+type nonceSetFn func(nonce uint64) error
+
 // GetNextNonce returns an atomically increasing nonce for the account.
-func (nt *DepotNonceTracker) GetNextNonce(chainID int64, account common.Address) (uint64, error) {
+func (nt *DepotNonceTracker) SetNextNonce(chainID int64, account common.Address, fn nonceSetFn) error {
 	nt.nonceLock.Lock()
 	defer nt.nonceLock.Unlock()
 
 	key := NewSender(account, chainID)
 	if v, ok := nt.nonces[key]; ok {
 		v++
-		nt.nonces[key] = v
-		return v, nil
+		return nt.setWithExec(key, v, fn)
 	}
 
 	lastKnown, err := nt.ds.GetLastQueuedDelivery(chainID, account)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	persistentNonce := uint64(0)
@@ -54,7 +55,7 @@ func (nt *DepotNonceTracker) GetNextNonce(chainID int64, account common.Address)
 
 	bcNonce, err := nt.nonceTrackerBC.PendingNonceAt(chainID, account)
 	if err != nil {
-		return bcNonce, err
+		return err
 	}
 
 	nonce := persistentNonce
@@ -64,8 +65,16 @@ func (nt *DepotNonceTracker) GetNextNonce(chainID int64, account common.Address)
 		nonce = bcNonce
 	}
 
+	return nt.setWithExec(key, nonce, fn)
+}
+
+func (nt *DepotNonceTracker) setWithExec(key Sender, nonce uint64, fn nonceSetFn) error {
+	if err := fn(nonce); err != nil {
+		return err
+	}
+
 	nt.nonces[key] = nonce
-	return nonce, nil
+	return nil
 }
 
 func (nt *DepotNonceTracker) GetConfirmedNonce(chainID int64, account common.Address) (uint64, error) {
