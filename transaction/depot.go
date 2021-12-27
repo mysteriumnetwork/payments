@@ -39,11 +39,16 @@ type Depot struct {
 	gasStation   *GasTracker
 	nonceTracker *DepotNonceTracker
 
-	workers []DepotWorker
+	config DepotConfig
+	logFn  func(error)
 
-	logFn func(error)
-	once  sync.Once
-	stop  chan struct{}
+	once sync.Once
+	stop chan struct{}
+}
+
+type DepotConfig struct {
+	Workers         []DepotWorker
+	MaxNonDelivered uint
 }
 
 // DepotWorker is a worker that will spawn upon starting `Run`.
@@ -52,7 +57,7 @@ type DepotWorker struct {
 	Address         common.Address
 	ChainID         int64
 	ProcessInterval time.Duration
-	QueueSize       uint
+	ProcessCount    uint
 }
 
 // DeliveryCourier is responsible for executing transaction on the blockchain.
@@ -76,6 +81,11 @@ type DepotStorage interface {
 	// It will be used to determine the next time we need to increase gas price.
 	GetLastDelivered(chainID int64, sender common.Address) (*Delivery, error)
 
+	// GetNonDeliveredCount is used to get a total number of non delivered transactions.
+	// If that number is higher or equal to the configured max number, no new
+	// transaction will be set in the queue.
+	GetNonDeliveredCount(chainID int64, sender common.Address) (uint, error)
+
 	// UpsertDeliveryRequest is used to update a delivery. If no delivery with a given
 	// unique ID exists, it should create it.
 	UpsertDeliveryRequest(tx Delivery) error
@@ -84,23 +94,21 @@ type DepotStorage interface {
 var ErrImpossibleToDeliver = errors.New("impossible to deliver")
 
 // NewDepot will returns a new depot.
-func NewDepot(handler DeliveryCourier, storage DepotStorage, nonce *DepotNonceTracker, gasStation *GasTracker, workers []DepotWorker, logFn func(error)) *Depot {
+func NewDepot(handler DeliveryCourier, storage DepotStorage, nonce *DepotNonceTracker, gasStation *GasTracker, cfg DepotConfig) *Depot {
 	return &Depot{
 		handler:      handler,
 		storage:      storage,
 		nonceTracker: nonce,
 		gasStation:   gasStation,
 
-		workers: workers,
-
-		logFn: logFn,
-		stop:  make(chan struct{}),
+		config: cfg,
+		stop:   make(chan struct{}),
 	}
 }
 
 // Run will spawn a goroutine for each loaded `DepotWorker`.
 func (d *Depot) Run() {
-	for _, s := range d.workers {
+	for _, s := range d.config.Workers {
 		go d.watchDeliveries(s)
 	}
 }
@@ -108,11 +116,6 @@ func (d *Depot) Run() {
 // EnqueueDelivery will submit a new transaction to the delivery queue.
 // It will return a unique tracking number which can be used to see the status of a transaction.
 func (d *Depot) EnqueueDelivery(req DeliveryRequest) (string, error) {
-	nonce, err := d.nonceTracker.GetNextNonce(req.ChainID, req.Sender)
-	if err != nil {
-		return "", fmt.Errorf("failed to issue a nonce for a transaction delivery: %w", err)
-	}
-
 	if !d.workerExists(req) {
 		return "", fmt.Errorf("failed to enqueue for sender %q: no worker found", req.Sender.Hex())
 	}
@@ -121,16 +124,36 @@ func (d *Depot) EnqueueDelivery(req DeliveryRequest) (string, error) {
 		return "", fmt.Errorf("transaction will not set in queue, not possible to delivery type %q", req.Type)
 	}
 
-	td, err := req.toDelivery(nonce)
+	count, err := d.storage.GetNonDeliveredCount(req.ChainID, req.Sender)
 	if err != nil {
-		return "", fmt.Errorf("failed to marshal queue entry: %w", err)
+		return "", fmt.Errorf("could not get non delivered count: %w", err)
 	}
 
-	if err := d.storage.UpsertDeliveryRequest(td); err != nil {
-		return "", fmt.Errorf("failed to insert a delivery request: %w", err)
+	if d.config.MaxNonDelivered <= count {
+		return "", fmt.Errorf("cannot queue a new entry, max count of %d reached", d.config.MaxNonDelivered)
 	}
 
-	return td.UniqueID, nil
+	unqID := ""
+	setFn := func(nonce uint64) error {
+		td, err := req.toDelivery(nonce)
+		if err != nil {
+			return fmt.Errorf("failed to marshal queue entry: %w", err)
+		}
+		unqID = td.UniqueID
+
+		if err := d.storage.UpsertDeliveryRequest(td); err != nil {
+			return fmt.Errorf("failed to insert a delivery request: %w", err)
+		}
+
+		return nil
+	}
+
+	err = d.nonceTracker.SetNextNonce(req.ChainID, req.Sender, setFn)
+	if err != nil {
+		return "", fmt.Errorf("failed to issue a nonce for a transaction delivery: %w", err)
+	}
+
+	return unqID, nil
 }
 
 // Stop will stop the Deposit goroutines.
@@ -150,7 +173,7 @@ func (d *Depot) AttachLogger(fn func(err error)) {
 }
 
 func (d *Depot) workerExists(req DeliveryRequest) bool {
-	for _, s := range d.workers {
+	for _, s := range d.config.Workers {
 		if s.Address.Hex() == req.Sender.Hex() && req.ChainID == s.ChainID {
 			return true
 		}
@@ -165,7 +188,7 @@ func (d *Depot) watchDeliveries(s DepotWorker) {
 		case <-d.stop:
 			return
 		case <-time.After(s.ProcessInterval):
-			tds, err := d.storage.GetOrderedDeliveryRequests(s.QueueSize, s.ChainID, s.Address)
+			tds, err := d.storage.GetOrderedDeliveryRequests(s.ProcessCount, s.ChainID, s.Address)
 			if err != nil {
 				d.logFn(err)
 				break
