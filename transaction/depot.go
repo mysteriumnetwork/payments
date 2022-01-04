@@ -227,7 +227,7 @@ func (d *Depot) handleTrackingRequired(td Delivery) error {
 
 	// If our nonce increased that means someone is aware about this transaction
 	// and we can continue.
-	if currentNonce >= td.Nonce {
+	if currentNonce > td.Nonce {
 		if td.State == DeliveryStateWaiting {
 			return fmt.Errorf("refusing to confirm transaction as it was never sent from our side: %q", td.UniqueID)
 		}
@@ -242,7 +242,7 @@ func (d *Depot) handleTrackingRequired(td Delivery) error {
 	// Only try to resubmit the earliest transaction sent.
 	// Other transactions might have enough gas and this
 	// might be the only blocking transaction.
-	if currentNonce+1 != td.Nonce {
+	if currentNonce != td.Nonce {
 		return nil
 	}
 
