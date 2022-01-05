@@ -246,6 +246,11 @@ func (d *Depot) handleTrackingRequired(td Delivery) error {
 		return nil
 	}
 
+	// Don't spam. Wait 1 minute in between increment checks.
+	if td.UpdateUTC.Add(time.Minute).After(time.Now().UTC()) {
+		return nil
+	}
+
 	ld, err := d.storage.GetLastDelivered(td.ChainID, td.Sender)
 	if err != nil {
 		return fmt.Errorf("failed to get last delivered: %w", err)
@@ -258,7 +263,7 @@ func (d *Depot) handleTrackingRequired(td Delivery) error {
 
 	ok, err := d.gasStation.CanReceiveMoreGas(td.ChainID, lastTime)
 	if err != nil {
-		return fmt.Errorf("tried to redeliver, but got err: %w", err)
+		return fmt.Errorf("tried to redeliver %q, but got err: %w", td.UniqueID, err)
 	}
 
 	// We can only resend a transaction only if we give more gas
@@ -307,7 +312,7 @@ func (d *Depot) log(err error) {
 func (d *Depot) deliveryRecalculateAndSaveGasPrice(td Delivery) (Delivery, error) {
 	gas, err := d.gasStation.RecalculateDeliveryGas(td.ChainID, td.GasPrice)
 	if err != nil {
-		return td, fmt.Errorf("failed to calculate gas price: %w", err)
+		return td, fmt.Errorf("delivery %q failed to calculate gas price: %w", td.UniqueID, err)
 	}
 
 	td.GasPrice = gas
