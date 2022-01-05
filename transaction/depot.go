@@ -257,7 +257,7 @@ func (d *Depot) handleTrackingRequired(td Delivery) error {
 	}
 
 	lastTime := td.UpdateUTC
-	if ld != nil {
+	if ld != nil && ld.UpdateUTC.After(lastTime) {
 		lastTime = ld.UpdateUTC
 	}
 
