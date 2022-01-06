@@ -19,6 +19,7 @@ package transaction
 import (
 	"errors"
 	"fmt"
+	"math/big"
 	"sync"
 	"time"
 
@@ -190,7 +191,7 @@ func (d *Depot) watchDeliveries(s DepotWorker) {
 		case <-time.After(s.ProcessInterval):
 			tds, err := d.storage.GetOrderedDeliveryRequests(s.ProcessCount, s.ChainID, s.Address)
 			if err != nil {
-				d.logFn(err)
+				d.log(err)
 				break
 			}
 
@@ -210,11 +211,11 @@ func (d *Depot) handleDeliveryRequest(td Delivery) {
 	switch td.State {
 	case DeliveryStateWaiting:
 		if err := d.handleWaiting(td); err != nil {
-			d.logFn(err)
+			d.log(err)
 		}
 	case DeliveryStatePacking, DeliveryStateSent:
 		if err := d.handleTrackingRequired(td); err != nil {
-			d.logFn(err)
+			d.log(err)
 		}
 	}
 }
@@ -246,9 +247,16 @@ func (d *Depot) handleTrackingRequired(td Delivery) error {
 		return nil
 	}
 
-	// Don't spam. Wait 1 minute in between increment checks.
-	if td.UpdateUTC.Add(time.Minute).After(time.Now().UTC()) {
-		return nil
+	// If state is packing, reset the gas price and resend the transaction
+	// as we do not know if it was ever sent out.
+	if td.State == DeliveryStatePacking {
+		if td.UpdateUTC.Add(time.Second * 5).After(time.Now().UTC()) {
+			return nil
+		}
+
+		d.log(fmt.Errorf("got transaction in packing state %q, will retry", td.UniqueID))
+		td.GasPrice = new(big.Int).SetInt64(0)
+		return d.sendOutTransaction(td)
 	}
 
 	ld, err := d.storage.GetLastDelivered(td.ChainID, td.Sender)
