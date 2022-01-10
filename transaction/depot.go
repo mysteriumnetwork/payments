@@ -50,6 +50,7 @@ type Depot struct {
 type DepotConfig struct {
 	Workers         []DepotWorker
 	MaxNonDelivered uint
+	ForceResend     time.Duration
 }
 
 // DepotWorker is a worker that will spawn upon starting `Run`.
@@ -214,13 +215,13 @@ func (d *Depot) handleDeliveryRequest(td Delivery) {
 			d.log(err)
 		}
 	case DeliveryStatePacking, DeliveryStateSent:
-		if err := d.handleTrackingRequired(td); err != nil {
+		if err := d.handleTracking(td); err != nil {
 			d.log(err)
 		}
 	}
 }
 
-func (d *Depot) handleTrackingRequired(td Delivery) error {
+func (d *Depot) handleTracking(td Delivery) error {
 	currentNonce, err := d.nonceTracker.GetConfirmedNonce(td.ChainID, td.Sender)
 	if err != nil {
 		return err
@@ -250,37 +251,25 @@ func (d *Depot) handleTrackingRequired(td Delivery) error {
 	// If state is packing, reset the gas price and resend the transaction
 	// as we do not know if it was ever sent out.
 	if td.State == DeliveryStatePacking {
-		if td.UpdateUTC.Add(time.Second * 5).After(time.Now().UTC()) {
-			return nil
-		}
-
 		d.log(fmt.Errorf("got transaction in packing state %q, will retry", td.UniqueID))
-		td.GasPrice = new(big.Int).SetInt64(0)
+		updated, err := d.calculateNewGasPrice(td)
+		if err != nil {
+			return err
+		}
+		return d.sendOutTransaction(updated)
+	}
+
+	updated, err := d.calculateNewGasPrice(td)
+	if err != nil {
+		if errors.Is(err, errMaxPriceReached) && d.shouldForceResend(td) {
+			return d.sendOutTransaction(td)
+		}
+		return err
+	}
+
+	if updated.GasPrice.Cmp(td.GasPrice) > 0 {
 		return d.sendOutTransaction(td)
 	}
-
-	ld, err := d.storage.GetLastDelivered(td.ChainID, td.Sender)
-	if err != nil {
-		return fmt.Errorf("failed to get last delivered: %w", err)
-	}
-
-	lastTime := td.UpdateUTC
-	if ld != nil && ld.UpdateUTC.After(lastTime) {
-		lastTime = ld.UpdateUTC
-	}
-
-	ok, err := d.gasStation.CanReceiveMoreGas(td.ChainID, lastTime)
-	if err != nil {
-		return fmt.Errorf("tried to redeliver %q, but got err: %w", td.UniqueID, err)
-	}
-
-	// We can only resend a transaction only if we give more gas
-	// because if not, it will simply get rejected by the node
-	// as you cannot replace a transaction without giving more gas.
-	if ok {
-		return d.sendOutTransaction(td)
-	}
-
 	return nil
 }
 
@@ -289,16 +278,15 @@ func (d *Depot) handleWaiting(td Delivery) error {
 		return fmt.Errorf("failed to mark packing for sender %q reason: %w", td.Sender.Hex(), err)
 	}
 
-	return d.sendOutTransaction(td)
-}
-
-func (d *Depot) sendOutTransaction(td Delivery) error {
-	var err error
-	td, err = d.deliveryRecalculateAndSaveGasPrice(td)
+	updated, err := d.calculateNewGasPrice(td)
 	if err != nil {
 		return err
 	}
 
+	return d.sendOutTransaction(updated)
+}
+
+func (d *Depot) sendOutTransaction(td Delivery) error {
 	tx, err := d.handler.DeliverTransaction(td)
 	if err != nil {
 		return fmt.Errorf("attempted to delivery a transaction %q for account %q but failed: %w", td.UniqueID, td.Sender.Hex(), err)
@@ -311,22 +299,62 @@ func (d *Depot) sendOutTransaction(td Delivery) error {
 	return nil
 }
 
-func (d *Depot) log(err error) {
-	if d.logFn != nil {
-		d.logFn(err)
+func (d *Depot) calculateNewGasPrice(td Delivery) (Delivery, error) {
+	newPrice := big.NewInt(0)
+	switch td.State {
+	case DeliveryStatePacking, DeliveryStateWaiting:
+		gasPrice, err := d.gasStation.ReceiveInitialGas(td.ChainID)
+		if err != nil {
+			return Delivery{}, err
+		}
+		newPrice = gasPrice
+
+	case DeliveryStateSent:
+		ld, err := d.storage.GetLastDelivered(td.ChainID, td.Sender)
+		if err != nil {
+			return Delivery{}, fmt.Errorf("failed to get last delivered: %w", err)
+		}
+
+		lastTime := td.UpdateUTC
+		if ld != nil && ld.UpdateUTC.After(lastTime) {
+			lastTime = ld.UpdateUTC
+		}
+
+		ok, err := d.gasStation.CanReceiveMoreGas(td.ChainID, lastTime)
+		if err != nil {
+			return Delivery{}, fmt.Errorf("tried to redeliver %q, but got err: %w", td.UniqueID, err)
+		}
+
+		if !ok {
+			return td, nil
+		}
+
+		gasPrice, err := d.gasStation.RecalculateDeliveryGas(td.ChainID, td.GasPrice)
+		if err != nil {
+			return Delivery{}, err
+		}
+		newPrice = gasPrice
+
+	default:
+		return Delivery{}, fmt.Errorf("impossible to handle state: %v", td.State)
 	}
+
+	if newPrice.Cmp(big.NewInt(0)) == 0 {
+		return Delivery{}, errors.New("ended up with 0 gas price, cannot continue")
+	}
+
+	newDelivery, err := d.deliveryUpdateGasPrice(td, newPrice)
+	if err != nil {
+		return Delivery{}, err
+	}
+	return newDelivery, nil
 }
 
-func (d *Depot) deliveryRecalculateAndSaveGasPrice(td Delivery) (Delivery, error) {
-	gas, err := d.gasStation.RecalculateDeliveryGas(td.ChainID, td.GasPrice)
-	if err != nil {
-		return td, fmt.Errorf("delivery %q failed to calculate gas price: %w", td.UniqueID, err)
-	}
-
-	td.GasPrice = gas
+func (d *Depot) deliveryUpdateGasPrice(td Delivery, newGas *big.Int) (Delivery, error) {
+	td.GasPrice = newGas
 	td.UpdateUTC = time.Now().UTC()
 	if err := d.storage.UpsertDeliveryRequest(td); err != nil {
-		return td, fmt.Errorf("failed to mark delivery as packing: %w", err)
+		return td, fmt.Errorf("failed to update delivery gas price: %w", err)
 	}
 
 	return td, nil
@@ -366,4 +394,21 @@ func (d *Depot) markDeliveryAsSent(td Delivery, tx *types.Transaction) (Delivery
 	}
 
 	return td, nil
+}
+
+func (d *Depot) shouldForceResend(td Delivery) bool {
+	resend := d.config.ForceResend
+	if resend == 0 {
+		resend = time.Minute * 2
+	}
+
+	resendAfter := td.UpdateUTC.Add(resend)
+	now := time.Now().UTC()
+	return resendAfter.Before(now)
+}
+
+func (d *Depot) log(err error) {
+	if d.logFn != nil {
+		d.logFn(err)
+	}
 }

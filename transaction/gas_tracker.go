@@ -34,6 +34,8 @@ const (
 	GasTrackerSpeedFast   GasTrackerSpeed = "fast"
 )
 
+var errMaxPriceReached = errors.New("max price reached, cannot increase")
+
 func NewGasTracker(gs GasStation, opts map[int64]GasIncreaseOpts, speed GasTrackerSpeed) *GasTracker {
 	return &GasTracker{
 		gs:    gs,
@@ -42,7 +44,17 @@ func NewGasTracker(gs GasStation, opts map[int64]GasIncreaseOpts, speed GasTrack
 	}
 }
 
-func (g *GasTracker) initialDeliveryGas(chainID int64) (*big.Int, error) {
+func (g *GasTracker) CanReceiveMoreGas(chainID int64, lastFillUpUTC time.Time) (bool, error) {
+	opts, ok := g.opts[chainID]
+	if !ok {
+		return false, fmt.Errorf("no opts for chain %d", chainID)
+	}
+
+	receiveAfter := lastFillUpUTC.Add(opts.IncreaseInterval)
+	return time.Now().UTC().After(receiveAfter), nil
+}
+
+func (g *GasTracker) ReceiveInitialGas(chainID int64) (*big.Int, error) {
 	prices, err := g.gs.GetGasPrices(chainID)
 	if err != nil {
 		return nil, err
@@ -60,19 +72,9 @@ func (g *GasTracker) initialDeliveryGas(chainID int64) (*big.Int, error) {
 	return nil, errors.New("gas station not configured")
 }
 
-func (g *GasTracker) CanReceiveMoreGas(chainID int64, lastFillUpUTC time.Time) (bool, error) {
-	opts, ok := g.opts[chainID]
-	if !ok {
-		return false, fmt.Errorf("no opts for chain %d", chainID)
-	}
-
-	receiveAfter := lastFillUpUTC.Add(opts.IncreaseInterval)
-	return time.Now().UTC().After(receiveAfter), nil
-}
-
 func (g *GasTracker) RecalculateDeliveryGas(chainID int64, lastKnownGas *big.Int) (*big.Int, error) {
 	if lastKnownGas == nil || lastKnownGas.Cmp(big.NewInt(0)) <= 0 {
-		return g.initialDeliveryGas(chainID)
+		return g.ReceiveInitialGas(chainID)
 	}
 
 	opts, ok := g.opts[chainID]
@@ -93,7 +95,7 @@ func (g *GasTracker) RecalculateDeliveryGas(chainID int64, lastKnownGas *big.Int
 			return opts.PriceLimit, nil
 		}
 
-		return nil, errors.New("max price reached, cannot increase")
+		return nil, errMaxPriceReached
 	}
 
 	return newGasPrice, nil
