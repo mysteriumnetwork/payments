@@ -41,7 +41,9 @@ type Depot struct {
 	nonceTracker *DepotNonceTracker
 
 	config DepotConfig
-	logFn  func(error)
+
+	logFn   func(error)
+	metrics DepotMetricsExporter
 
 	once sync.Once
 	stop chan struct{}
@@ -103,6 +105,9 @@ func NewDepot(handler DeliveryCourier, storage DepotStorage, nonce *DepotNonceTr
 		nonceTracker: nonce,
 		gasStation:   gasStation,
 
+		logFn:   func(error) {},
+		metrics: &depotMetricsExporterNoop{},
+
 		config: cfg,
 		stop:   make(chan struct{}),
 	}
@@ -147,6 +152,7 @@ func (d *Depot) EnqueueDelivery(req DeliveryRequest) (string, error) {
 			return fmt.Errorf("failed to insert a delivery request: %w", err)
 		}
 
+		d.metrics.DeliveryQueued(td)
 		return nil
 	}
 
@@ -172,6 +178,12 @@ func (d *Depot) Stop() {
 // This method is not thread safe and should be called before `Run`.
 func (d *Depot) AttachLogger(fn func(err error)) {
 	d.logFn = fn
+}
+
+// AttachMetricsReporter allows the caller to attach a custom metrics reporter
+// for state changes in the depot.
+func (d *Depot) AttachMetricsReporter(m DepotMetricsExporter) {
+	d.metrics = m
 }
 
 func (d *Depot) workerExists(req DeliveryRequest) bool {
@@ -238,6 +250,7 @@ func (d *Depot) handleTracking(td Delivery) error {
 			return fmt.Errorf("failed to mark delivery as sent: %w", err)
 		}
 
+		d.metrics.DeliveryReceived(td)
 		return nil
 	}
 
@@ -283,7 +296,12 @@ func (d *Depot) handleWaiting(td Delivery) error {
 		return err
 	}
 
-	return d.sendOutTransaction(updated)
+	if err := d.sendOutTransaction(updated); err != nil {
+		return err
+	}
+
+	d.metrics.DeliverySent(td)
+	return nil
 }
 
 func (d *Depot) sendOutTransaction(td Delivery) error {
