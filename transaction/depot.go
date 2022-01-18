@@ -246,7 +246,8 @@ func (d *Depot) handleTracking(td Delivery) error {
 			return fmt.Errorf("refusing to confirm transaction as it was never sent from our side: %q", td.UniqueID)
 		}
 
-		if _, err := d.markDeliveryAsDelivered(td); err != nil {
+		td, err = d.markDeliveryAsDelivered(td)
+		if err != nil {
 			return fmt.Errorf("failed to mark delivery as sent: %w", err)
 		}
 
@@ -269,34 +270,40 @@ func (d *Depot) handleTracking(td Delivery) error {
 		if err != nil {
 			return err
 		}
-		return d.sendOutTransaction(updated)
+		_, err = d.sendOutTransaction(updated)
+		return err
 	}
 
 	updated, err := d.calculateNewGasPrice(td)
 	if err != nil {
 		if errors.Is(err, errMaxPriceReached) && d.shouldForceResend(td) {
-			return d.sendOutTransaction(td)
+			_, err = d.sendOutTransaction(updated)
+			return err
 		}
 		return err
 	}
 
 	if updated.GasPrice.Cmp(td.GasPrice) > 0 {
-		return d.sendOutTransaction(td)
+		_, err = d.sendOutTransaction(updated)
+		return err
 	}
 	return nil
 }
 
 func (d *Depot) handleWaiting(td Delivery) error {
-	if _, err := d.markDeliveryAsPacking(td); err != nil {
+	var err error
+	td, err = d.markDeliveryAsPacking(td)
+	if err != nil {
 		return fmt.Errorf("failed to mark packing for sender %q reason: %w", td.Sender.Hex(), err)
 	}
 
-	updated, err := d.calculateNewGasPrice(td)
+	td, err = d.calculateNewGasPrice(td)
 	if err != nil {
 		return err
 	}
 
-	if err := d.sendOutTransaction(updated); err != nil {
+	td, err = d.sendOutTransaction(td)
+	if err != nil {
 		return err
 	}
 
@@ -304,17 +311,18 @@ func (d *Depot) handleWaiting(td Delivery) error {
 	return nil
 }
 
-func (d *Depot) sendOutTransaction(td Delivery) error {
+func (d *Depot) sendOutTransaction(td Delivery) (Delivery, error) {
 	tx, err := d.handler.DeliverTransaction(td)
 	if err != nil {
-		return fmt.Errorf("attempted to delivery a transaction %q for account %q but failed: %w", td.UniqueID, td.Sender.Hex(), err)
+		return td, fmt.Errorf("attempted to delivery a transaction %q for account %q but failed: %w", td.UniqueID, td.Sender.Hex(), err)
 	}
 
-	if _, err := d.markDeliveryAsSent(td, tx); err != nil {
-		return fmt.Errorf("failed to mark delivery as sent: %w", err)
+	td, err = d.markDeliveryAsSent(td, tx)
+	if err != nil {
+		return td, fmt.Errorf("failed to mark delivery as sent: %w", err)
 	}
 
-	return nil
+	return td, nil
 }
 
 func (d *Depot) calculateNewGasPrice(td Delivery) (Delivery, error) {
