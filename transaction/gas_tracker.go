@@ -86,6 +86,16 @@ func (g *GasTracker) RecalculateDeliveryGas(chainID int64, lastKnownGas *big.Int
 		big.NewFloat(opts.Multiplier),
 		new(big.Float).SetInt(lastKnownGas),
 	).Int(nil)
+	recalculatedPrice, _ := g.ReceiveInitialGas(chainID)
+	if recalculatedPrice != nil {
+		if newGasPrice != nil {
+			if newGasPrice.Cmp(recalculatedPrice) < 0 {
+				return recalculatedPrice, nil
+			}
+		} else {
+			return recalculatedPrice, nil
+		}
+	}
 	if newGasPrice == nil {
 		return opts.PriceLimit, nil
 	}
