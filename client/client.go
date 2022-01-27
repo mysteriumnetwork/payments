@@ -31,6 +31,7 @@ import (
 	"github.com/mysteriumnetwork/payments/bindings"
 	"github.com/mysteriumnetwork/payments/bindings/rewarder"
 	"github.com/mysteriumnetwork/payments/bindings/topperupper"
+	"github.com/mysteriumnetwork/payments/bindings/uniswapv3"
 	"github.com/mysteriumnetwork/payments/crypto"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -1649,4 +1650,210 @@ func (bc *Blockchain) TopperupperTopupToken(req TopperupperTopupTokenReq) (*type
 		req.To,
 		req.Amount,
 	)
+}
+
+type MystApproveReq struct {
+	WriteRequest
+	MystAddress common.Address
+	Spender     common.Address
+	Amount      *big.Int
+}
+
+func (bc *Blockchain) MystTokenApprove(req MystApproveReq) (*types.Transaction, error) {
+	txer, err := bindings.NewMystTokenTransactor(req.MystAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	if req.Nonce == nil {
+		nonce, err := bc.getNonce(req.Identity)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get nonce")
+		}
+		req.Nonce = new(big.Int).SetUint64(nonce)
+	}
+
+	return txer.Approve(&bind.TransactOpts{
+		From:     req.Identity,
+		Signer:   req.Signer,
+		Context:  ctx,
+		GasLimit: req.GasLimit,
+		GasPrice: req.GasPrice,
+		Nonce:    req.Nonce,
+	}, req.Spender, req.Amount)
+}
+
+func (bc *Blockchain) MystAllowance(mystTokenAddress, holder, spender common.Address) (*big.Int, error) {
+	caller, err := bindings.NewMystTokenCaller(mystTokenAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.Allowance(&bind.CallOpts{
+		Context: ctx,
+	}, holder, spender)
+}
+
+type UniswapExactInputSingleReq struct {
+	WriteRequest
+	SwapRouterAddress common.Address
+
+	TokenIn  common.Address
+	TokenOut common.Address
+	Fee      *big.Int
+
+	Recipient       common.Address
+	DeadlineSeconds uint64
+
+	AmountIn         *big.Int
+	AmountOutMinimum *big.Int
+}
+
+func (bc *Blockchain) UniswapV3ExactInputSingle(req UniswapExactInputSingleReq) (*types.Transaction, error) {
+	txer, err := uniswapv3.NewSwapRouterTransactor(req.SwapRouterAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	if req.Nonce == nil {
+		nonce, err := bc.getNonce(req.Identity)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get nonce")
+		}
+		req.Nonce = new(big.Int).SetUint64(nonce)
+	}
+
+	b, err := bc.ethClient.Client().BlockByNumber(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return txer.ExactInputSingle(&bind.TransactOpts{
+		From:     req.Identity,
+		Signer:   req.Signer,
+		Context:  ctx,
+		GasLimit: req.GasLimit,
+		GasPrice: req.GasPrice,
+		Nonce:    req.Nonce,
+	}, uniswapv3.ISwapRouterExactInputSingleParams{
+		TokenIn:  req.TokenIn,
+		TokenOut: req.TokenOut,
+		Fee:      req.Fee,
+
+		Recipient: req.Recipient,
+		Deadline:  big.NewInt(0).SetUint64(b.Time() + req.DeadlineSeconds),
+
+		AmountIn:         req.AmountIn,
+		AmountOutMinimum: req.AmountOutMinimum,
+
+		SqrtPriceLimitX96: big.NewInt(0), // We can mostly ignore it for our purposes.
+	})
+}
+
+type SwapTokenPair struct {
+	Token0 common.Address
+	Token1 common.Address
+}
+
+func (bc *Blockchain) UniswapV3TokenPair(poolAddress common.Address) (*SwapTokenPair, error) {
+	caller, err := uniswapv3.NewPoolCaller(poolAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	res := &SwapTokenPair{}
+
+	res.Token0, err = caller.Token0(&bind.CallOpts{
+		Context: ctx,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	res.Token1, err = caller.Token1(&bind.CallOpts{
+		Context: ctx,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (bc *Blockchain) UniswapV3PoolFee(poolAddress common.Address) (*big.Int, error) {
+	caller, err := uniswapv3.NewPoolCaller(poolAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.Fee(&bind.CallOpts{
+		Context: ctx,
+	})
+}
+
+func (bc *Blockchain) WMaticBalance(holder, wmaticAddress common.Address) (*big.Int, error) {
+	caller, err := uniswapv3.NewWmaticCaller(wmaticAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.BalanceOf(&bind.CallOpts{
+		Context: ctx,
+	}, holder)
+}
+
+type WMaticWithdrawReq struct {
+	WriteRequest
+	WMaticAddress common.Address
+
+	// Amount describes how much should be withdrawn.
+	// If `nil` all balance is withdrawn.
+	Amount *big.Int
+}
+
+func (bc *Blockchain) WMaticWithdraw(req WMaticWithdrawReq) (*types.Transaction, error) {
+	caller, err := uniswapv3.NewWmaticTransactor(req.WMaticAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	amount := req.Amount
+	if amount == nil {
+		all, err := bc.WMaticBalance(req.Identity, req.WMaticAddress)
+		if err != nil {
+			return nil, fmt.Errorf("tried to pull wmatic balance, but failed: %w", err)
+		}
+
+		amount = all
+	}
+
+	return caller.Withdraw(&bind.TransactOpts{
+		From:     req.Identity,
+		Signer:   req.Signer,
+		Context:  ctx,
+		GasLimit: req.GasLimit,
+		GasPrice: req.GasPrice,
+		Nonce:    req.Nonce,
+	}, amount)
 }

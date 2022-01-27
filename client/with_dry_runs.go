@@ -422,3 +422,31 @@ func (cwdr *WithDryRuns) PendingNonceAt(account common.Address) (uint64, error) 
 func (cwdr *WithDryRuns) NonceAt(account common.Address, blockNum *big.Int) (uint64, error) {
 	return cwdr.bc.NonceAt(account, blockNum)
 }
+
+func (cwdr *WithDryRuns) MystTokenApprove(req MystApproveReq) (*types.Transaction, error) {
+	return cwdr.bc.MystTokenApprove(req)
+}
+
+func (cwdr *WithDryRuns) MystAllowance(mystTokenAddress, holder, spender common.Address) (*big.Int, error) {
+	return cwdr.bc.MystAllowance(mystTokenAddress, holder, spender)
+}
+
+func (cwdr *WithDryRuns) UniswapV3ExactInputSingle(req UniswapExactInputSingleReq) (*types.Transaction, error) {
+	return cwdr.bc.UniswapV3ExactInputSingle(req)
+}
+
+func (cwdr *WithDryRuns) UniswapV3TokenPair(poolAddress common.Address) (*SwapTokenPair, error) {
+	return cwdr.bc.UniswapV3TokenPair(poolAddress)
+}
+
+func (cwdr *WithDryRuns) UniswapV3PoolFee(poolAddress common.Address) (*big.Int, error) {
+	return cwdr.bc.UniswapV3PoolFee(poolAddress)
+}
+
+func (cwdr *WithDryRuns) WMaticBalance(holder, wmaticAddress common.Address) (*big.Int, error) {
+	return cwdr.bc.WMaticBalance(holder, wmaticAddress)
+}
+
+func (cwdr *WithDryRuns) WMaticWithdraw(req WMaticWithdrawReq) (*types.Transaction, error) {
+	return cwdr.bc.WMaticWithdraw(req)
+}
