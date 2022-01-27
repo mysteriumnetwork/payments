@@ -98,6 +98,10 @@ func (esa *PolygonscanStation) request() (*polygonscanGasPriceResponse, error) {
 }
 
 func (esa *PolygonscanStation) result(price float64) *big.Int {
+	if price <= 30 {
+		price = 31
+	}
+
 	bp := units.FloatGweiToBigIntWei(price)
 	return priceMaxUpperBound(bp, esa.upperBound)
 }
