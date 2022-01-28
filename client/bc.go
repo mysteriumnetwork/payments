@@ -104,6 +104,14 @@ type BC interface {
 	TopperupperApprovedAddress(topperupperAddress common.Address, forAddress common.Address) (*ApprovedAddress, error)
 	TopperupperNativeLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error)
 	TopperupperTokenLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error)
+
+	MystTokenApprove(req MystApproveReq) (*types.Transaction, error)
+	MystAllowance(mystTokenAddress, holder, spender common.Address) (*big.Int, error)
+	UniswapV3ExactInputSingle(req UniswapExactInputSingleReq) (*types.Transaction, error)
+	UniswapV3TokenPair(poolAddress common.Address) (*SwapTokenPair, error)
+	UniswapV3PoolFee(poolAddress common.Address) (*big.Int, error)
+	WMaticBalance(holder, wmaticAddress common.Address) (*big.Int, error)
+	WMaticWithdraw(req WMaticWithdrawReq) (*types.Transaction, error)
 }
 
 // EtherClient interface implements all methods required for a EtherClient to work

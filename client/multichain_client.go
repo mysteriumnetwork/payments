@@ -602,3 +602,59 @@ func (mbc *MultichainBlockchainClient) TopperupperTokenLimits(chainID int64, top
 	}
 	return bc.TopperupperTokenLimits(topperupperAddress, forAddress)
 }
+
+func (mbc *MultichainBlockchainClient) MystTokenApprove(chainID int64, req MystApproveReq) (*types.Transaction, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.MystTokenApprove(req)
+}
+
+func (mbc *MultichainBlockchainClient) MystAllowance(chainID int64, mystTokenAddress, holder, spender common.Address) (*big.Int, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.MystAllowance(mystTokenAddress, holder, spender)
+}
+
+func (mbc *MultichainBlockchainClient) UniswapV3ExactInputSingle(chainID int64, req UniswapExactInputSingleReq) (*types.Transaction, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.UniswapV3ExactInputSingle(req)
+}
+
+func (mbc *MultichainBlockchainClient) UniswapV3TokenPair(chainID int64, poolAddress common.Address) (*SwapTokenPair, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.UniswapV3TokenPair(poolAddress)
+}
+
+func (mbc *MultichainBlockchainClient) UniswapV3PoolFee(chainID int64, poolAddress common.Address) (*big.Int, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.UniswapV3PoolFee(poolAddress)
+}
+
+func (mbc *MultichainBlockchainClient) WMaticBalance(chainID int64, holder, wmaticAddress common.Address) (*big.Int, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.WMaticBalance(holder, wmaticAddress)
+}
+
+func (mbc *MultichainBlockchainClient) WMaticWithdraw(chainID int64, req WMaticWithdrawReq) (*types.Transaction, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.WMaticWithdraw(req)
+}
