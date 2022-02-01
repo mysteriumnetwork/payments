@@ -115,10 +115,13 @@ type polygonscanGasPriceResponse struct {
 
 // polygonscanPriceResult the polygonscan prices for the last block.
 type polygonscanPriceResult struct {
-	LastBlock string `json:"LastBlock"`
-	UsdPrice  string `json:"UsdPrice"`
+	LastBlock      string `json:"LastBlock"`
+	SuggestBaseFee string `json:"suggestBaseFee"`
 
 	FastGasPrice    string `json:"FastGasPrice"`
 	ProposeGasPrice string `json:"ProposeGasPrice"`
 	SafeGasPrice    string `json:"SafeGasPrice"`
+
+	UsdPrice     string `json:"UsdPrice"`
+	GasUsedRatio string `json:"gasUsedRatio"`
 }

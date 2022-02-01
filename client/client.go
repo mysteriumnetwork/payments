@@ -77,6 +77,19 @@ func NewBlockchainWithCustomNonceTracker(ethClient EthClientGetter, timeout time
 	}
 }
 
+func (bc *Blockchain) makeTransactOpts(ctx context.Context, rr *WriteRequest) (*bind.TransactOpts, error) {
+	nonce := rr.Nonce
+	if nonce == nil {
+		nonceUint, err := bc.getNonce(rr.Identity)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get nonce")
+		}
+		nonce = big.NewInt(0).SetUint64(nonceUint)
+	}
+
+	return rr.toTransactOpts(ctx), nil
+}
+
 // GetHermesFee fetches the hermes fee from blockchain
 func (bc *Blockchain) GetHermesFee(hermesAddress common.Address) (uint16, error) {
 	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
@@ -358,9 +371,29 @@ func (r RegistrationRequest) toEstimateOps() *bindings.EstimateOpts {
 type WriteRequest struct {
 	Identity common.Address
 	Signer   bind.SignerFn
-	GasLimit uint64
+
 	GasPrice *big.Int
-	Nonce    *big.Int
+	GasTip   *big.Int
+	GasLimit uint64
+
+	Nonce *big.Int
+}
+
+func (wr *WriteRequest) toTransactOpts(ctx context.Context) *bind.TransactOpts {
+	if wr.GasPrice != nil && wr.GasTip != nil {
+		panic("could not convert write request to transact opts: can't set both GasTip and GasPrice")
+	}
+
+	return &bind.TransactOpts{
+		Context: ctx,
+
+		From:      wr.Identity,
+		Signer:    wr.Signer,
+		GasLimit:  wr.GasLimit,
+		GasPrice:  wr.GasPrice,
+		GasTipCap: wr.GasTip,
+		Nonce:     wr.Nonce,
+	}
 }
 
 // getGasLimit returns the gas limit
@@ -374,26 +407,17 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 	if err != nil {
 		return nil, err
 	}
-	parent := context.Background()
-	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	nonce := rr.Nonce
-	if nonce == nil {
-		nonceUint, err := bc.getNonce(rr.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		nonce = big.NewInt(0).SetUint64(nonceUint)
+	to, err := bc.makeTransactOpts(ctx, &rr.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
-	tx, err := transactor.RegisterIdentity(&bind.TransactOpts{
-		From:     rr.Identity,
-		Signer:   rr.Signer,
-		Context:  ctx,
-		GasLimit: rr.GasLimit,
-		GasPrice: rr.GasPrice,
-		Nonce:    nonce,
-	},
+
+	tx, err := transactor.RegisterIdentity(
+		to,
 		rr.HermesID,
 		rr.Stake,
 		rr.TransactorFee,
@@ -435,22 +459,13 @@ func (bc *Blockchain) PayAndSettle(psr PayAndSettleRequest) (*types.Transaction,
 	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
 	defer cancel()
 
-	nonce := psr.Nonce
-	if nonce == nil {
-		nonceUint, err := bc.getNonce(psr.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		nonce = big.NewInt(0).SetUint64(nonceUint)
+	to, err := bc.makeTransactOpts(ctx, &psr.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
-	tx, err := transactor.PayAndSettle(&bind.TransactOpts{
-		From:     psr.Identity,
-		Signer:   psr.Signer,
-		Context:  ctx,
-		GasLimit: psr.GasLimit,
-		GasPrice: psr.GasPrice,
-		Nonce:    nonce,
-	},
+
+	tx, err := transactor.PayAndSettle(
+		to,
 		psr.ProviderID,
 		psr.Promise.Amount,
 		psr.Promise.Fee,
@@ -489,21 +504,15 @@ func (bc *Blockchain) TransferMyst(req TransferRequest) (tx *types.Transaction, 
 		return tx, err
 	}
 
-	if req.Nonce == nil {
-		nonce, err := bc.getNonce(req.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		req.Nonce = new(big.Int).SetUint64(nonce)
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
 
-	return transactor.Transfer(&bind.TransactOpts{
-		From:     req.Identity,
-		Signer:   req.Signer,
-		GasPrice: req.GasPrice,
-		GasLimit: req.GasLimit,
-		Nonce:    req.Nonce,
-	}, req.Recipient, req.Amount)
+	return transactor.Transfer(to, req.Recipient, req.Amount)
 }
 
 // IsHermesRegistered checks if given hermes is registered and returns true or false.
@@ -548,13 +557,15 @@ func (bc *Blockchain) IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*
 		return nil, err
 	}
 
-	transactor, cancel, err := bc.getTransactorFromRequest(req.WriteRequest)
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
+
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
-		return nil, fmt.Errorf("could not get transactor: %w", err)
+		return nil, err
 	}
 
-	return t.IncreaseStake(transactor, req.ChannelID, req.Amount)
+	return t.IncreaseStake(to, req.ChannelID, req.Amount)
 }
 
 // SettleIntoStakeRequest represents all the parameters required for settling into stake.
@@ -590,12 +601,6 @@ func (bc *Blockchain) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transa
 		return nil, err
 	}
 
-	transactor, cancel, err := bc.getTransactorFromRequest(req.WriteRequest)
-	defer cancel()
-	if err != nil {
-		return nil, fmt.Errorf("could not get transactor: %w", err)
-	}
-
 	amount := req.Promise.Amount
 	fee := req.Promise.Fee
 	lock := [32]byte{}
@@ -604,7 +609,15 @@ func (bc *Blockchain) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transa
 	channelID := [32]byte{}
 	copy(channelID[:], req.Promise.ChannelID)
 
-	return t.SettleIntoStake(transactor, req.ProviderID, amount, fee, lock, req.Promise.Signature)
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	return t.SettleIntoStake(to, req.ProviderID, amount, fee, lock, req.Promise.Signature)
 }
 
 // DecreaseProviderStakeRequest represents all the parameters required for decreasing provider stake.
@@ -648,35 +661,15 @@ func (bc *Blockchain) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*
 		return nil, err
 	}
 
-	transactor, cancel, err := bc.getTransactorFromRequest(req.WriteRequest)
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
+
+	transactor, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, fmt.Errorf("could not get transactor: %w", err)
 	}
 
 	return t.DecreaseStake(transactor, req.ProviderID, req.Request.Amount, req.Request.TransactorFee, req.Request.Signature)
-}
-
-func (bc *Blockchain) getTransactorFromRequest(req WriteRequest) (*bind.TransactOpts, func(), error) {
-	parent := context.Background()
-	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
-
-	if req.Nonce == nil {
-		nonce, err := bc.getNonce(req.Identity)
-		if err != nil {
-			return nil, cancel, errors.Wrap(err, "could not get nonce")
-		}
-		req.Nonce = big.NewInt(0).SetUint64(nonce)
-	}
-
-	return &bind.TransactOpts{
-		From:     req.Identity,
-		Signer:   req.Signer,
-		Context:  ctx,
-		GasLimit: req.GasLimit,
-		GasPrice: req.GasPrice,
-		Nonce:    req.Nonce,
-	}, cancel, nil
 }
 
 // GetHermesOperator returns operator address of given hermes
@@ -737,25 +730,17 @@ func (bc *Blockchain) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.
 	if err != nil {
 		return nil, err
 	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	if req.Nonce == nil {
-		nonce, err := bc.getNonce(req.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		req.Nonce = new(big.Int).SetUint64(nonce)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
 
-	return transactor.SettlePromise(&bind.TransactOpts{
-		From:     req.Identity,
-		Signer:   req.Signer,
-		Context:  ctx,
-		GasLimit: req.GasLimit,
-		GasPrice: req.GasPrice,
-		Nonce:    req.Nonce,
-	},
+	return transactor.SettlePromise(
+		to,
 		req.ProviderID,
 		req.Promise.Amount,
 		req.Promise.Fee,
@@ -923,15 +908,13 @@ func (bc *Blockchain) SettlePromise(req SettleRequest) (*types.Transaction, erro
 		req.Nonce = new(big.Int).SetUint64(nonce)
 	}
 
-	return transactor.SettlePromise(&bind.TransactOpts{
-		From:     req.Identity,
-		Signer:   req.Signer,
-		Context:  ctx,
-		GasLimit: req.GasLimit,
-		GasPrice: req.GasPrice,
-		Nonce:    req.Nonce,
-	},
-		amount, fee, lock, req.Promise.Signature,
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
+
+	}
+	return transactor.SettlePromise(
+		to, amount, fee, lock, req.Promise.Signature,
 	)
 }
 
@@ -1228,22 +1211,13 @@ func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	if req.Nonce == nil {
-		nonce, err := bc.getNonce(req.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		req.Nonce = new(big.Int).SetUint64(nonce)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
 
-	return transactor.SettleWithBeneficiary(&bind.TransactOpts{
-		From:     req.Identity,
-		Signer:   req.Signer,
-		Context:  ctx,
-		GasLimit: req.GasLimit,
-		GasPrice: req.GasPrice,
-		Nonce:    req.Nonce,
-	},
+	return transactor.SettleWithBeneficiary(
+		to,
 		req.ProviderID,
 		req.Promise.Amount,
 		req.Promise.Fee,
@@ -1294,22 +1268,13 @@ func (bc *Blockchain) RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transac
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	if req.Nonce == nil {
-		nonce, err := bc.getNonce(req.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		req.Nonce = new(big.Int).SetUint64(nonce)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
 
-	return transactor.UpdateRoot(&bind.TransactOpts{
-		From:     req.Identity,
-		Signer:   req.Signer,
-		Context:  ctx,
-		GasLimit: req.GasLimit,
-		GasPrice: req.GasPrice,
-		Nonce:    req.Nonce,
-	},
+	return transactor.UpdateRoot(
+		to,
 		ToBytes32(req.ClaimRoot),
 		req.BlockNumber,
 		req.TotalReward,
@@ -1332,22 +1297,13 @@ func (bc *Blockchain) RewarderAirDrop(req RewarderAirDrop) (*types.Transaction, 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	if req.Nonce == nil {
-		nonce, err := bc.getNonce(req.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		req.Nonce = new(big.Int).SetUint64(nonce)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
 
-	return transactor.Airdrop(&bind.TransactOpts{
-		From:     req.Identity,
-		Signer:   req.Signer,
-		Context:  ctx,
-		GasLimit: req.GasLimit,
-		GasPrice: req.GasPrice,
-		Nonce:    req.Nonce,
-	},
+	return transactor.Airdrop(
+		to,
 		req.Beneficiaries,
 		req.TotalEarnings,
 	)
@@ -1398,23 +1354,13 @@ func (bc *Blockchain) CustodyTransferTokens(req CustodyTokensTransfer) (*types.T
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	if req.Nonce == nil {
-		nonce, err := bc.getNonce(req.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		req.Nonce = new(big.Int).SetUint64(nonce)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
 
 	return transactor.Payout(
-		&bind.TransactOpts{
-			From:     req.Identity,
-			Signer:   req.Signer,
-			Context:  ctx,
-			GasLimit: req.GasLimit,
-			GasPrice: req.GasPrice,
-			Nonce:    req.Nonce,
-		},
+		to,
 		req.Recipients,
 		req.Amounts,
 	)
@@ -1516,23 +1462,13 @@ func (bc *Blockchain) TopperupperApproveAddresses(req TopperupperApproveAddresse
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	if req.Nonce == nil {
-		nonce, err := bc.getNonce(req.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		req.Nonce = new(big.Int).SetUint64(nonce)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
 
 	return transactor.ApproveAddresses(
-		&bind.TransactOpts{
-			From:     req.Identity,
-			Signer:   req.Signer,
-			Context:  ctx,
-			GasLimit: req.GasLimit,
-			GasPrice: req.GasPrice,
-			Nonce:    req.Nonce,
-		},
+		to,
 		[]common.Address{req.Address},
 		[]*big.Int{req.LimitsNative},
 		[]*big.Int{req.LimitsToken},
@@ -1555,23 +1491,13 @@ func (bc *Blockchain) TopperupperSetManagers(req TopperupperModeratorsReq) (*typ
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	if req.Nonce == nil {
-		nonce, err := bc.getNonce(req.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		req.Nonce = new(big.Int).SetUint64(nonce)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
 
 	return transactor.SetManagers(
-		&bind.TransactOpts{
-			From:     req.Identity,
-			Signer:   req.Signer,
-			Context:  ctx,
-			GasLimit: req.GasLimit,
-			GasPrice: req.GasPrice,
-			Nonce:    req.Nonce,
-		},
+		to,
 		req.Managers,
 	)
 }
@@ -1592,23 +1518,13 @@ func (bc *Blockchain) TopperupperTopupNative(req TopperupperTopupNativeReq) (*ty
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	if req.Nonce == nil {
-		nonce, err := bc.getNonce(req.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		req.Nonce = new(big.Int).SetUint64(nonce)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
 
 	return transactor.TopupNative(
-		&bind.TransactOpts{
-			From:     req.Identity,
-			Signer:   req.Signer,
-			Context:  ctx,
-			GasLimit: req.GasLimit,
-			GasPrice: req.GasPrice,
-			Nonce:    req.Nonce,
-		},
+		to,
 		req.To,
 		req.Amount,
 	)
@@ -1630,23 +1546,13 @@ func (bc *Blockchain) TopperupperTopupToken(req TopperupperTopupTokenReq) (*type
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	if req.Nonce == nil {
-		nonce, err := bc.getNonce(req.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		req.Nonce = new(big.Int).SetUint64(nonce)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
 
 	return transactor.TopupToken(
-		&bind.TransactOpts{
-			From:     req.Identity,
-			Signer:   req.Signer,
-			Context:  ctx,
-			GasLimit: req.GasLimit,
-			GasPrice: req.GasPrice,
-			Nonce:    req.Nonce,
-		},
+		to,
 		req.To,
 		req.Amount,
 	)
@@ -1668,22 +1574,12 @@ func (bc *Blockchain) MystTokenApprove(req MystApproveReq) (*types.Transaction, 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	if req.Nonce == nil {
-		nonce, err := bc.getNonce(req.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		req.Nonce = new(big.Int).SetUint64(nonce)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
 
-	return txer.Approve(&bind.TransactOpts{
-		From:     req.Identity,
-		Signer:   req.Signer,
-		Context:  ctx,
-		GasLimit: req.GasLimit,
-		GasPrice: req.GasPrice,
-		Nonce:    req.Nonce,
-	}, req.Spender, req.Amount)
+	return txer.Approve(to, req.Spender, req.Amount)
 }
 
 func (bc *Blockchain) MystAllowance(mystTokenAddress, holder, spender common.Address) (*big.Int, error) {
@@ -1721,42 +1617,37 @@ func (bc *Blockchain) UniswapV3ExactInputSingle(req UniswapExactInputSingleReq) 
 		return nil, err
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
-	defer cancel()
+	ctx1, cancel1 := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel1()
 
-	if req.Nonce == nil {
-		nonce, err := bc.getNonce(req.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		req.Nonce = new(big.Int).SetUint64(nonce)
-	}
-
-	b, err := bc.ethClient.Client().BlockByNumber(ctx, nil)
+	b, err := bc.ethClient.Client().BlockByNumber(ctx1, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	return txer.ExactInputSingle(&bind.TransactOpts{
-		From:     req.Identity,
-		Signer:   req.Signer,
-		Context:  ctx,
-		GasLimit: req.GasLimit,
-		GasPrice: req.GasPrice,
-		Nonce:    req.Nonce,
-	}, uniswapv3.ISwapRouterExactInputSingleParams{
-		TokenIn:  req.TokenIn,
-		TokenOut: req.TokenOut,
-		Fee:      req.Fee,
+	ctx2, cancel2 := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel2()
 
-		Recipient: req.Recipient,
-		Deadline:  big.NewInt(0).SetUint64(b.Time() + req.DeadlineSeconds),
+	to, err := bc.makeTransactOpts(ctx2, &req.WriteRequest)
+	if err != nil {
+		return nil, err
+	}
 
-		AmountIn:         req.AmountIn,
-		AmountOutMinimum: req.AmountOutMinimum,
+	return txer.ExactInputSingle(
+		to,
+		uniswapv3.ISwapRouterExactInputSingleParams{
+			TokenIn:  req.TokenIn,
+			TokenOut: req.TokenOut,
+			Fee:      req.Fee,
 
-		SqrtPriceLimitX96: big.NewInt(0), // We can mostly ignore it for our purposes.
-	})
+			Recipient: req.Recipient,
+			Deadline:  big.NewInt(0).SetUint64(b.Time() + req.DeadlineSeconds),
+
+			AmountIn:         req.AmountIn,
+			AmountOutMinimum: req.AmountOutMinimum,
+
+			SqrtPriceLimitX96: big.NewInt(0), // We can mostly ignore it for our purposes.
+		})
 }
 
 type SwapTokenPair struct {
@@ -1835,9 +1726,6 @@ func (bc *Blockchain) WMaticWithdraw(req WMaticWithdrawReq) (*types.Transaction,
 		return nil, err
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
-	defer cancel()
-
 	amount := req.Amount
 	if amount == nil {
 		all, err := bc.WMaticBalance(req.Identity, req.WMaticAddress)
@@ -1848,12 +1736,13 @@ func (bc *Blockchain) WMaticWithdraw(req WMaticWithdrawReq) (*types.Transaction,
 		amount = all
 	}
 
-	return caller.Withdraw(&bind.TransactOpts{
-		From:     req.Identity,
-		Signer:   req.Signer,
-		Context:  ctx,
-		GasLimit: req.GasLimit,
-		GasPrice: req.GasPrice,
-		Nonce:    req.Nonce,
-	}, amount)
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	return caller.Withdraw(to, amount)
 }

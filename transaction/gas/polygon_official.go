@@ -12,7 +12,7 @@ import (
 
 // DefaultMaticStationURI is the default gas station URL that can be used in matic gas station.
 // Default URL is for mainnet of matic gas station service.
-const DefaultMaticStationURI = "https://gasstation-mainnet.matic.network"
+const DefaultMaticStationURI = "https://gasstation-mainnet.matic.network/v2"
 
 // MaticStation represents matic gas station api.
 type MaticStation struct {
@@ -22,12 +22,21 @@ type MaticStation struct {
 }
 
 type maticGasPriceResp struct {
-	SafeLow     float64 `json:"safeLow"`
-	Standard    float64 `json:"standard"`
-	Fast        float64 `json:"fast"`
-	Fastest     float64 `json:"fastest"`
-	BlockTime   int     `json:"blockTime"`
-	BlockNumber int     `json:"blockNumber"`
+	BlockNumber      int64 `json:"blockNumber"`
+	BlockTime        int64 `json:"blockTime"`
+	EstimatedBaseFee int64 `json:"estimatedBaseFee"`
+	Fast             struct {
+		MaxFee         float64 `json:"maxFee"`
+		MaxPriorityFee float64 `json:"maxPriorityFee"`
+	} `json:"fast"`
+	SafeLow struct {
+		MaxFee         float64 `json:"maxFee"`
+		MaxPriorityFee float64 `json:"maxPriorityFee"`
+	} `json:"safeLow"`
+	Standard struct {
+		MaxFee         float64 `json:"maxFee"`
+		MaxPriorityFee float64 `json:"maxPriorityFee"`
+	} `json:"standard"`
 }
 
 // NewMaticStation returns a new instance of matic gas station which can be used for gas price checks.
@@ -47,9 +56,9 @@ func (m *MaticStation) GetGasPrices() (*GasPrices, error) {
 		return nil, err
 	}
 	prices := GasPrices{
-		SafeLow: m.result(resp.SafeLow),
-		Average: m.result(resp.Standard),
-		Fast:    m.result(resp.Fast),
+		SafeLow: m.result(resp.SafeLow.MaxPriorityFee),
+		Average: m.result(resp.Standard.MaxPriorityFee),
+		Fast:    m.result(resp.Fast.MaxPriorityFee),
 	}
 	return &prices, nil
 }

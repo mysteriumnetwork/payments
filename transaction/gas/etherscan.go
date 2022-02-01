@@ -117,10 +117,11 @@ type etherscanGasPriceResponseFail struct {
 
 // gasPriceResult the gas prices for the last block.
 type gasPriceResult struct {
-	LastBlock       string `json:"LastBlock"`
-	SafeGasPrice    string `json:"SafeGasPrice"`
-	ProposeGasPrice string `json:"ProposeGasPrice"`
+	LastBlock    string `json:"LastBlock"`
+	GasUsedRatio string `json:"gasUsedRatio"`
+
 	FastGasPrice    string `json:"FastGasPrice"`
+	ProposeGasPrice string `json:"ProposeGasPrice"`
+	SafeGasPrice    string `json:"SafeGasPrice"`
 	SuggestBaseFee  string `json:"suggestBaseFee"`
-	GasUsedRatio    string `json:"gasUsedRatio"`
 }

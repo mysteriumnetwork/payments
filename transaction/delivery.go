@@ -77,7 +77,7 @@ func (t *Delivery) ToWriteRequest(signer SignFunc, gasLimit uint64) client.Write
 		Identity: t.Sender,
 		Signer:   bind.SignerFn(signer),
 		GasLimit: gasLimit,
-		GasPrice: t.GasPrice,
+		GasTip:   t.GasPrice,
 		Nonce:    new(big.Int).SetUint64(t.Nonce),
 	}
 }
