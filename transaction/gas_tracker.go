@@ -82,20 +82,15 @@ func (g *GasTracker) RecalculateDeliveryGas(chainID int64, lastKnownGas *big.Int
 		return nil, fmt.Errorf("no opts for chain %d", chainID)
 	}
 
-	newGasPrice, _ := new(big.Float).Mul(
-		big.NewFloat(opts.Multiplier),
-		new(big.Float).SetInt(lastKnownGas),
-	).Int(nil)
+	newGasPrice := g.calculateNewPrice(chainID, lastKnownGas, opts.Multiplier)
+
 	recalculatedPrice, _ := g.ReceiveInitialGas(chainID)
 	if recalculatedPrice != nil {
-		if newGasPrice != nil {
-			if newGasPrice.Cmp(recalculatedPrice) < 0 {
-				return recalculatedPrice, nil
-			}
-		} else {
+		if newGasPrice == nil || recalculatedPrice.Cmp(newGasPrice) > 0 {
 			return recalculatedPrice, nil
 		}
 	}
+
 	if newGasPrice == nil {
 		return opts.PriceLimit, nil
 	}
@@ -109,4 +104,13 @@ func (g *GasTracker) RecalculateDeliveryGas(chainID int64, lastKnownGas *big.Int
 	}
 
 	return newGasPrice, nil
+}
+
+func (g *GasTracker) calculateNewPrice(chainID int64, lastKnownGas *big.Int, multi float64) *big.Int {
+	newGasPrice, _ := new(big.Float).Mul(
+		big.NewFloat(multi),
+		new(big.Float).SetInt(lastKnownGas),
+	).Int(nil)
+
+	return newGasPrice
 }
