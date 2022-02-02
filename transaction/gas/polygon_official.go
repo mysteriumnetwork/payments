@@ -22,9 +22,9 @@ type MaticStation struct {
 }
 
 type maticGasPriceResp struct {
-	BlockNumber      int64 `json:"blockNumber"`
-	BlockTime        int64 `json:"blockTime"`
-	EstimatedBaseFee int64 `json:"estimatedBaseFee"`
+	BlockNumber      int64   `json:"blockNumber"`
+	BlockTime        int64   `json:"blockTime"`
+	EstimatedBaseFee float64 `json:"estimatedBaseFee"`
 	Fast             struct {
 		MaxFee         float64 `json:"maxFee"`
 		MaxPriorityFee float64 `json:"maxPriorityFee"`
@@ -59,6 +59,8 @@ func (m *MaticStation) GetGasPrices() (*GasPrices, error) {
 		SafeLow: m.result(resp.SafeLow.MaxPriorityFee),
 		Average: m.result(resp.Standard.MaxPriorityFee),
 		Fast:    m.result(resp.Fast.MaxPriorityFee),
+
+		BaseFee: units.FloatGweiToBigIntWei(resp.EstimatedBaseFee),
 	}
 	return &prices, nil
 }

@@ -60,10 +60,16 @@ func (esa *PolygonscanStation) GetGasPrices() (*GasPrices, error) {
 	if err != nil {
 		return nil, err
 	}
+	base, err := strconv.ParseFloat(res.Result.SuggestBaseFee, 64)
+	if err != nil {
+		return nil, err
+	}
 	prices := GasPrices{
 		SafeLow: esa.result(safeLow),
 		Average: esa.result(average),
 		Fast:    esa.result(fast),
+
+		BaseFee: units.FloatGweiToBigIntWei(base),
 	}
 	return &prices, nil
 }

@@ -326,7 +326,7 @@ func (d *Depot) sendOutTransaction(td Delivery) (Delivery, error) {
 }
 
 func (d *Depot) calculateNewGasPrice(td Delivery) (Delivery, error) {
-	newPrice := big.NewInt(0)
+	newPrice := &fees{}
 	switch td.State {
 	case DeliveryStatePacking, DeliveryStateWaiting:
 		gasPrice, err := d.gasStation.ReceiveInitialGas(td.ChainID)
@@ -365,7 +365,7 @@ func (d *Depot) calculateNewGasPrice(td Delivery) (Delivery, error) {
 		return Delivery{}, fmt.Errorf("impossible to handle state: %v", td.State)
 	}
 
-	if newPrice.Cmp(big.NewInt(0)) == 0 {
+	if newPrice == nil && newPrice.Tip.Cmp(big.NewInt(0)) == 0 {
 		return Delivery{}, errors.New("ended up with 0 gas price, cannot continue")
 	}
 
@@ -376,8 +376,9 @@ func (d *Depot) calculateNewGasPrice(td Delivery) (Delivery, error) {
 	return newDelivery, nil
 }
 
-func (d *Depot) deliveryUpdateGasPrice(td Delivery, newGas *big.Int) (Delivery, error) {
-	td.GasPrice = newGas
+func (d *Depot) deliveryUpdateGasPrice(td Delivery, newGas *fees) (Delivery, error) {
+	td.GasTip = newGas.Tip
+	td.BaseFee = newGas.Base
 	td.UpdateUTC = time.Now().UTC()
 	if err := d.storage.UpsertDeliveryRequest(td); err != nil {
 		return td, fmt.Errorf("failed to update delivery gas price: %w", err)
