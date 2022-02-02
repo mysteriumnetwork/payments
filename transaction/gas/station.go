@@ -13,6 +13,8 @@ type GasPrices struct {
 	SafeLow *big.Int
 	Average *big.Int
 	Fast    *big.Int
+
+	BaseFee *big.Int
 }
 
 func priceMaxUpperBound(price *big.Int, bound *big.Int) *big.Int {

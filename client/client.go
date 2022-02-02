@@ -369,14 +369,18 @@ func (r RegistrationRequest) toEstimateOps() *bindings.EstimateOpts {
 
 // WriteRequest contains the required params for a write request
 type WriteRequest struct {
+	Nonce    *big.Int
 	Identity common.Address
 	Signer   bind.SignerFn
 
-	GasPrice *big.Int
-	GasTip   *big.Int
+	// GasTip is the amount of tokens to tip for miners. Required for EIP-1559.
+	GasTip *big.Int
+	// BaseFee is the amount which has and will be paid for the transaction. Required for EIP-1559.
+	BaseFee  *big.Int
 	GasLimit uint64
 
-	Nonce *big.Int
+	// GasPrice is the legacy gas price pre london hardfork.
+	GasPrice *big.Int
 }
 
 func (wr *WriteRequest) toTransactOpts(ctx context.Context) *bind.TransactOpts {
@@ -384,16 +388,26 @@ func (wr *WriteRequest) toTransactOpts(ctx context.Context) *bind.TransactOpts {
 		panic("could not convert write request to transact opts: can't set both GasTip and GasPrice")
 	}
 
-	return &bind.TransactOpts{
-		Context: ctx,
-
-		From:      wr.Identity,
-		Signer:    wr.Signer,
-		GasLimit:  wr.GasLimit,
-		GasPrice:  wr.GasPrice,
-		GasTipCap: wr.GasTip,
-		Nonce:     wr.Nonce,
+	to := &bind.TransactOpts{
+		Context:  ctx,
+		From:     wr.Identity,
+		Signer:   wr.Signer,
+		GasLimit: wr.GasLimit,
+		Nonce:    wr.Nonce,
 	}
+
+	// Support pre EIP-1559 transactions
+	if wr.GasPrice != nil && wr.GasPrice.Cmp(big.NewInt(0)) > 0 {
+		to.GasPrice = wr.GasPrice
+		return to
+	}
+
+	if wr.GasTip != nil && wr.BaseFee != nil {
+		to.GasFeeCap = new(big.Int).Add(wr.GasTip, wr.BaseFee)
+	}
+	to.GasTipCap = wr.GasTip
+
+	return to
 }
 
 // getGasLimit returns the gas limit
@@ -1073,15 +1087,26 @@ func (bc *Blockchain) TransferEth(etr EthTransferRequest) (*types.Transaction, e
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	if etr.Nonce == nil {
-		nonce, err := bc.getNonce(etr.Identity)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get nonce")
-		}
-		etr.Nonce = new(big.Int).SetUint64(nonce)
+	to, err := bc.makeTransactOpts(ctx, &etr.WriteRequest)
+	if err != nil {
+		return nil, err
 	}
 
-	tx := types.NewTransaction(etr.Nonce.Uint64(), etr.To, etr.Amount, etr.GasLimit, etr.GasPrice, nil)
+	var tx *types.Transaction
+	if to.GasPrice != nil && to.GasPrice.Cmp(big.NewInt(0)) > 0 {
+		tx = types.NewTransaction(to.Nonce.Uint64(), etr.To, etr.Amount, to.GasLimit, to.GasPrice, nil)
+	} else {
+		tx = types.NewTx(&types.DynamicFeeTx{
+			Nonce:     to.Nonce.Uint64(),
+			To:        &etr.To,
+			Value:     etr.Amount,
+			Gas:       to.GasLimit,
+			GasFeeCap: to.GasFeeCap,
+			GasTipCap: to.GasTipCap,
+			Data:      nil,
+		})
+	}
+
 	signedTx, err := etr.Signer(etr.Identity, tx)
 	if err != nil {
 		return nil, fmt.Errorf("could not sign tx: %w", err)

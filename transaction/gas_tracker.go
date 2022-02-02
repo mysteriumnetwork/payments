@@ -22,6 +22,11 @@ type GasIncreaseOpts struct {
 	IncreaseInterval time.Duration
 }
 
+type fees struct {
+	Base *big.Int
+	Tip  *big.Int
+}
+
 type GasStation interface {
 	GetGasPrices(chainID int64) (*gas.GasPrices, error)
 }
@@ -37,6 +42,10 @@ const (
 var errMaxPriceReached = errors.New("max price reached, cannot increase")
 
 func NewGasTracker(gs GasStation, opts map[int64]GasIncreaseOpts, speed GasTrackerSpeed) *GasTracker {
+	if speed == "" {
+		speed = GasTrackerSpeedMedium
+	}
+
 	return &GasTracker{
 		gs:    gs,
 		opts:  opts,
@@ -54,26 +63,32 @@ func (g *GasTracker) CanReceiveMoreGas(chainID int64, lastFillUpUTC time.Time) (
 	return time.Now().UTC().After(receiveAfter), nil
 }
 
-func (g *GasTracker) ReceiveInitialGas(chainID int64) (*big.Int, error) {
+func (g *GasTracker) ReceiveInitialGas(chainID int64) (*fees, error) {
 	prices, err := g.gs.GetGasPrices(chainID)
 	if err != nil {
 		return nil, err
 	}
 
-	switch g.speed {
-	case GasTrackerSpeedSlow:
-		return prices.SafeLow, nil
-	case GasTrackerSpeedMedium:
-		return prices.Average, nil
-	case GasTrackerSpeedFast:
-		return prices.Fast, nil
+	fees := &fees{
+		Base: prices.BaseFee,
 	}
 
-	return nil, errors.New("gas station not configured")
+	switch g.speed {
+	case GasTrackerSpeedSlow:
+		fees.Tip = prices.SafeLow
+	case GasTrackerSpeedMedium:
+		fees.Tip = prices.Average
+	case GasTrackerSpeedFast:
+		fees.Tip = prices.Fast
+	default:
+		return nil, errors.New("gas station not configured")
+	}
+
+	return fees, nil
 }
 
-func (g *GasTracker) RecalculateDeliveryGas(chainID int64, lastKnownGas *big.Int) (*big.Int, error) {
-	if lastKnownGas == nil || lastKnownGas.Cmp(big.NewInt(0)) <= 0 {
+func (g *GasTracker) RecalculateDeliveryGas(chainID int64, lastKnownTip *big.Int) (*fees, error) {
+	if lastKnownTip == nil || lastKnownTip.Cmp(big.NewInt(0)) <= 0 {
 		return g.ReceiveInitialGas(chainID)
 	}
 
@@ -82,35 +97,40 @@ func (g *GasTracker) RecalculateDeliveryGas(chainID int64, lastKnownGas *big.Int
 		return nil, fmt.Errorf("no opts for chain %d", chainID)
 	}
 
-	newGasPrice := g.calculateNewPrice(chainID, lastKnownGas, opts.Multiplier)
+	newTip := g.calculateNewPrice(chainID, lastKnownTip, opts.Multiplier)
 
-	recalculatedPrice, _ := g.ReceiveInitialGas(chainID)
-	if recalculatedPrice != nil {
-		if newGasPrice == nil || recalculatedPrice.Cmp(newGasPrice) > 0 {
-			return recalculatedPrice, nil
-		}
+	newFees, err := g.ReceiveInitialGas(chainID)
+	if err != nil {
+		return nil, fmt.Errorf("could not recalculate gas price: %w", err)
+	}
+	// If new tip is increased way above, use that.
+	if newFees.Tip.Cmp(newTip) > 0 || newTip == nil {
+		newTip = newFees.Tip
 	}
 
-	if newGasPrice == nil {
-		return opts.PriceLimit, nil
-	}
-
-	if newGasPrice.Cmp(opts.PriceLimit) > 0 {
-		if lastKnownGas.Cmp(opts.PriceLimit) < 0 {
-			return opts.PriceLimit, nil
+	// Check that new tip is not exceeding our limits.
+	if newTip.Cmp(opts.PriceLimit) > 0 {
+		if lastKnownTip.Cmp(opts.PriceLimit) < 0 {
+			return &fees{
+				Base: newFees.Base,
+				Tip:  opts.PriceLimit,
+			}, nil
 		}
 
 		return nil, errMaxPriceReached
 	}
 
-	return newGasPrice, nil
+	return &fees{
+		Base: newFees.Base,
+		Tip:  newTip,
+	}, nil
 }
 
-func (g *GasTracker) calculateNewPrice(chainID int64, lastKnownGas *big.Int, multi float64) *big.Int {
-	newGasPrice, _ := new(big.Float).Mul(
+func (g *GasTracker) calculateNewPrice(chainID int64, lastKnownTip *big.Int, multi float64) *big.Int {
+	newTip, _ := new(big.Float).Mul(
 		big.NewFloat(multi),
-		new(big.Float).SetInt(lastKnownGas),
+		new(big.Float).SetInt(lastKnownTip),
 	).Int(nil)
 
-	return newGasPrice
+	return newTip
 }
