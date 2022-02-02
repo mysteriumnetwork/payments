@@ -78,13 +78,12 @@ func NewBlockchainWithCustomNonceTracker(ethClient EthClientGetter, timeout time
 }
 
 func (bc *Blockchain) makeTransactOpts(ctx context.Context, rr *WriteRequest) (*bind.TransactOpts, error) {
-	nonce := rr.Nonce
-	if nonce == nil {
+	if rr.Nonce == nil {
 		nonceUint, err := bc.getNonce(rr.Identity)
 		if err != nil {
 			return nil, errors.Wrap(err, "could not get nonce")
 		}
-		nonce = big.NewInt(0).SetUint64(nonceUint)
+		rr.Nonce = big.NewInt(0).SetUint64(nonceUint)
 	}
 
 	return rr.toTransactOpts(ctx), nil
