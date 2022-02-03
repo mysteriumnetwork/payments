@@ -13,7 +13,7 @@ func TestMultichain(t *testing.T) {
 	t.Run("green path", func(t *testing.T) {
 		defaultPrice := big.NewInt(10)
 		mq := MultichainStation{
-			1: []Station{NewStaticStation(defaultPrice), NewStaticStation(big.NewInt(600))},
+			1: []Station{NewStaticStation(defaultPrice, big.NewInt(1)), NewStaticStation(big.NewInt(600), big.NewInt(1))},
 		}
 
 		prices, err := mq.GetGasPrices(1)
@@ -25,7 +25,7 @@ func TestMultichain(t *testing.T) {
 	t.Run("fallback", func(t *testing.T) {
 		defaultPrice := big.NewInt(10)
 		mq := MultichainStation{
-			1: []Station{NewFailingStationMock(), NewStaticStation(defaultPrice)},
+			1: []Station{NewFailingStationMock(), NewStaticStation(defaultPrice, big.NewInt(1))},
 		}
 
 		prices, err := mq.GetGasPrices(1)
@@ -37,7 +37,7 @@ func TestMultichain(t *testing.T) {
 	t.Run("chain does not exist", func(t *testing.T) {
 		defaultPrice := big.NewInt(10)
 		mq := MultichainStation{
-			1: []Station{NewFailingStationMock(), NewStaticStation(defaultPrice)},
+			1: []Station{NewFailingStationMock(), NewStaticStation(defaultPrice, big.NewInt(1))},
 		}
 		prices, err := mq.GetGasPrices(2)
 
