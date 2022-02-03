@@ -377,8 +377,7 @@ func (d *Depot) calculateNewGasPrice(td Delivery) (Delivery, error) {
 }
 
 func (d *Depot) deliveryUpdateGasPrice(td Delivery, newGas *fees) (Delivery, error) {
-	td.GasTip = newGas.Tip
-	td.BaseFee = newGas.Base
+	td = *td.applyFees(newGas)
 	td.UpdateUTC = time.Now().UTC()
 	if err := d.storage.UpsertDeliveryRequest(td); err != nil {
 		return td, fmt.Errorf("failed to update delivery gas price: %w", err)
