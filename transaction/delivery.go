@@ -34,9 +34,13 @@ type Delivery struct {
 	UniqueID string
 	Sender   common.Address
 
-	Nonce    uint64
-	ChainID  int64
+	Nonce   uint64
+	ChainID int64
+
 	GasPrice *big.Int
+
+	GasTip  *big.Int
+	BaseFee *big.Int
 
 	Type  DeliverableType
 	State DeliveryState
@@ -73,13 +77,22 @@ type SignFunc func(common.Address, *types.Transaction) (*types.Transaction, erro
 
 // ToWriteRequest will convert a Delivery to a typical write request used by `client` package.
 func (t *Delivery) ToWriteRequest(signer SignFunc, gasLimit uint64) client.WriteRequest {
-	return client.WriteRequest{
+	wr := client.WriteRequest{
 		Identity: t.Sender,
 		Signer:   bind.SignerFn(signer),
 		GasLimit: gasLimit,
-		GasPrice: t.GasPrice,
 		Nonce:    new(big.Int).SetUint64(t.Nonce),
 	}
+
+	// Support pre EIP-1559 transactions.
+	if t.GasPrice != nil && t.GasPrice.Cmp(big.NewInt(0)) > 0 {
+		wr.GasPrice = t.GasPrice
+		return wr
+	}
+
+	wr.GasTip = t.GasTip
+	wr.BaseFee = t.BaseFee
+	return wr
 }
 
 func (t *Delivery) GetLastTransaction() (*types.Transaction, error) {
@@ -89,6 +102,18 @@ func (t *Delivery) GetLastTransaction() (*types.Transaction, error) {
 
 	tx := &types.Transaction{}
 	return tx, tx.UnmarshalJSON(t.SentTransaction)
+}
+
+func (d *Delivery) applyFees(f *fees) *Delivery {
+	dd := *d
+	if d.GasPrice != nil && d.GasPrice.Cmp(big.NewInt(0)) > 0 {
+		dd.GasPrice = new(big.Int).Add(f.Base, f.Tip)
+	} else {
+		dd.GasTip = f.Tip
+		dd.BaseFee = f.Base
+	}
+
+	return &dd
 }
 
 type DeliveryRequest struct {
@@ -120,6 +145,8 @@ func (t *DeliveryRequest) toDelivery(nonce uint64) (Delivery, error) {
 		Nonce:    nonce,
 		ChainID:  t.ChainID,
 		GasPrice: new(big.Int).SetInt64(0),
+		GasTip:   new(big.Int).SetInt64(0),
+		BaseFee:  new(big.Int).SetInt64(0),
 
 		Type:  t.Type,
 		State: DeliveryStateWaiting,

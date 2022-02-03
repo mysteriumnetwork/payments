@@ -60,10 +60,16 @@ func (esa *PolygonscanStation) GetGasPrices() (*GasPrices, error) {
 	if err != nil {
 		return nil, err
 	}
+	base, err := strconv.ParseFloat(res.Result.SuggestBaseFee, 64)
+	if err != nil {
+		return nil, err
+	}
 	prices := GasPrices{
 		SafeLow: esa.result(safeLow),
 		Average: esa.result(average),
 		Fast:    esa.result(fast),
+
+		BaseFee: units.FloatGweiToBigIntWei(base),
 	}
 	return &prices, nil
 }
@@ -115,10 +121,13 @@ type polygonscanGasPriceResponse struct {
 
 // polygonscanPriceResult the polygonscan prices for the last block.
 type polygonscanPriceResult struct {
-	LastBlock string `json:"LastBlock"`
-	UsdPrice  string `json:"UsdPrice"`
+	LastBlock      string `json:"LastBlock"`
+	SuggestBaseFee string `json:"suggestBaseFee"`
 
 	FastGasPrice    string `json:"FastGasPrice"`
 	ProposeGasPrice string `json:"ProposeGasPrice"`
 	SafeGasPrice    string `json:"SafeGasPrice"`
+
+	UsdPrice     string `json:"UsdPrice"`
+	GasUsedRatio string `json:"gasUsedRatio"`
 }
