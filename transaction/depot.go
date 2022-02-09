@@ -122,9 +122,9 @@ func (d *Depot) Run() {
 
 // EnqueueDelivery will submit a new transaction to the delivery queue.
 // It will return a unique tracking number which can be used to see the status of a transaction.
-func (d *Depot) EnqueueDelivery(req DeliveryRequest) (string, error) {
+func (d *Depot) EnqueueDelivery(req DeliveryRequest, force bool) (string, error) {
 	if !d.workerExists(req) {
-		return "", fmt.Errorf("failed to enqueue for sender %q: no worker found", req.Sender.Hex())
+		return "", fmt.Errorf("failed to enqueue for sender %q on chain %q: no worker found", req.Sender.Hex(), req.ChainID)
 	}
 
 	if !d.handler.CanDeliver(req.Type) {
@@ -136,7 +136,7 @@ func (d *Depot) EnqueueDelivery(req DeliveryRequest) (string, error) {
 		return "", fmt.Errorf("could not get non delivered count: %w", err)
 	}
 
-	if d.config.MaxNonDelivered <= count {
+	if !force && d.config.MaxNonDelivered <= count {
 		return "", fmt.Errorf("cannot queue a new entry, max count of %d reached", d.config.MaxNonDelivered)
 	}
 
