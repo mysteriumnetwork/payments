@@ -283,7 +283,7 @@ func (d *Depot) handleTracking(td Delivery) error {
 		return err
 	}
 
-	if updated.GasPrice.Cmp(td.GasPrice) > 0 {
+	if updated.GasTip.Cmp(td.GasTip) > 0 {
 		_, err = d.sendOutTransaction(updated)
 		return err
 	}
