@@ -38,3 +38,13 @@ func FloatGweiToBigIntWei(gwei float64) *big.Int {
 
 	return wei
 }
+
+// FloatEthToBigIntWei returns the given eth as wei. Precision might be lost.
+func FloatEthToBigIntWei(eth float64) *big.Int {
+	wei, _ := new(big.Float).Mul(
+		big.NewFloat(eth),
+		new(big.Float).SetInt(SingleEthInWei()),
+	).Int(nil)
+
+	return wei
+}
