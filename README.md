@@ -22,7 +22,6 @@ In this repo you can find packages needed to work with Mysterium Network payment
 
 ## Transaction sending and watching
 
-- [transfer](transfer/README.md) *[_deprecated_]*
 - [transaction](transaction/README.md)
 ## Other utilities
 

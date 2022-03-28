@@ -88,7 +88,7 @@ func (mcak *MultiChainAddressKeeper) GetChannelImplementation(chainID int64) (co
 	if err != nil {
 		return common.Address{}, err
 	}
-	return v.Hermes, nil
+	return v.ChannelImplementation, nil
 }
 
 // GetChannelAddress will calculate a channel address for an identity with default hermes, registry and channel
