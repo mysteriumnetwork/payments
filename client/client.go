@@ -116,7 +116,7 @@ func (bc *Blockchain) CalculateHermesFee(hermesAddress common.Address, value *bi
 		return nil, errors.Wrap(err, "could not create hermes implementation caller")
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
 	return caller.CalculateHermesFee(&bind.CallOpts{
