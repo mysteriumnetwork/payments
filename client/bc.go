@@ -39,6 +39,7 @@ type BC interface {
 	GetHermessAvailableBalance(hermesAddress common.Address) (*big.Int, error)
 	GetHermesURL(registryID, hermesID common.Address) (string, error)
 	GetHermes(registryID, hermesID common.Address) (Hermes, error)
+	GetHermesRegistry(hermesID common.Address) (common.Address, error)
 	GetHermesOperator(hermesID common.Address) (common.Address, error)
 	GetProviderChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error)
 	GetMystBalance(mystSCAddress, address common.Address) (*big.Int, error)

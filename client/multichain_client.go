@@ -658,3 +658,11 @@ func (mbc *MultichainBlockchainClient) WMaticWithdraw(chainID int64, req WMaticW
 	}
 	return bc.WMaticWithdraw(req)
 }
+
+func (mbc *MultichainBlockchainClient) GetHermesRegistry(chainID int64, hermesAddress common.Address) (common.Address, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return common.Address{}, err
+	}
+	return bc.GetHermesRegistry(hermesAddress)
+}
