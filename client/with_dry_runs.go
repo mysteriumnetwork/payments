@@ -450,3 +450,7 @@ func (cwdr *WithDryRuns) WMaticBalance(holder, wmaticAddress common.Address) (*b
 func (cwdr *WithDryRuns) WMaticWithdraw(req WMaticWithdrawReq) (*types.Transaction, error) {
 	return cwdr.bc.WMaticWithdraw(req)
 }
+
+func (cwdr *WithDryRuns) GetHermesRegistry(hermesID common.Address) (common.Address, error) {
+	return cwdr.bc.GetHermesRegistry(hermesID)
+}

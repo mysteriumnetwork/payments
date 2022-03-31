@@ -989,6 +989,21 @@ func (bc *Blockchain) GetHermes(registryID, hermesID common.Address) (Hermes, er
 	}, nil
 }
 
+// GetHermesRegistry returns the registry address of a given hermes.
+func (bc *Blockchain) GetHermesRegistry(hermesID common.Address) (common.Address, error) {
+	caller, err := bindings.NewHermesImplementationCaller(hermesID, bc.ethClient.Client())
+	if err != nil {
+		return common.Address{}, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.GetRegistry(&bind.CallOpts{
+		Context: ctx,
+	})
+}
+
 // GetChannelImplementationByVersion returns the channel implementation for the specified version.
 func (bc *Blockchain) GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error) {
 	caller, err := bindings.NewRegistryCaller(registryID, bc.ethClient.Client())
