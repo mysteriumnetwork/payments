@@ -454,3 +454,7 @@ func (cwdr *WithDryRuns) WMaticWithdraw(req WMaticWithdrawReq) (*types.Transacti
 func (cwdr *WithDryRuns) GetHermesRegistry(hermesID common.Address) (common.Address, error) {
 	return cwdr.bc.GetHermesRegistry(hermesID)
 }
+
+func (cwdr *WithDryRuns) FilterHermesRegistered(from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryRegisteredHermes, error) {
+	return cwdr.bc.FilterHermesRegistered(from, to, registryID)
+}

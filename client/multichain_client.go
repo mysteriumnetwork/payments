@@ -666,3 +666,12 @@ func (mbc *MultichainBlockchainClient) GetHermesRegistry(chainID int64, hermesAd
 	}
 	return bc.GetHermesRegistry(hermesAddress)
 }
+
+func (mbc *MultichainBlockchainClient) FilterHermesRegistered(chainID int64, from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryRegisteredHermes, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+
+	return bc.FilterHermesRegistered(from, to, registryID)
+}
