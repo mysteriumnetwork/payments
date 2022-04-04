@@ -27,6 +27,7 @@ import (
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+
 	"github.com/mysteriumnetwork/payments/bindings"
 )
 
@@ -58,6 +59,7 @@ type BC interface {
 	IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck common.Address) (bool, error)
 	IsRegistered(registryAddress, addressToCheck common.Address) (bool, error)
 	RegisterIdentity(rr RegistrationRequest) (*types.Transaction, error)
+	OpenConsumerChannel(req OpenConsumerChannelRequest) (*types.Transaction, error)
 	IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*types.Transaction, error)
 
 	SettleAndRebalance(req SettleAndRebalanceRequest) (*types.Transaction, error)

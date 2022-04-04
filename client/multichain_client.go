@@ -23,8 +23,9 @@ import (
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/mysteriumnetwork/payments/bindings"
 	"github.com/pkg/errors"
+
+	"github.com/mysteriumnetwork/payments/bindings"
 )
 
 type MultichainBlockchainClient struct {
@@ -186,6 +187,15 @@ func (mbc *MultichainBlockchainClient) RegisterIdentity(chainID int64, rr Regist
 	}
 
 	return bc.RegisterIdentity(rr)
+}
+
+func (mbc *MultichainBlockchainClient) OpenConsumerChannel(chainID int64, req OpenConsumerChannelRequest) (*types.Transaction, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+
+	return bc.OpenConsumerChannel(req)
 }
 
 func (mbc *MultichainBlockchainClient) TransferMyst(chainID int64, req TransferRequest) (tx *types.Transaction, err error) {
@@ -430,13 +440,13 @@ func (mbc *MultichainBlockchainClient) GetChannelImplementationByVersion(chainID
 	return bc.GetChannelImplementationByVersion(registryID, version)
 }
 
-func (mbc *MultichainBlockchainClient) IsChannelOpened(chainID int64, registryID, identity, hermesID common.Address) (bool, error) {
+func (mbc *MultichainBlockchainClient) IsChannelOpened(chainID int64, registryAddress, identity, hermesID common.Address) (bool, error) {
 	bc, err := mbc.getClientByChain(chainID)
 	if err != nil {
 		return false, err
 	}
 
-	return bc.IsChannelOpened(registryID, identity, hermesID)
+	return bc.IsChannelOpened(registryAddress, identity, hermesID)
 }
 
 // FilterLogs executes a filter query.
