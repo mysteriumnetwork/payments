@@ -473,6 +473,9 @@ func (bc *Blockchain) OpenConsumerChannel(req OpenConsumerChannelRequest) (*type
 	defer cancel()
 
 	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+	if err != nil {
+		return nil, err
+	}
 
 	return transactor.OpenConsumerChannel(to, req.HermesID, req.TransactorFee, req.Signature)
 }
