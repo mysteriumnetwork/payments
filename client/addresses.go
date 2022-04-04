@@ -83,8 +83,8 @@ func (mcak *MultiChainAddressKeeper) GetActiveHermes(chainID int64) (common.Addr
 	return v.ActiveHermes, nil
 }
 
-// GetActiveChanneImplementation returns channel implementation a default address for the given chain.
-func (mcak *MultiChainAddressKeeper) GetActiveChanneImplementation(chainID int64) (common.Address, error) {
+// GetActiveChannelImplementation returns channel implementation a default address for the given chain.
+func (mcak *MultiChainAddressKeeper) GetActiveChannelImplementation(chainID int64) (common.Address, error) {
 	v, err := mcak.getAddressesForChain(chainID)
 	if err != nil {
 		return common.Address{}, err
