@@ -1785,3 +1785,27 @@ func (bc *Blockchain) WMaticWithdraw(req WMaticWithdrawReq) (*types.Transaction,
 
 	return caller.Withdraw(to, amount)
 }
+
+func (bc *Blockchain) FilterHermesRegistered(from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryRegisteredHermes, error) {
+	caller, err := bindings.NewRegistryFilterer(registryID, bc.ethClient.Client())
+	if err != nil {
+		return nil, errors.Wrap(err, "could not create registry filterer")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+	iter, err := caller.FilterRegisteredHermes(&bind.FilterOpts{
+		Start:   from,
+		End:     to,
+		Context: ctx,
+	}, nil)
+	if err != nil {
+		return nil, err
+	}
+	res := make([]bindings.RegistryRegisteredHermes, 0)
+	for iter.Next() {
+		ev := iter.Event
+		res = append(res, *ev)
+	}
+
+	return res, nil
+}

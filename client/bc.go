@@ -73,6 +73,7 @@ type BC interface {
 	SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error)
 	SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error)
 	FilterLogs(q ethereum.FilterQuery) ([]types.Log, error)
+	FilterHermesRegistered(from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryRegisteredHermes, error)
 
 	NetworkID() (*big.Int, error)
 	BlockNumber() (uint64, error)
