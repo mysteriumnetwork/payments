@@ -28,13 +28,14 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/event"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
+
 	"github.com/mysteriumnetwork/payments/bindings"
 	"github.com/mysteriumnetwork/payments/bindings/rewarder"
 	"github.com/mysteriumnetwork/payments/bindings/topperupper"
 	"github.com/mysteriumnetwork/payments/bindings/uniswapv3"
 	"github.com/mysteriumnetwork/payments/crypto"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 // DefaultBackoff is the default backoff for the client
@@ -438,6 +439,42 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 		rr.Signature,
 	)
 	return tx, err
+}
+
+// OpenConsumerChannelRequest container for an open channel signed request
+type OpenConsumerChannelRequest struct {
+	WriteRequest
+	HermesID        common.Address
+	RegistryAddress common.Address
+	TransactorFee   *big.Int
+	Signature       []byte
+}
+
+func (r OpenConsumerChannelRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
+	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationMetaData.ABI, ethClient.Client())
+}
+
+func (r OpenConsumerChannelRequest) toEstimateOps() *bindings.EstimateOpts {
+	return &bindings.EstimateOpts{
+		From:   r.Identity,
+		Method: "openConsumerChannel",
+		Params: []interface{}{r.HermesID, r.RegistryAddress, r.TransactorFee, r.Signature},
+	}
+}
+
+// OpenConsumerChannel open a channel for consumer
+func (bc *Blockchain) OpenConsumerChannel(req OpenConsumerChannelRequest) (*types.Transaction, error) {
+	transactor, err := bindings.NewRegistryTransactor(req.RegistryAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
+
+	return transactor.OpenConsumerChannel(to, req.HermesID, req.TransactorFee, req.Signature)
 }
 
 // PayAndSettleRequest allows to pay and settle and exit to l1 via this.

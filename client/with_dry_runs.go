@@ -25,8 +25,9 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/rpc"
-	"github.com/mysteriumnetwork/payments/bindings"
 	"github.com/pkg/errors"
+
+	"github.com/mysteriumnetwork/payments/bindings"
 )
 
 type Estimatable interface {
@@ -142,6 +143,15 @@ func (cwdr *WithDryRuns) RegisterIdentity(req RegistrationRequest) (*types.Trans
 	}
 
 	return cwdr.bc.RegisterIdentity(req)
+}
+
+// OpenConsumerChannel open a channel for consumer
+func (cwdr *WithDryRuns) OpenConsumerChannel(req OpenConsumerChannelRequest) (*types.Transaction, error) {
+	if _, err := cwdr.Estimate(req); err != nil {
+		return nil, err
+	}
+
+	return cwdr.bc.OpenConsumerChannel(req)
 }
 
 // SettleAndRebalance is settling given hermes issued promise

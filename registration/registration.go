@@ -22,6 +22,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
+
 	"github.com/mysteriumnetwork/payments/crypto"
 )
 
@@ -46,13 +47,6 @@ func (r Request) GetFee() *big.Int {
 	return r.Fee
 }
 
-// GetSignatureBytesRaw returns the unadulterated bytes of the signature
-func (r Request) GetSignatureBytesRaw() []byte {
-	signature := strings.TrimPrefix(r.Signature, "0x")
-	signBytes := common.Hex2Bytes(signature)
-	return signBytes
-}
-
 // GetMessage forms the message payload given the registration request
 func (r Request) GetMessage() []byte {
 	message := []byte{}
@@ -67,7 +61,7 @@ func (r Request) GetMessage() []byte {
 
 // RecoverIdentity recovers the identity from the given request
 func (r Request) RecoverIdentity() (common.Address, error) {
-	signature := r.GetSignatureBytesRaw()
+	signature := GetSignatureBytesRaw(r.Signature)
 
 	err := crypto.ReformatSignatureVForRecovery(signature)
 	if err != nil {
@@ -80,4 +74,43 @@ func (r Request) RecoverIdentity() (common.Address, error) {
 	}
 
 	return recoveredAddress, nil
+}
+
+type OpenChannelRequest struct {
+	ChainID         int64    `json:"chainID"`
+	HermesID        string   `json:"hermesID"`
+	Signature       string   `json:"signature"`
+	TransactorFee   *big.Int `json:"fee"`
+	RegistryAddress string   `json:"registryAddress"`
+}
+
+func (r *OpenChannelRequest) GetMessage() []byte {
+	message := []byte{}
+	message = append(message, crypto.Pad(math.U256Bytes(big.NewInt(r.ChainID)), 32)...)
+	message = append(message, common.HexToAddress(r.HermesID).Bytes()...)
+	message = append(message, crypto.Pad(math.U256(r.TransactorFee).Bytes(), 32)...)
+
+	return message
+}
+
+// RecoverIdentity recovers the identity from the given request
+func (r *OpenChannelRequest) RecoverIdentity() (common.Address, error) {
+	signature := common.Hex2Bytes(strings.TrimPrefix(r.Signature, "0x"))
+
+	err := crypto.ReformatSignatureVForRecovery(signature)
+	if err != nil {
+		return common.Address{}, err
+	}
+
+	recoveredAddress, err := crypto.RecoverAddress(r.GetMessage(), signature)
+	if err != nil {
+		return common.Address{}, err
+	}
+
+	return recoveredAddress, nil
+}
+
+// GetSignatureBytesRaw returns the unadulterated bytes of the signature
+func GetSignatureBytesRaw(sig string) []byte {
+	return common.Hex2Bytes(strings.TrimPrefix(sig, "0x"))
 }
