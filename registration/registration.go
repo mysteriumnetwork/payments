@@ -76,7 +76,7 @@ func (r Request) RecoverIdentity() (common.Address, error) {
 	return recoveredAddress, nil
 }
 
-type OpenChannelRequest struct {
+type OpenConsumerChannelRequest struct {
 	ChainID         int64    `json:"chainID"`
 	HermesID        string   `json:"hermesID"`
 	Signature       string   `json:"signature"`
@@ -84,7 +84,7 @@ type OpenChannelRequest struct {
 	RegistryAddress string   `json:"registryAddress"`
 }
 
-func (r *OpenChannelRequest) GetMessage() []byte {
+func (r *OpenConsumerChannelRequest) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, crypto.Pad(math.U256Bytes(big.NewInt(r.ChainID)), 32)...)
 	message = append(message, common.HexToAddress(r.HermesID).Bytes()...)
@@ -94,7 +94,7 @@ func (r *OpenChannelRequest) GetMessage() []byte {
 }
 
 // RecoverIdentity recovers the identity from the given request
-func (r *OpenChannelRequest) RecoverIdentity() (common.Address, error) {
+func (r *OpenConsumerChannelRequest) RecoverIdentity() (common.Address, error) {
 	signature := common.Hex2Bytes(strings.TrimPrefix(r.Signature, "0x"))
 
 	err := crypto.ReformatSignatureVForRecovery(signature)
