@@ -451,7 +451,7 @@ type OpenConsumerChannelRequest struct {
 }
 
 func (r OpenConsumerChannelRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
-	return bindings.NewContractEstimator(r.HermesID, bindings.RegistryMetaData.ABI, ethClient.Client())
+	return bindings.NewContractEstimator(r.RegistryAddress, bindings.RegistryMetaData.ABI, ethClient.Client())
 }
 
 func (r OpenConsumerChannelRequest) toEstimateOps() *bindings.EstimateOpts {
