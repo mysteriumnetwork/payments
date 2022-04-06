@@ -88,6 +88,7 @@ func (r *OpenConsumerChannelRequest) GetMessage() []byte {
 	message := []byte{}
 	message = append(message, crypto.Pad(math.U256Bytes(big.NewInt(r.ChainID)), 32)...)
 	message = append(message, common.HexToAddress(r.HermesID).Bytes()...)
+	message = append(message, common.HexToAddress(r.RegistryAddress).Bytes()...)
 	message = append(message, crypto.Pad(math.U256(r.TransactorFee).Bytes(), 32)...)
 
 	return message
