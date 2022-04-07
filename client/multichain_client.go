@@ -449,6 +449,16 @@ func (mbc *MultichainBlockchainClient) IsChannelOpened(chainID int64, registryAd
 	return bc.IsChannelOpened(registryAddress, identity, hermesID)
 }
 
+// GetChannelAddress return address of channel for identity
+func (mbc *MultichainBlockchainClient) GetChannelAddress(chainID int64, registryAddress, identity, hermesID common.Address) (common.Address, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return common.Address{}, err
+	}
+
+	return bc.GetChannelAddress(registryAddress, identity, hermesID)
+}
+
 // FilterLogs executes a filter query.
 func (mbc *MultichainBlockchainClient) FilterLogs(chainID int64, q ethereum.FilterQuery) ([]types.Log, error) {
 	bc, err := mbc.getClientByChain(chainID)

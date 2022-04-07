@@ -480,6 +480,21 @@ func (bc *Blockchain) OpenConsumerChannel(req OpenConsumerChannelRequest) (*type
 	return transactor.OpenConsumerChannel(to, req.HermesID, req.TransactorFee, req.Signature)
 }
 
+// GetChannelAddress return address of channel for identity
+func (bc *Blockchain) GetChannelAddress(registryID, identity, hermesID common.Address) (common.Address, error) {
+	caller, err := bindings.NewRegistryCaller(registryID, bc.ethClient.Client())
+	if err != nil {
+		return common.Address{}, fmt.Errorf("could not create new registry caller %w", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.GetChannelAddress(&bind.CallOpts{
+		Context: ctx,
+	}, identity, hermesID)
+}
+
 // PayAndSettleRequest allows to pay and settle and exit to l1 via this.
 type PayAndSettleRequest struct {
 	WriteRequest

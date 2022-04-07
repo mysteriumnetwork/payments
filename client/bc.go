@@ -48,6 +48,7 @@ type BC interface {
 	GetConsumerChannelOperator(channelAddress common.Address) (common.Address, error)
 	GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error)
 	GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error)
+	GetChannelAddress(registryAddress, identity, hermesID common.Address) (common.Address, error)
 	GetEthBalance(address common.Address) (*big.Int, error)
 	GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error)
 	GetBeneficiary(registryAddress, identity common.Address) (common.Address, error)

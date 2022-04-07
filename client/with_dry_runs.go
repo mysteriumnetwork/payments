@@ -223,6 +223,11 @@ func (cwdr *WithDryRuns) GetConsumerChannelsHermes(channelAddress common.Address
 	return cwdr.bc.GetConsumerChannelsHermes(channelAddress)
 }
 
+// GetChannelAddress return address of channel for identity
+func (cwdr *WithDryRuns) GetChannelAddress(registryAddress, identity, hermesID common.Address) (common.Address, error) {
+	return cwdr.bc.GetChannelAddress(registryAddress, identity, hermesID)
+}
+
 // SubscribeToMystTokenTransfers subscribes to myst token transfers
 func (cwdr *WithDryRuns) SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error) {
 	return cwdr.bc.SubscribeToMystTokenTransfers(mystSCAddress)
