@@ -4,7 +4,6 @@ go 1.13
 
 require (
 	github.com/cespare/cp v1.1.1 // indirect
-	github.com/deckarep/golang-set v1.7.1 // indirect
 	github.com/ethereum/go-ethereum v1.10.9
 	github.com/go-kit/kit v0.9.0 // indirect
 	github.com/magefile/mage v1.8.0
@@ -19,3 +18,5 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/tyler-smith/go-bip39 v1.0.2 // indirect
 )
+
+replace github.com/ethereum/go-ethereum => github.com/mysteriumnetwork/go-ethereum v1.12.0
