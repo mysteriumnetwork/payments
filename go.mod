@@ -18,5 +18,3 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/tyler-smith/go-bip39 v1.0.2 // indirect
 )
-
-replace github.com/ethereum/go-ethereum => github.com/mysteriumnetwork/go-ethereum v1.12.0
