@@ -54,6 +54,7 @@ type Blockchain struct {
 	ethClient EthClientGetter
 	bcTimeout time.Duration
 	nonceFunc nonceFunc
+	hcr       *HermesImplementationCallerRegistry
 }
 
 type nonceFunc func(ctx context.Context, account common.Address) (uint64, error)
@@ -66,6 +67,7 @@ func NewBlockchain(ethClient EthClientGetter, timeout time.Duration) *Blockchain
 		nonceFunc: func(ctx context.Context, account common.Address) (uint64, error) {
 			return ethClient.Client().PendingNonceAt(ctx, account)
 		},
+		hcr: NewHermesImplementationCallerRegistry(),
 	}
 }
 
@@ -75,6 +77,7 @@ func NewBlockchainWithCustomNonceTracker(ethClient EthClientGetter, timeout time
 		ethClient: ethClient,
 		bcTimeout: timeout,
 		nonceFunc: nonceFunc,
+		hcr:       NewHermesImplementationCallerRegistry(),
 	}
 }
 
@@ -92,7 +95,7 @@ func (bc *Blockchain) makeTransactOpts(ctx context.Context, rr *WriteRequest) (*
 
 // GetHermesFee fetches the hermes fee from blockchain
 func (bc *Blockchain) GetHermesFee(hermesAddress common.Address) (uint16, error) {
-	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
+	caller, err := bc.hcr.Get(hermesAddress, bc.ethClient.Client())
 	if err != nil {
 		return 0, errors.Wrap(err, "could not create hermes implementation caller")
 	}
@@ -112,7 +115,7 @@ func (bc *Blockchain) GetHermesFee(hermesAddress common.Address) (uint16, error)
 
 // CalculateHermesFee calls blockchain for calculation of hermes fee
 func (bc *Blockchain) CalculateHermesFee(hermesAddress common.Address, value *big.Int) (*big.Int, error) {
-	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
+	caller, err := bc.hcr.Get(hermesAddress, bc.ethClient.Client())
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create hermes implementation caller")
 	}
@@ -203,7 +206,7 @@ func (bc *Blockchain) GetProviderChannel(hermesAddress common.Address, addressTo
 	if err != nil {
 		return ProviderChannel{}, errors.Wrap(err, "could not calculate provider channel address")
 	}
-	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
+	caller, err := bc.hcr.Get(hermesAddress, bc.ethClient.Client())
 	if err != nil {
 		return ProviderChannel{}, errors.Wrap(err, "could not create hermes caller")
 	}
@@ -224,7 +227,7 @@ func (bc *Blockchain) GetProvidersWithdrawalChannel(hermesAddress common.Address
 	if err != nil {
 		return ProviderChannel{}, errors.Wrap(err, "could not calculate provider channel address")
 	}
-	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
+	caller, err := bc.hcr.Get(hermesAddress, bc.ethClient.Client())
 	if err != nil {
 		return ProviderChannel{}, errors.Wrap(err, "could not create hermes caller")
 	}
@@ -727,7 +730,7 @@ func (bc *Blockchain) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*
 
 // GetHermesOperator returns operator address of given hermes
 func (bc *Blockchain) GetHermesOperator(hermesID common.Address) (common.Address, error) {
-	caller, err := bindings.NewHermesImplementationCaller(hermesID, bc.ethClient.Client())
+	caller, err := bc.hcr.Get(hermesID, bc.ethClient.Client())
 	if err != nil {
 		return common.Address{}, err
 	}
@@ -743,7 +746,7 @@ func (bc *Blockchain) GetHermesOperator(hermesID common.Address) (common.Address
 
 // IsHermesActive determines if hermes is active or not.
 func (bc *Blockchain) IsHermesActive(hermesID common.Address) (bool, error) {
-	caller, err := bindings.NewHermesImplementationCaller(hermesID, bc.ethClient.Client())
+	caller, err := bc.hcr.Get(hermesID, bc.ethClient.Client())
 	if err != nil {
 		return false, err
 	}
@@ -825,7 +828,7 @@ func (bc *Blockchain) GetLastRegistryNonce(registry common.Address) (*big.Int, e
 
 // GetProviderChannelByID returns the given provider channel information
 func (bc *Blockchain) GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error) {
-	caller, err := bindings.NewHermesImplementationCaller(acc, bc.ethClient.Client())
+	caller, err := bc.hcr.Get(acc, bc.ethClient.Client())
 	if err != nil {
 		return ProviderChannel{}, err
 	}
@@ -1031,7 +1034,7 @@ func (bc *Blockchain) GetHermes(registryID, hermesID common.Address) (Hermes, er
 
 // GetHermesRegistry returns the registry address of a given hermes.
 func (bc *Blockchain) GetHermesRegistry(hermesID common.Address) (common.Address, error) {
-	caller, err := bindings.NewHermesImplementationCaller(hermesID, bc.ethClient.Client())
+	caller, err := bc.hcr.Get(hermesID, bc.ethClient.Client())
 	if err != nil {
 		return common.Address{}, err
 	}
@@ -1262,7 +1265,7 @@ func (r SettleWithBeneficiaryRequest) toEstimateOps() *bindings.EstimateOpts {
 
 // GetHermessAvailableBalance returns the balance that is available for hermes.
 func (bc *Blockchain) GetHermessAvailableBalance(hermesAddress common.Address) (*big.Int, error) {
-	caller, err := bindings.NewHermesImplementationCaller(hermesAddress, bc.ethClient.Client())
+	caller, err := bc.hcr.Get(hermesAddress, bc.ethClient.Client())
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create hermes implementation caller")
 	}
@@ -1309,7 +1312,7 @@ func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*
 
 // GetStakeThresholds returns the stake tresholds for the given hermes.
 func (bc *Blockchain) GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error) {
-	caller, err := bindings.NewHermesImplementationCaller(hermesID, bc.ethClient.Client())
+	caller, err := bc.hcr.Get(hermesID, bc.ethClient.Client())
 	if err != nil {
 		return nil, nil, err
 	}
