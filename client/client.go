@@ -77,6 +77,7 @@ func NewBlockchainWithCustomNonceTracker(ethClient EthClientGetter, timeout time
 		ethClient: ethClient,
 		bcTimeout: timeout,
 		nonceFunc: nonceFunc,
+		hcr:       NewHermesImplementationCallerRegistry(),
 	}
 }
 
