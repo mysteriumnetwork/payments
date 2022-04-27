@@ -76,6 +76,7 @@ type BC interface {
 	SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error)
 	FilterLogs(q ethereum.FilterQuery) ([]types.Log, error)
 	FilterHermesRegistered(from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryRegisteredHermes, error)
+	FilterHermesURLUpdated(from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryHermesURLUpdated, error)
 
 	NetworkID() (*big.Int, error)
 	BlockNumber() (uint64, error)

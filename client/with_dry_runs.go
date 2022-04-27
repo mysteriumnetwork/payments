@@ -468,3 +468,7 @@ func (cwdr *WithDryRuns) GetHermesRegistry(hermesID common.Address) (common.Addr
 func (cwdr *WithDryRuns) FilterHermesRegistered(from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryRegisteredHermes, error) {
 	return cwdr.bc.FilterHermesRegistered(from, to, registryID)
 }
+
+func (cwdr *WithDryRuns) FilterHermesURLUpdated(from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryHermesURLUpdated, error) {
+	return cwdr.bc.FilterHermesURLUpdated(from, to, registryID)
+}
