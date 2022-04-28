@@ -685,3 +685,12 @@ func (mbc *MultichainBlockchainClient) FilterHermesRegistered(chainID int64, fro
 
 	return bc.FilterHermesRegistered(from, to, registryID)
 }
+
+func (mbc *MultichainBlockchainClient) FilterHermesURLUpdated(chainID int64, from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryHermesURLUpdated, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+
+	return bc.FilterHermesURLUpdated(from, to, registryID)
+}
