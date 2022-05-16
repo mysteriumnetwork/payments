@@ -28,12 +28,7 @@ func (n *NodeStation) GetGasPrices() (*GasPrices, error) {
 		return nil, err
 	}
 
-	blockNumber, err := n.bc.BlockNumber(n.chainID)
-	if err != nil {
-		return nil, err
-	}
-
-	header, err := n.bc.HeaderByNumber(n.chainID, big.NewInt(int64(blockNumber)))
+	header, err := n.bc.HeaderByNumber(n.chainID, nil)
 	if err != nil {
 		return nil, err
 	}
