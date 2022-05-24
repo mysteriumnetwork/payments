@@ -329,7 +329,7 @@ func (d *Depot) calculateNewGasPrice(td Delivery) (Delivery, error) {
 	newPrice := &fees{}
 	switch td.State {
 	case DeliveryStatePacking, DeliveryStateWaiting:
-		gasPrice, err := d.gasStation.ReceiveInitialGas(td.ChainID)
+		gasPrice, err := d.gasStation.ReceiveInitialGas(td.ChainID, td.Type)
 		if err != nil {
 			return Delivery{}, err
 		}
@@ -355,7 +355,7 @@ func (d *Depot) calculateNewGasPrice(td Delivery) (Delivery, error) {
 			return td, nil
 		}
 
-		gasPrice, err := d.gasStation.RecalculateDeliveryGas(td.ChainID, td.GasPrice)
+		gasPrice, err := d.gasStation.RecalculateDeliveryGas(td.ChainID, td.GasPrice, td.Type)
 		if err != nil {
 			return Delivery{}, err
 		}

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math/big"
+	"strings"
 	"time"
 
 	"github.com/mysteriumnetwork/payments/transaction/gas"
@@ -20,6 +21,8 @@ type GasIncreaseOpts struct {
 	Multiplier       float64
 	PriceLimit       *big.Int
 	IncreaseInterval time.Duration
+	OverpayFor       []DeliverableType
+	OverpayByMul     float64
 }
 
 type fees struct {
@@ -63,7 +66,7 @@ func (g *GasTracker) CanReceiveMoreGas(chainID int64, lastFillUpUTC time.Time) (
 	return time.Now().UTC().After(receiveAfter), nil
 }
 
-func (g *GasTracker) ReceiveInitialGas(chainID int64) (*fees, error) {
+func (g *GasTracker) ReceiveInitialGas(chainID int64, txType DeliverableType) (*fees, error) {
 	prices, err := g.gs.GetGasPrices(chainID)
 	if err != nil {
 		return nil, err
@@ -84,12 +87,13 @@ func (g *GasTracker) ReceiveInitialGas(chainID int64) (*fees, error) {
 		return nil, errors.New("gas station not configured")
 	}
 
+	fees.Tip = g.calculateOverpay(chainID, txType, fees.Tip)
 	return fees, nil
 }
 
-func (g *GasTracker) RecalculateDeliveryGas(chainID int64, lastKnownTip *big.Int) (*fees, error) {
+func (g *GasTracker) RecalculateDeliveryGas(chainID int64, lastKnownTip *big.Int, txType DeliverableType) (*fees, error) {
 	if lastKnownTip == nil || lastKnownTip.Cmp(big.NewInt(0)) <= 0 {
-		return g.ReceiveInitialGas(chainID)
+		return g.ReceiveInitialGas(chainID, txType)
 	}
 
 	opts, ok := g.opts[chainID]
@@ -99,7 +103,7 @@ func (g *GasTracker) RecalculateDeliveryGas(chainID int64, lastKnownTip *big.Int
 
 	newTip := g.calculateNewPrice(chainID, lastKnownTip, opts.Multiplier)
 
-	newFees, err := g.ReceiveInitialGas(chainID)
+	newFees, err := g.ReceiveInitialGas(chainID, txType)
 	if err != nil {
 		return nil, fmt.Errorf("could not recalculate gas price: %w", err)
 	}
@@ -113,7 +117,7 @@ func (g *GasTracker) RecalculateDeliveryGas(chainID int64, lastKnownTip *big.Int
 		if lastKnownTip.Cmp(opts.PriceLimit) < 0 {
 			return &fees{
 				Base: newFees.Base,
-				Tip:  opts.PriceLimit,
+				Tip:  g.calculateOverpay(chainID, txType, opts.PriceLimit),
 			}, nil
 		}
 
@@ -122,8 +126,37 @@ func (g *GasTracker) RecalculateDeliveryGas(chainID int64, lastKnownTip *big.Int
 
 	return &fees{
 		Base: newFees.Base,
-		Tip:  newTip,
+		Tip:  g.calculateOverpay(chainID, txType, newTip),
 	}, nil
+}
+
+func (g *GasTracker) calculateOverpay(chainID int64, txType DeliverableType, price *big.Int) *big.Int {
+	opts, ok := g.opts[chainID]
+	if !ok {
+		return price
+	}
+
+	if opts.OverpayByMul < 1.0 {
+		return price
+	}
+
+	for _, t := range opts.OverpayFor {
+		if strings.ToLower(string(txType)) == strings.ToLower(string(t)) {
+			newPriceF := new(big.Float).Mul(
+				big.NewFloat(opts.OverpayByMul),
+				new(big.Float).SetInt(price),
+			)
+
+			newPrice, _ := newPriceF.Int(nil)
+			if newPrice == nil {
+				return price
+			}
+
+			return newPrice
+		}
+	}
+
+	return price
 }
 
 func (g *GasTracker) calculateNewPrice(chainID int64, lastKnownTip *big.Int, multi float64) *big.Int {
