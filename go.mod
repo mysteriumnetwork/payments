@@ -3,8 +3,9 @@ module github.com/mysteriumnetwork/payments
 go 1.13
 
 require (
+	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.1 // indirect
 	github.com/cespare/cp v1.1.1 // indirect
-	github.com/ethereum/go-ethereum v1.10.9
+	github.com/ethereum/go-ethereum v1.10.17
 	github.com/go-kit/kit v0.9.0 // indirect
 	github.com/magefile/mage v1.8.0
 	github.com/mysteriumnetwork/go-ci v0.0.0-20200415074834-39fc864b0ed4
