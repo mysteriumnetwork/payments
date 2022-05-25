@@ -3,10 +3,7 @@ module github.com/mysteriumnetwork/payments
 go 1.13
 
 require (
-	github.com/Azure/azure-pipeline-go v0.2.2 // indirect
-	github.com/Azure/azure-storage-blob-go v0.7.0 // indirect
-	github.com/Azure/go-autorest/autorest/adal v0.8.0 // indirect
-	github.com/btcsuite/btcd v0.20.1-beta // indirect
+	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.1 // indirect
 	github.com/cespare/cp v1.1.1 // indirect
 	github.com/ethereum/go-ethereum v1.10.17
 	github.com/go-kit/kit v0.9.0 // indirect
