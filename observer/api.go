@@ -42,6 +42,7 @@ type HermesesResponse map[int64][]HermesResponse
 type HermesResponse struct {
 	HermesAddress common.Address `json:"hermes_address"`
 	Operator      common.Address `json:"operator"`
+	ChannelImpl   common.Address `json:"channel_impl"`
 
 	Version int    `json:"version"`
 	Fee     uint   `json:"fee"`
@@ -120,4 +121,23 @@ func (a *API) GetApprovedHermesAdresses() (map[int64][]common.Address, error) {
 		res[chainId] = hermeses
 	}
 	return res, nil
+}
+
+func (a *API) GetHermesData(chainId int64, hermesAddress common.Address) (*HermesResponse, error) {
+	hermesesData, err := a.GetHermeses(nil)
+	if err != nil {
+		return nil, err
+	}
+	hermesesForChainId, ok := hermesesData[chainId]
+	if !ok {
+		return nil, fmt.Errorf("no hermeses for chain id %d", chainId)
+	}
+
+	for _, h := range hermesesForChainId {
+		if h.HermesAddress == hermesAddress {
+			return &h, nil
+		}
+	}
+
+	return nil, fmt.Errorf("no data for hermes %s", hermesAddress.Hex())
 }
