@@ -42,6 +42,7 @@ type HermesesResponse map[int64][]HermesResponse
 type HermesResponse struct {
 	HermesAddress common.Address `json:"hermes_address"`
 	Operator      common.Address `json:"operator"`
+	ChannelImpl   common.Address `json:"channel_impl"`
 
 	Version int    `json:"version"`
 	Fee     uint   `json:"fee"`
