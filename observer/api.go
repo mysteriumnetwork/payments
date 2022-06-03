@@ -123,6 +123,27 @@ func (a *API) GetApprovedHermesAdresses() (map[int64][]common.Address, error) {
 	return res, nil
 }
 
+// GetUnapprovedHermesAdresses returns a map by chain of all unapproved hermes addresses.
+func (a *API) GetUnapprovedHermesAdresses() (map[int64][]common.Address, error) {
+	f := false
+	resp, err := a.GetHermeses(&HermesFilter{
+		Approved: &f,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	res := make(map[int64][]common.Address)
+	for chainId, hermesesResp := range resp {
+		hermeses := make([]common.Address, len(hermesesResp))
+		for i, h := range hermesesResp {
+			hermeses[i] = h.HermesAddress
+		}
+		res[chainId] = hermeses
+	}
+	return res, nil
+}
+
 func (a *API) GetHermesData(chainId int64, hermesAddress common.Address) (*HermesResponse, error) {
 	hermesesData, err := a.GetHermeses(nil)
 	if err != nil {
