@@ -104,9 +104,9 @@ func (t *Delivery) GetLastTransaction() (*types.Transaction, error) {
 	return tx, tx.UnmarshalJSON(t.SentTransaction)
 }
 
-func (d *Delivery) applyFees(f *fees) *Delivery {
-	dd := *d
-	if d.GasPrice != nil && d.GasPrice.Cmp(big.NewInt(0)) > 0 {
+func (t *Delivery) applyFees(f *fees) *Delivery {
+	dd := *t
+	if t.GasPrice != nil && t.GasPrice.Cmp(big.NewInt(0)) > 0 {
 		dd.GasPrice = new(big.Int).Add(f.Base, f.Tip)
 	} else {
 		dd.GasTip = f.Tip
@@ -114,6 +114,10 @@ func (d *Delivery) applyFees(f *fees) *Delivery {
 	}
 
 	return &dd
+}
+
+func (t Delivery) Hash() string {
+	return fmt.Sprintf("%s:%d:%d", t.Sender, t.ChainID, t.Nonce)
 }
 
 type DeliveryRequest struct {
