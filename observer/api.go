@@ -105,9 +105,14 @@ func (a *API) GetHermeses(f *HermesFilter) (HermesesResponse, error) {
 // GetApprovedHermesAdresses returns a map by chain of all approved hermes addresses.
 func (a *API) GetApprovedHermesAdresses() (map[int64][]common.Address, error) {
 	t := true
-	resp, err := a.GetHermeses(&HermesFilter{
+	return a.GetHermesAdresses(&HermesFilter{
 		Approved: &t,
 	})
+}
+
+// GetHermesAdresses returns a map by chain of hermes addresses filtered by the given query.
+func (a *API) GetHermesAdresses(f *HermesFilter) (map[int64][]common.Address, error) {
+	resp, err := a.GetHermeses(f)
 
 	if err != nil {
 		return nil, err
