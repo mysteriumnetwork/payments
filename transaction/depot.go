@@ -34,13 +34,15 @@ import (
 // sure that they reach their destination. If they're stuck
 // it will reissue a transaction with more gas.
 type Depot struct {
-	handler DeliveryCourier
-	storage DepotStorage
+	handler        DeliveryCourier
+	storage        DepotStorage
+	storageCleaner DepotStorageCleaner
 
 	gasStation   *GasTracker
 	nonceTracker *DepotNonceTracker
 
-	config DepotConfig
+	config        DepotConfig
+	cleanupConfig DepotCleanupConfig
 
 	logFn   func(error)
 	metrics DepotMetricsExporter
@@ -62,6 +64,12 @@ type DepotWorker struct {
 	ChainID         int64
 	ProcessInterval time.Duration
 	ProcessCount    uint
+}
+
+type DepotCleanupConfig struct {
+	CleanupInterval  time.Duration
+	CleanupDaysLimit int64
+	CleanupLimit     uint64
 }
 
 // DeliveryCourier is responsible for executing transaction on the blockchain.
@@ -93,6 +101,15 @@ type DepotStorage interface {
 	// UpsertDeliveryRequest is used to update a delivery. If no delivery with a given
 	// unique ID exists, it should create it.
 	UpsertDeliveryRequest(tx Delivery) error
+}
+
+// DepotStorageCleaner is a persistent storage used to get and clean old entries.
+type DepotStorageCleaner interface {
+	// GetDeliveredDeliveryRequests should return a list of delivered delivery requests older than the given time. Order is not important.
+	GetDeliveredDeliveryRequests(chainID int64, sender common.Address, olderThan time.Time, limit uint64) ([]Delivery, error)
+
+	// DeleteDelivery should delete the given deliveries from storage.
+	DeleteDelivery(delivery ...Delivery) error
 }
 
 var ErrImpossibleToDeliver = errors.New("impossible to deliver")
@@ -220,6 +237,46 @@ func (d *Depot) watchDeliveries(s DepotWorker) {
 	}
 }
 
+// AttachCleaner allows the caller to attach a cleaner for old data to depot.
+func (d *Depot) AttachCleaner(storageCleaner DepotStorageCleaner, config DepotCleanupConfig) {
+	d.storageCleaner = storageCleaner
+	d.cleanupConfig = config
+}
+
+// RunCleaner will spawn a goroutine for each loaded `DepotCleanupWorker`.
+func (d *Depot) RunCleaner() {
+	go d.startCleanupThread()
+}
+
+func (d *Depot) startCleanupThread() {
+	if d.cleanupConfig.CleanupInterval <= 0 || d.cleanupConfig.CleanupDaysLimit <= 0 || d.cleanupConfig.CleanupLimit <= 0 {
+		d.log(fmt.Errorf("invalid cleanup config"))
+		return
+	}
+	for {
+		select {
+		case <-d.stop:
+			return
+		case <-time.After(d.cleanupConfig.CleanupInterval):
+			for _, worker := range d.config.Workers {
+				var hours int64 = 24 * d.cleanupConfig.CleanupDaysLimit
+				olderThan := time.Now().UTC().Add(-time.Duration(hours) * time.Hour)
+				tds, err := d.storageCleaner.GetDeliveredDeliveryRequests(worker.ChainID, worker.Address, olderThan, d.cleanupConfig.CleanupLimit)
+				if err != nil {
+					d.log(err)
+					break
+				}
+
+				err = d.storageCleaner.DeleteDelivery(tds...)
+				if err != nil {
+					d.log(err)
+				}
+			}
+
+		}
+	}
+}
+
 func (d *Depot) handleDeliveryRequest(td Delivery) {
 	switch td.State {
 	case DeliveryStateWaiting:
@@ -326,7 +383,7 @@ func (d *Depot) sendOutTransaction(td Delivery) (Delivery, error) {
 }
 
 func (d *Depot) calculateNewGasPrice(td Delivery) (Delivery, error) {
-	newPrice := &fees{}
+	var newPrice *fees
 	switch td.State {
 	case DeliveryStatePacking, DeliveryStateWaiting:
 		gasPrice, err := d.gasStation.ReceiveInitialGas(td.ChainID, td.Type)
