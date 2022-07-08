@@ -39,7 +39,7 @@ type Depot struct {
 	storageCleaner DepotStorageCleaner
 
 	gasStation   *GasTracker
-	nonceTracker *DepotNonceTracker
+	nonceTracker DepotNonceTracker
 
 	config        DepotConfig
 	cleanupConfig DepotCleanupConfig
@@ -112,10 +112,19 @@ type DepotStorageCleaner interface {
 	DeleteDelivery(delivery ...Delivery) error
 }
 
+// DepotNonceTracker is a persistent storage used to get and clean old entries.
+type DepotNonceTracker interface {
+	// SetNextNonce sets an atomically increasing nonce for the account.
+	SetNextNonce(chainID int64, account common.Address, fn nonceSetFn) error
+
+	// GetConfirmedNonce returns the latest nonce that has been confirmed in the blockchain.
+	GetConfirmedNonce(chainID int64, account common.Address) (uint64, error)
+}
+
 var ErrImpossibleToDeliver = errors.New("impossible to deliver")
 
 // NewDepot will returns a new depot.
-func NewDepot(handler DeliveryCourier, storage DepotStorage, nonce *DepotNonceTracker, gasStation *GasTracker, cfg DepotConfig) *Depot {
+func NewDepot(handler DeliveryCourier, storage DepotStorage, nonce DepotNonceTracker, gasStation *GasTracker, cfg DepotConfig) *Depot {
 	return &Depot{
 		handler:      handler,
 		storage:      storage,

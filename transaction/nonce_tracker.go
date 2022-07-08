@@ -7,8 +7,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-// DepotNonceTracker keeps track of nonces atomically.
-type DepotNonceTracker struct {
+// NonceTracker keeps track of nonces atomically.
+type NonceTracker struct {
 	nonceTrackerBC nonceTrackerBC
 	ds             DepotStorage
 
@@ -21,9 +21,9 @@ type nonceTrackerBC interface {
 	NonceAt(chainID int64, account common.Address, blockNum *big.Int) (uint64, error)
 }
 
-// NewDepotNonceTracker returns a new nonce tracker.
-func NewDepotNonceTracker(nonceTrackerBC nonceTrackerBC, ds DepotStorage) *DepotNonceTracker {
-	return &DepotNonceTracker{
+// NewNonceTracker returns a new nonce tracker.
+func NewNonceTracker(nonceTrackerBC nonceTrackerBC, ds DepotStorage) *NonceTracker {
+	return &NonceTracker{
 		nonceTrackerBC: nonceTrackerBC,
 		nonces:         make(map[Sender]uint64),
 		ds:             ds,
@@ -33,7 +33,7 @@ func NewDepotNonceTracker(nonceTrackerBC nonceTrackerBC, ds DepotStorage) *Depot
 type nonceSetFn func(nonce uint64) error
 
 // GetNextNonce returns an atomically increasing nonce for the account.
-func (nt *DepotNonceTracker) SetNextNonce(chainID int64, account common.Address, fn nonceSetFn) error {
+func (nt *NonceTracker) SetNextNonce(chainID int64, account common.Address, fn nonceSetFn) error {
 	nt.nonceLock.Lock()
 	defer nt.nonceLock.Unlock()
 
@@ -68,7 +68,7 @@ func (nt *DepotNonceTracker) SetNextNonce(chainID int64, account common.Address,
 	return nt.setWithExec(key, nonce, fn)
 }
 
-func (nt *DepotNonceTracker) setWithExec(key Sender, nonce uint64, fn nonceSetFn) error {
+func (nt *NonceTracker) setWithExec(key Sender, nonce uint64, fn nonceSetFn) error {
 	if err := fn(nonce); err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func (nt *DepotNonceTracker) setWithExec(key Sender, nonce uint64, fn nonceSetFn
 	return nil
 }
 
-func (nt *DepotNonceTracker) GetConfirmedNonce(chainID int64, account common.Address) (uint64, error) {
+func (nt *NonceTracker) GetConfirmedNonce(chainID int64, account common.Address) (uint64, error) {
 	bcNonce, err := nt.nonceTrackerBC.NonceAt(chainID, account, nil)
 	if err != nil {
 		return bcNonce, err
@@ -87,7 +87,7 @@ func (nt *DepotNonceTracker) GetConfirmedNonce(chainID int64, account common.Add
 }
 
 // ForceReloadNonce clears the nonce cache. This will force loading from BC next time.
-func (nt *DepotNonceTracker) ForceReloadNonce(chainID int64, account common.Address) {
+func (nt *NonceTracker) ForceReloadNonce(chainID int64, account common.Address) {
 	nt.nonceLock.Lock()
 	defer nt.nonceLock.Unlock()
 	delete(nt.nonces, NewSender(account, chainID))
