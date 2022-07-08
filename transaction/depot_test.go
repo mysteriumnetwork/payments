@@ -70,7 +70,7 @@ func TestDepot(t *testing.T) {
 		}
 
 		t.Run("has 3 deliveries in db", func(t *testing.T) {
-			assert.Len(t, mockStorage.deliveries, 3)
+			assert.Equal(t, mockStorage.length(), 3)
 		})
 
 		t.Run("all deliveries are delivered", func(t *testing.T) {
@@ -93,7 +93,7 @@ func TestDepot(t *testing.T) {
 
 		t.Run("should clean 2 of the 3 deliveries", func(t *testing.T) {
 			assert.Eventually(t, func() bool {
-				return len(mockStorage.deliveries) == 1
+				return mockStorage.length() == 1
 			}, time.Second, time.Millisecond*100)
 			assert.Equal(t, mockStorage.deliveries[0].ShipmentData, []byte("{\"data\":\"tx2\"}"))
 		})
@@ -102,7 +102,7 @@ func TestDepot(t *testing.T) {
 
 		t.Run("should clean all of the deliveries", func(t *testing.T) {
 			assert.Eventually(t, func() bool {
-				return len(mockStorage.deliveries) == 0
+				return mockStorage.length() == 0
 			}, time.Second, time.Millisecond*100)
 		})
 
@@ -125,7 +125,7 @@ func TestDepot(t *testing.T) {
 		}
 
 		t.Run("has 3 deliveries in db", func(t *testing.T) {
-			assert.Len(t, mockStorage.deliveries, 3)
+			assert.Equal(t, mockStorage.length(), 3)
 		})
 
 		t.Run("all deliveries except one are delivered", func(t *testing.T) {
@@ -147,7 +147,7 @@ func TestDepot(t *testing.T) {
 
 		t.Run("should clean 2 of the 3 deliveries", func(t *testing.T) {
 			assert.Eventually(t, func() bool {
-				return len(mockStorage.deliveries) == 1
+				return mockStorage.length() == 1
 			}, time.Second, time.Millisecond*100)
 
 			assert.Equal(t, mockStorage.get(0).ShipmentData, []byte("{\"data\":\"tx2\"}"))
@@ -313,6 +313,13 @@ func (m *mockStorage) addUpdatedUtc(index int, duration time.Duration) error {
 	}
 	m.deliveries[index].UpdateUTC = m.deliveries[index].UpdateUTC.Add(duration)
 	return nil
+}
+
+func (m *mockStorage) length() int {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+
+	return len(m.deliveries)
 }
 
 func (m *mockStorage) reset() {
