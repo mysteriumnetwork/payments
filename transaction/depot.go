@@ -421,7 +421,7 @@ func (d *Depot) calculateNewGasPrice(td Delivery) (Delivery, error) {
 			return td, nil
 		}
 
-		gasPrice, err := d.gasStation.RecalculateDeliveryGas(td.ChainID, td.GasPrice, td.Type)
+		gasPrice, err := d.gasStation.RecalculateDeliveryGas(td.ChainID, td.GasTip, td.Type)
 		if err != nil {
 			return Delivery{}, err
 		}

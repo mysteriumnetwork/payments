@@ -141,7 +141,7 @@ func (g *GasTracker) calculateOverpay(chainID int64, txType DeliverableType, pri
 	}
 
 	for _, t := range opts.OverpayFor {
-		if strings.ToLower(string(txType)) == strings.ToLower(string(t)) {
+		if strings.EqualFold(string(txType), string(t)) {
 			newPriceF := new(big.Float).Mul(
 				big.NewFloat(opts.OverpayByMul),
 				new(big.Float).SetInt(price),
