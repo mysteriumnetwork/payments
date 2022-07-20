@@ -49,3 +49,13 @@ func CreateInvoice(agreementID, agreementTotal, transactorFee *big.Int, r []byte
 		ChainID:        chainID,
 	}
 }
+
+// GenerateR create random R
+func GenerateR() []byte {
+	r := make([]byte, 32)
+	_, err := rand.Read(r)
+	if err != nil {
+		panic(err)
+	}
+	return r
+}
