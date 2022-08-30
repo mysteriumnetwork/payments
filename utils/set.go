@@ -16,44 +16,61 @@
 
 package utils
 
-// Set is a collection that Contains no duplicate elements
-type Set[t any] struct {
-	m map[any]struct{}
+// Set is a collection that Contains no duplicate elements.
+type Set[T comparable] struct {
+	m map[T]struct{}
 }
 
 // newset create new instance of Set
-func NewSet[t any]() *Set[t] {
-	return &Set[t]{m: make(map[any]struct{})}
+func NewSet[T comparable]() *Set[T] {
+	return &Set[T]{m: make(map[T]struct{})}
 }
 
-// Add the specific element to Set if it is not already present
-func (s *Set[t]) Add(e any) {
-	s.m[e] = struct{}{}
+// Add the specific element to Set if it is not already present.
+func (s *Set[T]) Add(val T) {
+	s.m[val] = struct{}{}
 }
 
-// Size returns number of elements in Set
-func (s *Set[t]) Size() int {
+// Size returns number of elements in Set.
+func (s *Set[T]) Size() int {
 	return len(s.m)
 }
 
 // Iterator returns an Iterator over the elements in this Set.
-func (s *Set[t]) Iterator() []t {
-	r := []t{}
+func (s *Set[T]) Iterator() []T {
+	r := []T{}
 	for e := range s.m {
-		r = append(r, e.(t))
+		r = append(r, e)
 	}
-
 	return r
 }
 
 // Contains returns true if this Set Contains the specified element.
-func (s *Set[t]) Contains(e t) bool {
+func (s *Set[T]) Contains(e T) bool {
 	_, exists := s.m[e]
 
 	return exists
 }
 
-// IsEmpty returns true is Set Contains no elements
-func (s *Set[t]) IsEmpty() bool {
+// IsEmpty returns true is Set Contains no elements.
+func (s *Set[T]) IsEmpty() bool {
 	return len(s.m) == 0
+}
+
+// SliceToSet converts a slice to a Set.
+func SliceToSet[T comparable](val []T) Set[T] {
+	result := *NewSet[T]()
+	for _, v := range val {
+		result.Add(v)
+	}
+	return result
+}
+
+// SliceToSetWithTransformation converts a slice to a Set applying a transformation.
+func SliceToSetWithTransformation[T comparable, K comparable](val []T, transformFunc func(T) K) Set[K] {
+	result := *NewSet[K]()
+	for _, v := range val {
+		result.Add(transformFunc(v))
+	}
+	return result
 }
