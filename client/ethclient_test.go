@@ -32,10 +32,18 @@ func TestReconnectableEthClientCreatesNewClient(t *testing.T) {
 	c2 := client.Client()
 	assert.Equal(t, c1, c2)
 
+	a1 := client.Address()
+	a2 := client.Address()
+	assert.Equal(t, a1, a2)
+
 	err = client.Reconnect(time.Second)
 	assert.Nil(t, err)
 
 	c3 := client.Client()
 	assert.Equal(t, c1, c3)
 	assert.Equal(t, c2, c3)
+
+	a3 := client.Address()
+	assert.Equal(t, a1, a3)
+	assert.Equal(t, a2, a3)
 }

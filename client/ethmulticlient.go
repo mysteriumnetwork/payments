@@ -59,8 +59,6 @@ type safeChannel struct {
 	mu sync.Mutex
 }
 
-type doFunc func(ctx context.Context, c EtherClient)
-
 var (
 	ErrClientNoConnection    = errors.New("failed to connect to the eth client with a given address")
 	ErrClientTooManyRequests = errors.New("failed to call eth client, too many requests")
@@ -107,10 +105,10 @@ func NewEthMultiClientNotifyDown(defaulTimeout time.Duration, clients []Addressa
 // Close will close all the clients the multiclient instance holds.
 func (c *EthMultiClient) Close() {
 	c.closeNotify()
-	c.doWithMultipleClients(context.Background(), func(ctx context.Context, c EtherClient) error {
+	c.doWithAllClients(context.Background(), func(ctx context.Context, c EtherClient) error {
 		c.Close()
 		return nil
-	})
+	}, false)
 }
 
 // ChainId retrieves the current chain ID for transaction replay protection.
@@ -640,18 +638,26 @@ func (c *EthMultiClient) CallSpecificClient(address string, call func(c EtherCli
 	return call(client)
 }
 
-// doWithMultipleClientsCtx will execute a given function with all clients.
+// doWithMultipleClientsCtx will execute a given function with all clients until one succeds.
 //
 // If parent context is cancel or receives a timeout, all calls will be also cancels and the
 // function will return.
 func (c *EthMultiClient) doWithMultipleClients(ctx context.Context, do func(ctx context.Context, c EtherClient) error) error {
+	return c.doWithAllClients(ctx, do, true)
+}
+
+// doWithAllClients will execute a given function with all clients with option to return on first successful call.
+//
+// If parent context is cancel or receives a timeout, all calls will be also cancels and the
+// function will return.
+func (c *EthMultiClient) doWithAllClients(ctx context.Context, do func(ctx context.Context, c EtherClient) error, returnOnFirstSuccess bool) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	ctxs, cancel := c.produceCtxs(ctx)
 	defer cancel()
 
-	done := make(chan struct{}, 0)
+	done := make(chan struct{})
 	defer close(done)
 
 	go func() {
@@ -663,7 +669,6 @@ func (c *EthMultiClient) doWithMultipleClients(ctx context.Context, do func(ctx 
 		}
 	}()
 
-	var err error
 	for i, cl := range c.clients {
 		select {
 		case <-ctx.Done():
@@ -674,7 +679,7 @@ func (c *EthMultiClient) doWithMultipleClients(ctx context.Context, do func(ctx 
 				return ctx.Err()
 			}
 
-			err = do(childCtx, cl.Client())
+			err := do(childCtx, cl.Client())
 			if err != nil {
 				if c.tryNotify(ctx, cl.Address(), err) {
 					continue
@@ -682,11 +687,12 @@ func (c *EthMultiClient) doWithMultipleClients(ctx context.Context, do func(ctx 
 				return err
 			}
 
-			return nil
+			if returnOnFirstSuccess {
+				return nil
+			}
 		}
 	}
-
-	return err
+	return nil
 }
 
 func (c *EthMultiClient) tryNotify(parentCtx context.Context, clientAddress string, err error) bool {
