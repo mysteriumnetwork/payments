@@ -189,7 +189,6 @@ func Test_EthMultiClient(t *testing.T) {
 		calls := make(map[string]int)
 		callsLock := sync.Mutex{}
 		cl := getMockClientWithFunctionCallCounter(calls, &callsLock)
-
 		cl2 := getMockClientWithFunctionCallCounter(calls, &callsLock)
 
 		getter := NewDefaultAddressableEthClientGetter("", cl)

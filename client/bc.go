@@ -255,8 +255,7 @@ type AddressableEthClientGetter interface {
 }
 
 type DefaultEthClientGetter struct {
-	client  EtherClient
-	address string
+	client EtherClient
 }
 
 func NewDefaultEthClientGetter(cl EtherClient) EthClientGetter {
