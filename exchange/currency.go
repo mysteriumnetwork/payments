@@ -101,7 +101,7 @@ func (pr PriceResponse) GetRateInUSD(c Coin) (float64, bool) {
 	return p, ok
 }
 
-// GetRateInCoin returns a rate in given coin
+// GetRates returns rates for a given coin
 func (pr PriceResponse) GetRates(c Coin) (Rates, bool) {
 	v, ok := pr[c]
 	return v, ok
@@ -110,7 +110,7 @@ func (pr PriceResponse) GetRates(c Coin) (Rates, bool) {
 func (r Rates) GetRate(c Currency) (float64, bool) {
 	v, ok := r[c]
 	if !ok {
-		v, ok = r[Currency(strings.ToLower(string(c)))]
+		v, ok = r[Currency(strings.ToUpper(string(c)))]
 		return v, ok
 	}
 	return v, ok

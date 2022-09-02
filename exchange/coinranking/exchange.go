@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
 	"strconv"
@@ -54,13 +54,17 @@ func NewAPI(baseURI string, coinRankingAccessToken string, cacheExpiration time.
 }
 
 type coinsPricesResponse struct {
-	Status string `json:"status"`
-	Data   struct {
-		Coins []struct {
-			UUID  string `json:"uuid"`
-			Price string `json:"price"`
-		} `json:"coins"`
-	} `json:"data"`
+	Status string                  `json:"status"`
+	Data   coinsPricesResponseData `json:"data"`
+}
+
+type coinsPricesResponseData struct {
+	Coins []coinResponse `json:"coins"`
+}
+
+type coinResponse struct {
+	UUID  string `json:"uuid"`
+	Price string `json:"price"`
 }
 
 var currencyToUuid = map[exchange.Currency]string{
@@ -75,6 +79,7 @@ var currencyToUuid = map[exchange.Currency]string{
 	exchange.CurrencyLTC:   "D7B1x_ks7WhV5",
 	exchange.CurrencyDOGE:  "a91GCGd_u96cF",
 	exchange.CurrencyUSDT:  "HIVsRcGKkPFtW",
+	exchange.CurrencyGBP:   "Hokyui45Z38f",
 }
 var uuidToCurrencyMap = map[string]exchange.Currency{
 	"razxDUgYGNAdQ": exchange.CurrencyETH,
@@ -88,6 +93,7 @@ var uuidToCurrencyMap = map[string]exchange.Currency{
 	"D7B1x_ks7WhV5": exchange.CurrencyLTC,
 	"a91GCGd_u96cF": exchange.CurrencyDOGE,
 	"HIVsRcGKkPFtW": exchange.CurrencyUSDT,
+	"Hokyui45Z38f":  exchange.CurrencyGBP,
 }
 
 func currencyToUUID(currency exchange.Currency) (string, bool) {
@@ -145,7 +151,7 @@ func (cr *API) GetRate(coins []exchange.Coin, vsCurrencies []exchange.Currency) 
 		}
 		curUuid, ok := currencyToUUID(cur)
 		if !ok {
-			return exchange.PriceResponse{}, errors.New("unknown currency: " + string(curUuid))
+			return exchange.PriceResponse{}, errors.New("unknown currency: " + string(cur))
 		}
 
 		// set reference currency
@@ -159,7 +165,7 @@ func (cr *API) GetRate(coins []exchange.Coin, vsCurrencies []exchange.Currency) 
 		defer resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
-			body, _ := ioutil.ReadAll(resp.Body)
+			body, _ := io.ReadAll(resp.Body)
 			return exchange.PriceResponse{}, fmt.Errorf("got an unexpected error code %v, body: %v", resp.StatusCode, string(body))
 		}
 		var res coinsPricesResponse
