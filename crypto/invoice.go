@@ -19,6 +19,7 @@ package crypto
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/crypto"
@@ -35,10 +36,13 @@ type Invoice struct {
 }
 
 // CreateInvoice creates new invoice
-func CreateInvoice(agreementID, agreementTotal, transactorFee *big.Int, r []byte, chainID int64) Invoice {
+func CreateInvoice(agreementID, agreementTotal, transactorFee *big.Int, r []byte, chainID int64) (Invoice, error) {
 	if r == nil {
-		r = make([]byte, 32)
-		rand.Read(r)
+		var err error
+		r, err = GenerateR()
+		if err != nil {
+			return Invoice{}, err
+		}
 	}
 
 	return Invoice{
@@ -47,15 +51,15 @@ func CreateInvoice(agreementID, agreementTotal, transactorFee *big.Int, r []byte
 		TransactorFee:  new(big.Int).Set(transactorFee),
 		Hashlock:       hex.EncodeToString(crypto.Keccak256(r)),
 		ChainID:        chainID,
-	}
+	}, nil
 }
 
-// GenerateR create random R
-func GenerateR() []byte {
+// GenerateR creates a random R
+func GenerateR() ([]byte, error) {
 	r := make([]byte, 32)
 	_, err := rand.Read(r)
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("failed to generate r: %w", err)
 	}
-	return r
+	return r, nil
 }

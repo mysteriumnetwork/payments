@@ -40,27 +40,12 @@ type SetBeneficiaryRequest struct {
 }
 
 func CreateBeneficiaryRequest(chainID int64, identity, registry, beneficiary string, nonce *big.Int, ks hashSigner, signer common.Address) (*SetBeneficiaryRequest, error) {
-	if hasHexPrefix(identity) {
-		identity = identity[2:]
+	req, err := NewBeneficiaryRequest(chainID, identity, registry, beneficiary, nonce, "")
+	if err != nil {
+		return nil, err
 	}
 
-	if hasHexPrefix(registry) {
-		registry = registry[2:]
-	}
-
-	if hasHexPrefix(beneficiary) {
-		beneficiary = beneficiary[2:]
-	}
-
-	request := SetBeneficiaryRequest{
-		ChainID:     chainID,
-		Identity:    strings.ToLower(identity),
-		Registry:    strings.ToLower(registry),
-		Beneficiary: strings.ToLower(beneficiary),
-		Nonce:       nonce,
-	}
-
-	signature, err := request.CreateSignature(ks, signer)
+	signature, err := req.CreateSignature(ks, signer)
 	if err != nil {
 		return nil, err
 	}
@@ -69,29 +54,16 @@ func CreateBeneficiaryRequest(chainID int64, identity, registry, beneficiary str
 		return nil, fmt.Errorf("failed to reformat signature: %w", err)
 	}
 
-	request.Signature = hex.EncodeToString(signature)
-
-	return &request, nil
+	req.Signature = hex.EncodeToString(signature)
+	return req, nil
 }
 
 func NewBeneficiaryRequest(chainID int64, identity, registry, beneficiary string, nonce *big.Int, signature string) (*SetBeneficiaryRequest, error) {
-	if hasHexPrefix(identity) {
-		identity = identity[2:]
-	}
-
-	if hasHexPrefix(registry) {
-		registry = registry[2:]
-	}
-
-	if hasHexPrefix(beneficiary) {
-		beneficiary = beneficiary[2:]
-	}
-
 	return &SetBeneficiaryRequest{
 		ChainID:     chainID,
-		Identity:    strings.ToLower(identity),
-		Registry:    strings.ToLower(registry),
-		Beneficiary: strings.ToLower(beneficiary),
+		Identity:    ensureNoPrefix(strings.ToLower(identity)),
+		Registry:    ensureNoPrefix(strings.ToLower(registry)),
+		Beneficiary: ensureNoPrefix(strings.ToLower(beneficiary)),
 		Nonce:       nonce,
 		Signature:   signature,
 	}, nil

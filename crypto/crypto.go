@@ -46,7 +46,7 @@ func GetProxyCode(destinationAddress string) ([]byte, error) {
 
 // keccak("0xff++msg.sender++salt++keccak(byteCode)")
 func deriveCreate2Address(salt string, msgSender string, implementation string) (address string, err error) {
-	if !isHexAddress(msgSender) || !isHexAddress(implementation) {
+	if !common.IsHexAddress(msgSender) || !common.IsHexAddress(implementation) {
 		return "", errors.New("msgSender and implementation have to be hex addresses")
 	}
 
@@ -58,7 +58,7 @@ func deriveCreate2Address(salt string, msgSender string, implementation string) 
 
 // GenerateChannelAddress generate channel address from given identity hash
 func GenerateChannelAddress(identity, hermes, registry, channelImplementation string) (address string, err error) {
-	if !isHexAddress(identity) || !isHexAddress(registry) || !isHexAddress(channelImplementation) {
+	if !common.IsHexAddress(identity) || !common.IsHexAddress(registry) || !common.IsHexAddress(channelImplementation) {
 		return "", errors.New("given identity, registry and channelImplementation params have to be hex addresses")
 	}
 
@@ -89,7 +89,7 @@ const (
 )
 
 func generateProviderChannelID(providerIdentity, hermesAddress string, channelType ProviderChannelType) (string, error) {
-	if !isHexAddress(providerIdentity) || !isHexAddress(hermesAddress) {
+	if !common.IsHexAddress(providerIdentity) || !common.IsHexAddress(hermesAddress) {
 		return "", errors.New("given providerIdentity and hermesAddress params have to be hex addresses")
 	}
 
@@ -107,7 +107,7 @@ func generateProviderChannelID(providerIdentity, hermesAddress string, channelTy
 
 // GenerateHermesAddress generate hermes address from given hermes operator address
 func GenerateHermesAddress(operator string, registry string, hermesImplementation string) (address string, err error) {
-	if !isHexAddress(operator) || !isHexAddress(registry) || !isHexAddress(hermesImplementation) {
+	if !common.IsHexAddress(operator) || !common.IsHexAddress(registry) || !common.IsHexAddress(hermesImplementation) {
 		return "", errors.New("given operator, registry and hermesImplementation params have to be hex addresses")
 	}
 

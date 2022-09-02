@@ -17,6 +17,7 @@
 package crypto
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -62,4 +63,18 @@ func TestGenerateProviderChannelID(t *testing.T) {
 	channelID, err := GenerateProviderChannelID(providerIdentity, hermesAddress)
 	assert.NoError(t, err)
 	assert.Equal(t, expectedChannelID, channelID)
+}
+
+func TestGenerateHermesAddress(t *testing.T) {
+	operator := "0x76259c949bee90c3ef6f1d04a3cb50ed0de7763c"
+	registry := "0x1ba2df26371e83d87afee2f27a42f5a7fe9e5219"
+	hermesImplementation := "0xac69e0c98a688e35698630eb0c741eb2a2fc5ef1"
+	expectedHermesAddress := strings.ToLower("0xcAeF9A6E9C2d9C0Ee3333529922c280580365b51")
+
+	_, err := GenerateHermesAddress("", "", "")
+	assert.EqualError(t, err, "given operator, registry and hermesImplementation params have to be hex addresses")
+
+	hermesAddress, err := GenerateHermesAddress(operator, registry, hermesImplementation)
+	assert.Nil(t, err)
+	assert.Equal(t, expectedHermesAddress, hermesAddress)
 }

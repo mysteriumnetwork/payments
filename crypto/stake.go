@@ -22,7 +22,6 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -52,7 +51,7 @@ func (dpsr DecreaseProviderStakeRequest) CreateSignature(ks hashSigner, signer c
 }
 
 // Sign signs the DecreaseProviderStakeRequest.
-func (dpsr *DecreaseProviderStakeRequest) Sign(ks *keystore.KeyStore, signer common.Address) error {
+func (dpsr *DecreaseProviderStakeRequest) Sign(ks hashSigner, signer common.Address) error {
 	signature, err := dpsr.CreateSignature(ks, signer)
 	if err != nil {
 		return err

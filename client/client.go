@@ -184,10 +184,8 @@ func (bc *Blockchain) SubscribeToConsumerBalanceEvent(channel, mystSCAddress com
 	}
 
 	go func() {
-		select {
-		case <-time.After(timeout):
-			sub.Unsubscribe()
-		}
+		time.Sleep(timeout)
+		sub.Unsubscribe()
 	}()
 
 	go func() {

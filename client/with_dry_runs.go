@@ -64,10 +64,6 @@ func NewWithDryRuns(bc BC, ethClient EthClientGetter) *WithDryRuns {
 	}
 }
 
-type gasLimitProvider interface {
-	GetGasLimit() uint64
-}
-
 // GetEthBalance gets the current ethereum balance for the address.
 func (cwdr *WithDryRuns) GetEthBalance(address common.Address) (*big.Int, error) {
 	return cwdr.bc.GetEthBalance(address)
