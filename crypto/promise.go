@@ -43,13 +43,8 @@ type Promise struct {
 
 // CreatePromise creates and signs new payment promise
 func CreatePromise(channelID string, chainID int64, amount *big.Int, fee *big.Int, hashlock string, ks hashSigner, signer common.Address) (*Promise, error) {
-	if hasHexPrefix(channelID) {
-		channelID = channelID[2:]
-	}
-
-	if hasHexPrefix(hashlock) {
-		hashlock = hashlock[2:]
-	}
+	channelID = ensureNoPrefix(channelID)
+	hashlock = ensureNoPrefix(hashlock)
 
 	if !isHex(channelID) || !isHex(hashlock) {
 		return nil, errors.New("channelID and hashlock have to be proper hex strings")
@@ -90,13 +85,8 @@ func CreatePromise(channelID string, chainID int64, amount *big.Int, fee *big.In
 // NewPromise will create new promise,
 // signature can be empty and be created later using `Sign()` method.
 func NewPromise(chainID int64, channelID string, amount, fee *big.Int, preimage string, signature string) (*Promise, error) {
-	if hasHexPrefix(channelID) {
-		channelID = channelID[2:]
-	}
-
-	if hasHexPrefix(preimage) {
-		preimage = preimage[2:]
-	}
+	channelID = ensureNoPrefix(channelID)
+	preimage = ensureNoPrefix(preimage)
 
 	chID, err := hex.DecodeString(channelID)
 	if err != nil {
@@ -130,13 +120,8 @@ func NewPromise(chainID int64, channelID string, amount, fee *big.Int, preimage 
 
 // NewRawPromise creates a promise from given params. The promise has no R.
 func NewRawPromise(chainID int64, channelID string, amount, fee *big.Int, hashlock string, signature string) (*Promise, error) {
-	if hasHexPrefix(channelID) {
-		channelID = channelID[2:]
-	}
-
-	if hasHexPrefix(hashlock) {
-		hashlock = hashlock[2:]
-	}
+	channelID = ensureNoPrefix(channelID)
+	hashlock = ensureNoPrefix(hashlock)
 
 	chID, err := hex.DecodeString(channelID)
 	if err != nil {

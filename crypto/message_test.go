@@ -81,7 +81,8 @@ func TestCreateExchangeMessage(t *testing.T) {
 	agreementTotal := big.NewInt(1401)
 	r, _ := hex.DecodeString("5b6b3f31a3acd0e317173d25c8b60503547b741a0e81d6068bb88486967839fa")
 
-	invoice := CreateInvoice(agreementID, agreementTotal, fee, r, 1)
+	invoice, err := CreateInvoice(agreementID, agreementTotal, fee, r, 1)
+	assert.NoError(t, err)
 	invoice.Provider = provider
 
 	message, err := CreateExchangeMessage(1, invoice, amount, channelID, "", ks, account.Address)
@@ -90,4 +91,40 @@ func TestCreateExchangeMessage(t *testing.T) {
 	assert.Equal(t, p.PromiseSignature, message.Promise.Signature)
 	assert.Equal(t, p.ExchangeMessageSignature, message.Signature)
 	assert.Equal(t, p.Hashlock, message.Promise.Hashlock)
+	assert.Len(t, p.R, 32)
+}
+
+func TestCreateExchangeMessageWithPromise(t *testing.T) {
+	dir, ks := tmpKeyStore(t, false)
+	defer os.RemoveAll(dir)
+
+	account, err := ks.ImportECDSA(getPrivKey("consumer"), "")
+	assert.Nil(t, err)
+	if err := ks.Unlock(account, ""); err != nil {
+		t.Fatal(err)
+	}
+
+	p := getParams("consumer")
+	fee := big.NewInt(0).SetUint64(p.Fee)
+	provider := p.Provider.Hex()
+
+	agreementID := big.NewInt(1)
+	agreementTotal := big.NewInt(1401)
+	r, _ := hex.DecodeString("5b6b3f31a3acd0e317173d25c8b60503547b741a0e81d6068bb88486967839fa")
+
+	invoice, err := CreateInvoice(agreementID, agreementTotal, fee, r, 1)
+	assert.NoError(t, err)
+	invoice.Provider = provider
+
+	promise := getPromise("consumer")
+	message, err := CreateExchangeMessageWithPromise(1, invoice, &promise, "", ks, account.Address)
+	assert.Nil(t, err)
+
+	assert.Equal(t, p.PromiseSignature, message.Promise.Signature)
+	assert.Equal(t, p.ExchangeMessageSignature, message.Signature)
+	assert.Equal(t, p.Hashlock, message.Promise.Hashlock)
+	assert.Len(t, p.R, 32)
+	assert.Equal(t, promise, message.Promise)
+	assert.Equal(t, agreementTotal, message.GetAgreementTotal())
+	assert.Equal(t, fee, message.GetFee())
 }

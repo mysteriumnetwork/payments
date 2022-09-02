@@ -17,181 +17,83 @@
 package crypto
 
 import (
-	"fmt"
-	"math/big"
+	"strings"
 	"testing"
 
-	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBigMystToFloat(t *testing.T) {
-	singleMyst := big.NewInt(0).SetUint64(Myst)
-	type args struct {
-		input *big.Int
-	}
-	tests := []struct {
-		name string
-		args args
-		want float64
-	}{
-		{
-			name: "calculates a single myst correctly",
-			args: args{
-				input: singleMyst,
+func TestHelpers(t *testing.T) {
+	t.Run("is hex number", func(t *testing.T) {
+		for _, test := range []struct {
+			input  string
+			result bool
+		}{
+			{
+				input:  "abcdefg1234",
+				result: false,
 			},
-			want: 1.0,
-		},
-		{
-			name: "calculates half a myst",
-			args: args{
-				input: big.NewInt(0).Div(singleMyst, big.NewInt(2)),
+			{
+				input:  "123456",
+				result: true,
 			},
-			want: 0.5,
-		},
-		{
-			name: "calculates a small amount of a myst",
-			args: args{
-				input: big.NewInt(0).SetUint64(5000_000_000),
+			{
+				input:  "1234567",
+				result: false,
 			},
-			want: 0.000000005,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := BigMystToFloat(tt.args.input); got != tt.want {
-				t.Errorf("BigMystToFloat() = %v, want %v", got, tt.want)
+			{
+				input:  "abcdef",
+				result: true,
+			},
+			{
+				input:  "ABCDEF",
+				result: true,
+			},
+			{
+				input:  "AbCDeF",
+				result: true,
+			},
+			{
+				input:  "12345678abcdE",
+				result: false,
+			},
+		} {
+			res := isHex(test.input)
+			if test.result != res {
+				t.Errorf("isHex(%s) = %t, want %t", test.input, res, test.result)
 			}
-		})
-	}
-}
-
-func TestFloatToBigMyst(t *testing.T) {
-	singleMyst, _ := new(big.Float).Set(bigMyst).Int(nil)
-	type args struct {
-		input float64
-	}
-	tests := []struct {
-		name string
-		args args
-		want *big.Int
-	}{
-		{
-			name: "calculates a single myst correctly",
-			args: args{
-				input: 1.0,
-			},
-			want: singleMyst,
-		},
-		{
-			name: "calculates half a myst",
-			args: args{
-				input: 0.5,
-			},
-			want: big.NewInt(0).Div(singleMyst, big.NewInt(2)),
-		},
-		{
-			name: "calculates a small amount of a myst",
-			args: args{
-				input: 0.000000005,
-			},
-			want: big.NewInt(0).SetUint64(5000_000_000),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := FloatToBigMyst(tt.args.input); got.Cmp(tt.want) != 0 {
-				t.Errorf("FloatToBigMyst() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestBigMystToDecimal(t *testing.T) {
-	mustBig := func(s string) *big.Int {
-		res, ok := big.NewInt(0).SetString(s, 10)
-		if !ok {
-			panic("failed big int")
 		}
-		return res
-	}
-	for i, test := range []struct {
-		input *big.Int
-		get   decimal.Decimal
-	}{
-		{
-			input: mustBig("12312312312312311231231"),
-			get:   decimal.RequireFromString("12312.312312312311231231"),
-		},
-		{
-			input: mustBig("1231231231231231123123112"),
-			get:   decimal.RequireFromString("1231231.231231231123123112"),
-		},
-		{
-			input: mustBig("12312312300000000000000"),
-			get:   decimal.RequireFromString("12312.3123"),
-		},
-		{
-			input: mustBig("12312000000000000000000"),
-			get:   decimal.RequireFromString("12312"),
-		},
-		{
-			input: mustBig("100000"),
-			get:   decimal.RequireFromString("0.0000000000001"),
-		},
-		{
-			input: mustBig("1"),
-			get:   decimal.RequireFromString("0.000000000000000001"),
-		},
-		{
-			input: mustBig("0"),
-			get:   decimal.RequireFromString("0"),
-		},
-	} {
-		result := BigMystToDecimal(test.input)
-		assert.Equal(t, test.get.String(), result.String(), fmt.Sprintf("test %d failed", i+1))
-	}
-}
+	})
 
-func TestDecimalToBigMyst(t *testing.T) {
-	for _, test := range []struct {
-		input decimal.Decimal
-		get   string
-	}{
-		{
-			input: decimal.RequireFromString("12312.312312312311231231"),
-			get:   "12312312312312311231231",
-		},
-		{
-			input: decimal.RequireFromString("12312.31231231231123123123"),
-			get:   "12312312312312311231231",
-		},
-		{
-			input: decimal.RequireFromString("12312.3123"),
-			get:   "12312312300000000000000",
-		},
-		{
-			input: decimal.RequireFromString("12312"),
-			get:   "12312000000000000000000",
-		},
-		{
-			input: decimal.RequireFromString("0.0000000000001"),
-			get:   "100000",
-		},
-		{
-			input: decimal.RequireFromString("0.000000000000000001"),
-			get:   "1",
-		},
-		{
-			input: decimal.RequireFromString("0"),
-			get:   "0",
-		},
-		{
-			input: decimal.RequireFromString("0.0000000000000000000000000000001"),
-			get:   "0",
-		},
-	} {
-		result := DecimalToBigMyst(test.input)
-		assert.Equal(t, test.get, result.String())
-	}
+	t.Run("to bytes", func(t *testing.T) {
+		for _, test := range []struct {
+			input  string
+			result string
+		}{
+			{
+				input:  "0x2345453",
+				result: "",
+			},
+			{
+				input:  "0x1be7b0f285d04701f27682f591a60417c47d095a",
+				result: strings.ToLower("0000000000000000000000001be7b0f285d04701f27682f591a60417c47d095a"),
+			},
+			{
+				input:  "1be7b0f285d04701f27682f591a60417c47d095a",
+				result: strings.ToLower("0000000000000000000000001be7b0f285d04701f27682f591a60417c47d095a"),
+			},
+			{
+				input:  "0x1be7b0f285d04701f27682f591a60417c47d095a1",
+				result: "",
+			},
+		} {
+			res, err := toBytes32(test.input)
+			if test.result == "" {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, test.result, res)
+			}
+		}
+	})
 }

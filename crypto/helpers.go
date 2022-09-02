@@ -17,68 +17,11 @@
 package crypto
 
 import (
-	"errors"
-	"math/big"
+	"fmt"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/shopspring/decimal"
 )
-
-// Myst represents a single myst ERC 777 token.
-const Myst uint64 = 1000_000_000_000_000_000
-
-// MystSize defines MYST size - precision for floating points.
-const MystSize uint = 18
-
-const mystSizeInt32 int32 = int32(MystSize)
-
-var bigMyst = big.NewFloat(0).SetUint64(Myst)
-
-// BigMystToFloat takes in a big int and returns a float64 representation of the myst.
-func BigMystToFloat(input *big.Int) float64 {
-	f := new(big.Float).SetInt(input)
-	divided := f.Quo(f, bigMyst)
-	r, _ := divided.Float64()
-	return r
-}
-
-// DecimalToBigMyst is an accurate conversion between a decimal and big int.
-// If number has greater precision than `MystSize` it will get truncated.
-func DecimalToBigMyst(input decimal.Decimal) *big.Int {
-	cleaned := input.Truncate(mystSizeInt32)
-	if cleaned.IsZero() {
-		return new(big.Int)
-	}
-
-	shifted := input.Shift(mystSizeInt32)
-	return shifted.BigInt()
-}
-
-// BigMystToDecimal converts a BigMyst to a decimal.
-func BigMystToDecimal(input *big.Int) decimal.Decimal {
-	return decimal.NewFromBigInt(input, -mystSizeInt32)
-}
-
-// FloatToBigMyst takes in a float converts it to a big int representation.
-// For example, 1.5 becomes 1500_000_000_000_000_000.
-func FloatToBigMyst(input float64) *big.Int {
-	multiplied := new(big.Float).Mul(new(big.Float).SetFloat64(input), bigMyst)
-	res, _ := multiplied.Int(nil)
-	return res
-}
-
-func HexToBytes(str string) []byte {
-	if hasHexPrefix(str) {
-		return common.Hex2Bytes(str[2:])
-	}
-
-	return common.Hex2Bytes(str)
-}
-
-func hasHexPrefix(str string) bool {
-	return len(str) >= 2 && str[0] == '0' && (str[1] == 'x' || str[1] == 'X')
-}
 
 func isHexCharacter(c byte) bool {
 	return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F')
@@ -98,24 +41,12 @@ func isHex(str string) bool {
 	return true
 }
 
-func isHexAddress(s string) bool {
-	if hasHexPrefix(s) {
-		s = s[2:]
-	}
-
-	return len(s) == 40 && isHex(s)
-}
-
 func toBytes32(address string) (string, error) {
-	if !isHexAddress(address) {
-		return "", errors.New("Given string is not a hex address")
+	if !common.IsHexAddress(address) {
+		return "", fmt.Errorf("given string is not a hex address")
 	}
 
-	if hasHexPrefix(address) {
-		address = address[2:]
-	}
-
-	res := strings.ToLower("000000000000000000000000" + address)
+	res := strings.ToLower("000000000000000000000000" + ensureNoPrefix(address))
 
 	return res, nil
 }

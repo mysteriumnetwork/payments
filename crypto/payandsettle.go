@@ -20,14 +20,10 @@ type PayAndSettleBeneficiaryPayload struct {
 }
 
 func NewPayAndSettleBeneficiaryPayload(beneficiary common.Address, chainID int64, providerChannelIDForWithdrawal string, amount *big.Int, r [32]byte) *PayAndSettleBeneficiaryPayload {
-	if hasHexPrefix(providerChannelIDForWithdrawal) {
-		providerChannelIDForWithdrawal = providerChannelIDForWithdrawal[2:]
-	}
-
 	return &PayAndSettleBeneficiaryPayload{
 		Beneficiary:                    beneficiary,
 		ChainID:                        chainID,
-		ProviderChannelIDForWithdrawal: providerChannelIDForWithdrawal,
+		ProviderChannelIDForWithdrawal: ensureNoPrefix(providerChannelIDForWithdrawal),
 		Amount:                         amount,
 		R:                              r,
 	}

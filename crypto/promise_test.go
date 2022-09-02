@@ -19,7 +19,6 @@ package crypto
 import (
 	"crypto/ecdsa"
 	"encoding/hex"
-	"io/ioutil"
 	"math/big"
 	"os"
 	"testing"
@@ -174,6 +173,23 @@ func TestNewPromise(t *testing.T) {
 	assert.Equal(t, p.PromiseSignature, promise.Signature)
 }
 
+func TestNewRawPromise(t *testing.T) {
+	p := getParams("provider")
+	channelID := hex.EncodeToString(p.ChannelID)
+	amount := big.NewInt(0).SetUint64(p.Amount)
+	fee := big.NewInt(0).SetUint64(p.Fee)
+	hashlock := hex.EncodeToString(crypto.Keccak256(p.R))
+	signature := hex.EncodeToString(p.PromiseSignature)
+
+	promise, err := NewRawPromise(1, channelID, amount, fee, hashlock, signature)
+	assert.NoError(t, err)
+	assert.Equal(t, big.NewInt(0).SetUint64(p.Amount), promise.Amount)
+	assert.Equal(t, p.ChannelID, promise.ChannelID)
+	assert.Equal(t, hashlock, hex.EncodeToString(promise.Hashlock))
+	assert.Equal(t, p.Hashlock, promise.Hashlock)
+	assert.Equal(t, p.PromiseSignature, promise.Signature)
+}
+
 func TestSign(t *testing.T) {
 	dir, ks := tmpKeyStore(t, false)
 	defer os.RemoveAll(dir)
@@ -207,7 +223,7 @@ const (
 )
 
 func tmpKeyStore(t *testing.T, encrypted bool) (string, *keystore.KeyStore) {
-	d, err := ioutil.TempDir("", "eth-keystore-test")
+	d, err := os.MkdirTemp("", "eth-keystore-test")
 	if err != nil {
 		t.Fatal(err)
 	}
