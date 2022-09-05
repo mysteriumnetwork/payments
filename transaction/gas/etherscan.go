@@ -3,7 +3,7 @@ package gas
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"math/big"
 	"net/http"
 	"strconv"
@@ -37,7 +37,7 @@ func NewEtherscanStation(timeout time.Duration, apiKey, endpointURI string, uppe
 		client: &http.Client{
 			Timeout: timeout,
 		},
-		endpointURI: endpointURI,
+		endpointURI: endpoint,
 		upperBound:  upperBound,
 		apiKey:      apiKey,
 	}
@@ -85,7 +85,7 @@ func (esa *EtherscanStation) request() (*etherscanGasPriceResponse, error) {
 	}
 	defer response.Body.Close()
 
-	resp, err := ioutil.ReadAll(response.Body)
+	resp, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -113,12 +113,6 @@ type etherscanGasPriceResponse struct {
 	Status  string         `json:"status"`
 	Message string         `json:"message"`
 	Result  gasPriceResult `json:"result"`
-}
-
-type etherscanGasPriceResponseFail struct {
-	Status  string `json:"status"`
-	Message string `json:"message"`
-	Result  string `json:"result"`
 }
 
 // gasPriceResult the gas prices for the last block.
