@@ -62,3 +62,11 @@ func DecimalEthToBigIntWei(input decimal.Decimal) *big.Int {
 func BigIntWeiToDecimalEth(input *big.Int) decimal.Decimal {
 	return decimal.NewFromBigInt(input, -ethDecimals)
 }
+
+// BigIntWeiToFloatGwei takes in a big int wei value and returns a float64 gwei representation.
+func BigIntWeiToFloatGwei(input *big.Int) float64 {
+	f := new(big.Float).SetInt(input)
+	gweiInWei := new(big.Float).SetInt(singleStep)
+	res, _ := f.Quo(f, gweiInWei).Float64()
+	return res
+}

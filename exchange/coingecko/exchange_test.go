@@ -16,7 +16,7 @@ func TestExchange(t *testing.T) {
 	mockApi.run()
 	defer mockApi.stop()
 
-	api := NewAPI("http://localhost:8080", 200*time.Millisecond)
+	api := NewAPI("http://localhost:8180", 200*time.Millisecond)
 
 	t.Run("gets rates", func(t *testing.T) {
 		mockApi.setResponse(exchange.PriceResponse{
@@ -166,7 +166,7 @@ func (m *mockApi) run() {
 	r.GET("/simple/price", m.simplePrices)
 
 	m.server = &http.Server{
-		Addr:    ":8080",
+		Addr:    ":8180",
 		Handler: r,
 	}
 

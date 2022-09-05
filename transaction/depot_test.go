@@ -10,6 +10,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/mysteriumnetwork/payments/transaction/gas"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -53,6 +54,13 @@ func TestDepot(t *testing.T) {
 			},
 		},
 	})
+
+	depot.AttachLogger(func(err error) {
+		log.Error().Err(err).Msg("error in depot")
+	})
+	depot.AttachMetricsReporter(&depotMetricsExporterNoop{})
+
+	defer depot.Stop()
 
 	resetFunc := func() {
 		mockStorage.reset()
