@@ -22,11 +22,7 @@ var (
 
 // FloatGweiToBigIntWei returns the given gwei as wei.
 func FloatGweiToBigIntWei(gwei float64) *big.Int {
-	wei, _ := new(big.Float).Mul(
-		big.NewFloat(gwei),
-		new(big.Float).SetInt(oneEthInGwei),
-	).Int(nil)
-	return wei
+	return singleStepMore(gwei)
 }
 
 // FloatEthToBigIntWei returns the given eth as wei. Precision might be lost.
@@ -69,4 +65,38 @@ func BigIntWeiToFloatGwei(input *big.Int) float64 {
 	gweiInWei := new(big.Float).SetInt(singleStep)
 	res, _ := f.Quo(f, gweiInWei).Float64()
 	return res
+}
+
+// FloatEthToBigIntGwei returns the given eth as gwei. Precision might be lost.
+func FloatEthToBigIntGwei(eth float64) *big.Int {
+	return singleStepMore(eth)
+}
+
+func singleStepMore(input float64) *big.Int {
+	res, _ := new(big.Float).Mul(
+		big.NewFloat(input),
+		new(big.Float).SetInt(singleStep),
+	).Int(nil)
+	return res
+}
+
+// SingleEthInGwei returns amount of gwei in one eth.
+//
+// Deprecated: use FloatEthToBigIntGwei(1) instead.
+func SingleEthInGwei() *big.Int {
+	return new(big.Int).Set(oneEthInGwei)
+}
+
+// SingleEthInWei returns amount of wei in one eth.
+//
+// Deprecated: use FloatEthToBigIntWei(1) instead.
+func SingleEthInWei() *big.Int {
+	return new(big.Int).Set(oneEthInWei)
+}
+
+// SingleGweiInWei returns amount of wei in one gwei.
+//
+// Deprecated: use FloatGweiToBigIntWei(1) instead.
+func SingleGweiInWei() *big.Int {
+	return new(big.Int).Set(singleStep)
 }
