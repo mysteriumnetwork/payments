@@ -238,4 +238,48 @@ func TestUnits(t *testing.T) {
 			}
 		})
 	})
+
+	t.Run("eth to gwei", func(t *testing.T) {
+		t.Run("from float", func(t *testing.T) {
+			one, ok := new(big.Int).SetString("1000000000", 10)
+			require.True(t, ok)
+			type args struct {
+				input float64
+			}
+			tests := []struct {
+				name string
+				args args
+				want *big.Int
+			}{
+				{
+					name: "calculates a single eth correctly",
+					args: args{
+						input: 1.0,
+					},
+					want: one,
+				},
+				{
+					name: "calculates half eth",
+					args: args{
+						input: 0.5,
+					},
+					want: big.NewInt(0).Div(one, big.NewInt(2)),
+				},
+				{
+					name: "calculates a small amount",
+					args: args{
+						input: 0.000000005,
+					},
+					want: new(big.Int).SetUint64(5),
+				},
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					if got := FloatEthToBigIntGwei(tt.args.input); got.Cmp(tt.want) != 0 {
+						t.Errorf("FloatEthToBigIntGwei() = %v, want %v", got, tt.want)
+					}
+				})
+			}
+		})
+	})
 }
