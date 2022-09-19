@@ -337,21 +337,30 @@ func (d *Depot) handleTracking(td Delivery) error {
 			return err
 		}
 		_, err = d.sendOutTransaction(updated)
-		return err
+		if err != nil {
+			return fmt.Errorf("failed to send packing tx: %w", err)
+		}
+		return nil
 	}
 
 	updated, err := d.calculateNewGasPrice(td)
 	if err != nil {
 		if errors.Is(err, errMaxPriceReached) && d.shouldForceResend(td) {
 			_, err = d.sendOutTransaction(updated)
-			return err
+			if err != nil {
+				return fmt.Errorf("failed to force resend: %w", err)
+			}
+			return nil
 		}
 		return err
 	}
 
 	if updated.GasTip.Cmp(td.GasTip) > 0 {
 		_, err = d.sendOutTransaction(updated)
-		return err
+		if err != nil {
+			return fmt.Errorf("failed to resend with new gas tip: %w", err)
+		}
+		return nil
 	}
 	return nil
 }
@@ -370,7 +379,7 @@ func (d *Depot) handleWaiting(td Delivery) error {
 
 	td, err = d.sendOutTransaction(td)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to send packing tx: %w", err)
 	}
 
 	d.metrics.DeliverySent(td)
@@ -423,6 +432,9 @@ func (d *Depot) calculateNewGasPrice(td Delivery) (Delivery, error) {
 
 		gasPrice, err := d.gasStation.RecalculateDeliveryGas(td.ChainID, td.GasTip, td.Type)
 		if err != nil {
+			if errors.Is(errMaxPriceReached, err) {
+				return td, err
+			}
 			return Delivery{}, err
 		}
 		newPrice = gasPrice
