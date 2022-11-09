@@ -8,7 +8,7 @@ import (
 )
 
 func TestHermesImplementation(t *testing.T) {
-	hcr := NewHermesImplementationRegistry()
+	hcr := newHermesImplementationRegistry()
 
 	callerAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec1")
 	hc, err := hcr.caller(callerAddress, nil)
@@ -39,7 +39,7 @@ func TestHermesImplementation(t *testing.T) {
 }
 
 func TestMystTokenImplementation(t *testing.T) {
-	hcr := NewMystTokenRegistry()
+	hcr := newMystTokenRegistry()
 
 	callerAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec1")
 	hc, err := hcr.caller(callerAddress, nil)
@@ -70,7 +70,7 @@ func TestMystTokenImplementation(t *testing.T) {
 }
 
 func TestChannellImplementation(t *testing.T) {
-	hcr := NewChannelImplementationRegistry()
+	hcr := newChannelImplementationRegistry()
 
 	callerAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec1")
 	hc, err := hcr.caller(callerAddress, nil)
@@ -101,7 +101,7 @@ func TestChannellImplementation(t *testing.T) {
 }
 
 func TestRegistry(t *testing.T) {
-	hcr := NewRegistry()
+	hcr := newRegistry()
 
 	callerAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec1")
 	hc, err := hcr.caller(callerAddress, nil)

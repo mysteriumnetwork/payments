@@ -12,7 +12,7 @@ type HermesImplementationRegistry struct {
 	transactors map[string]*bindings.HermesImplementationTransactor
 }
 
-func NewHermesImplementationRegistry() *HermesImplementationRegistry {
+func newHermesImplementationRegistry() *HermesImplementationRegistry {
 	return &HermesImplementationRegistry{
 		callers:     make(map[string]*bindings.HermesImplementationCaller),
 		filterers:   make(map[string]*bindings.HermesImplementationFilterer),
@@ -71,7 +71,7 @@ type Registry struct {
 	transactors map[string]*bindings.RegistryTransactor
 }
 
-func NewRegistry() *Registry {
+func newRegistry() *Registry {
 	return &Registry{
 		callers:     make(map[string]*bindings.RegistryCaller),
 		filterers:   make(map[string]*bindings.RegistryFilterer),
@@ -130,7 +130,7 @@ type MystTokenRegistry struct {
 	transactors map[string]*bindings.MystTokenTransactor
 }
 
-func NewMystTokenRegistry() *MystTokenRegistry {
+func newMystTokenRegistry() *MystTokenRegistry {
 	return &MystTokenRegistry{
 		callers:     make(map[string]*bindings.MystTokenCaller),
 		filterers:   make(map[string]*bindings.MystTokenFilterer),
@@ -189,7 +189,7 @@ type ChannelImplementationRegistry struct {
 	transactors map[string]*bindings.ChannelImplementationTransactor
 }
 
-func NewChannelImplementationRegistry() *ChannelImplementationRegistry {
+func newChannelImplementationRegistry() *ChannelImplementationRegistry {
 	return &ChannelImplementationRegistry{
 		callers:     make(map[string]*bindings.ChannelImplementationCaller),
 		filterers:   make(map[string]*bindings.ChannelImplementationFilterer),

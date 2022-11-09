@@ -69,10 +69,10 @@ func NewBlockchain(ethClient EthClientGetter, timeout time.Duration) *Blockchain
 		nonceFunc: func(ctx context.Context, account common.Address) (uint64, error) {
 			return ethClient.Client().PendingNonceAt(ctx, account)
 		},
-		hir:  NewHermesImplementationRegistry(),
-		rr:   NewRegistry(),
-		mtr:  NewMystTokenRegistry(),
-		chir: NewChannelImplementationRegistry(),
+		hir:  newHermesImplementationRegistry(),
+		rr:   newRegistry(),
+		mtr:  newMystTokenRegistry(),
+		chir: newChannelImplementationRegistry(),
 	}
 }
 
@@ -82,10 +82,10 @@ func NewBlockchainWithCustomNonceTracker(ethClient EthClientGetter, timeout time
 		ethClient: ethClient,
 		bcTimeout: timeout,
 		nonceFunc: nonceFunc,
-		hir:       NewHermesImplementationRegistry(),
-		rr:        NewRegistry(),
-		mtr:       NewMystTokenRegistry(),
-		chir:      NewChannelImplementationRegistry(),
+		hir:       newHermesImplementationRegistry(),
+		rr:        newRegistry(),
+		mtr:       newMystTokenRegistry(),
+		chir:      newChannelImplementationRegistry(),
 	}
 }
 
