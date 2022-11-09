@@ -1,6 +1,8 @@
 package client
 
 import (
+	"sync"
+
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/mysteriumnetwork/payments/bindings"
@@ -10,6 +12,7 @@ type HermesImplementationRegistry struct {
 	callers     map[string]*bindings.HermesImplementationCaller
 	filterers   map[string]*bindings.HermesImplementationFilterer
 	transactors map[string]*bindings.HermesImplementationTransactor
+	lock        sync.RWMutex
 }
 
 func newHermesImplementationRegistry() *HermesImplementationRegistry {
@@ -21,7 +24,10 @@ func newHermesImplementationRegistry() *HermesImplementationRegistry {
 }
 
 func (h *HermesImplementationRegistry) caller(address common.Address, etherClient EtherClient) (*bindings.HermesImplementationCaller, error) {
-	if caller, exists := h.callers[address.Hex()]; exists {
+	h.lock.RLock()
+	caller, exists := h.callers[address.Hex()]
+	h.lock.RUnlock()
+	if exists {
 		return caller, nil
 	}
 
@@ -30,14 +36,19 @@ func (h *HermesImplementationRegistry) caller(address common.Address, etherClien
 		return caller, err
 	}
 
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	h.callers[address.Hex()] = caller
 
 	return caller, nil
 }
 
 func (h *HermesImplementationRegistry) filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.HermesImplementationFilterer, error) {
-	if f, exists := h.filterers[address.Hex()]; exists {
-		return f, nil
+	h.lock.RLock()
+	filter, exists := h.filterers[address.Hex()]
+	h.lock.RUnlock()
+	if exists {
+		return filter, nil
 	}
 
 	f, err := bindings.NewHermesImplementationFilterer(address, filterer)
@@ -45,14 +56,19 @@ func (h *HermesImplementationRegistry) filterer(address common.Address, filterer
 		return f, err
 	}
 
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	h.filterers[address.Hex()] = f
 
 	return f, nil
 }
 
 func (h *HermesImplementationRegistry) transactor(address common.Address, client EtherClient) (*bindings.HermesImplementationTransactor, error) {
-	if f, exists := h.transactors[address.Hex()]; exists {
-		return f, nil
+	h.lock.RLock()
+	transactor, exists := h.transactors[address.Hex()]
+	h.lock.RUnlock()
+	if exists {
+		return transactor, nil
 	}
 
 	f, err := bindings.NewHermesImplementationTransactor(address, client)
@@ -60,6 +76,8 @@ func (h *HermesImplementationRegistry) transactor(address common.Address, client
 		return f, err
 	}
 
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	h.transactors[address.Hex()] = f
 
 	return f, nil
@@ -69,6 +87,7 @@ type Registry struct {
 	callers     map[string]*bindings.RegistryCaller
 	filterers   map[string]*bindings.RegistryFilterer
 	transactors map[string]*bindings.RegistryTransactor
+	lock        sync.RWMutex
 }
 
 func newRegistry() *Registry {
@@ -80,7 +99,10 @@ func newRegistry() *Registry {
 }
 
 func (h *Registry) caller(address common.Address, etherClient EtherClient) (*bindings.RegistryCaller, error) {
-	if caller, exists := h.callers[address.Hex()]; exists {
+	h.lock.RLock()
+	caller, exists := h.callers[address.Hex()]
+	h.lock.RUnlock()
+	if exists {
 		return caller, nil
 	}
 
@@ -89,14 +111,19 @@ func (h *Registry) caller(address common.Address, etherClient EtherClient) (*bin
 		return caller, err
 	}
 
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	h.callers[address.Hex()] = caller
 
 	return caller, nil
 }
 
 func (h *Registry) filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.RegistryFilterer, error) {
-	if f, exists := h.filterers[address.Hex()]; exists {
-		return f, nil
+	h.lock.RLock()
+	filter, exists := h.filterers[address.Hex()]
+	h.lock.RUnlock()
+	if exists {
+		return filter, nil
 	}
 
 	f, err := bindings.NewRegistryFilterer(address, filterer)
@@ -104,14 +131,19 @@ func (h *Registry) filterer(address common.Address, filterer bind.ContractFilter
 		return f, err
 	}
 
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	h.filterers[address.Hex()] = f
 
 	return f, nil
 }
 
 func (h *Registry) transactor(address common.Address, client EtherClient) (*bindings.RegistryTransactor, error) {
-	if f, exists := h.transactors[address.Hex()]; exists {
-		return f, nil
+	h.lock.RLock()
+	transactor, exists := h.transactors[address.Hex()]
+	h.lock.RUnlock()
+	if exists {
+		return transactor, nil
 	}
 
 	f, err := bindings.NewRegistryTransactor(address, client)
@@ -119,6 +151,8 @@ func (h *Registry) transactor(address common.Address, client EtherClient) (*bind
 		return f, err
 	}
 
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	h.transactors[address.Hex()] = f
 
 	return f, nil
@@ -128,6 +162,7 @@ type MystTokenRegistry struct {
 	callers     map[string]*bindings.MystTokenCaller
 	filterers   map[string]*bindings.MystTokenFilterer
 	transactors map[string]*bindings.MystTokenTransactor
+	lock        sync.RWMutex
 }
 
 func newMystTokenRegistry() *MystTokenRegistry {
@@ -139,7 +174,10 @@ func newMystTokenRegistry() *MystTokenRegistry {
 }
 
 func (h *MystTokenRegistry) caller(address common.Address, etherClient EtherClient) (*bindings.MystTokenCaller, error) {
-	if caller, exists := h.callers[address.Hex()]; exists {
+	h.lock.RLock()
+	caller, exists := h.callers[address.Hex()]
+	h.lock.RUnlock()
+	if exists {
 		return caller, nil
 	}
 
@@ -148,14 +186,19 @@ func (h *MystTokenRegistry) caller(address common.Address, etherClient EtherClie
 		return caller, err
 	}
 
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	h.callers[address.Hex()] = caller
 
 	return caller, nil
 }
 
 func (h *MystTokenRegistry) filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.MystTokenFilterer, error) {
-	if f, exists := h.filterers[address.Hex()]; exists {
-		return f, nil
+	h.lock.RLock()
+	filter, exists := h.filterers[address.Hex()]
+	h.lock.RUnlock()
+	if exists {
+		return filter, nil
 	}
 
 	f, err := bindings.NewMystTokenFilterer(address, filterer)
@@ -163,14 +206,19 @@ func (h *MystTokenRegistry) filterer(address common.Address, filterer bind.Contr
 		return f, err
 	}
 
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	h.filterers[address.Hex()] = f
 
 	return f, nil
 }
 
 func (h *MystTokenRegistry) transactor(address common.Address, client EtherClient) (*bindings.MystTokenTransactor, error) {
-	if f, exists := h.transactors[address.Hex()]; exists {
-		return f, nil
+	h.lock.RLock()
+	transactor, exists := h.transactors[address.Hex()]
+	h.lock.RUnlock()
+	if exists {
+		return transactor, nil
 	}
 
 	f, err := bindings.NewMystTokenTransactor(address, client)
@@ -178,6 +226,8 @@ func (h *MystTokenRegistry) transactor(address common.Address, client EtherClien
 		return f, err
 	}
 
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	h.transactors[address.Hex()] = f
 
 	return f, nil
@@ -187,6 +237,7 @@ type ChannelImplementationRegistry struct {
 	callers     map[string]*bindings.ChannelImplementationCaller
 	filterers   map[string]*bindings.ChannelImplementationFilterer
 	transactors map[string]*bindings.ChannelImplementationTransactor
+	lock        sync.RWMutex
 }
 
 func newChannelImplementationRegistry() *ChannelImplementationRegistry {
@@ -198,7 +249,10 @@ func newChannelImplementationRegistry() *ChannelImplementationRegistry {
 }
 
 func (h *ChannelImplementationRegistry) caller(address common.Address, etherClient EtherClient) (*bindings.ChannelImplementationCaller, error) {
-	if caller, exists := h.callers[address.Hex()]; exists {
+	h.lock.RLock()
+	caller, exists := h.callers[address.Hex()]
+	h.lock.RUnlock()
+	if exists {
 		return caller, nil
 	}
 
@@ -207,14 +261,19 @@ func (h *ChannelImplementationRegistry) caller(address common.Address, etherClie
 		return caller, err
 	}
 
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	h.callers[address.Hex()] = caller
 
 	return caller, nil
 }
 
 func (h *ChannelImplementationRegistry) filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.ChannelImplementationFilterer, error) {
-	if f, exists := h.filterers[address.Hex()]; exists {
-		return f, nil
+	h.lock.RLock()
+	filter, exists := h.filterers[address.Hex()]
+	h.lock.RUnlock()
+	if exists {
+		return filter, nil
 	}
 
 	f, err := bindings.NewChannelImplementationFilterer(address, filterer)
@@ -222,14 +281,19 @@ func (h *ChannelImplementationRegistry) filterer(address common.Address, filtere
 		return f, err
 	}
 
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	h.filterers[address.Hex()] = f
 
 	return f, nil
 }
 
 func (h *ChannelImplementationRegistry) transactor(address common.Address, client EtherClient) (*bindings.ChannelImplementationTransactor, error) {
-	if f, exists := h.transactors[address.Hex()]; exists {
-		return f, nil
+	h.lock.RLock()
+	transactor, exists := h.transactors[address.Hex()]
+	h.lock.RUnlock()
+	if exists {
+		return transactor, nil
 	}
 
 	f, err := bindings.NewChannelImplementationTransactor(address, client)
@@ -237,6 +301,8 @@ func (h *ChannelImplementationRegistry) transactor(address common.Address, clien
 		return f, err
 	}
 
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	h.transactors[address.Hex()] = f
 
 	return f, nil
