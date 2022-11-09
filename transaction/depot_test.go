@@ -14,6 +14,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const chainId = 1
+
 func TestDepot(t *testing.T) {
 	senderAddr := common.Address{}
 	mockStorage := mockStorage{
@@ -48,7 +50,7 @@ func TestDepot(t *testing.T) {
 		Workers: []DepotWorker{
 			{
 				Address:         senderAddr,
-				ChainID:         1,
+				ChainID:         chainId,
 				ProcessInterval: time.Millisecond * 10,
 				ProcessCount:    3,
 			},
@@ -80,7 +82,7 @@ func TestDepot(t *testing.T) {
 
 			var txType DeliverableType = "test"
 			_, err := depot.EnqueueDelivery(DeliveryRequest{
-				ChainID: 1,
+				ChainID: chainId,
 				Sender:  senderAddr,
 				Type:    txType,
 				Data:    mockData{"tx1"},
@@ -96,13 +98,13 @@ func TestDepot(t *testing.T) {
 			delivery := mockStorage.get(0)
 			assert.True(t, delivery.BaseFee.Cmp(defaultPrice) == 0)
 			assert.True(t, delivery.GasTip.Cmp(defaultPrice) == 0)
-			assert.Equal(t, 1, int(delivery.ChainID))
+			assert.Equal(t, chainId, int(delivery.ChainID))
 			assert.Equal(t, 0, int(delivery.Nonce))
 			assert.Equal(t, senderAddr, delivery.Sender)
 			assert.Equal(t, txType, delivery.Type)
 			assert.Equal(t, []byte("{\"data\":\"tx1\"}"), delivery.ShipmentData)
 			txJson, err := types.NewTx(&types.DynamicFeeTx{
-				ChainID:   big.NewInt(1),
+				ChainID:   big.NewInt(chainId),
 				Nonce:     0,
 				GasTipCap: defaultPrice,
 				GasFeeCap: defaultPrice,
@@ -118,7 +120,7 @@ func TestDepot(t *testing.T) {
 			//add 3 deliveries
 			for i := 0; i < 3; i++ {
 				_, err := depot.EnqueueDelivery(DeliveryRequest{
-					ChainID: 1,
+					ChainID: chainId,
 					Sender:  senderAddr,
 					Type:    "test",
 					Data:    mockData{fmt.Sprintf("tx%d", i)},
@@ -144,7 +146,7 @@ func TestDepot(t *testing.T) {
 			mockNonceTracker.setConfirmAll(false)
 
 			_, err := depot.EnqueueDelivery(DeliveryRequest{
-				ChainID: 1,
+				ChainID: chainId,
 				Sender:  senderAddr,
 				Type:    "test",
 				Data:    "tx1",
@@ -174,7 +176,7 @@ func TestDepot(t *testing.T) {
 			mockGasStation.defaultPrice = newDefaultPrice
 
 			_, err := depot.EnqueueDelivery(DeliveryRequest{
-				ChainID: 1,
+				ChainID: chainId,
 				Sender:  senderAddr,
 				Type:    "test",
 				Data:    "tx1",
@@ -238,7 +240,7 @@ func TestDepot(t *testing.T) {
 			//add 5 deliveries
 			for i := 0; i < 5; i++ {
 				_, err := depot.EnqueueDelivery(DeliveryRequest{
-					ChainID: 1,
+					ChainID: chainId,
 					Sender:  senderAddr,
 					Type:    "test",
 					Data:    mockData{fmt.Sprintf("tx%d", i)},
@@ -269,7 +271,7 @@ func TestDepot(t *testing.T) {
 			}, 2*time.Second, time.Millisecond*100)
 
 			_, err := depot.EnqueueDelivery(DeliveryRequest{
-				ChainID: 1,
+				ChainID: chainId,
 				Sender:  senderAddr,
 				Type:    "test",
 				Data:    mockData{"tx5"},
@@ -279,7 +281,7 @@ func TestDepot(t *testing.T) {
 
 			//can force enqueue
 			_, err = depot.EnqueueDelivery(DeliveryRequest{
-				ChainID: 1,
+				ChainID: chainId,
 				Sender:  senderAddr,
 				Type:    "test",
 				Data:    mockData{"tx5"},
@@ -322,7 +324,7 @@ func TestDepot(t *testing.T) {
 
 			//can enqueue again
 			_, err = depot.EnqueueDelivery(DeliveryRequest{
-				ChainID: 1,
+				ChainID: chainId,
 				Sender:  senderAddr,
 				Type:    "test",
 				Data:    mockData{"tx6"},
@@ -347,7 +349,7 @@ func TestDepot(t *testing.T) {
 			//add 3 deliveries
 			for i := 0; i < 3; i++ {
 				_, err := depot.EnqueueDelivery(DeliveryRequest{
-					ChainID: 1,
+					ChainID: chainId,
 					Sender:  senderAddr,
 					Type:    "test",
 					Data:    mockData{fmt.Sprintf("tx%d", i)},
@@ -400,7 +402,7 @@ func TestDepot(t *testing.T) {
 			//add 3 deliveries
 			for i := 0; i < 3; i++ {
 				_, err := depot.EnqueueDelivery(DeliveryRequest{
-					ChainID: 1,
+					ChainID: chainId,
 					Sender:  senderAddr,
 					Type:    "test",
 					Data:    mockData{fmt.Sprintf("tx%d", i)},
@@ -414,12 +416,7 @@ func TestDepot(t *testing.T) {
 
 			t.Run("all deliveries except one are delivered", func(t *testing.T) {
 				assert.Eventually(t, func() bool {
-					undelivered := 0
-					for _, d := range mockStorage.deliveries {
-						if d.State != DeliveryStateDelivered {
-							undelivered += 1
-						}
-					}
+					undelivered, _ := mockStorage.GetNonDeliveredCount(chainId, senderAddr)
 					return undelivered == 1
 				}, time.Second, time.Millisecond*100)
 			})
