@@ -11,7 +11,7 @@ func TestHermesImplementation(t *testing.T) {
 	hcr := NewHermesImplementationRegistry()
 
 	callerAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec1")
-	hc, err := hcr.Caller(callerAddress, nil)
+	hc, err := hcr.caller(callerAddress, nil)
 	assert.NoError(t, err)
 	assert.Len(t, hcr.callers, 1)
 
@@ -20,7 +20,7 @@ func TestHermesImplementation(t *testing.T) {
 	assert.Equal(t, hc, caller)
 
 	transactorAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec2")
-	ht, err := hcr.Transactor(transactorAddress, nil)
+	ht, err := hcr.transactor(transactorAddress, nil)
 	assert.NoError(t, err)
 	assert.Len(t, hcr.callers, 1)
 
@@ -29,7 +29,7 @@ func TestHermesImplementation(t *testing.T) {
 	assert.Equal(t, ht, transactor)
 
 	filtererAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec3")
-	hf, err := hcr.Filterer(filtererAddress, nil)
+	hf, err := hcr.filterer(filtererAddress, nil)
 	assert.NoError(t, err)
 	assert.Len(t, hcr.callers, 1)
 
@@ -42,7 +42,7 @@ func TestMystTokenImplementation(t *testing.T) {
 	hcr := NewMystTokenRegistry()
 
 	callerAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec1")
-	hc, err := hcr.Caller(callerAddress, nil)
+	hc, err := hcr.caller(callerAddress, nil)
 	assert.NoError(t, err)
 	assert.Len(t, hcr.callers, 1)
 
@@ -51,7 +51,7 @@ func TestMystTokenImplementation(t *testing.T) {
 	assert.Equal(t, hc, caller)
 
 	transactorAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec2")
-	ht, err := hcr.Transactor(transactorAddress, nil)
+	ht, err := hcr.transactor(transactorAddress, nil)
 	assert.NoError(t, err)
 	assert.Len(t, hcr.callers, 1)
 
@@ -60,7 +60,7 @@ func TestMystTokenImplementation(t *testing.T) {
 	assert.Equal(t, ht, transactor)
 
 	filtererAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec3")
-	hf, err := hcr.Filterer(filtererAddress, nil)
+	hf, err := hcr.filterer(filtererAddress, nil)
 	assert.NoError(t, err)
 	assert.Len(t, hcr.callers, 1)
 
@@ -73,7 +73,7 @@ func TestChannellImplementation(t *testing.T) {
 	hcr := NewChannelImplementationRegistry()
 
 	callerAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec1")
-	hc, err := hcr.Caller(callerAddress, nil)
+	hc, err := hcr.caller(callerAddress, nil)
 	assert.NoError(t, err)
 	assert.Len(t, hcr.callers, 1)
 
@@ -82,7 +82,7 @@ func TestChannellImplementation(t *testing.T) {
 	assert.Equal(t, hc, caller)
 
 	transactorAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec2")
-	ht, err := hcr.Transactor(transactorAddress, nil)
+	ht, err := hcr.transactor(transactorAddress, nil)
 	assert.NoError(t, err)
 	assert.Len(t, hcr.callers, 1)
 
@@ -91,7 +91,7 @@ func TestChannellImplementation(t *testing.T) {
 	assert.Equal(t, ht, transactor)
 
 	filtererAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec3")
-	hf, err := hcr.Filterer(filtererAddress, nil)
+	hf, err := hcr.filterer(filtererAddress, nil)
 	assert.NoError(t, err)
 	assert.Len(t, hcr.callers, 1)
 
@@ -104,7 +104,7 @@ func TestRegistry(t *testing.T) {
 	hcr := NewRegistry()
 
 	callerAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec1")
-	hc, err := hcr.Caller(callerAddress, nil)
+	hc, err := hcr.caller(callerAddress, nil)
 	assert.NoError(t, err)
 	assert.Len(t, hcr.callers, 1)
 
@@ -113,7 +113,7 @@ func TestRegistry(t *testing.T) {
 	assert.Equal(t, hc, caller)
 
 	transactorAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec2")
-	ht, err := hcr.Transactor(transactorAddress, nil)
+	ht, err := hcr.transactor(transactorAddress, nil)
 	assert.NoError(t, err)
 	assert.Len(t, hcr.callers, 1)
 
@@ -122,7 +122,7 @@ func TestRegistry(t *testing.T) {
 	assert.Equal(t, ht, transactor)
 
 	filtererAddress := common.HexToAddress("0xEA672fdDe714fd979de3EdF0F56AA9716B898ec3")
-	hf, err := hcr.Filterer(filtererAddress, nil)
+	hf, err := hcr.filterer(filtererAddress, nil)
 	assert.NoError(t, err)
 	assert.Len(t, hcr.callers, 1)
 

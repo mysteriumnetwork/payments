@@ -20,7 +20,7 @@ func NewHermesImplementationRegistry() *HermesImplementationRegistry {
 	}
 }
 
-func (h *HermesImplementationRegistry) Caller(address common.Address, etherClient EtherClient) (*bindings.HermesImplementationCaller, error) {
+func (h *HermesImplementationRegistry) caller(address common.Address, etherClient EtherClient) (*bindings.HermesImplementationCaller, error) {
 	if caller, exists := h.callers[address.Hex()]; exists {
 		return caller, nil
 	}
@@ -35,7 +35,7 @@ func (h *HermesImplementationRegistry) Caller(address common.Address, etherClien
 	return caller, nil
 }
 
-func (h *HermesImplementationRegistry) Filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.HermesImplementationFilterer, error) {
+func (h *HermesImplementationRegistry) filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.HermesImplementationFilterer, error) {
 	if f, exists := h.filterers[address.Hex()]; exists {
 		return f, nil
 	}
@@ -50,7 +50,7 @@ func (h *HermesImplementationRegistry) Filterer(address common.Address, filterer
 	return f, nil
 }
 
-func (h *HermesImplementationRegistry) Transactor(address common.Address, client EtherClient) (*bindings.HermesImplementationTransactor, error) {
+func (h *HermesImplementationRegistry) transactor(address common.Address, client EtherClient) (*bindings.HermesImplementationTransactor, error) {
 	if f, exists := h.transactors[address.Hex()]; exists {
 		return f, nil
 	}
@@ -79,7 +79,7 @@ func NewRegistry() *Registry {
 	}
 }
 
-func (h *Registry) Caller(address common.Address, etherClient EtherClient) (*bindings.RegistryCaller, error) {
+func (h *Registry) caller(address common.Address, etherClient EtherClient) (*bindings.RegistryCaller, error) {
 	if caller, exists := h.callers[address.Hex()]; exists {
 		return caller, nil
 	}
@@ -94,7 +94,7 @@ func (h *Registry) Caller(address common.Address, etherClient EtherClient) (*bin
 	return caller, nil
 }
 
-func (h *Registry) Filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.RegistryFilterer, error) {
+func (h *Registry) filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.RegistryFilterer, error) {
 	if f, exists := h.filterers[address.Hex()]; exists {
 		return f, nil
 	}
@@ -109,7 +109,7 @@ func (h *Registry) Filterer(address common.Address, filterer bind.ContractFilter
 	return f, nil
 }
 
-func (h *Registry) Transactor(address common.Address, client EtherClient) (*bindings.RegistryTransactor, error) {
+func (h *Registry) transactor(address common.Address, client EtherClient) (*bindings.RegistryTransactor, error) {
 	if f, exists := h.transactors[address.Hex()]; exists {
 		return f, nil
 	}
@@ -138,7 +138,7 @@ func NewMystTokenRegistry() *MystTokenRegistry {
 	}
 }
 
-func (h *MystTokenRegistry) Caller(address common.Address, etherClient EtherClient) (*bindings.MystTokenCaller, error) {
+func (h *MystTokenRegistry) caller(address common.Address, etherClient EtherClient) (*bindings.MystTokenCaller, error) {
 	if caller, exists := h.callers[address.Hex()]; exists {
 		return caller, nil
 	}
@@ -153,7 +153,7 @@ func (h *MystTokenRegistry) Caller(address common.Address, etherClient EtherClie
 	return caller, nil
 }
 
-func (h *MystTokenRegistry) Filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.MystTokenFilterer, error) {
+func (h *MystTokenRegistry) filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.MystTokenFilterer, error) {
 	if f, exists := h.filterers[address.Hex()]; exists {
 		return f, nil
 	}
@@ -168,7 +168,7 @@ func (h *MystTokenRegistry) Filterer(address common.Address, filterer bind.Contr
 	return f, nil
 }
 
-func (h *MystTokenRegistry) Transactor(address common.Address, client EtherClient) (*bindings.MystTokenTransactor, error) {
+func (h *MystTokenRegistry) transactor(address common.Address, client EtherClient) (*bindings.MystTokenTransactor, error) {
 	if f, exists := h.transactors[address.Hex()]; exists {
 		return f, nil
 	}
@@ -197,7 +197,7 @@ func NewChannelImplementationRegistry() *ChannelImplementationRegistry {
 	}
 }
 
-func (h *ChannelImplementationRegistry) Caller(address common.Address, etherClient EtherClient) (*bindings.ChannelImplementationCaller, error) {
+func (h *ChannelImplementationRegistry) caller(address common.Address, etherClient EtherClient) (*bindings.ChannelImplementationCaller, error) {
 	if caller, exists := h.callers[address.Hex()]; exists {
 		return caller, nil
 	}
@@ -212,7 +212,7 @@ func (h *ChannelImplementationRegistry) Caller(address common.Address, etherClie
 	return caller, nil
 }
 
-func (h *ChannelImplementationRegistry) Filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.ChannelImplementationFilterer, error) {
+func (h *ChannelImplementationRegistry) filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.ChannelImplementationFilterer, error) {
 	if f, exists := h.filterers[address.Hex()]; exists {
 		return f, nil
 	}
@@ -227,7 +227,7 @@ func (h *ChannelImplementationRegistry) Filterer(address common.Address, filtere
 	return f, nil
 }
 
-func (h *ChannelImplementationRegistry) Transactor(address common.Address, client EtherClient) (*bindings.ChannelImplementationTransactor, error) {
+func (h *ChannelImplementationRegistry) transactor(address common.Address, client EtherClient) (*bindings.ChannelImplementationTransactor, error) {
 	if f, exists := h.transactors[address.Hex()]; exists {
 		return f, nil
 	}
