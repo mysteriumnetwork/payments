@@ -53,10 +53,10 @@ type Blockchain struct {
 	ethClient EthClientGetter
 	bcTimeout time.Duration
 	nonceFunc nonceFunc
-	hir       *HermesImplementationRegistry
-	rr        *Registry
-	mtr       *MystTokenRegistry
-	chir      *ChannelImplementationRegistry
+	hir       *hermesImplementationRegistry
+	rr        *registry
+	mtr       *mystTokenRegistry
+	chir      *channelImplementationRegistry
 }
 
 type nonceFunc func(ctx context.Context, account common.Address) (uint64, error)
