@@ -34,7 +34,7 @@ import (
 // EthMultiClient is a ethereum client that can reconnect.
 type EthMultiClient struct {
 	// timeout is the default amount of time to be assigned for a parent context
-	// from a callers if it doesn't have one.
+	// from a caller if it doesn't have one.
 	timeout time.Duration
 
 	// clients holds all the possible clients to call.

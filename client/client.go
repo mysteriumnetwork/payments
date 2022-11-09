@@ -105,7 +105,7 @@ func (bc *Blockchain) makeTransactOpts(ctx context.Context, rr *WriteRequest) (*
 func (bc *Blockchain) GetHermesFee(hermesAddress common.Address) (uint16, error) {
 	caller, err := bc.hir.caller(hermesAddress, bc.ethClient.Client())
 	if err != nil {
-		return 0, errors.Wrap(err, "could not create hermes implementation callers")
+		return 0, errors.Wrap(err, "could not create hermes implementation caller")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
@@ -125,7 +125,7 @@ func (bc *Blockchain) GetHermesFee(hermesAddress common.Address) (uint16, error)
 func (bc *Blockchain) CalculateHermesFee(hermesAddress common.Address, value *big.Int) (*big.Int, error) {
 	caller, err := bc.hir.caller(hermesAddress, bc.ethClient.Client())
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create hermes implementation callers")
+		return nil, errors.Wrap(err, "could not create hermes implementation caller")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
@@ -214,7 +214,7 @@ func (bc *Blockchain) GetProviderChannel(hermesAddress common.Address, addressTo
 	}
 	caller, err := bc.hir.caller(hermesAddress, bc.ethClient.Client())
 	if err != nil {
-		return ProviderChannel{}, errors.Wrap(err, "could not create hermes callers")
+		return ProviderChannel{}, errors.Wrap(err, "could not create hermes caller")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
@@ -235,7 +235,7 @@ func (bc *Blockchain) GetProvidersWithdrawalChannel(hermesAddress common.Address
 	}
 	caller, err := bc.hir.caller(hermesAddress, bc.ethClient.Client())
 	if err != nil {
-		return ProviderChannel{}, errors.Wrap(err, "could not create hermes callers")
+		return ProviderChannel{}, errors.Wrap(err, "could not create hermes caller")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
@@ -325,7 +325,7 @@ func (bc *Blockchain) SubscribeToWithdrawalPromiseSettledEvent(providerID, herme
 func (bc *Blockchain) IsRegistered(registryAddress, addressToCheck common.Address) (bool, error) {
 	caller, err := bc.rr.caller(registryAddress, bc.ethClient.Client())
 	if err != nil {
-		return false, errors.Wrap(err, "could not create registry callers")
+		return false, errors.Wrap(err, "could not create registry caller")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
@@ -990,7 +990,7 @@ func (bc *Blockchain) getNonce(identity common.Address) (uint64, error) {
 func (bc *Blockchain) GetHermesURL(registryID, hermesID common.Address) (string, error) {
 	caller, err := bc.rr.caller(registryID, bc.ethClient.Client())
 	if err != nil {
-		return "", fmt.Errorf("could not create new registry callers %w", err)
+		return "", fmt.Errorf("could not create new registry caller %w", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
@@ -1017,7 +1017,7 @@ type Hermes struct {
 func (bc *Blockchain) GetHermes(registryID, hermesID common.Address) (Hermes, error) {
 	caller, err := bc.rr.caller(registryID, bc.ethClient.Client())
 	if err != nil {
-		return Hermes{}, fmt.Errorf("could not create new registry callers %w", err)
+		return Hermes{}, fmt.Errorf("could not create new registry caller %w", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
@@ -1057,7 +1057,7 @@ func (bc *Blockchain) GetHermesRegistry(hermesID common.Address) (common.Address
 func (bc *Blockchain) GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error) {
 	caller, err := bc.rr.caller(registryID, bc.ethClient.Client())
 	if err != nil {
-		return common.Address{}, fmt.Errorf("could not create new registry callers %w", err)
+		return common.Address{}, fmt.Errorf("could not create new registry caller %w", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
@@ -1071,7 +1071,7 @@ func (bc *Blockchain) GetChannelImplementationByVersion(registryID common.Addres
 func (bc *Blockchain) IsChannelOpened(registryID, identity, hermesID common.Address) (bool, error) {
 	caller, err := bc.rr.caller(registryID, bc.ethClient.Client())
 	if err != nil {
-		return false, fmt.Errorf("could not create new registry callers %w", err)
+		return false, fmt.Errorf("could not create new registry caller %w", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
@@ -1086,7 +1086,7 @@ func (bc *Blockchain) IsChannelOpened(registryID, identity, hermesID common.Addr
 func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	caller, err := bc.hir.filterer(hermesID, bc.ethClient.Client())
 	if err != nil {
-		return sink, cancel, errors.Wrap(err, "could not create hermes callers")
+		return sink, cancel, errors.Wrap(err, "could not create hermes caller")
 	}
 	sink = make(chan *bindings.HermesImplementationPromiseSettled)
 
@@ -1111,7 +1111,7 @@ func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID common.
 func (bc *Blockchain) FilterPromiseSettledEventByChannelID(from uint64, to *uint64, hermesID common.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error) {
 	caller, err := bc.hir.filterer(hermesID, bc.ethClient.Client())
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create hermes callers")
+		return nil, errors.Wrap(err, "could not create hermes caller")
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
@@ -1273,7 +1273,7 @@ func (r SettleWithBeneficiaryRequest) toEstimateOps() *bindings.EstimateOpts {
 func (bc *Blockchain) GetHermessAvailableBalance(hermesAddress common.Address) (*big.Int, error) {
 	caller, err := bc.hir.caller(hermesAddress, bc.ethClient.Client())
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create hermes implementation callers")
+		return nil, errors.Wrap(err, "could not create hermes implementation caller")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
