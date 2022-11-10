@@ -55,8 +55,6 @@ type Blockchain struct {
 	nonceFunc nonceFunc
 	hir       *hermesImplementationRegistry
 	rr        *registry
-	mtr       *mystTokenRegistry
-	chir      *channelImplementationRegistry
 }
 
 type nonceFunc func(ctx context.Context, account common.Address) (uint64, error)
@@ -69,10 +67,8 @@ func NewBlockchain(ethClient EthClientGetter, timeout time.Duration) *Blockchain
 		nonceFunc: func(ctx context.Context, account common.Address) (uint64, error) {
 			return ethClient.Client().PendingNonceAt(ctx, account)
 		},
-		hir:  newHermesImplementationRegistry(),
-		rr:   newRegistry(),
-		mtr:  newMystTokenRegistry(),
-		chir: newChannelImplementationRegistry(),
+		hir: newHermesImplementationRegistry(),
+		rr:  newRegistry(),
 	}
 }
 
@@ -84,8 +80,6 @@ func NewBlockchainWithCustomNonceTracker(ethClient EthClientGetter, timeout time
 		nonceFunc: nonceFunc,
 		hir:       newHermesImplementationRegistry(),
 		rr:        newRegistry(),
-		mtr:       newMystTokenRegistry(),
-		chir:      newChannelImplementationRegistry(),
 	}
 }
 
@@ -158,7 +152,7 @@ func (bc *Blockchain) IsRegisteredAsProvider(hermesAddress, registryAddress, add
 // SubscribeToMystTokenTransfers subscribes to myst token transfers
 func (bc *Blockchain) SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error) {
 	sink := make(chan *bindings.MystTokenTransfer)
-	mtc, err := bc.mtr.filterer(mystSCAddress, bc.ethClient.Client())
+	mtc, err := bindings.NewMystTokenFilterer(mystSCAddress, bc.ethClient.Client())
 	if err != nil {
 		return sink, nil, err
 	}
@@ -181,7 +175,7 @@ func (bc *Blockchain) SubscribeToMystTokenTransfers(mystSCAddress common.Address
 // SubscribeToConsumerBalanceEvent subscribes to balance change events in blockchain
 func (bc *Blockchain) SubscribeToConsumerBalanceEvent(channel, mystSCAddress common.Address, timeout time.Duration) (chan *bindings.MystTokenTransfer, func(), error) {
 	sink := make(chan *bindings.MystTokenTransfer)
-	mtc, err := bc.mtr.filterer(mystSCAddress, bc.ethClient.Client())
+	mtc, err := bindings.NewMystTokenFilterer(mystSCAddress, bc.ethClient.Client())
 	if err != nil {
 		return sink, nil, err
 	}
@@ -339,7 +333,7 @@ func (bc *Blockchain) IsRegistered(registryAddress, addressToCheck common.Addres
 
 // GetMystBalance returns myst balance
 func (bc *Blockchain) GetMystBalance(mystAddress, identity common.Address) (*big.Int, error) {
-	c, err := bc.mtr.caller(mystAddress, bc.ethClient.Client())
+	c, err := bindings.NewMystTokenCaller(mystAddress, bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -561,7 +555,7 @@ func (r TransferRequest) toEstimateOps() *bindings.EstimateOpts {
 
 // TransferMyst transfers myst
 func (bc *Blockchain) TransferMyst(req TransferRequest) (tx *types.Transaction, err error) {
-	transactor, err := bc.mtr.transactor(req.MystAddress, bc.ethClient.Client())
+	transactor, err := bindings.NewMystTokenTransactor(req.MystAddress, bc.ethClient.Client())
 	if err != nil {
 		return tx, err
 	}
@@ -857,7 +851,7 @@ type ConsumersHermes struct {
 
 // GetConsumerChannelsHermes returns the consumer channels hermes
 func (bc *Blockchain) GetConsumerChannelsHermes(channelAddress common.Address) (ConsumersHermes, error) {
-	c, err := bc.chir.caller(channelAddress, bc.ethClient.Client())
+	c, err := bindings.NewChannelImplementationCaller(channelAddress, bc.ethClient.Client())
 	if err != nil {
 		return ConsumersHermes{}, err
 	}
@@ -870,7 +864,7 @@ func (bc *Blockchain) GetConsumerChannelsHermes(channelAddress common.Address) (
 
 // GetConsumerChannelOperator returns the consumer channel operator/identity
 func (bc *Blockchain) GetConsumerChannelOperator(channelAddress common.Address) (common.Address, error) {
-	c, err := bc.chir.caller(channelAddress, bc.ethClient.Client())
+	c, err := bindings.NewChannelImplementationCaller(channelAddress, bc.ethClient.Client())
 	if err != nil {
 		return common.Address{}, err
 	}
@@ -905,7 +899,7 @@ func (bc *Blockchain) SubscribeToIdentityRegistrationEvents(registryAddress comm
 
 // SubscribeToConsumerChannelBalanceUpdate subscribes to consumer channel balance update events
 func (bc *Blockchain) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error) {
-	filterer, err := bc.mtr.filterer(mystSCAddress, bc.ethClient.Client())
+	filterer, err := bindings.NewMystTokenFilterer(mystSCAddress, bc.ethClient.Client())
 	if err != nil {
 		return sink, cancel, errors.Wrap(err, "could not create myst token filterer")
 	}
@@ -950,7 +944,7 @@ func (r SettleRequest) toEstimateOps() *bindings.EstimateOpts {
 
 // SettlePromise is settling the given consumer issued promise
 func (bc *Blockchain) SettlePromise(req SettleRequest) (*types.Transaction, error) {
-	transactor, err := bc.chir.transactor(req.ChannelID, bc.ethClient.Client())
+	transactor, err := bindings.NewChannelImplementationTransactor(req.ChannelID, bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1654,7 +1648,7 @@ type MystApproveReq struct {
 }
 
 func (bc *Blockchain) MystTokenApprove(req MystApproveReq) (*types.Transaction, error) {
-	txer, err := bc.mtr.transactor(req.MystAddress, bc.ethClient.Client())
+	txer, err := bindings.NewMystTokenTransactor(req.MystAddress, bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1671,7 +1665,7 @@ func (bc *Blockchain) MystTokenApprove(req MystApproveReq) (*types.Transaction, 
 }
 
 func (bc *Blockchain) MystAllowance(mystTokenAddress, holder, spender common.Address) (*big.Int, error) {
-	caller, err := bc.mtr.caller(mystTokenAddress, bc.ethClient.Client())
+	caller, err := bindings.NewMystTokenCaller(mystTokenAddress, bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
