@@ -22,21 +22,20 @@ import (
 	"errors"
 
 	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
 type ReferralTokenRequest struct {
-	Identity  common.Address
+	Identity  Address
 	Signature string
 }
 
 // CreateSignature signs promise using keystore
-func CreateReferralTokenRequest(ks hashSigner, signer common.Address) (ReferralTokenRequest, error) {
+func CreateReferralTokenRequest(ks hashSigner, signer Address) (ReferralTokenRequest, error) {
 	message := signer.Bytes()
 	hash := crypto.Keccak256(message)
 	signature, err := ks.SignHash(
-		accounts.Account{Address: signer},
+		accounts.Account{Address: signer.ToCommon()},
 		hash,
 	)
 	if err != nil {

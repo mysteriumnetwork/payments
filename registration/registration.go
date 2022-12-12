@@ -60,17 +60,17 @@ func (r Request) GetMessage() []byte {
 }
 
 // RecoverIdentity recovers the identity from the given request
-func (r Request) RecoverIdentity() (common.Address, error) {
+func (r Request) RecoverIdentity() (crypto.Address, error) {
 	signature := GetSignatureBytesRaw(r.Signature)
 
 	err := crypto.ReformatSignatureVForRecovery(signature)
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 
 	recoveredAddress, err := crypto.RecoverAddress(r.GetMessage(), signature)
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 
 	return recoveredAddress, nil
@@ -95,17 +95,17 @@ func (r *OpenConsumerChannelRequest) GetMessage() []byte {
 }
 
 // RecoverIdentity recovers the identity from the given request
-func (r *OpenConsumerChannelRequest) RecoverIdentity() (common.Address, error) {
+func (r *OpenConsumerChannelRequest) RecoverIdentity() (crypto.Address, error) {
 	signature := common.Hex2Bytes(strings.TrimPrefix(r.Signature, "0x"))
 
 	err := crypto.ReformatSignatureVForRecovery(signature)
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 
 	recoveredAddress, err := crypto.RecoverAddress(r.GetMessage(), signature)
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 
 	return recoveredAddress, nil

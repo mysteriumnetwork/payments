@@ -26,17 +26,17 @@ import (
 )
 
 // RecoverAddress recovers the address from message and signature
-func RecoverAddress(message []byte, signature []byte) (common.Address, error) {
+func RecoverAddress(message []byte, signature []byte) (Address, error) {
 	publicKey, err := crypto.Ecrecover(crypto.Keccak256(message), signature)
 	if err != nil {
-		return common.Address{}, err
+		return Address{}, err
 	}
 	pubKey, err := crypto.UnmarshalPubkey(publicKey)
 	if err != nil {
-		return common.Address{}, err
+		return Address{}, err
 	}
 	recoveredAddress := crypto.PubkeyToAddress(*pubKey)
-	return recoveredAddress, nil
+	return FromCommonAddress(recoveredAddress), nil
 }
 
 // GetProxyCode generates bytecode of minimal proxy contract (EIP 1167)

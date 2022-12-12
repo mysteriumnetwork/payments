@@ -18,7 +18,7 @@ import (
 func TestClient(t *testing.T) {
 	t.Run("client creation", func(t *testing.T) {
 		pendingNonceErr := fmt.Errorf("pendingNonce error")
-		cl := &mocks.EtherClientMock{PendingNonceAtFunc: func(ctx context.Context, account common.Address) (uint64, error) {
+		cl := &mocks.EtherClientMock{PendingNonceAtFunc: func(ctx context.Context, account crypto.Address) (uint64, error) {
 			return 0, pendingNonceErr
 		}}
 		getter := NewDefaultEthClientGetter(cl)
@@ -26,17 +26,17 @@ func TestClient(t *testing.T) {
 		bc := NewBlockchain(getter, time.Second)
 		assert.Same(t, cl, bc.ethClient.Client())
 		assert.Equal(t, time.Second, bc.bcTimeout)
-		_, err := bc.nonceFunc(context.Background(), common.Address{})
+		_, err := bc.nonceFunc(context.Background(), crypto.Address{})
 		assert.Equal(t, pendingNonceErr, err)
 
 		customErr := fmt.Errorf("custom error")
-		nonceFunc := func(ctx context.Context, account common.Address) (uint64, error) {
+		nonceFunc := func(ctx context.Context, account crypto.Address) (uint64, error) {
 			return 0, customErr
 		}
 		bcWithCustomNonceTracker := NewBlockchainWithCustomNonceTracker(getter, 2*time.Second, nonceFunc)
 		assert.Same(t, cl, bcWithCustomNonceTracker.ethClient.Client())
 		assert.Equal(t, 2*time.Second, bcWithCustomNonceTracker.bcTimeout)
-		_, err = bcWithCustomNonceTracker.nonceFunc(context.Background(), common.Address{})
+		_, err = bcWithCustomNonceTracker.nonceFunc(context.Background(), crypto.Address{})
 		assert.Equal(t, customErr, err)
 	})
 
@@ -51,11 +51,11 @@ func TestClient(t *testing.T) {
 		assert.NoError(t, err)
 		_, err = bc.TransactionReceipt(common.Hash{})
 		assert.NoError(t, err)
-		_, err = bc.PendingNonceAt(common.Address{})
+		_, err = bc.PendingNonceAt(crypto.Address{})
 		assert.NoError(t, err)
-		_, err = bc.NonceAt(common.Address{}, nil)
+		_, err = bc.NonceAt(crypto.Address{}, nil)
 		assert.NoError(t, err)
-		_, err = bc.GetEthBalance(common.Address{})
+		_, err = bc.GetEthBalance(crypto.Address{})
 		assert.NoError(t, err)
 		_, err = bc.FilterLogs(ethereum.FilterQuery{})
 		assert.NoError(t, err)
@@ -78,8 +78,8 @@ func TestClient(t *testing.T) {
 
 	t.Run("get channel id", func(t *testing.T) {
 		bc := NewBlockchain(NewDefaultEthClientGetter(&mocks.EtherClientMock{}), time.Second)
-		hermesId := common.HexToAddress("0x80Ed28d84792d8b153bf2F25F0C4B7a1381dE4ab")
-		address := common.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4CF")
+		hermesId := crypto.HexToAddress("0x80Ed28d84792d8b153bf2F25F0C4B7a1381dE4ab")
+		address := crypto.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4CF")
 		channel, err := bc.getProviderChannelAddressBytes(hermesId, address)
 		assert.NoError(t, err)
 		assert.Equal(t, common.Hex2Bytes("bff791cc2eff82736bd18305ca116dbcd569957426036d6a970b7c88dacb6af1"), channel[:])
@@ -90,9 +90,9 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("registration request", func(t *testing.T) {
-		identity := common.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4CF")
-		hermes := common.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4C1")
-		beneficiary := common.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4C2")
+		identity := crypto.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4CF")
+		hermes := crypto.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4C1")
+		beneficiary := crypto.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4C2")
 		stake := big.NewInt(4)
 		tf := big.NewInt(2)
 		signature := common.Hex2Bytes("abcd")
@@ -123,9 +123,9 @@ func TestClient(t *testing.T) {
 
 		t.Run("transact ops creation EIP-1559", func(t *testing.T) {
 			pendingNonceErr := fmt.Errorf("pendingNonce error")
-			address := common.HexToAddress("0x123")
+			address := crypto.HexToAddress("0x123")
 			cl := &mocks.EtherClientMock{
-				PendingNonceAtFunc: func(ctx context.Context, account common.Address) (uint64, error) {
+				PendingNonceAtFunc: func(ctx context.Context, account crypto.Address) (uint64, error) {
 					if account == address {
 						return 2, nil
 					}
@@ -149,9 +149,9 @@ func TestClient(t *testing.T) {
 
 		t.Run("transact ops creation pre EIP-1559", func(t *testing.T) {
 			pendingNonceErr := fmt.Errorf("pendingNonce error")
-			address := common.HexToAddress("0x123")
+			address := crypto.HexToAddress("0x123")
 			cl := &mocks.EtherClientMock{
-				PendingNonceAtFunc: func(ctx context.Context, account common.Address) (uint64, error) {
+				PendingNonceAtFunc: func(ctx context.Context, account crypto.Address) (uint64, error) {
 					if account == address {
 						return 2, nil
 					}
@@ -173,9 +173,9 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("open consumer channel request", func(t *testing.T) {
-		identity := common.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4CF")
-		hermes := common.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4C1")
-		registry := common.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4C2")
+		identity := crypto.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4CF")
+		hermes := crypto.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4C1")
+		registry := crypto.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4C2")
 		tf := big.NewInt(2)
 		signature := common.Hex2Bytes("abcd")
 		rr := OpenConsumerChannelRequest{
@@ -194,9 +194,9 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("pay and settle request", func(t *testing.T) {
-		identity := common.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4CF")
-		provider := common.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4C2")
-		beneficiary := common.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4C3")
+		identity := crypto.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4CF")
+		provider := crypto.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4C2")
+		beneficiary := crypto.HexToAddress("0xEb2623a2734E272BCC07Bda954863F316f4Bd4C3")
 		promiseAmount := big.NewInt(4)
 		promiseFee := big.NewInt(3)
 		r := common.Hex2Bytes("123456")

@@ -20,21 +20,20 @@ import (
 	"encoding/hex"
 
 	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
 type SignedIdentityRequest struct {
-	Identity  common.Address `json:"identity,omitempty"`
-	Signature string         `json:"signature,omitempty"`
+	Identity  Address `json:"identity,omitempty"`
+	Signature string  `json:"signature,omitempty"`
 }
 
-func CreateSignedIdentityRequest(ks hashSigner, identityToSign, signer common.Address) (SignedIdentityRequest, error) {
+func CreateSignedIdentityRequest(ks hashSigner, identityToSign, signer Address) (SignedIdentityRequest, error) {
 	message := identityToSign.Bytes()
 	hash := crypto.Keccak256(message)
 
 	signature, err := ks.SignHash(
-		accounts.Account{Address: signer},
+		accounts.Account{Address: signer.ToCommon()},
 		hash,
 	)
 	if err != nil {
@@ -47,22 +46,21 @@ func CreateSignedIdentityRequest(ks hashSigner, identityToSign, signer common.Ad
 	}, nil
 }
 
-func (sir SignedIdentityRequest) RecoverSigner() (common.Address, error) {
+func (sir SignedIdentityRequest) RecoverSigner() (Address, error) {
 	b, err := hex.DecodeString(sir.Signature)
 	if err != nil {
-		return common.Address{}, err
+		return Address{}, err
 	}
 
 	h := crypto.Keccak256(sir.Identity.Bytes())
 	k, err := crypto.Ecrecover(h, b)
 	if err != nil {
-		return common.Address{}, err
+		return Address{}, err
 	}
 	pubKey, err := crypto.UnmarshalPubkey(k)
 	if err != nil {
-		return common.Address{}, err
+		return Address{}, err
 	}
 
-	recoveredAddress := crypto.PubkeyToAddress(*pubKey)
-	return recoveredAddress, nil
+	return FromCommonAddress(crypto.PubkeyToAddress(*pubKey)), nil
 }

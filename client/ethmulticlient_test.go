@@ -137,25 +137,25 @@ func Test_EthMultiClient(t *testing.T) {
 			assert.NoError(t, err)
 			_, err = multi.NetworkID(context.Background())
 			assert.NoError(t, err)
-			_, err = multi.BalanceAt(context.Background(), common.Address{}, nil)
+			_, err = multi.BalanceAt(context.Background(), crypto.Address{}, nil)
 			assert.NoError(t, err)
-			_, err = multi.StorageAt(context.Background(), common.Address{}, common.Hash{}, nil)
+			_, err = multi.StorageAt(context.Background(), crypto.Address{}, common.Hash{}, nil)
 			assert.NoError(t, err)
-			_, err = multi.CodeAt(context.Background(), common.Address{}, nil)
+			_, err = multi.CodeAt(context.Background(), crypto.Address{}, nil)
 			assert.NoError(t, err)
-			_, err = multi.NonceAt(context.Background(), common.Address{}, nil)
+			_, err = multi.NonceAt(context.Background(), crypto.Address{}, nil)
 			assert.NoError(t, err)
 			_, err = multi.FilterLogs(context.Background(), ethereum.FilterQuery{})
 			assert.NoError(t, err)
 			_, err = multi.SubscribeFilterLogs(context.Background(), ethereum.FilterQuery{}, nil)
 			assert.NoError(t, err)
-			_, err = multi.PendingBalanceAt(context.Background(), common.Address{})
+			_, err = multi.PendingBalanceAt(context.Background(), crypto.Address{})
 			assert.NoError(t, err)
-			_, err = multi.PendingStorageAt(context.Background(), common.Address{}, common.Hash{})
+			_, err = multi.PendingStorageAt(context.Background(), crypto.Address{}, common.Hash{})
 			assert.NoError(t, err)
-			_, err = multi.PendingCodeAt(context.Background(), common.Address{})
+			_, err = multi.PendingCodeAt(context.Background(), crypto.Address{})
 			assert.NoError(t, err)
-			_, err = multi.PendingNonceAt(context.Background(), common.Address{})
+			_, err = multi.PendingNonceAt(context.Background(), crypto.Address{})
 			assert.NoError(t, err)
 			_, err = multi.PendingTransactionCount(context.Background())
 			assert.NoError(t, err)
@@ -225,25 +225,25 @@ func Test_EthMultiClient(t *testing.T) {
 			assert.NoError(t, err)
 			_, err = multi.NetworkID(context.Background())
 			assert.NoError(t, err)
-			_, err = multi.BalanceAt(context.Background(), common.Address{}, nil)
+			_, err = multi.BalanceAt(context.Background(), crypto.Address{}, nil)
 			assert.NoError(t, err)
-			_, err = multi.StorageAt(context.Background(), common.Address{}, common.Hash{}, nil)
+			_, err = multi.StorageAt(context.Background(), crypto.Address{}, common.Hash{}, nil)
 			assert.NoError(t, err)
-			_, err = multi.CodeAt(context.Background(), common.Address{}, nil)
+			_, err = multi.CodeAt(context.Background(), crypto.Address{}, nil)
 			assert.NoError(t, err)
-			_, err = multi.NonceAt(context.Background(), common.Address{}, nil)
+			_, err = multi.NonceAt(context.Background(), crypto.Address{}, nil)
 			assert.NoError(t, err)
 			_, err = multi.FilterLogs(context.Background(), ethereum.FilterQuery{})
 			assert.NoError(t, err)
 			_, err = multi.SubscribeFilterLogs(context.Background(), ethereum.FilterQuery{}, nil)
 			assert.NoError(t, err)
-			_, err = multi.PendingBalanceAt(context.Background(), common.Address{})
+			_, err = multi.PendingBalanceAt(context.Background(), crypto.Address{})
 			assert.NoError(t, err)
-			_, err = multi.PendingStorageAt(context.Background(), common.Address{}, common.Hash{})
+			_, err = multi.PendingStorageAt(context.Background(), crypto.Address{}, common.Hash{})
 			assert.NoError(t, err)
-			_, err = multi.PendingCodeAt(context.Background(), common.Address{})
+			_, err = multi.PendingCodeAt(context.Background(), crypto.Address{})
 			assert.NoError(t, err)
-			_, err = multi.PendingNonceAt(context.Background(), common.Address{})
+			_, err = multi.PendingNonceAt(context.Background(), crypto.Address{})
 			assert.NoError(t, err)
 			_, err = multi.PendingTransactionCount(context.Background())
 			assert.NoError(t, err)
@@ -514,9 +514,9 @@ func getMockClientWithFunctionCallCounter(counterMap map[string]int, mapLock *sy
 			lockAndIncrement(counterMap, mapLock, "TransactionByHash")
 			return nil, false, nil
 		},
-		TransactionSenderFunc: func(ctx context.Context, tx *types.Transaction, block common.Hash, index uint) (common.Address, error) {
+		TransactionSenderFunc: func(ctx context.Context, tx *types.Transaction, block common.Hash, index uint) (crypto.Address, error) {
 			lockAndIncrement(counterMap, mapLock, "TransactionSender")
-			return common.Address{}, nil
+			return crypto.Address{}, nil
 		},
 		TransactionCountFunc: func(ctx context.Context, blockHash common.Hash) (uint, error) {
 			lockAndIncrement(counterMap, mapLock, "TransactionCount")
@@ -542,19 +542,19 @@ func getMockClientWithFunctionCallCounter(counterMap map[string]int, mapLock *sy
 			lockAndIncrement(counterMap, mapLock, "NetworkID")
 			return nil, nil
 		},
-		BalanceAtFunc: func(ctx context.Context, account common.Address, blockNumber *big.Int) (*big.Int, error) {
+		BalanceAtFunc: func(ctx context.Context, account crypto.Address, blockNumber *big.Int) (*big.Int, error) {
 			lockAndIncrement(counterMap, mapLock, "BalanceAt")
 			return nil, nil
 		},
-		StorageAtFunc: func(ctx context.Context, account common.Address, key common.Hash, blockNumber *big.Int) ([]byte, error) {
+		StorageAtFunc: func(ctx context.Context, account crypto.Address, key common.Hash, blockNumber *big.Int) ([]byte, error) {
 			lockAndIncrement(counterMap, mapLock, "StorageAt")
 			return nil, nil
 		},
-		CodeAtFunc: func(ctx context.Context, account common.Address, blockNumber *big.Int) ([]byte, error) {
+		CodeAtFunc: func(ctx context.Context, account crypto.Address, blockNumber *big.Int) ([]byte, error) {
 			lockAndIncrement(counterMap, mapLock, "CodeAt")
 			return nil, nil
 		},
-		NonceAtFunc: func(ctx context.Context, account common.Address, blockNumber *big.Int) (uint64, error) {
+		NonceAtFunc: func(ctx context.Context, account crypto.Address, blockNumber *big.Int) (uint64, error) {
 			lockAndIncrement(counterMap, mapLock, "NonceAt")
 			return 0, nil
 		},
@@ -566,19 +566,19 @@ func getMockClientWithFunctionCallCounter(counterMap map[string]int, mapLock *sy
 			lockAndIncrement(counterMap, mapLock, "SubscribeFilterLogs")
 			return nil, nil
 		},
-		PendingBalanceAtFunc: func(ctx context.Context, account common.Address) (*big.Int, error) {
+		PendingBalanceAtFunc: func(ctx context.Context, account crypto.Address) (*big.Int, error) {
 			lockAndIncrement(counterMap, mapLock, "PendingBalanceAt")
 			return nil, nil
 		},
-		PendingStorageAtFunc: func(ctx context.Context, account common.Address, key common.Hash) ([]byte, error) {
+		PendingStorageAtFunc: func(ctx context.Context, account crypto.Address, key common.Hash) ([]byte, error) {
 			lockAndIncrement(counterMap, mapLock, "PendingStorageAt")
 			return nil, nil
 		},
-		PendingCodeAtFunc: func(ctx context.Context, account common.Address) ([]byte, error) {
+		PendingCodeAtFunc: func(ctx context.Context, account crypto.Address) ([]byte, error) {
 			lockAndIncrement(counterMap, mapLock, "PendingCodeAt")
 			return nil, nil
 		},
-		PendingNonceAtFunc: func(ctx context.Context, account common.Address) (uint64, error) {
+		PendingNonceAtFunc: func(ctx context.Context, account crypto.Address) (uint64, error) {
 			lockAndIncrement(counterMap, mapLock, "PendingNonceAt")
 			return 0, nil
 		},

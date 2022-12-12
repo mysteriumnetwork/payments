@@ -7,15 +7,14 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestStake(t *testing.T) {
-	id := common.HexToAddress("0x1")
-	hermes := common.HexToAddress("0x3")
+	id := HexToAddress("0x1")
+	hermes := HexToAddress("0x3")
 	amount := big.NewInt(20)
 	tf := big.NewInt(10)
 	nonce := big.NewInt(3)
@@ -40,7 +39,7 @@ func TestStake(t *testing.T) {
 	require.NoError(t, err)
 	publicKeyECDSA, ok := pk.Public().(*ecdsa.PublicKey)
 	require.True(t, ok)
-	address := crypto.PubkeyToAddress(*publicKeyECDSA)
+	address := FromCommonAddress(crypto.PubkeyToAddress(*publicKeyECDSA))
 
 	t.Run("sign", func(t *testing.T) {
 		err = dps.Sign(&pkHashSigner{pk: pk, address: address}, address)
@@ -49,7 +48,7 @@ func TestStake(t *testing.T) {
 	})
 
 	t.Run("is valid", func(t *testing.T) {
-		valid := dps.IsValid(common.HexToAddress("0x1234"))
+		valid := dps.IsValid(HexToAddress("0x1234"))
 		assert.False(t, valid)
 
 		valid = dps.IsValid(address)

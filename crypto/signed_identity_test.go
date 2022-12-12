@@ -20,7 +20,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -34,8 +33,8 @@ func TestSignedIdentity(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	toSign := common.HexToAddress("0x000012312312312313")
-	req, err := CreateSignedIdentityRequest(ks, toSign, account.Address)
+	toSign := HexToAddress("0x000012312312312313")
+	req, err := CreateSignedIdentityRequest(ks, toSign, FromCommonAddress(account.Address))
 	assert.NoError(t, err)
 
 	// should return ok address

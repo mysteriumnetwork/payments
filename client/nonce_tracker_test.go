@@ -6,13 +6,12 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/stretchr/testify/assert"
 )
 
 func Test_NonceTracker(t *testing.T) {
 	trck := NewNonceTracker(&mockClient{})
-	addr := common.HexToAddress("0x0")
+	addr := crypto.HexToAddress("0x0")
 	wg := sync.WaitGroup{}
 
 	size := 1000
@@ -49,6 +48,6 @@ func Test_NonceTracker(t *testing.T) {
 type mockClient struct {
 }
 
-func (mc *mockClient) PendingNonceAt(ctx context.Context, account common.Address) (uint64, error) {
+func (mc *mockClient) PendingNonceAt(ctx context.Context, account crypto.Address) (uint64, error) {
 	return 1, nil
 }

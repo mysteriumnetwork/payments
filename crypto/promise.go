@@ -24,7 +24,6 @@ import (
 
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/pkg/errors"
@@ -42,7 +41,7 @@ type Promise struct {
 }
 
 // CreatePromise creates and signs new payment promise
-func CreatePromise(channelID string, chainID int64, amount *big.Int, fee *big.Int, hashlock string, ks hashSigner, signer common.Address) (*Promise, error) {
+func CreatePromise(channelID string, chainID int64, amount *big.Int, fee *big.Int, hashlock string, ks hashSigner, signer Address) (*Promise, error) {
 	channelID = ensureNoPrefix(channelID)
 	hashlock = ensureNoPrefix(hashlock)
 
@@ -151,7 +150,7 @@ func NewRawPromise(chainID int64, channelID string, amount, fee *big.Int, hashlo
 }
 
 // Sign signs promise with given keystore and signer
-func (p *Promise) Sign(ks *keystore.KeyStore, signer common.Address) error {
+func (p *Promise) Sign(ks *keystore.KeyStore, signer Address) error {
 	signature, err := p.CreateSignature(ks, signer)
 	if err != nil {
 		return err
@@ -185,11 +184,11 @@ func (p Promise) GetHash() []byte {
 }
 
 // CreateSignature signs promise using keystore
-func (p Promise) CreateSignature(ks hashSigner, signer common.Address) ([]byte, error) {
+func (p Promise) CreateSignature(ks hashSigner, signer Address) ([]byte, error) {
 	message := p.GetMessage()
 	hash := crypto.Keccak256(message)
 	return ks.SignHash(
-		accounts.Account{Address: signer},
+		accounts.Account{Address: signer.ToCommon()},
 		hash,
 	)
 }
@@ -200,7 +199,7 @@ func (p Promise) GetSignatureHexString() string {
 }
 
 // IsPromiseValid validates if given promise params are properly signed
-func (p Promise) IsPromiseValid(expectedSigner common.Address) bool {
+func (p Promise) IsPromiseValid(expectedSigner Address) bool {
 	sig := make([]byte, 65)
 	copy(sig, p.Signature)
 
@@ -218,13 +217,13 @@ func (p Promise) IsPromiseValid(expectedSigner common.Address) bool {
 }
 
 // RecoverSigner recovers signer address out of promise signature
-func (p Promise) RecoverSigner() (common.Address, error) {
+func (p Promise) RecoverSigner() (Address, error) {
 	sig := make([]byte, 65)
 	copy(sig, p.Signature)
 
 	err := ReformatSignatureVForRecovery(sig)
 	if err != nil {
-		return common.Address{}, err
+		return Address{}, err
 	}
 	return RecoverAddress(p.GetMessage(), sig)
 }

@@ -21,7 +21,6 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
 )
@@ -29,13 +28,13 @@ import (
 const ExitPrefix = "Exit request:"
 
 type ExitRequest struct {
-	ChannelID   common.Address
-	Beneficiary common.Address
+	ChannelID   Address
+	Beneficiary Address
 	ValidUntil  *big.Int
 	Signature   []byte
 }
 
-func NewExitRequest(channelID, beneficiary common.Address, validUntil *big.Int) *ExitRequest {
+func NewExitRequest(channelID, beneficiary Address, validUntil *big.Int) *ExitRequest {
 	return &ExitRequest{
 		ChannelID:   channelID,
 		Beneficiary: beneficiary,
@@ -53,28 +52,28 @@ func (er *ExitRequest) GetMessage() []byte {
 	return msg
 }
 
-func (er *ExitRequest) RecoverSigner() (common.Address, error) {
+func (er *ExitRequest) RecoverSigner() (Address, error) {
 	sig := make([]byte, 65)
 	copy(sig, er.Signature)
 
 	err := ReformatSignatureVForRecovery(sig)
 	if err != nil {
-		return common.Address{}, err
+		return Address{}, err
 	}
 
 	return RecoverAddress(er.GetMessage(), sig)
 }
 
-func (er *ExitRequest) CreateSignature(ks hashSigner, signer common.Address) ([]byte, error) {
+func (er *ExitRequest) CreateSignature(ks hashSigner, signer Address) ([]byte, error) {
 	message := er.GetMessage()
 	hash := crypto.Keccak256(message)
 	return ks.SignHash(
-		accounts.Account{Address: signer},
+		accounts.Account{Address: signer.ToCommon()},
 		hash,
 	)
 }
 
-func (er *ExitRequest) Sign(ks hashSigner, signer common.Address) error {
+func (er *ExitRequest) Sign(ks hashSigner, signer Address) error {
 	signature, err := er.CreateSignature(ks, signer)
 	if err != nil {
 		return err

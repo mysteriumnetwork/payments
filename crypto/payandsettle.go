@@ -11,7 +11,7 @@ import (
 )
 
 type PayAndSettleBeneficiaryPayload struct {
-	Beneficiary                    common.Address
+	Beneficiary                    Address
 	Signature                      []byte
 	ChainID                        int64
 	ProviderChannelIDForWithdrawal string
@@ -19,7 +19,7 @@ type PayAndSettleBeneficiaryPayload struct {
 	R                              [32]byte
 }
 
-func NewPayAndSettleBeneficiaryPayload(beneficiary common.Address, chainID int64, providerChannelIDForWithdrawal string, amount *big.Int, r [32]byte) *PayAndSettleBeneficiaryPayload {
+func NewPayAndSettleBeneficiaryPayload(beneficiary Address, chainID int64, providerChannelIDForWithdrawal string, amount *big.Int, r [32]byte) *PayAndSettleBeneficiaryPayload {
 	return &PayAndSettleBeneficiaryPayload{
 		Beneficiary:                    beneficiary,
 		ChainID:                        chainID,
@@ -41,12 +41,12 @@ func (pasp *PayAndSettleBeneficiaryPayload) getMessage() []byte {
 	return message
 }
 
-func (pasp *PayAndSettleBeneficiaryPayload) Sign(ks hashSigner, signer common.Address) error {
+func (pasp *PayAndSettleBeneficiaryPayload) Sign(ks hashSigner, signer Address) error {
 	message := pasp.getMessage()
 	hash := crypto.Keccak256(message)
 
 	signature, err := ks.SignHash(
-		accounts.Account{Address: signer},
+		accounts.Account{Address: signer.ToCommon()},
 		hash,
 	)
 	if err != nil {
@@ -60,13 +60,13 @@ func (pasp *PayAndSettleBeneficiaryPayload) Sign(ks hashSigner, signer common.Ad
 }
 
 // RecoverSigner recovers signer address out of promise signature
-func (pasp *PayAndSettleBeneficiaryPayload) RecoverSigner() (common.Address, error) {
+func (pasp *PayAndSettleBeneficiaryPayload) RecoverSigner() (Address, error) {
 	sig := make([]byte, 65)
 	copy(sig, pasp.Signature)
 
 	err := ReformatSignatureVForRecovery(sig)
 	if err != nil {
-		return common.Address{}, err
+		return Address{}, err
 	}
 
 	return RecoverAddress(pasp.getMessage(), sig)

@@ -22,7 +22,6 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
 )
@@ -32,7 +31,7 @@ const stakeReturnPrefix = "Stake return request"
 // DecreaseProviderStakeRequest represents all the parameters required for decreasing provider stake.
 type DecreaseProviderStakeRequest struct {
 	ChannelID     [32]byte
-	HermesID      common.Address
+	HermesID      Address
 	Amount        *big.Int
 	TransactorFee *big.Int
 	Nonce         *big.Int
@@ -41,17 +40,17 @@ type DecreaseProviderStakeRequest struct {
 }
 
 // CreateSignature signs promise using keystore
-func (dpsr DecreaseProviderStakeRequest) CreateSignature(ks hashSigner, signer common.Address) ([]byte, error) {
+func (dpsr DecreaseProviderStakeRequest) CreateSignature(ks hashSigner, signer Address) ([]byte, error) {
 	message := dpsr.GetMessage()
 	hash := crypto.Keccak256(message)
 	return ks.SignHash(
-		accounts.Account{Address: signer},
+		accounts.Account{Address: signer.ToCommon()},
 		hash,
 	)
 }
 
 // Sign signs the DecreaseProviderStakeRequest.
-func (dpsr *DecreaseProviderStakeRequest) Sign(ks hashSigner, signer common.Address) error {
+func (dpsr *DecreaseProviderStakeRequest) Sign(ks hashSigner, signer Address) error {
 	signature, err := dpsr.CreateSignature(ks, signer)
 	if err != nil {
 		return err
@@ -81,7 +80,7 @@ func (dpsr DecreaseProviderStakeRequest) GetMessage() []byte {
 }
 
 // IsValid checks if the current stake decrease request is valid or not.
-func (dpsr DecreaseProviderStakeRequest) IsValid(expectedSigner common.Address) bool {
+func (dpsr DecreaseProviderStakeRequest) IsValid(expectedSigner Address) bool {
 	recoveredSigner, err := dpsr.RecoverSigner()
 	if err != nil {
 		return false
@@ -91,13 +90,13 @@ func (dpsr DecreaseProviderStakeRequest) IsValid(expectedSigner common.Address) 
 }
 
 // RecoverSigner recovers signer address out of request signature.
-func (dpsr DecreaseProviderStakeRequest) RecoverSigner() (common.Address, error) {
+func (dpsr DecreaseProviderStakeRequest) RecoverSigner() (Address, error) {
 	sig := make([]byte, 65)
 	copy(sig, dpsr.Signature)
 
 	err := ReformatSignatureVForRecovery(sig)
 	if err != nil {
-		return common.Address{}, err
+		return Address{}, err
 	}
 
 	return RecoverAddress(dpsr.GetMessage(), sig)

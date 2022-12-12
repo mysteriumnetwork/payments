@@ -4,8 +4,8 @@ import (
 	"sync"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/mysteriumnetwork/payments/bindings"
+	"github.com/mysteriumnetwork/payments/crypto"
 )
 
 type hermesImplementationRegistry struct {
@@ -23,7 +23,7 @@ func newHermesImplementationRegistry() *hermesImplementationRegistry {
 	}
 }
 
-func (h *hermesImplementationRegistry) caller(address common.Address, etherClient EtherClient) (*bindings.HermesImplementationCaller, error) {
+func (h *hermesImplementationRegistry) caller(address crypto.Address, etherClient EtherClient) (*bindings.HermesImplementationCaller, error) {
 	h.lock.RLock()
 	caller, exists := h.callers[address.Hex()]
 	h.lock.RUnlock()
@@ -31,7 +31,7 @@ func (h *hermesImplementationRegistry) caller(address common.Address, etherClien
 		return caller, nil
 	}
 
-	caller, err := bindings.NewHermesImplementationCaller(address, etherClient)
+	caller, err := bindings.NewHermesImplementationCaller(address.ToCommon(), etherClient)
 	if err != nil {
 		return caller, err
 	}
@@ -43,7 +43,7 @@ func (h *hermesImplementationRegistry) caller(address common.Address, etherClien
 	return caller, nil
 }
 
-func (h *hermesImplementationRegistry) filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.HermesImplementationFilterer, error) {
+func (h *hermesImplementationRegistry) filterer(address crypto.Address, filterer bind.ContractFilterer) (*bindings.HermesImplementationFilterer, error) {
 	h.lock.RLock()
 	filter, exists := h.filterers[address.Hex()]
 	h.lock.RUnlock()
@@ -51,7 +51,7 @@ func (h *hermesImplementationRegistry) filterer(address common.Address, filterer
 		return filter, nil
 	}
 
-	f, err := bindings.NewHermesImplementationFilterer(address, filterer)
+	f, err := bindings.NewHermesImplementationFilterer(address.ToCommon(), filterer)
 	if err != nil {
 		return f, err
 	}
@@ -63,7 +63,7 @@ func (h *hermesImplementationRegistry) filterer(address common.Address, filterer
 	return f, nil
 }
 
-func (h *hermesImplementationRegistry) transactor(address common.Address, client EtherClient) (*bindings.HermesImplementationTransactor, error) {
+func (h *hermesImplementationRegistry) transactor(address crypto.Address, client EtherClient) (*bindings.HermesImplementationTransactor, error) {
 	h.lock.RLock()
 	transactor, exists := h.transactors[address.Hex()]
 	h.lock.RUnlock()
@@ -71,7 +71,7 @@ func (h *hermesImplementationRegistry) transactor(address common.Address, client
 		return transactor, nil
 	}
 
-	f, err := bindings.NewHermesImplementationTransactor(address, client)
+	f, err := bindings.NewHermesImplementationTransactor(address.ToCommon(), client)
 	if err != nil {
 		return f, err
 	}
@@ -98,7 +98,7 @@ func newRegistry() *registry {
 	}
 }
 
-func (h *registry) caller(address common.Address, etherClient EtherClient) (*bindings.RegistryCaller, error) {
+func (h *registry) caller(address crypto.Address, etherClient EtherClient) (*bindings.RegistryCaller, error) {
 	h.lock.RLock()
 	caller, exists := h.callers[address.Hex()]
 	h.lock.RUnlock()
@@ -106,7 +106,7 @@ func (h *registry) caller(address common.Address, etherClient EtherClient) (*bin
 		return caller, nil
 	}
 
-	caller, err := bindings.NewRegistryCaller(address, etherClient)
+	caller, err := bindings.NewRegistryCaller(address.ToCommon(), etherClient)
 	if err != nil {
 		return caller, err
 	}
@@ -118,7 +118,7 @@ func (h *registry) caller(address common.Address, etherClient EtherClient) (*bin
 	return caller, nil
 }
 
-func (h *registry) filterer(address common.Address, filterer bind.ContractFilterer) (*bindings.RegistryFilterer, error) {
+func (h *registry) filterer(address crypto.Address, filterer bind.ContractFilterer) (*bindings.RegistryFilterer, error) {
 	h.lock.RLock()
 	filter, exists := h.filterers[address.Hex()]
 	h.lock.RUnlock()
@@ -126,7 +126,7 @@ func (h *registry) filterer(address common.Address, filterer bind.ContractFilter
 		return filter, nil
 	}
 
-	f, err := bindings.NewRegistryFilterer(address, filterer)
+	f, err := bindings.NewRegistryFilterer(address.ToCommon(), filterer)
 	if err != nil {
 		return f, err
 	}
@@ -138,7 +138,7 @@ func (h *registry) filterer(address common.Address, filterer bind.ContractFilter
 	return f, nil
 }
 
-func (h *registry) transactor(address common.Address, client EtherClient) (*bindings.RegistryTransactor, error) {
+func (h *registry) transactor(address crypto.Address, client EtherClient) (*bindings.RegistryTransactor, error) {
 	h.lock.RLock()
 	transactor, exists := h.transactors[address.Hex()]
 	h.lock.RUnlock()
@@ -146,7 +146,7 @@ func (h *registry) transactor(address common.Address, client EtherClient) (*bind
 		return transactor, nil
 	}
 
-	f, err := bindings.NewRegistryTransactor(address, client)
+	f, err := bindings.NewRegistryTransactor(address.ToCommon(), client)
 	if err != nil {
 		return f, err
 	}

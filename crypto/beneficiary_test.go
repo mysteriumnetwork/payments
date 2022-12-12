@@ -18,9 +18,9 @@ import (
 func TestBeneficiary(t *testing.T) {
 	t.Run("beneficiary set request", func(t *testing.T) {
 		chain := int64(1)
-		id := common.HexToAddress("0x1")
-		reg := common.HexToAddress("0x2")
-		ben := common.HexToAddress("0x3")
+		id := HexToAddress("0x1")
+		reg := HexToAddress("0x2")
+		ben := HexToAddress("0x3")
 		nonce := big.NewInt(1)
 		signature := common.Hex2Bytes(signatureHex)
 		err := ReformatSignatureVForBC(signature)
@@ -62,7 +62,7 @@ func TestBeneficiary(t *testing.T) {
 			require.NoError(t, err)
 			publicKeyECDSA, ok := pk.Public().(*ecdsa.PublicKey)
 			require.True(t, ok)
-			address := crypto.PubkeyToAddress(*publicKeyECDSA)
+			address := FromCommonAddress(crypto.PubkeyToAddress(*publicKeyECDSA))
 			req, err := CreateBeneficiaryRequest(chain, address.Hex(), reg.Hex(), ben.Hex(), nonce, &pkHashSigner{pk: pk, address: address}, address)
 			require.NoError(t, err)
 
@@ -83,11 +83,11 @@ func (mhs *mockHashSigner) SignHash(a accounts.Account, hash []byte) ([]byte, er
 
 type pkHashSigner struct {
 	pk      *ecdsa.PrivateKey
-	address common.Address
+	address Address
 }
 
 func (phs *pkHashSigner) SignHash(a accounts.Account, hash []byte) ([]byte, error) {
-	if a.Address != phs.address {
+	if FromCommonAddress(a.Address) != phs.address {
 		return nil, fmt.Errorf("wrong address")
 	}
 	return crypto.Sign(hash, phs.pk)

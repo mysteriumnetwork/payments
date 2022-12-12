@@ -22,7 +22,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -46,7 +45,7 @@ func TestGetMessageHash(t *testing.T) {
 
 func TestRecoverConsumerIdentity(t *testing.T) {
 	message := getExchangeMessage()
-	expectedSigner := common.HexToAddress("0xCcad590A7a938Cb086e7414e0F0000eD6a56D833")
+	expectedSigner := HexToAddress("0xCcad590A7a938Cb086e7414e0F0000eD6a56D833")
 	recoveredSigner, err := message.RecoverConsumerIdentity()
 	assert.Nil(t, err)
 	assert.Equal(t, expectedSigner, recoveredSigner)
@@ -54,10 +53,10 @@ func TestRecoverConsumerIdentity(t *testing.T) {
 
 func TestExchangeMessageValidation(t *testing.T) {
 	message := getExchangeMessage()
-	expectedSigner := common.HexToAddress("0xCcad590A7a938Cb086e7414e0F0000eD6a56D833")
+	expectedSigner := HexToAddress("0xCcad590A7a938Cb086e7414e0F0000eD6a56D833")
 	assert.True(t, message.IsMessageValid(expectedSigner))
 
-	wrongSigner := common.HexToAddress("0xf10021ba3b10d023e671668d20daeff821561d09")
+	wrongSigner := HexToAddress("0xf10021ba3b10d023e671668d20daeff821561d09")
 	assert.False(t, message.IsMessageValid(wrongSigner))
 }
 
@@ -85,7 +84,7 @@ func TestCreateExchangeMessage(t *testing.T) {
 	assert.NoError(t, err)
 	invoice.Provider = provider
 
-	message, err := CreateExchangeMessage(1, invoice, amount, channelID, "", ks, account.Address)
+	message, err := CreateExchangeMessage(1, invoice, amount, channelID, "", ks, FromCommonAddress(account.Address))
 	assert.Nil(t, err)
 
 	assert.Equal(t, p.PromiseSignature, message.Promise.Signature)
@@ -117,7 +116,7 @@ func TestCreateExchangeMessageWithPromise(t *testing.T) {
 	invoice.Provider = provider
 
 	promise := getPromise("consumer")
-	message, err := CreateExchangeMessageWithPromise(1, invoice, &promise, "", ks, account.Address)
+	message, err := CreateExchangeMessageWithPromise(1, invoice, &promise, "", ks, FromCommonAddress(account.Address))
 	assert.Nil(t, err)
 
 	assert.Equal(t, p.PromiseSignature, message.Promise.Signature)

@@ -44,7 +44,7 @@ type hashSigner interface {
 	SignHash(a accounts.Account, hash []byte) ([]byte, error)
 }
 
-func CreateExchangeMessageWithPromise(chainID int64, invoice Invoice, promise *Promise, hermesID string, ks hashSigner, signer common.Address) (*ExchangeMessage, error) {
+func CreateExchangeMessageWithPromise(chainID int64, invoice Invoice, promise *Promise, hermesID string, ks hashSigner, signer Address) (*ExchangeMessage, error) {
 	message := ExchangeMessage{
 		Promise:        *promise,
 		AgreementID:    new(big.Int).Set(invoice.AgreementID),
@@ -69,7 +69,7 @@ func CreateExchangeMessageWithPromise(chainID int64, invoice Invoice, promise *P
 }
 
 // CreateExchangeMessage creates new exchange message with it's promise
-func CreateExchangeMessage(chainID int64, invoice Invoice, promiseAmount *big.Int, channelID, hermesID string, ks hashSigner, signer common.Address) (*ExchangeMessage, error) {
+func CreateExchangeMessage(chainID int64, invoice Invoice, promiseAmount *big.Int, channelID, hermesID string, ks hashSigner, signer Address) (*ExchangeMessage, error) {
 	promise, err := CreatePromise(channelID, chainID, promiseAmount, invoice.TransactorFee, invoice.Hashlock, ks, signer)
 	if err != nil {
 		return nil, err
@@ -140,27 +140,27 @@ func (m ExchangeMessage) GetMessageHash() []byte {
 }
 
 // CreateSignature signs promise using keystore
-func (m ExchangeMessage) CreateSignature(ks hashSigner, signer common.Address) ([]byte, error) {
+func (m ExchangeMessage) CreateSignature(ks hashSigner, signer Address) ([]byte, error) {
 	return ks.SignHash(
-		accounts.Account{Address: signer},
+		accounts.Account{Address: signer.ToCommon()},
 		m.GetMessageHash(),
 	)
 }
 
 // RecoverConsumerIdentity recovers the identity from the given request
-func (m ExchangeMessage) RecoverConsumerIdentity() (common.Address, error) {
+func (m ExchangeMessage) RecoverConsumerIdentity() (Address, error) {
 	signature := m.GetSignatureBytesRaw()
 
 	err := ReformatSignatureVForRecovery(signature)
 	if err != nil {
-		return common.Address{}, err
+		return Address{}, err
 	}
 
 	return RecoverAddress(m.GetMessage(), signature)
 }
 
 // IsMessageValid validates if given exchange message was signed by expected identity
-func (m ExchangeMessage) IsMessageValid(expectedSigner common.Address) bool {
+func (m ExchangeMessage) IsMessageValid(expectedSigner Address) bool {
 	recoveredSigner, err := m.RecoverConsumerIdentity()
 	if err != nil {
 		return false

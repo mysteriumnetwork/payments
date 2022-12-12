@@ -5,24 +5,24 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/mysteriumnetwork/payments/client/mocks"
+	"github.com/mysteriumnetwork/payments/crypto"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestMultiChainAddressKeeper(t *testing.T) {
-	defaultReg := common.HexToAddress("0x1")
-	defaultMyst := common.HexToAddress("0x2")
-	defaultHermes := common.HexToAddress("0x3")
-	defaultChImp := common.HexToAddress("0x4")
-	defaultHermes2 := common.HexToAddress("0x31")
+	defaultReg := crypto.HexToAddress("0x1")
+	defaultMyst := crypto.HexToAddress("0x2")
+	defaultHermes := crypto.HexToAddress("0x3")
+	defaultChImp := crypto.HexToAddress("0x4")
+	defaultHermes2 := crypto.HexToAddress("0x31")
 	fmt.Println(defaultReg.Hex(), defaultMyst.Hex())
 	chain1Addrs := SmartContractAddresses{
 		Registry:                    defaultReg,
 		Myst:                        defaultMyst,
 		ActiveHermes:                defaultHermes,
 		ActiveChannelImplementation: defaultChImp,
-		KnownHermeses:               []common.Address{defaultHermes, defaultHermes2},
+		KnownHermeses:               []crypto.Address{defaultHermes, defaultHermes2},
 	}
 	mcak := *NewMultiChainAddressKeeper(map[int64]SmartContractAddresses{
 		1: chain1Addrs,
@@ -72,7 +72,7 @@ func TestMultiChainAddressKeeper(t *testing.T) {
 
 		addrs, err := mcak.GetKnownHermeses(1)
 		assert.NoError(t, err)
-		assert.Equal(t, []common.Address{defaultHermes, defaultHermes2}, addrs)
+		assert.Equal(t, []crypto.Address{defaultHermes, defaultHermes2}, addrs)
 
 		_, err = mcak.GetKnownHermeses(2)
 		assert.Error(t, err)
@@ -80,17 +80,17 @@ func TestMultiChainAddressKeeper(t *testing.T) {
 	})
 
 	t.Run("channel address", func(t *testing.T) {
-		channel, err := mcak.GetActiveChannelAddress(1, common.HexToAddress("0x8"))
+		channel, err := mcak.GetActiveChannelAddress(1, crypto.HexToAddress("0x8"))
 		assert.NoError(t, err)
-		assert.Equal(t, common.HexToAddress("0xed31e71bdaf1e7cfcbaf87206a590f16255be7ce"), channel)
+		assert.Equal(t, crypto.HexToAddress("0xed31e71bdaf1e7cfcbaf87206a590f16255be7ce"), channel)
 
-		_, err = mcak.GetActiveChannelAddress(2, common.HexToAddress("0x8"))
+		_, err = mcak.GetActiveChannelAddress(2, crypto.HexToAddress("0x8"))
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, ErrUnknownChain)
 
-		channel, err = mcak.GetArbitraryChannelAddress(common.HexToAddress("0x11"), common.HexToAddress("0x12"), common.HexToAddress("0x13"), common.HexToAddress("0x14"))
+		channel, err = mcak.GetArbitraryChannelAddress(crypto.HexToAddress("0x11"), crypto.HexToAddress("0x12"), crypto.HexToAddress("0x13"), crypto.HexToAddress("0x14"))
 		assert.NoError(t, err)
-		assert.Equal(t, common.HexToAddress("0x185ae932baf1803c53613bda27a30ecb311bb53a"), channel)
+		assert.Equal(t, crypto.HexToAddress("0x185ae932baf1803c53613bda27a30ecb311bb53a"), channel)
 	})
 
 	t.Run("multichain address provider", func(t *testing.T) {
@@ -103,14 +103,14 @@ func TestMultiChainAddressKeeper(t *testing.T) {
 
 		t.Run("cache", func(t *testing.T) {
 			chainId := int64(1)
-			addr := common.HexToAddress("0x50")
+			addr := crypto.HexToAddress("0x50")
 			key := mcap.chCacheKey(chainId, addr)
 			assert.Equal(t, fmt.Sprintf("%d|%s", chainId, addr.Hash()), key)
 
 			_, ok := mcap.chCacheGet(chainId, addr)
 			assert.False(t, ok)
 
-			chImpl := common.HexToAddress("0x2")
+			chImpl := crypto.HexToAddress("0x2")
 			mcap.chCacheSet(chainId, addr, chImpl)
 
 			got, ok := mcap.chCacheGet(chainId, addr)
@@ -119,17 +119,17 @@ func TestMultiChainAddressKeeper(t *testing.T) {
 		})
 
 		t.Run("channel address", func(t *testing.T) {
-			ch, err := mcap.GetHermesChannelAddress(1, common.HexToAddress("0x20"), defaultHermes)
+			ch, err := mcap.GetHermesChannelAddress(1, crypto.HexToAddress("0x20"), defaultHermes)
 			assert.NoError(t, err)
-			assert.Equal(t, common.HexToAddress("0xbe1614cfdd363bb378c86b208debb128c24fc290"), ch)
+			assert.Equal(t, crypto.HexToAddress("0xbe1614cfdd363bb378c86b208debb128c24fc290"), ch)
 
-			hermes2 := common.HexToAddress("0x800")
-			chImpl2 := common.HexToAddress("0x250")
+			hermes2 := crypto.HexToAddress("0x800")
+			chImpl2 := crypto.HexToAddress("0x250")
 			mcap.chCacheSet(1, hermes2, chImpl2)
 
-			ch, err = mcap.GetHermesChannelAddress(1, common.HexToAddress("0x20"), hermes2)
+			ch, err = mcap.GetHermesChannelAddress(1, crypto.HexToAddress("0x20"), hermes2)
 			assert.NoError(t, err)
-			assert.Equal(t, common.HexToAddress("0x2c3d47c15d79413eed1a66ae597994794fa3cd19"), ch)
+			assert.Equal(t, crypto.HexToAddress("0x2c3d47c15d79413eed1a66ae597994794fa3cd19"), ch)
 		})
 	})
 }

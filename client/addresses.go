@@ -21,7 +21,6 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/mysteriumnetwork/payments/crypto"
 )
 
@@ -31,17 +30,17 @@ type MultiChainAddressKeeper struct {
 }
 
 type apBlockchain interface {
-	GetHermes(chainID int64, registryID, hermesID common.Address) (Hermes, error)
-	GetChannelImplementationByVersion(chainID int64, registryID common.Address, version *big.Int) (common.Address, error)
+	GetHermes(chainID int64, registryID, hermesID crypto.Address) (Hermes, error)
+	GetChannelImplementationByVersion(chainID int64, registryID crypto.Address, version *big.Int) (crypto.Address, error)
 }
 
 // SmartContractAddresses represents the mysterium smart contract address collection.
 type SmartContractAddresses struct {
-	Registry                    common.Address
-	Myst                        common.Address
-	ActiveHermes                common.Address
-	ActiveChannelImplementation common.Address
-	KnownHermeses               []common.Address
+	Registry                    crypto.Address
+	Myst                        crypto.Address
+	ActiveHermes                crypto.Address
+	ActiveChannelImplementation crypto.Address
+	KnownHermeses               []crypto.Address
 }
 
 // NewMultiChainAddressKeeper creates a new instance of MultiChainAddressKeeper.
@@ -57,43 +56,43 @@ func (mcak *MultiChainAddressKeeper) GetAddressesForChain(chainID int64) (SmartC
 }
 
 // GetRegistryAddress returns the registry sc address for the given chain.
-func (mcak *MultiChainAddressKeeper) GetRegistryAddress(chainID int64) (common.Address, error) {
+func (mcak *MultiChainAddressKeeper) GetRegistryAddress(chainID int64) (crypto.Address, error) {
 	v, err := mcak.getAddressesForChain(chainID)
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 	return v.Registry, nil
 }
 
 // GetMystAddress returns the myst sc address for the given chain.
-func (mcak *MultiChainAddressKeeper) GetMystAddress(chainID int64) (common.Address, error) {
+func (mcak *MultiChainAddressKeeper) GetMystAddress(chainID int64) (crypto.Address, error) {
 	v, err := mcak.getAddressesForChain(chainID)
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 	return v.Myst, nil
 }
 
 // GetActiveHermes returns active hermes address for the given chain.
-func (mcak *MultiChainAddressKeeper) GetActiveHermes(chainID int64) (common.Address, error) {
+func (mcak *MultiChainAddressKeeper) GetActiveHermes(chainID int64) (crypto.Address, error) {
 	v, err := mcak.getAddressesForChain(chainID)
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 	return v.ActiveHermes, nil
 }
 
 // GetActiveChannelImplementation returns channel implementation a default address for the given chain.
-func (mcak *MultiChainAddressKeeper) GetActiveChannelImplementation(chainID int64) (common.Address, error) {
+func (mcak *MultiChainAddressKeeper) GetActiveChannelImplementation(chainID int64) (crypto.Address, error) {
 	v, err := mcak.getAddressesForChain(chainID)
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 	return v.ActiveChannelImplementation, nil
 }
 
 // GetKnownHermeses returns a list of all the known hermes addresses for the given chain.
-func (mcak *MultiChainAddressKeeper) GetKnownHermeses(chainID int64) ([]common.Address, error) {
+func (mcak *MultiChainAddressKeeper) GetKnownHermeses(chainID int64) ([]crypto.Address, error) {
 	v, err := mcak.getAddressesForChain(chainID)
 	if err != nil {
 		return nil, err
@@ -103,20 +102,20 @@ func (mcak *MultiChainAddressKeeper) GetKnownHermeses(chainID int64) ([]common.A
 
 // GetActiveChannelAddress will calculate a channel address for an identity with active hermes, registry and
 // active channel implementation values for a given chain.
-func (mcak *MultiChainAddressKeeper) GetActiveChannelAddress(chainID int64, id common.Address) (common.Address, error) {
+func (mcak *MultiChainAddressKeeper) GetActiveChannelAddress(chainID int64, id crypto.Address) (crypto.Address, error) {
 	v, err := mcak.getAddressesForChain(chainID)
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 
 	addr, err := crypto.GenerateChannelAddress(id.Hex(), v.ActiveHermes.Hex(), v.Registry.Hex(), v.ActiveChannelImplementation.Hex())
-	return common.HexToAddress(addr), err
+	return crypto.HexToAddress(addr), err
 }
 
 // GetArbitraryChannelAddress will will calculate a consumer channel address given all custom parameters.
-func (mcak *MultiChainAddressKeeper) GetArbitraryChannelAddress(hermes, registry, channel common.Address, id common.Address) (common.Address, error) {
+func (mcak *MultiChainAddressKeeper) GetArbitraryChannelAddress(hermes, registry, channel crypto.Address, id crypto.Address) (crypto.Address, error) {
 	addr, err := crypto.GenerateChannelAddress(id.Hex(), hermes.Hex(), registry.Hex(), channel.Hex())
-	return common.HexToAddress(addr), err
+	return crypto.HexToAddress(addr), err
 }
 
 func (mcak *MultiChainAddressKeeper) getAddressesForChain(chainID int64) (SmartContractAddresses, error) {
@@ -133,7 +132,7 @@ type MultiChainAddressProvider struct {
 
 	// Getting channel implementation is expensive so we want to keep
 	// any values that we retrieve, they will not change anyway.
-	chCache map[string]common.Address
+	chCache map[string]crypto.Address
 	m       sync.RWMutex
 }
 
@@ -142,13 +141,13 @@ func NewMultiChainAddressProvider(k *MultiChainAddressKeeper, bc apBlockchain) *
 	return &MultiChainAddressProvider{
 		MultiChainAddressKeeper: k,
 		bc:                      bc,
-		chCache:                 make(map[string]common.Address),
+		chCache:                 make(map[string]crypto.Address),
 	}
 }
 
 // GetChannelImplementationForHermes for hermes will query the blockchain and find a channel implementation address
 // that is used by a given hermes. It will then cache the value.
-func (mcak *MultiChainAddressProvider) GetChannelImplementationForHermes(chainID int64, hermes common.Address) (common.Address, error) {
+func (mcak *MultiChainAddressProvider) GetChannelImplementationForHermes(chainID int64, hermes crypto.Address) (crypto.Address, error) {
 	got, ok := mcak.chCacheGet(chainID, hermes)
 	if ok {
 		return got, nil
@@ -156,24 +155,24 @@ func (mcak *MultiChainAddressProvider) GetChannelImplementationForHermes(chainID
 
 	registry, err := mcak.GetRegistryAddress(chainID)
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 
 	bcHermes, err := mcak.bc.GetHermes(chainID, registry, hermes)
 	if err != nil {
-		return common.Address{}, fmt.Errorf("could not get hermes from BC: %w", err)
+		return crypto.Address{}, fmt.Errorf("could not get hermes from BC: %w", err)
 	}
 
 	ch, err := mcak.bc.GetChannelImplementationByVersion(chainID, registry, bcHermes.ImplVer)
 	if err != nil {
-		return common.Address{}, fmt.Errorf("could not get ch implementation from BC: %w", err)
+		return crypto.Address{}, fmt.Errorf("could not get ch implementation from BC: %w", err)
 	}
 
 	mcak.chCacheSet(chainID, hermes, ch)
 	return ch, nil
 }
 
-func (mcak *MultiChainAddressProvider) chCacheSet(chainID int64, hermes, impl common.Address) {
+func (mcak *MultiChainAddressProvider) chCacheSet(chainID int64, hermes, impl crypto.Address) {
 	key := mcak.chCacheKey(chainID, hermes)
 
 	mcak.m.Lock()
@@ -182,7 +181,7 @@ func (mcak *MultiChainAddressProvider) chCacheSet(chainID int64, hermes, impl co
 	mcak.chCache[key] = impl
 }
 
-func (mcak *MultiChainAddressProvider) chCacheGet(chainID int64, hermes common.Address) (common.Address, bool) {
+func (mcak *MultiChainAddressProvider) chCacheGet(chainID int64, hermes crypto.Address) (crypto.Address, bool) {
 	key := mcak.chCacheKey(chainID, hermes)
 
 	mcak.m.RLock()
@@ -192,30 +191,30 @@ func (mcak *MultiChainAddressProvider) chCacheGet(chainID int64, hermes common.A
 	return got, ok
 }
 
-func (mcak *MultiChainAddressKeeper) chCacheKey(chainID int64, hermes common.Address) string {
+func (mcak *MultiChainAddressKeeper) chCacheKey(chainID int64, hermes crypto.Address) string {
 	return fmt.Sprintf("%d|%s", chainID, hermes.Hash())
 }
 
 // GetHermesChannelAddress will calculate a channel address for an identity and hermes using the channel
 // implementation of that hermes and the registry for a given chain.
-func (mcak *MultiChainAddressProvider) GetHermesChannelAddress(chainID int64, id, hermesAddr common.Address) (common.Address, error) {
+func (mcak *MultiChainAddressProvider) GetHermesChannelAddress(chainID int64, id, hermesAddr crypto.Address) (crypto.Address, error) {
 	activeHermesAddr, err := mcak.GetActiveHermes(chainID)
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
-	var channelImplementation common.Address
+	var channelImplementation crypto.Address
 	if hermesAddr == activeHermesAddr {
 		return mcak.GetActiveChannelAddress(chainID, id)
 	}
 	channelImplementation, err = mcak.GetChannelImplementationForHermes(chainID, hermesAddr)
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 	registry, err := mcak.GetRegistryAddress(chainID)
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 
 	addr, err := crypto.GenerateChannelAddress(id.Hex(), hermesAddr.Hex(), registry.Hex(), channelImplementation.Hex())
-	return common.HexToAddress(addr), err
+	return crypto.HexToAddress(addr), err
 }

@@ -21,7 +21,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -35,17 +34,17 @@ func TestReferralRequest(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	req, err := CreateReferralTokenRequest(ks, account.Address)
+	req, err := CreateReferralTokenRequest(ks, FromCommonAddress(account.Address))
 	assert.NoError(t, err)
 
 	err = req.IsValid()
 	assert.NoError(t, err)
 
 	// should fail if we change identity
-	req.Identity = common.HexToAddress("0x0")
+	req.Identity = HexToAddress("0x0")
 	err = req.IsValid()
 	assert.Error(t, err)
-	req.Identity = account.Address
+	req.Identity = FromCommonAddress(account.Address)
 
 	// should fail if we change the signature
 	req.Signature = strings.Replace(req.Signature, "a", "b", -1)

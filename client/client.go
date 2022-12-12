@@ -57,15 +57,15 @@ type Blockchain struct {
 	rr        *registry
 }
 
-type nonceFunc func(ctx context.Context, account common.Address) (uint64, error)
+type nonceFunc func(ctx context.Context, account crypto.Address) (uint64, error)
 
 // NewBlockchain returns a new instance of blockchain
 func NewBlockchain(ethClient EthClientGetter, timeout time.Duration) *Blockchain {
 	return &Blockchain{
 		ethClient: ethClient,
 		bcTimeout: timeout,
-		nonceFunc: func(ctx context.Context, account common.Address) (uint64, error) {
-			return ethClient.Client().PendingNonceAt(ctx, account)
+		nonceFunc: func(ctx context.Context, account crypto.Address) (uint64, error) {
+			return ethClient.Client().PendingNonceAt(ctx, account.ToCommon())
 		},
 		hir: newHermesImplementationRegistry(),
 		rr:  newRegistry(),
@@ -96,7 +96,7 @@ func (bc *Blockchain) makeTransactOpts(ctx context.Context, rr *WriteRequest) (*
 }
 
 // GetHermesFee fetches the hermes fee from blockchain
-func (bc *Blockchain) GetHermesFee(hermesAddress common.Address) (uint16, error) {
+func (bc *Blockchain) GetHermesFee(hermesAddress crypto.Address) (uint16, error) {
 	caller, err := bc.hir.caller(hermesAddress, bc.ethClient.Client())
 	if err != nil {
 		return 0, errors.Wrap(err, "could not create hermes implementation caller")
@@ -116,7 +116,7 @@ func (bc *Blockchain) GetHermesFee(hermesAddress common.Address) (uint16, error)
 }
 
 // CalculateHermesFee calls blockchain for calculation of hermes fee
-func (bc *Blockchain) CalculateHermesFee(hermesAddress common.Address, value *big.Int) (*big.Int, error) {
+func (bc *Blockchain) CalculateHermesFee(hermesAddress crypto.Address, value *big.Int) (*big.Int, error) {
 	caller, err := bc.hir.caller(hermesAddress, bc.ethClient.Client())
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create hermes implementation caller")
@@ -131,7 +131,7 @@ func (bc *Blockchain) CalculateHermesFee(hermesAddress common.Address, value *bi
 }
 
 // IsRegisteredAsProvider checks if the provider is registered with the hermes properly
-func (bc *Blockchain) IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck common.Address) (bool, error) {
+func (bc *Blockchain) IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck crypto.Address) (bool, error) {
 	registered, err := bc.IsRegistered(registryAddress, addressToCheck)
 	if err != nil {
 		return false, errors.Wrap(err, "could not check registration status")
@@ -150,9 +150,9 @@ func (bc *Blockchain) IsRegisteredAsProvider(hermesAddress, registryAddress, add
 }
 
 // SubscribeToMystTokenTransfers subscribes to myst token transfers
-func (bc *Blockchain) SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error) {
+func (bc *Blockchain) SubscribeToMystTokenTransfers(mystSCAddress crypto.Address) (chan *bindings.MystTokenTransfer, func(), error) {
 	sink := make(chan *bindings.MystTokenTransfer)
-	mtc, err := bindings.NewMystTokenFilterer(mystSCAddress, bc.ethClient.Client())
+	mtc, err := bindings.NewMystTokenFilterer(mystSCAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return sink, nil, err
 	}
@@ -173,14 +173,14 @@ func (bc *Blockchain) SubscribeToMystTokenTransfers(mystSCAddress common.Address
 }
 
 // SubscribeToConsumerBalanceEvent subscribes to balance change events in blockchain
-func (bc *Blockchain) SubscribeToConsumerBalanceEvent(channel, mystSCAddress common.Address, timeout time.Duration) (chan *bindings.MystTokenTransfer, func(), error) {
+func (bc *Blockchain) SubscribeToConsumerBalanceEvent(channel, mystSCAddress crypto.Address, timeout time.Duration) (chan *bindings.MystTokenTransfer, func(), error) {
 	sink := make(chan *bindings.MystTokenTransfer)
-	mtc, err := bindings.NewMystTokenFilterer(mystSCAddress, bc.ethClient.Client())
+	mtc, err := bindings.NewMystTokenFilterer(mystSCAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return sink, nil, err
 	}
 
-	sub, err := mtc.WatchTransfer(&bind.WatchOpts{}, sink, []common.Address{}, []common.Address{channel})
+	sub, err := mtc.WatchTransfer(&bind.WatchOpts{}, sink, []common.Address{}, []common.Address{channel.ToCommon()})
 	if err != nil {
 		return sink, nil, err
 	}
@@ -201,7 +201,7 @@ func (bc *Blockchain) SubscribeToConsumerBalanceEvent(channel, mystSCAddress com
 }
 
 // GetProviderChannel returns the provider channel
-func (bc *Blockchain) GetProviderChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+func (bc *Blockchain) GetProviderChannel(hermesAddress crypto.Address, addressToCheck crypto.Address, pending bool) (ProviderChannel, error) {
 	addressBytes, err := bc.getProviderChannelAddressBytes(hermesAddress, addressToCheck)
 	if err != nil {
 		return ProviderChannel{}, errors.Wrap(err, "could not calculate provider channel address")
@@ -222,7 +222,7 @@ func (bc *Blockchain) GetProviderChannel(hermesAddress common.Address, addressTo
 }
 
 // GetProviderChannel returns the provider channel
-func (bc *Blockchain) GetProvidersWithdrawalChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+func (bc *Blockchain) GetProvidersWithdrawalChannel(hermesAddress crypto.Address, addressToCheck crypto.Address, pending bool) (ProviderChannel, error) {
 	addressBytes, err := bc.getProviderChannelAddressForWithdrawalBytes(hermesAddress, addressToCheck)
 	if err != nil {
 		return ProviderChannel{}, errors.Wrap(err, "could not calculate provider channel address")
@@ -242,7 +242,7 @@ func (bc *Blockchain) GetProvidersWithdrawalChannel(hermesAddress common.Address
 	return ch, errors.Wrap(err, "could not get provider channel from bc")
 }
 
-func (bc *Blockchain) getProviderChannelStake(hermesAddress common.Address, addressToCheck common.Address) (*big.Int, error) {
+func (bc *Blockchain) getProviderChannelStake(hermesAddress crypto.Address, addressToCheck crypto.Address) (*big.Int, error) {
 	ch, err := bc.GetProviderChannel(hermesAddress, addressToCheck, false)
 	return ch.Stake, errors.Wrap(err, "could not get provider channel from bc")
 }
@@ -259,19 +259,19 @@ func (bc *Blockchain) TransactionReceipt(hash common.Hash) (*types.Receipt, erro
 	return bc.ethClient.Client().TransactionReceipt(ctx, hash)
 }
 
-func (bc *Blockchain) PendingNonceAt(account common.Address) (uint64, error) {
+func (bc *Blockchain) PendingNonceAt(account crypto.Address) (uint64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
-	return bc.ethClient.Client().PendingNonceAt(ctx, account)
+	return bc.ethClient.Client().PendingNonceAt(ctx, account.ToCommon())
 }
 
-func (bc *Blockchain) NonceAt(account common.Address, blockNum *big.Int) (uint64, error) {
+func (bc *Blockchain) NonceAt(account crypto.Address, blockNum *big.Int) (uint64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
-	return bc.ethClient.Client().NonceAt(ctx, account, blockNum)
+	return bc.ethClient.Client().NonceAt(ctx, account.ToCommon(), blockNum)
 }
 
-func (bc *Blockchain) getProviderChannelAddressBytes(hermesAddress, addressToCheck common.Address) ([32]byte, error) {
+func (bc *Blockchain) getProviderChannelAddressBytes(hermesAddress, addressToCheck crypto.Address) ([32]byte, error) {
 	addressBytes := [32]byte{}
 
 	addr, err := crypto.GenerateProviderChannelID(addressToCheck.Hex(), hermesAddress.Hex())
@@ -284,7 +284,7 @@ func (bc *Blockchain) getProviderChannelAddressBytes(hermesAddress, addressToChe
 	return addressBytes, nil
 }
 
-func (bc *Blockchain) getProviderChannelAddressForWithdrawalBytes(hermesAddress, addressToCheck common.Address) ([32]byte, error) {
+func (bc *Blockchain) getProviderChannelAddressForWithdrawalBytes(hermesAddress, addressToCheck crypto.Address) ([32]byte, error) {
 	addressBytes := [32]byte{}
 
 	addr, err := crypto.GenerateProviderChannelIDForPayAndSettle(addressToCheck.Hex(), hermesAddress.Hex())
@@ -298,7 +298,7 @@ func (bc *Blockchain) getProviderChannelAddressForWithdrawalBytes(hermesAddress,
 }
 
 // SubscribeToPromiseSettledEvent subscribes to promise settled events
-func (bc *Blockchain) SubscribeToPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+func (bc *Blockchain) SubscribeToPromiseSettledEvent(providerID, hermesID crypto.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	addr, err := bc.getProviderChannelAddressBytes(hermesID, providerID)
 	if err != nil {
 		return sink, cancel, errors.Wrap(err, "could not get provider channel address")
@@ -307,7 +307,7 @@ func (bc *Blockchain) SubscribeToPromiseSettledEvent(providerID, hermesID common
 }
 
 // SubscribeToWithdrawalPromiseSettledEvent subscribes to withdrawal promise settled events
-func (bc *Blockchain) SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+func (bc *Blockchain) SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID crypto.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	addr, err := bc.getProviderChannelAddressForWithdrawalBytes(hermesID, providerID)
 	if err != nil {
 		return sink, cancel, errors.Wrap(err, "could not get provider channel address")
@@ -316,7 +316,7 @@ func (bc *Blockchain) SubscribeToWithdrawalPromiseSettledEvent(providerID, herme
 }
 
 // IsRegistered checks wether the given identity is registered or not
-func (bc *Blockchain) IsRegistered(registryAddress, addressToCheck common.Address) (bool, error) {
+func (bc *Blockchain) IsRegistered(registryAddress, addressToCheck crypto.Address) (bool, error) {
 	caller, err := bc.rr.caller(registryAddress, bc.ethClient.Client())
 	if err != nil {
 		return false, errors.Wrap(err, "could not create registry caller")
@@ -327,13 +327,13 @@ func (bc *Blockchain) IsRegistered(registryAddress, addressToCheck common.Addres
 
 	res, err := caller.IsRegistered(&bind.CallOpts{
 		Context: ctx,
-	}, addressToCheck)
+	}, addressToCheck.ToCommon())
 	return res, errors.Wrap(err, "could not check registration status")
 }
 
 // GetMystBalance returns myst balance
-func (bc *Blockchain) GetMystBalance(mystAddress, identity common.Address) (*big.Int, error) {
-	c, err := bindings.NewMystTokenCaller(mystAddress, bc.ethClient.Client())
+func (bc *Blockchain) GetMystBalance(mystAddress, identity crypto.Address) (*big.Int, error) {
+	c, err := bindings.NewMystTokenCaller(mystAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -342,29 +342,29 @@ func (bc *Blockchain) GetMystBalance(mystAddress, identity common.Address) (*big
 	defer cancel()
 	return c.BalanceOf(&bind.CallOpts{
 		Context: ctx,
-	}, identity)
+	}, identity.ToCommon())
 }
 
 // RegistrationRequest contains all the parameters for the registration request
 type RegistrationRequest struct {
 	WriteRequest
 	ChainID         int64
-	HermesID        common.Address
+	HermesID        crypto.Address
 	Stake           *big.Int
 	TransactorFee   *big.Int
-	Beneficiary     common.Address
+	Beneficiary     crypto.Address
 	Signature       []byte
-	RegistryAddress common.Address
+	RegistryAddress crypto.Address
 	Nonce           *big.Int
 }
 
 func (r RegistrationRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
-	return bindings.NewContractEstimator(r.RegistryAddress, bindings.RegistryABI, ethClient.Client())
+	return bindings.NewContractEstimator(r.RegistryAddress.ToCommon(), bindings.RegistryABI, ethClient.Client())
 }
 
 func (r RegistrationRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
-		From:   r.Identity,
+		From:   r.Identity.ToCommon(),
 		Method: "registerIdentity",
 		Params: []interface{}{r.HermesID, r.Stake, r.TransactorFee, r.Beneficiary, r.Signature},
 	}
@@ -373,7 +373,7 @@ func (r RegistrationRequest) toEstimateOps() *bindings.EstimateOpts {
 // WriteRequest contains the required params for a write request
 type WriteRequest struct {
 	Nonce    *big.Int
-	Identity common.Address
+	Identity crypto.Address
 	Signer   bind.SignerFn
 
 	// GasTip is the amount of tokens to tip for miners. Required for EIP-1559.
@@ -393,7 +393,7 @@ func (wr *WriteRequest) toTransactOpts(ctx context.Context) *bind.TransactOpts {
 
 	to := &bind.TransactOpts{
 		Context:  ctx,
-		From:     wr.Identity,
+		From:     wr.Identity.ToCommon(),
 		Signer:   wr.Signer,
 		GasLimit: wr.GasLimit,
 		Nonce:    wr.Nonce,
@@ -435,10 +435,10 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 
 	tx, err := transactor.RegisterIdentity(
 		to,
-		rr.HermesID,
+		rr.HermesID.ToCommon(),
 		rr.Stake,
 		rr.TransactorFee,
-		rr.Beneficiary,
+		rr.Beneficiary.ToCommon(),
 		rr.Signature,
 	)
 	return tx, err
@@ -447,19 +447,19 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 // OpenConsumerChannelRequest container for an open channel signed request
 type OpenConsumerChannelRequest struct {
 	WriteRequest
-	HermesID        common.Address
-	RegistryAddress common.Address
+	HermesID        crypto.Address
+	RegistryAddress crypto.Address
 	TransactorFee   *big.Int
 	Signature       []byte
 }
 
 func (r OpenConsumerChannelRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
-	return bindings.NewContractEstimator(r.RegistryAddress, bindings.RegistryMetaData.ABI, ethClient.Client())
+	return bindings.NewContractEstimator(r.RegistryAddress.ToCommon(), bindings.RegistryMetaData.ABI, ethClient.Client())
 }
 
 func (r OpenConsumerChannelRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
-		From:   r.Identity,
+		From:   r.Identity.ToCommon(),
 		Method: "openConsumerChannel",
 		Params: []interface{}{r.HermesID, r.RegistryAddress, r.TransactorFee, r.Signature},
 	}
@@ -480,26 +480,26 @@ func (bc *Blockchain) OpenConsumerChannel(req OpenConsumerChannelRequest) (*type
 		return nil, err
 	}
 
-	return transactor.OpenConsumerChannel(to, req.HermesID, req.TransactorFee, req.Signature)
+	return transactor.OpenConsumerChannel(to, req.HermesID.ToCommon(), req.TransactorFee, req.Signature)
 }
 
 // PayAndSettleRequest allows to pay and settle and exit to l1 via this.
 type PayAndSettleRequest struct {
 	WriteRequest
-	Beneficiary          common.Address
-	HermesID             common.Address
-	ProviderID           common.Address
+	Beneficiary          crypto.Address
+	HermesID             crypto.Address
+	ProviderID           crypto.Address
 	Promise              crypto.Promise
 	BeneficiarySignature []byte
 }
 
 func (psr PayAndSettleRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
-	return bindings.NewContractEstimator(psr.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+	return bindings.NewContractEstimator(psr.HermesID.ToCommon(), bindings.HermesImplementationMetaData.ABI, ethClient.Client())
 }
 
 func (psr PayAndSettleRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
-		From:   psr.Identity,
+		From:   psr.Identity.ToCommon(),
 		Method: "payAndSettle",
 		Params: []interface{}{psr.ProviderID, psr.Promise.Amount, psr.Promise.Fee, ToBytes32(psr.Promise.R), psr.Promise.Signature, psr.Beneficiary, psr.BeneficiarySignature},
 	}
@@ -522,12 +522,12 @@ func (bc *Blockchain) PayAndSettle(psr PayAndSettleRequest) (*types.Transaction,
 
 	tx, err := transactor.PayAndSettle(
 		to,
-		psr.ProviderID,
+		psr.ProviderID.ToCommon(),
 		psr.Promise.Amount,
 		psr.Promise.Fee,
 		ToBytes32(psr.Promise.R),
 		psr.Promise.Signature,
-		psr.Beneficiary,
+		psr.Beneficiary.ToCommon(),
 		psr.BeneficiarySignature,
 	)
 	return tx, err
@@ -535,19 +535,19 @@ func (bc *Blockchain) PayAndSettle(psr PayAndSettleRequest) (*types.Transaction,
 
 // TransferRequest contains all the parameters for a transfer request
 type TransferRequest struct {
-	MystAddress common.Address
-	Recipient   common.Address
+	MystAddress crypto.Address
+	Recipient   crypto.Address
 	Amount      *big.Int
 	WriteRequest
 }
 
 func (r TransferRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
-	return bindings.NewContractEstimator(r.MystAddress, bindings.MystTokenABI, ethClient.Client())
+	return bindings.NewContractEstimator(r.MystAddress.ToCommon(), bindings.MystTokenABI, ethClient.Client())
 }
 
 func (r TransferRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
-		From:   r.Identity,
+		From:   r.Identity.ToCommon(),
 		Method: "transfer",
 		Params: []interface{}{r.Recipient, r.Amount},
 	}
@@ -555,7 +555,7 @@ func (r TransferRequest) toEstimateOps() *bindings.EstimateOpts {
 
 // TransferMyst transfers myst
 func (bc *Blockchain) TransferMyst(req TransferRequest) (tx *types.Transaction, err error) {
-	transactor, err := bindings.NewMystTokenTransactor(req.MystAddress, bc.ethClient.Client())
+	transactor, err := bindings.NewMystTokenTransactor(req.MystAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return tx, err
 	}
@@ -568,11 +568,11 @@ func (bc *Blockchain) TransferMyst(req TransferRequest) (tx *types.Transaction, 
 		return nil, err
 	}
 
-	return transactor.Transfer(to, req.Recipient, req.Amount)
+	return transactor.Transfer(to, req.Recipient.ToCommon(), req.Amount)
 }
 
 // IsHermesRegistered checks if given hermes is registered and returns true or false.
-func (bc *Blockchain) IsHermesRegistered(registryAddress, acccountantID common.Address) (bool, error) {
+func (bc *Blockchain) IsHermesRegistered(registryAddress, acccountantID crypto.Address) (bool, error) {
 	caller, err := bc.rr.caller(registryAddress, bc.ethClient.Client())
 	if err != nil {
 		return false, err
@@ -583,24 +583,24 @@ func (bc *Blockchain) IsHermesRegistered(registryAddress, acccountantID common.A
 	return caller.IsHermes(&bind.CallOpts{
 		Pending: false,
 		Context: ctx,
-	}, acccountantID)
+	}, acccountantID.ToCommon())
 }
 
 // ProviderStakeIncreaseRequest represents all the parameters required for stake increase.
 type ProviderStakeIncreaseRequest struct {
 	WriteRequest
 	ChannelID [32]byte
-	HermesID  common.Address
+	HermesID  crypto.Address
 	Amount    *big.Int
 }
 
 func (r ProviderStakeIncreaseRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
-	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+	return bindings.NewContractEstimator(r.HermesID.ToCommon(), bindings.HermesImplementationMetaData.ABI, ethClient.Client())
 }
 
 func (r ProviderStakeIncreaseRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
-		From:   r.Identity,
+		From:   r.Identity.ToCommon(),
 		Method: "increaseStake",
 		Params: []interface{}{r.ChannelID, r.Amount},
 	}
@@ -628,17 +628,17 @@ func (bc *Blockchain) IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*
 type SettleIntoStakeRequest struct {
 	WriteRequest
 	Promise    crypto.Promise
-	HermesID   common.Address
-	ProviderID common.Address
+	HermesID   crypto.Address
+	ProviderID crypto.Address
 }
 
 func (r SettleIntoStakeRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
-	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+	return bindings.NewContractEstimator(r.HermesID.ToCommon(), bindings.HermesImplementationMetaData.ABI, ethClient.Client())
 }
 
 func (r SettleIntoStakeRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
-		From:   r.Identity,
+		From:   r.Identity.ToCommon(),
 		Method: "settleIntoStake",
 		Params: []interface{}{
 			r.ProviderID,
@@ -673,41 +673,46 @@ func (bc *Blockchain) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transa
 		return nil, err
 	}
 
-	return t.SettleIntoStake(to, req.ProviderID, amount, fee, lock, req.Promise.Signature)
+	return t.SettleIntoStake(to, req.ProviderID.ToCommon(), amount, fee, lock, req.Promise.Signature)
 }
 
 // DecreaseProviderStakeRequest represents all the parameters required for decreasing provider stake.
 type DecreaseProviderStakeRequest struct {
 	WriteRequest
 	Request    crypto.DecreaseProviderStakeRequest
-	ProviderID common.Address
+	ProviderID crypto.Address
 }
 
 func (r DecreaseProviderStakeRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
-	return bindings.NewContractEstimator(r.Request.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+	return bindings.NewContractEstimator(r.Request.HermesID.ToCommon(), bindings.HermesImplementationMetaData.ABI, ethClient.Client())
 }
 
 func (r DecreaseProviderStakeRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
-		From:   r.Identity,
+		From:   r.Identity.ToCommon(),
 		Method: "decreaseStake",
 		Params: []interface{}{r.ProviderID, r.Request.Amount, r.Request.TransactorFee, r.Request.Signature},
 	}
 }
 
-func (bc *Blockchain) GetBeneficiary(registryAddress, identity common.Address) (common.Address, error) {
+func (bc *Blockchain) GetBeneficiary(registryAddress, identity crypto.Address) (crypto.Address, error) {
 	caller, err := bc.rr.caller(registryAddress, bc.ethClient.Client())
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 
 	parent := context.Background()
 	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
 	defer cancel()
-	return caller.GetBeneficiary(&bind.CallOpts{
+	beneficiary, err := caller.GetBeneficiary(&bind.CallOpts{
 		Pending: false,
 		Context: ctx,
-	}, identity)
+	}, identity.ToCommon())
+	if err != nil {
+		return crypto.Address{}, err
+	}
+
+	return crypto.FromCommonAddress(beneficiary), nil
 }
 
 // DecreaseProviderStake decreases provider stake.
@@ -725,27 +730,32 @@ func (bc *Blockchain) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*
 		return nil, fmt.Errorf("could not get transactor: %w", err)
 	}
 
-	return t.DecreaseStake(transactor, req.ProviderID, req.Request.Amount, req.Request.TransactorFee, req.Request.Signature)
+	return t.DecreaseStake(transactor, req.ProviderID.ToCommon(), req.Request.Amount, req.Request.TransactorFee, req.Request.Signature)
 }
 
 // GetHermesOperator returns operator address of given hermes
-func (bc *Blockchain) GetHermesOperator(hermesID common.Address) (common.Address, error) {
+func (bc *Blockchain) GetHermesOperator(hermesID crypto.Address) (crypto.Address, error) {
 	caller, err := bc.hir.caller(hermesID, bc.ethClient.Client())
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 
 	parent := context.Background()
 	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
 	defer cancel()
-	return caller.GetOperator(&bind.CallOpts{
+	operator, err := caller.GetOperator(&bind.CallOpts{
 		Pending: false,
 		Context: ctx,
 	})
+	if err != nil {
+		return crypto.Address{}, err
+	}
+
+	return crypto.FromCommonAddress(operator), nil
 }
 
 // IsHermesActive determines if hermes is active or not.
-func (bc *Blockchain) IsHermesActive(hermesID common.Address) (bool, error) {
+func (bc *Blockchain) IsHermesActive(hermesID crypto.Address) (bool, error) {
 	caller, err := bc.hir.caller(hermesID, bc.ethClient.Client())
 	if err != nil {
 		return false, err
@@ -763,18 +773,18 @@ func (bc *Blockchain) IsHermesActive(hermesID common.Address) (bool, error) {
 // SettleAndRebalanceRequest represents all the parameters required for settle and rebalance
 type SettleAndRebalanceRequest struct {
 	WriteRequest
-	HermesID   common.Address
-	ProviderID common.Address
+	HermesID   crypto.Address
+	ProviderID crypto.Address
 	Promise    crypto.Promise
 }
 
 func (r SettleAndRebalanceRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
-	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+	return bindings.NewContractEstimator(r.HermesID.ToCommon(), bindings.HermesImplementationMetaData.ABI, ethClient.Client())
 }
 
 func (r SettleAndRebalanceRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
-		From:   r.Identity,
+		From:   r.Identity.ToCommon(),
 		Method: "settlePromise",
 		Params: []interface{}{r.ProviderID, r.Promise.Amount, r.Promise.Fee, ToBytes32(r.Promise.R), r.Promise.Signature},
 	}
@@ -797,7 +807,7 @@ func (bc *Blockchain) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.
 
 	return transactor.SettlePromise(
 		to,
-		req.ProviderID,
+		req.ProviderID.ToCommon(),
 		req.Promise.Amount,
 		req.Promise.Fee,
 		ToBytes32(req.Promise.R),
@@ -811,7 +821,7 @@ func ToBytes32(arr []byte) (res [32]byte) {
 }
 
 // GetLastRegistryNonce returns the last registry nonce.
-func (bc *Blockchain) GetLastRegistryNonce(registry common.Address) (*big.Int, error) {
+func (bc *Blockchain) GetLastRegistryNonce(registry crypto.Address) (*big.Int, error) {
 	caller, err := bc.rr.caller(registry, bc.ethClient.Client())
 	if err != nil {
 		return nil, err
@@ -827,7 +837,7 @@ func (bc *Blockchain) GetLastRegistryNonce(registry common.Address) (*big.Int, e
 }
 
 // GetProviderChannelByID returns the given provider channel information
-func (bc *Blockchain) GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error) {
+func (bc *Blockchain) GetProviderChannelByID(acc crypto.Address, chID []byte) (ProviderChannel, error) {
 	caller, err := bc.hir.caller(acc, bc.ethClient.Client())
 	if err != nil {
 		return ProviderChannel{}, err
@@ -844,14 +854,14 @@ func (bc *Blockchain) GetProviderChannelByID(acc common.Address, chID []byte) (P
 
 // ConsumersHermes represents the consumers hermes
 type ConsumersHermes struct {
-	Operator        common.Address
-	ContractAddress common.Address
+	Operator        crypto.Address
+	ContractAddress crypto.Address
 	Settled         *big.Int
 }
 
 // GetConsumerChannelsHermes returns the consumer channels hermes
-func (bc *Blockchain) GetConsumerChannelsHermes(channelAddress common.Address) (ConsumersHermes, error) {
-	c, err := bindings.NewChannelImplementationCaller(channelAddress, bc.ethClient.Client())
+func (bc *Blockchain) GetConsumerChannelsHermes(channelAddress crypto.Address) (ConsumersHermes, error) {
+	c, err := bindings.NewChannelImplementationCaller(channelAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return ConsumersHermes{}, err
 	}
@@ -859,24 +869,36 @@ func (bc *Blockchain) GetConsumerChannelsHermes(channelAddress common.Address) (
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	return c.Hermes(&bind.CallOpts{Context: ctx})
+	consumerHermes, err := c.Hermes(&bind.CallOpts{Context: ctx})
+	if err != nil {
+		return ConsumersHermes{}, err
+	}
+	return ConsumersHermes{
+		Operator:        crypto.FromCommonAddress(consumerHermes.Operator),
+		ContractAddress: crypto.FromCommonAddress(consumerHermes.ContractAddress),
+		Settled:         nil,
+	}, nil
 }
 
 // GetConsumerChannelOperator returns the consumer channel operator/identity
-func (bc *Blockchain) GetConsumerChannelOperator(channelAddress common.Address) (common.Address, error) {
-	c, err := bindings.NewChannelImplementationCaller(channelAddress, bc.ethClient.Client())
+func (bc *Blockchain) GetConsumerChannelOperator(channelAddress crypto.Address) (crypto.Address, error) {
+	c, err := bindings.NewChannelImplementationCaller(channelAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	return c.Operator(&bind.CallOpts{Context: ctx})
+	operator, err := c.Operator(&bind.CallOpts{Context: ctx})
+	if err != nil {
+		return crypto.Address{}, err
+	}
+	return crypto.FromCommonAddress(operator), nil
 }
 
 // SubscribeToIdentityRegistrationEvents subscribes to identity registration events
-func (bc *Blockchain) SubscribeToIdentityRegistrationEvents(registryAddress common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
+func (bc *Blockchain) SubscribeToIdentityRegistrationEvents(registryAddress crypto.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
 	filterer, err := bc.rr.filterer(registryAddress, bc.ethClient.Client())
 	if err != nil {
 		return sink, cancel, errors.Wrap(err, "could not create registry filterer")
@@ -898,17 +920,21 @@ func (bc *Blockchain) SubscribeToIdentityRegistrationEvents(registryAddress comm
 }
 
 // SubscribeToConsumerChannelBalanceUpdate subscribes to consumer channel balance update events
-func (bc *Blockchain) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error) {
-	filterer, err := bindings.NewMystTokenFilterer(mystSCAddress, bc.ethClient.Client())
+func (bc *Blockchain) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress crypto.Address, channelAddresses []crypto.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error) {
+	filterer, err := bindings.NewMystTokenFilterer(mystSCAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return sink, cancel, errors.Wrap(err, "could not create myst token filterer")
 	}
 
 	sink = make(chan *bindings.MystTokenTransfer)
+	commonAddresses := make([]common.Address, 0)
+	for _, address := range channelAddresses {
+		commonAddresses = append(commonAddresses, address.ToCommon())
+	}
 	sub := event.Resubscribe(DefaultBackoff, func(ctx context.Context) (event.Subscription, error) {
 		return filterer.WatchTransfer(&bind.WatchOpts{
 			Context: ctx,
-		}, sink, nil, channelAddresses)
+		}, sink, nil, commonAddresses)
 	})
 	go func() {
 		subErr := <-sub.Err()
@@ -923,12 +949,12 @@ func (bc *Blockchain) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress comm
 // SettleRequest represents all the parameters required for settle
 type SettleRequest struct {
 	WriteRequest
-	ChannelID common.Address
+	ChannelID crypto.Address
 	Promise   crypto.Promise
 }
 
 func (r SettleRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
-	return bindings.NewContractEstimator(r.ChannelID, bindings.ChannelImplementationABI, ethClient.Client())
+	return bindings.NewContractEstimator(r.ChannelID.ToCommon(), bindings.ChannelImplementationMetaData.ABI, ethClient.Client())
 }
 
 func (r SettleRequest) toEstimateOps() *bindings.EstimateOpts {
@@ -936,7 +962,7 @@ func (r SettleRequest) toEstimateOps() *bindings.EstimateOpts {
 	copy(lock[:], r.Promise.R)
 
 	return &bindings.EstimateOpts{
-		From:   r.Identity,
+		From:   r.Identity.ToCommon(),
 		Method: "settlePromise",
 		Params: []interface{}{r.Promise.Amount, r.Promise.Fee, lock, r.Promise.Signature},
 	}
@@ -944,7 +970,7 @@ func (r SettleRequest) toEstimateOps() *bindings.EstimateOpts {
 
 // SettlePromise is settling the given consumer issued promise
 func (bc *Blockchain) SettlePromise(req SettleRequest) (*types.Transaction, error) {
-	transactor, err := bindings.NewChannelImplementationTransactor(req.ChannelID, bc.ethClient.Client())
+	transactor, err := bindings.NewChannelImplementationTransactor(req.ChannelID.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -974,14 +1000,14 @@ func (bc *Blockchain) SettlePromise(req SettleRequest) (*types.Transaction, erro
 	)
 }
 
-func (bc *Blockchain) getNonce(identity common.Address) (uint64, error) {
+func (bc *Blockchain) getNonce(identity crypto.Address) (uint64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 	return bc.nonceFunc(ctx, identity)
 }
 
 // GetHermesURL gets the hermes url from BC.
-func (bc *Blockchain) GetHermesURL(registryID, hermesID common.Address) (string, error) {
+func (bc *Blockchain) GetHermesURL(registryID, hermesID crypto.Address) (string, error) {
 	caller, err := bc.rr.caller(registryID, bc.ethClient.Client())
 	if err != nil {
 		return "", fmt.Errorf("could not create new registry caller %w", err)
@@ -994,21 +1020,21 @@ func (bc *Blockchain) GetHermesURL(registryID, hermesID common.Address) (string,
 		&bind.CallOpts{
 			Context: ctx,
 		},
-		hermesID,
+		hermesID.ToCommon(),
 	)
 	return string(urlBytes), err
 }
 
 // Hermes represents the hermes in registry.
 type Hermes struct {
-	Operator common.Address
+	Operator crypto.Address
 	ImplVer  *big.Int
 	Stake    *big.Int
 	URL      string
 }
 
 // GetHermes returns hermes info from registry
-func (bc *Blockchain) GetHermes(registryID, hermesID common.Address) (Hermes, error) {
+func (bc *Blockchain) GetHermes(registryID, hermesID crypto.Address) (Hermes, error) {
 	caller, err := bc.rr.caller(registryID, bc.ethClient.Client())
 	if err != nil {
 		return Hermes{}, fmt.Errorf("could not create new registry caller %w", err)
@@ -1019,13 +1045,13 @@ func (bc *Blockchain) GetHermes(registryID, hermesID common.Address) (Hermes, er
 
 	status, err := caller.GetHermes(&bind.CallOpts{
 		Context: ctx,
-	}, hermesID)
+	}, hermesID.ToCommon())
 	if err != nil {
 		return Hermes{}, err
 	}
 
 	return Hermes{
-		Operator: status.Operator,
+		Operator: crypto.FromCommonAddress(status.Operator),
 		ImplVer:  status.ImplVer,
 		Stake:    big.NewInt(0).SetBytes(status.Stake[:]),
 		URL:      string(status.Url),
@@ -1033,36 +1059,42 @@ func (bc *Blockchain) GetHermes(registryID, hermesID common.Address) (Hermes, er
 }
 
 // GetHermesRegistry returns the registry address of a given hermes.
-func (bc *Blockchain) GetHermesRegistry(hermesID common.Address) (common.Address, error) {
+func (bc *Blockchain) GetHermesRegistry(hermesID crypto.Address) (crypto.Address, error) {
 	caller, err := bc.hir.caller(hermesID, bc.ethClient.Client())
 	if err != nil {
-		return common.Address{}, err
+		return crypto.Address{}, err
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	return caller.GetRegistry(&bind.CallOpts{
-		Context: ctx,
-	})
+	registry, err := caller.GetRegistry(&bind.CallOpts{Context: ctx})
+	if err != nil {
+		return crypto.Address{}, err
+	}
+	return crypto.FromCommonAddress(registry), nil
 }
 
 // GetChannelImplementationByVersion returns the channel implementation for the specified version.
-func (bc *Blockchain) GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error) {
+func (bc *Blockchain) GetChannelImplementationByVersion(registryID crypto.Address, version *big.Int) (crypto.Address, error) {
 	caller, err := bc.rr.caller(registryID, bc.ethClient.Client())
 	if err != nil {
-		return common.Address{}, fmt.Errorf("could not create new registry caller %w", err)
+		return crypto.Address{}, fmt.Errorf("could not create new registry caller %w", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	return caller.GetChannelImplementation(&bind.CallOpts{
+	channelImpl, err := caller.GetChannelImplementation(&bind.CallOpts{
 		Context: ctx,
 	}, version)
+	if err != nil {
+		return crypto.Address{}, err
+	}
+	return crypto.FromCommonAddress(channelImpl), nil
 }
 
-func (bc *Blockchain) IsChannelOpened(registryID, identity, hermesID common.Address) (bool, error) {
+func (bc *Blockchain) IsChannelOpened(registryID, identity, hermesID crypto.Address) (bool, error) {
 	caller, err := bc.rr.caller(registryID, bc.ethClient.Client())
 	if err != nil {
 		return false, fmt.Errorf("could not create new registry caller %w", err)
@@ -1073,11 +1105,11 @@ func (bc *Blockchain) IsChannelOpened(registryID, identity, hermesID common.Addr
 
 	return caller.IsChannelOpened(&bind.CallOpts{
 		Context: ctx,
-	}, identity, hermesID)
+	}, identity.ToCommon(), hermesID.ToCommon())
 }
 
 // SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events
-func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID crypto.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	caller, err := bc.hir.filterer(hermesID, bc.ethClient.Client())
 	if err != nil {
 		return sink, cancel, errors.Wrap(err, "could not create hermes caller")
@@ -1102,7 +1134,7 @@ func (bc *Blockchain) SubscribeToPromiseSettledEventByChannelID(hermesID common.
 }
 
 // FilterPromiseSettledEventByChannelID filters promise settled events
-func (bc *Blockchain) FilterPromiseSettledEventByChannelID(from uint64, to *uint64, hermesID common.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error) {
+func (bc *Blockchain) FilterPromiseSettledEventByChannelID(from uint64, to *uint64, hermesID crypto.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error) {
 	caller, err := bc.hir.filterer(hermesID, bc.ethClient.Client())
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create hermes caller")
@@ -1126,16 +1158,16 @@ func (bc *Blockchain) FilterPromiseSettledEventByChannelID(from uint64, to *uint
 }
 
 // GetEthBalance gets the current ethereum balance for the address.
-func (bc *Blockchain) GetEthBalance(address common.Address) (*big.Int, error) {
+func (bc *Blockchain) GetEthBalance(address crypto.Address) (*big.Int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
-	return bc.ethClient.Client().BalanceAt(ctx, address, nil)
+	return bc.ethClient.Client().BalanceAt(ctx, address.ToCommon(), nil)
 }
 
 // EthTransferRequest represents the ethereum transfer request input parameters.
 type EthTransferRequest struct {
 	WriteRequest
-	To     common.Address
+	To     crypto.Address
 	Amount *big.Int
 }
 
@@ -1151,11 +1183,12 @@ func (bc *Blockchain) TransferEth(etr EthTransferRequest) (*types.Transaction, e
 
 	var tx *types.Transaction
 	if to.GasPrice != nil && to.GasPrice.Cmp(big.NewInt(0)) > 0 {
-		tx = types.NewTransaction(to.Nonce.Uint64(), etr.To, etr.Amount, to.GasLimit, to.GasPrice, nil)
+		tx = types.NewTransaction(to.Nonce.Uint64(), etr.To.ToCommon(), etr.Amount, to.GasLimit, to.GasPrice, nil)
 	} else {
+		toAddr := etr.To.ToCommon()
 		tx = types.NewTx(&types.DynamicFeeTx{
 			Nonce:     to.Nonce.Uint64(),
-			To:        &etr.To,
+			To:        &toAddr,
 			Value:     etr.Amount,
 			Gas:       to.GasLimit,
 			GasFeeCap: to.GasFeeCap,
@@ -1164,7 +1197,7 @@ func (bc *Blockchain) TransferEth(etr EthTransferRequest) (*types.Transaction, e
 		})
 	}
 
-	signedTx, err := etr.Signer(etr.Identity, tx)
+	signedTx, err := etr.Signer(etr.Identity.ToCommon(), tx)
 	if err != nil {
 		return nil, fmt.Errorf("could not sign tx: %w", err)
 	}
@@ -1219,8 +1252,8 @@ type ConsumerChannel struct {
 }
 
 // GetConsumerChannel returns the consumer channel
-func (bc *Blockchain) GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error) {
-	ad := common.BytesToAddress(addr.Bytes())
+func (bc *Blockchain) GetConsumerChannel(addr crypto.Address, mystSCAddress crypto.Address) (ConsumerChannel, error) {
+	ad := crypto.BytesToAddress(addr.Bytes())
 	party, err := bc.GetConsumerChannelsHermes(ad)
 	if err != nil {
 		return ConsumerChannel{}, err
@@ -1237,19 +1270,19 @@ func (bc *Blockchain) GetConsumerChannel(addr common.Address, mystSCAddress comm
 type SettleWithBeneficiaryRequest struct {
 	WriteRequest
 	Promise     crypto.Promise
-	HermesID    common.Address
-	ProviderID  common.Address
-	Beneficiary common.Address
+	HermesID    crypto.Address
+	ProviderID  crypto.Address
+	Beneficiary crypto.Address
 	Signature   []byte
 }
 
 func (r SettleWithBeneficiaryRequest) toEstimator(ethClient EthClientGetter) (*bindings.ContractEstimator, error) {
-	return bindings.NewContractEstimator(r.HermesID, bindings.HermesImplementationABI, ethClient.Client())
+	return bindings.NewContractEstimator(r.HermesID.ToCommon(), bindings.HermesImplementationMetaData.ABI, ethClient.Client())
 }
 
 func (r SettleWithBeneficiaryRequest) toEstimateOps() *bindings.EstimateOpts {
 	return &bindings.EstimateOpts{
-		From:   r.Identity,
+		From:   r.Identity.ToCommon(),
 		Method: "settleWithBeneficiary",
 		Params: []interface{}{
 			r.ProviderID,
@@ -1264,7 +1297,7 @@ func (r SettleWithBeneficiaryRequest) toEstimateOps() *bindings.EstimateOpts {
 }
 
 // GetHermessAvailableBalance returns the balance that is available for hermes.
-func (bc *Blockchain) GetHermessAvailableBalance(hermesAddress common.Address) (*big.Int, error) {
+func (bc *Blockchain) GetHermessAvailableBalance(hermesAddress crypto.Address) (*big.Int, error) {
 	caller, err := bc.hir.caller(hermesAddress, bc.ethClient.Client())
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create hermes implementation caller")
@@ -1300,18 +1333,18 @@ func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*
 
 	return transactor.SettleWithBeneficiary(
 		to,
-		req.ProviderID,
+		req.ProviderID.ToCommon(),
 		req.Promise.Amount,
 		req.Promise.Fee,
 		ToBytes32(req.Promise.R),
 		req.Promise.Signature,
-		req.Beneficiary,
+		req.Beneficiary.ToCommon(),
 		req.Signature,
 	)
 }
 
 // GetStakeThresholds returns the stake tresholds for the given hermes.
-func (bc *Blockchain) GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error) {
+func (bc *Blockchain) GetStakeThresholds(hermesID crypto.Address) (min, max *big.Int, err error) {
 	caller, err := bc.hir.caller(hermesID, bc.ethClient.Client())
 	if err != nil {
 		return nil, nil, err
@@ -1335,14 +1368,14 @@ func (bc *Blockchain) SendTransaction(tx *types.Transaction) error {
 
 type RewarderUpdateRoot struct {
 	WriteRequest
-	RewaderID   common.Address
+	RewaderID   crypto.Address
 	ClaimRoot   []byte
 	BlockNumber *big.Int
 	TotalReward *big.Int
 }
 
 func (bc *Blockchain) RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transaction, error) {
-	transactor, err := rewarder.NewRewarderTransactor(req.RewaderID, bc.ethClient.Client())
+	transactor, err := rewarder.NewRewarderTransactor(req.RewaderID.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1365,13 +1398,13 @@ func (bc *Blockchain) RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transac
 
 type RewarderAirDrop struct {
 	WriteRequest
-	RewaderID     common.Address
-	Beneficiaries []common.Address
+	RewaderID     crypto.Address
+	Beneficiaries []crypto.Address
 	TotalEarnings []*big.Int
 }
 
 func (bc *Blockchain) RewarderAirDrop(req RewarderAirDrop) (*types.Transaction, error) {
-	transactor, err := rewarder.NewRewarderTransactor(req.RewaderID, bc.ethClient.Client())
+	transactor, err := rewarder.NewRewarderTransactor(req.RewaderID.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1384,15 +1417,19 @@ func (bc *Blockchain) RewarderAirDrop(req RewarderAirDrop) (*types.Transaction, 
 		return nil, err
 	}
 
+	beneficiaries := make([]common.Address, 0)
+	for _, beneficiary := range req.Beneficiaries {
+		beneficiaries = append(beneficiaries, beneficiary.ToCommon())
+	}
 	return transactor.Airdrop(
 		to,
-		req.Beneficiaries,
+		beneficiaries,
 		req.TotalEarnings,
 	)
 }
 
-func (bc *Blockchain) RewarderTotalPayoutsFor(rewarderAddress common.Address, payoutsFor common.Address) (*big.Int, error) {
-	caller, err := rewarder.NewRewarderCaller(rewarderAddress, bc.ethClient.Client())
+func (bc *Blockchain) RewarderTotalPayoutsFor(rewarderAddress crypto.Address, payoutsFor crypto.Address) (*big.Int, error) {
+	caller, err := rewarder.NewRewarderCaller(rewarderAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1402,12 +1439,12 @@ func (bc *Blockchain) RewarderTotalPayoutsFor(rewarderAddress common.Address, pa
 
 	return caller.TotalPayoutsFor(&bind.CallOpts{
 		Context: ctx,
-	}, payoutsFor)
+	}, payoutsFor.ToCommon())
 }
 
 // RewarderTotalClaimed is a free lookup in the blockchain for the total amount of claimed tokens in the blockchain.
-func (bc *Blockchain) RewarderTotalClaimed(rewarderAddress common.Address) (*big.Int, error) {
-	caller, err := rewarder.NewRewarderCaller(rewarderAddress, bc.ethClient.Client())
+func (bc *Blockchain) RewarderTotalClaimed(rewarderAddress crypto.Address) (*big.Int, error) {
+	caller, err := rewarder.NewRewarderCaller(rewarderAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1422,13 +1459,13 @@ func (bc *Blockchain) RewarderTotalClaimed(rewarderAddress common.Address) (*big
 
 type CustodyTokensTransfer struct {
 	WriteRequest
-	CustodyAddress common.Address
-	Recipients     []common.Address
+	CustodyAddress crypto.Address
+	Recipients     []crypto.Address
 	Amounts        []*big.Int
 }
 
 func (bc *Blockchain) CustodyTransferTokens(req CustodyTokensTransfer) (*types.Transaction, error) {
-	transactor, err := rewarder.NewCustodyTransactor(req.CustodyAddress, bc.ethClient.Client())
+	transactor, err := rewarder.NewCustodyTransactor(req.CustodyAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1441,9 +1478,13 @@ func (bc *Blockchain) CustodyTransferTokens(req CustodyTokensTransfer) (*types.T
 		return nil, err
 	}
 
+	recipients := make([]common.Address, 0)
+	for _, recipient := range req.Recipients {
+		recipients = append(recipients, recipient.ToCommon())
+	}
 	return transactor.Payout(
 		to,
-		req.Recipients,
+		recipients,
 		req.Amounts,
 	)
 }
@@ -1454,8 +1495,8 @@ type ApprovedAddress struct {
 	BlocksWindow *big.Int
 }
 
-func (bc *Blockchain) TopperupperApprovedAddress(topperupperAddress common.Address, forAddress common.Address) (*ApprovedAddress, error) {
-	caller, err := topperupper.NewTopperUpperCaller(topperupperAddress, bc.ethClient.Client())
+func (bc *Blockchain) TopperupperApprovedAddress(topperupperAddress crypto.Address, forAddress crypto.Address) (*ApprovedAddress, error) {
+	caller, err := topperupper.NewTopperUpperCaller(topperupperAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1465,7 +1506,7 @@ func (bc *Blockchain) TopperupperApprovedAddress(topperupperAddress common.Addre
 
 	res, err := caller.ApprovedAddresses(&bind.CallOpts{
 		Context: ctx,
-	}, forAddress)
+	}, forAddress.ToCommon())
 	if err != nil {
 		return nil, err
 	}
@@ -1482,8 +1523,8 @@ type CurrentLimits struct {
 	ValidUntilBlock *big.Int
 }
 
-func (bc *Blockchain) TopperupperNativeLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
-	caller, err := topperupper.NewTopperUpperCaller(topperupperAddress, bc.ethClient.Client())
+func (bc *Blockchain) TopperupperNativeLimits(topperupperAddress crypto.Address, forAddress crypto.Address) (*CurrentLimits, error) {
+	caller, err := topperupper.NewTopperUpperCaller(topperupperAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1493,7 +1534,7 @@ func (bc *Blockchain) TopperupperNativeLimits(topperupperAddress common.Address,
 
 	res, err := caller.NativeLimits(&bind.CallOpts{
 		Context: ctx,
-	}, forAddress)
+	}, forAddress.ToCommon())
 	if err != nil {
 		return nil, err
 	}
@@ -1504,8 +1545,8 @@ func (bc *Blockchain) TopperupperNativeLimits(topperupperAddress common.Address,
 	}, nil
 }
 
-func (bc *Blockchain) TopperupperTokenLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
-	caller, err := topperupper.NewTopperUpperCaller(topperupperAddress, bc.ethClient.Client())
+func (bc *Blockchain) TopperupperTokenLimits(topperupperAddress crypto.Address, forAddress crypto.Address) (*CurrentLimits, error) {
+	caller, err := topperupper.NewTopperUpperCaller(topperupperAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1515,7 +1556,7 @@ func (bc *Blockchain) TopperupperTokenLimits(topperupperAddress common.Address, 
 
 	res, err := caller.TokenLimits(&bind.CallOpts{
 		Context: ctx,
-	}, forAddress)
+	}, forAddress.ToCommon())
 	if err != nil {
 		return nil, err
 	}
@@ -1528,15 +1569,15 @@ func (bc *Blockchain) TopperupperTokenLimits(topperupperAddress common.Address, 
 
 type TopperupperApproveAddressesReq struct {
 	WriteRequest
-	ContractAddress common.Address
-	Address         common.Address
+	ContractAddress crypto.Address
+	Address         crypto.Address
 	LimitsNative    *big.Int
 	LimitsToken     *big.Int
 	BlockWindow     *big.Int
 }
 
 func (bc *Blockchain) TopperupperApproveAddresses(req TopperupperApproveAddressesReq) (*types.Transaction, error) {
-	transactor, err := topperupper.NewTopperUpperTransactor(req.ContractAddress, bc.ethClient.Client())
+	transactor, err := topperupper.NewTopperUpperTransactor(req.ContractAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1551,7 +1592,7 @@ func (bc *Blockchain) TopperupperApproveAddresses(req TopperupperApproveAddresse
 
 	return transactor.ApproveAddresses(
 		to,
-		[]common.Address{req.Address},
+		[]common.Address{req.Address.ToCommon()},
 		[]*big.Int{req.LimitsNative},
 		[]*big.Int{req.LimitsToken},
 		[]*big.Int{req.BlockWindow},
@@ -1560,12 +1601,12 @@ func (bc *Blockchain) TopperupperApproveAddresses(req TopperupperApproveAddresse
 
 type TopperupperModeratorsReq struct {
 	WriteRequest
-	ContractAddress common.Address
-	Managers        []common.Address
+	ContractAddress crypto.Address
+	Managers        []crypto.Address
 }
 
 func (bc *Blockchain) TopperupperSetManagers(req TopperupperModeratorsReq) (*types.Transaction, error) {
-	transactor, err := topperupper.NewTopperUpperTransactor(req.ContractAddress, bc.ethClient.Client())
+	transactor, err := topperupper.NewTopperUpperTransactor(req.ContractAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1578,21 +1619,25 @@ func (bc *Blockchain) TopperupperSetManagers(req TopperupperModeratorsReq) (*typ
 		return nil, err
 	}
 
+	managers := make([]common.Address, 0)
+	for _, manager := range req.Managers {
+		managers = append(managers, manager.ToCommon())
+	}
 	return transactor.SetManagers(
 		to,
-		req.Managers,
+		managers,
 	)
 }
 
 type TopperupperTopupNativeReq struct {
 	WriteRequest
-	ContractAddress common.Address
-	To              common.Address
+	ContractAddress crypto.Address
+	To              crypto.Address
 	Amount          *big.Int
 }
 
 func (bc *Blockchain) TopperupperTopupNative(req TopperupperTopupNativeReq) (*types.Transaction, error) {
-	transactor, err := topperupper.NewTopperUpperTransactor(req.ContractAddress, bc.ethClient.Client())
+	transactor, err := topperupper.NewTopperUpperTransactor(req.ContractAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1607,20 +1652,20 @@ func (bc *Blockchain) TopperupperTopupNative(req TopperupperTopupNativeReq) (*ty
 
 	return transactor.TopupNative(
 		to,
-		req.To,
+		req.To.ToCommon(),
 		req.Amount,
 	)
 }
 
 type TopperupperTopupTokenReq struct {
 	WriteRequest
-	ContractAddress common.Address
-	To              common.Address
+	ContractAddress crypto.Address
+	To              crypto.Address
 	Amount          *big.Int
 }
 
 func (bc *Blockchain) TopperupperTopupToken(req TopperupperTopupTokenReq) (*types.Transaction, error) {
-	transactor, err := topperupper.NewTopperUpperTransactor(req.ContractAddress, bc.ethClient.Client())
+	transactor, err := topperupper.NewTopperUpperTransactor(req.ContractAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1635,20 +1680,20 @@ func (bc *Blockchain) TopperupperTopupToken(req TopperupperTopupTokenReq) (*type
 
 	return transactor.TopupToken(
 		to,
-		req.To,
+		req.To.ToCommon(),
 		req.Amount,
 	)
 }
 
 type MystApproveReq struct {
 	WriteRequest
-	MystAddress common.Address
-	Spender     common.Address
+	MystAddress crypto.Address
+	Spender     crypto.Address
 	Amount      *big.Int
 }
 
 func (bc *Blockchain) MystTokenApprove(req MystApproveReq) (*types.Transaction, error) {
-	txer, err := bindings.NewMystTokenTransactor(req.MystAddress, bc.ethClient.Client())
+	txer, err := bindings.NewMystTokenTransactor(req.MystAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1661,11 +1706,11 @@ func (bc *Blockchain) MystTokenApprove(req MystApproveReq) (*types.Transaction, 
 		return nil, err
 	}
 
-	return txer.Approve(to, req.Spender, req.Amount)
+	return txer.Approve(to, req.Spender.ToCommon(), req.Amount)
 }
 
-func (bc *Blockchain) MystAllowance(mystTokenAddress, holder, spender common.Address) (*big.Int, error) {
-	caller, err := bindings.NewMystTokenCaller(mystTokenAddress, bc.ethClient.Client())
+func (bc *Blockchain) MystAllowance(mystTokenAddress, holder, spender crypto.Address) (*big.Int, error) {
+	caller, err := bindings.NewMystTokenCaller(mystTokenAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1675,18 +1720,18 @@ func (bc *Blockchain) MystAllowance(mystTokenAddress, holder, spender common.Add
 
 	return caller.Allowance(&bind.CallOpts{
 		Context: ctx,
-	}, holder, spender)
+	}, holder.ToCommon(), spender.ToCommon())
 }
 
 type UniswapExactInputSingleReq struct {
 	WriteRequest
-	SwapRouterAddress common.Address
+	SwapRouterAddress crypto.Address
 
-	TokenIn  common.Address
-	TokenOut common.Address
+	TokenIn  crypto.Address
+	TokenOut crypto.Address
 	Fee      *big.Int
 
-	Recipient       common.Address
+	Recipient       crypto.Address
 	DeadlineSeconds uint64
 
 	AmountIn         *big.Int
@@ -1694,7 +1739,7 @@ type UniswapExactInputSingleReq struct {
 }
 
 func (bc *Blockchain) UniswapV3ExactInputSingle(req UniswapExactInputSingleReq) (*types.Transaction, error) {
-	txer, err := uniswapv3.NewSwapRouterTransactor(req.SwapRouterAddress, bc.ethClient.Client())
+	txer, err := uniswapv3.NewSwapRouterTransactor(req.SwapRouterAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1718,11 +1763,11 @@ func (bc *Blockchain) UniswapV3ExactInputSingle(req UniswapExactInputSingleReq) 
 	return txer.ExactInputSingle(
 		to,
 		uniswapv3.ISwapRouterExactInputSingleParams{
-			TokenIn:  req.TokenIn,
-			TokenOut: req.TokenOut,
+			TokenIn:  req.TokenIn.ToCommon(),
+			TokenOut: req.TokenOut.ToCommon(),
 			Fee:      req.Fee,
 
-			Recipient: req.Recipient,
+			Recipient: req.Recipient.ToCommon(),
 			Deadline:  big.NewInt(0).SetUint64(b.Time() + req.DeadlineSeconds),
 
 			AmountIn:         req.AmountIn,
@@ -1733,12 +1778,12 @@ func (bc *Blockchain) UniswapV3ExactInputSingle(req UniswapExactInputSingleReq) 
 }
 
 type SwapTokenPair struct {
-	Token0 common.Address
-	Token1 common.Address
+	Token0 crypto.Address
+	Token1 crypto.Address
 }
 
-func (bc *Blockchain) UniswapV3TokenPair(poolAddress common.Address) (*SwapTokenPair, error) {
-	caller, err := uniswapv3.NewPoolCaller(poolAddress, bc.ethClient.Client())
+func (bc *Blockchain) UniswapV3TokenPair(poolAddress crypto.Address) (*SwapTokenPair, error) {
+	caller, err := uniswapv3.NewPoolCaller(poolAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1748,25 +1793,26 @@ func (bc *Blockchain) UniswapV3TokenPair(poolAddress common.Address) (*SwapToken
 
 	res := &SwapTokenPair{}
 
-	res.Token0, err = caller.Token0(&bind.CallOpts{
+	token0, err := caller.Token0(&bind.CallOpts{
 		Context: ctx,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	res.Token1, err = caller.Token1(&bind.CallOpts{
+	token1, err := caller.Token1(&bind.CallOpts{
 		Context: ctx,
 	})
 	if err != nil {
 		return nil, err
 	}
-
+	res.Token0 = crypto.FromCommonAddress(token0)
+	res.Token1 = crypto.FromCommonAddress(token1)
 	return res, nil
 }
 
-func (bc *Blockchain) UniswapV3PoolFee(poolAddress common.Address) (*big.Int, error) {
-	caller, err := uniswapv3.NewPoolCaller(poolAddress, bc.ethClient.Client())
+func (bc *Blockchain) UniswapV3PoolFee(poolAddress crypto.Address) (*big.Int, error) {
+	caller, err := uniswapv3.NewPoolCaller(poolAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1779,8 +1825,8 @@ func (bc *Blockchain) UniswapV3PoolFee(poolAddress common.Address) (*big.Int, er
 	})
 }
 
-func (bc *Blockchain) WMaticBalance(holder, wmaticAddress common.Address) (*big.Int, error) {
-	caller, err := uniswapv3.NewWmaticCaller(wmaticAddress, bc.ethClient.Client())
+func (bc *Blockchain) WMaticBalance(holder, wmaticAddress crypto.Address) (*big.Int, error) {
+	caller, err := uniswapv3.NewWmaticCaller(wmaticAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1790,12 +1836,12 @@ func (bc *Blockchain) WMaticBalance(holder, wmaticAddress common.Address) (*big.
 
 	return caller.BalanceOf(&bind.CallOpts{
 		Context: ctx,
-	}, holder)
+	}, holder.ToCommon())
 }
 
 type WMaticWithdrawReq struct {
 	WriteRequest
-	WMaticAddress common.Address
+	WMaticAddress crypto.Address
 
 	// Amount describes how much should be withdrawn.
 	// If `nil` all balance is withdrawn.
@@ -1803,7 +1849,7 @@ type WMaticWithdrawReq struct {
 }
 
 func (bc *Blockchain) WMaticWithdraw(req WMaticWithdrawReq) (*types.Transaction, error) {
-	caller, err := uniswapv3.NewWmaticTransactor(req.WMaticAddress, bc.ethClient.Client())
+	caller, err := uniswapv3.NewWmaticTransactor(req.WMaticAddress.ToCommon(), bc.ethClient.Client())
 	if err != nil {
 		return nil, err
 	}
@@ -1829,7 +1875,7 @@ func (bc *Blockchain) WMaticWithdraw(req WMaticWithdrawReq) (*types.Transaction,
 	return caller.Withdraw(to, amount)
 }
 
-func (bc *Blockchain) FilterHermesRegistered(from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryRegisteredHermes, error) {
+func (bc *Blockchain) FilterHermesRegistered(from uint64, to *uint64, registryID crypto.Address) ([]bindings.RegistryRegisteredHermes, error) {
 	caller, err := bc.rr.filterer(registryID, bc.ethClient.Client())
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create registry filterer")
@@ -1853,7 +1899,7 @@ func (bc *Blockchain) FilterHermesRegistered(from uint64, to *uint64, registryID
 	return res, nil
 }
 
-func (bc *Blockchain) FilterHermesURLUpdated(from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryHermesURLUpdated, error) {
+func (bc *Blockchain) FilterHermesURLUpdated(from uint64, to *uint64, registryID crypto.Address) ([]bindings.RegistryHermesURLUpdated, error) {
 	caller, err := bc.rr.filterer(registryID, bc.ethClient.Client())
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create registry filterer")

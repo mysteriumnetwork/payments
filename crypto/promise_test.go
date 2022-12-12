@@ -24,8 +24,6 @@ import (
 	"testing"
 
 	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/common"
-
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/stretchr/testify/assert"
 )
@@ -60,7 +58,7 @@ func TestCreateConsumerSignature(t *testing.T) {
 
 	promise := getPromise("consumer")
 
-	signature, err := promise.CreateSignature(ks, account.Address)
+	signature, err := promise.CreateSignature(ks, FromCommonAddress(account.Address))
 	assert.Nil(t, err)
 
 	ReformatSignatureVForBC(signature)
@@ -79,7 +77,7 @@ func TestCreateProviderSignature(t *testing.T) {
 
 	promise := getPromise("provider")
 
-	signature, err := promise.CreateSignature(ks, account.Address)
+	signature, err := promise.CreateSignature(ks, FromCommonAddress(account.Address))
 	assert.Nil(t, err)
 
 	ReformatSignatureVForBC(signature)
@@ -88,22 +86,22 @@ func TestCreateProviderSignature(t *testing.T) {
 
 func TestConsumerPromiseValidation(t *testing.T) {
 	promise := getPromise("consumer")
-	expectedSigner := common.HexToAddress("0xf53acdd584ccb85ee4ec1590007ad3c16fdff057")
+	expectedSigner := HexToAddress("0xf53acdd584ccb85ee4ec1590007ad3c16fdff057")
 	assert.True(t, promise.IsPromiseValid(expectedSigner))
 }
 
 func TestProviderPromiseValidation(t *testing.T) {
 	promise := getPromise("provider")
-	expectedSigner := common.HexToAddress("0x354bd098b4ef8c9e70b7f21be2d455df559705d7")
+	expectedSigner := HexToAddress("0x354bd098b4ef8c9e70b7f21be2d455df559705d7")
 	assert.True(t, promise.IsPromiseValid(expectedSigner))
 
-	wrongSigner := common.HexToAddress("0xf53acdd584ccb85ee4ec1590007ad3c16fdff057")
+	wrongSigner := HexToAddress("0xf53acdd584ccb85ee4ec1590007ad3c16fdff057")
 	assert.False(t, promise.IsPromiseValid(wrongSigner))
 }
 
 func TestRecoverSigner(t *testing.T) {
 	promise := getPromise("consumer")
-	expectedSigner := common.HexToAddress("0xf53acdd584ccb85ee4ec1590007ad3c16fdff057")
+	expectedSigner := HexToAddress("0xf53acdd584ccb85ee4ec1590007ad3c16fdff057")
 	recoveredSigner, err := promise.RecoverSigner()
 	assert.Nil(t, err)
 	assert.Equal(t, expectedSigner, recoveredSigner)
@@ -117,7 +115,7 @@ func TestValidationAndRecoveryImmutability(t *testing.T) {
 	copy(originalSignature, promise.Signature)
 
 	// Ensure that IsPromiseValid will not mutate original signature
-	expectedSigner := common.HexToAddress("0xf53acdd584ccb85ee4ec1590007ad3c16fdff057")
+	expectedSigner := HexToAddress("0xf53acdd584ccb85ee4ec1590007ad3c16fdff057")
 	promise.IsPromiseValid(expectedSigner)
 	assert.Equal(t, originalSignature, promise.Signature)
 
@@ -142,17 +140,17 @@ func TestCreatePromise(t *testing.T) {
 	fee := big.NewInt(0).SetUint64(p.Fee)
 	hashlock := hex.EncodeToString(p.Hashlock)
 
-	promise, err := CreatePromise(channelID, 1, amount, fee, hashlock, ks, account.Address)
+	promise, err := CreatePromise(channelID, 1, amount, fee, hashlock, ks, FromCommonAddress(account.Address))
 	assert.NoError(t, err)
 	assert.Equal(t, p.PromiseSignature, promise.Signature)
 
 	// ChannelID can also be provided with prefix
-	promise, err = CreatePromise("0x"+channelID, 1, amount, fee, hashlock, ks, account.Address)
+	promise, err = CreatePromise("0x"+channelID, 1, amount, fee, hashlock, ks, FromCommonAddress(account.Address))
 	assert.NoError(t, err)
 	assert.Equal(t, p.PromiseSignature, promise.Signature)
 
 	// Should fail when provided not correct channel ID
-	_, err = CreatePromise("NotHex", 1, amount, fee, hashlock, ks, account.Address)
+	_, err = CreatePromise("NotHex", 1, amount, fee, hashlock, ks, FromCommonAddress(account.Address))
 	assert.Error(t, err)
 	assert.Equal(t, "channelID and hashlock have to be proper hex strings", err.Error())
 }
@@ -213,7 +211,7 @@ func TestSign(t *testing.T) {
 	)
 	assert.NoError(t, err)
 
-	promise.Sign(ks, account.Address)
+	promise.Sign(ks, FromCommonAddress(account.Address))
 	assert.Equal(t, p.PromiseSignature, promise.Signature)
 }
 
@@ -275,7 +273,7 @@ type Params struct {
 	Hashlock                 []byte
 	PromiseSignature         []byte
 	ExchangeMessageSignature string
-	Provider                 common.Address
+	Provider                 Address
 }
 
 func getParams(userType string) Params {
@@ -284,7 +282,7 @@ func getParams(userType string) Params {
 
 	amount := uint64(1401)
 	fee := uint64(0)
-	provider := common.HexToAddress("0xf10021ba3b10d023e671668d20daeff821561d09")
+	provider := HexToAddress("0xf10021ba3b10d023e671668d20daeff821561d09")
 	preimage, _ := hex.DecodeString("5b6b3f31a3acd0e317173d25c8b60503547b741a0e81d6068bb88486967839fa")
 	hashlock, _ := hex.DecodeString("4e8444e4bd5721ba00ceb2c6c180c21b2ae43e590172f1b39e51f46312243633")
 	messageSig := "3310f94760eeb288598d69aaf6214e123766d3cc988f5d3c6a77d5d5b70dc4b6617eeeb0f49df467527ed4a9cdf6f5c7ae3a1477a84f853b9ef8587607d0be431b"

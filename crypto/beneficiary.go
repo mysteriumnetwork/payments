@@ -39,7 +39,7 @@ type SetBeneficiaryRequest struct {
 	Signature   string   `json:"signature"`
 }
 
-func CreateBeneficiaryRequest(chainID int64, identity, registry, beneficiary string, nonce *big.Int, ks hashSigner, signer common.Address) (*SetBeneficiaryRequest, error) {
+func CreateBeneficiaryRequest(chainID int64, identity, registry, beneficiary string, nonce *big.Int, ks hashSigner, signer Address) (*SetBeneficiaryRequest, error) {
 	req, err := NewBeneficiaryRequest(chainID, identity, registry, beneficiary, nonce, "")
 	if err != nil {
 		return nil, err
@@ -70,11 +70,11 @@ func NewBeneficiaryRequest(chainID int64, identity, registry, beneficiary string
 }
 
 // CreateSignature signs set beneficiary request using keystore
-func (r SetBeneficiaryRequest) CreateSignature(ks hashSigner, signer common.Address) ([]byte, error) {
+func (r SetBeneficiaryRequest) CreateSignature(ks hashSigner, signer Address) ([]byte, error) {
 	message := r.GetMessage()
 	hash := crypto.Keccak256(message)
 	return ks.SignHash(
-		accounts.Account{Address: signer},
+		accounts.Account{Address: signer.ToCommon()},
 		hash,
 	)
 }
@@ -101,17 +101,17 @@ func (r SetBeneficiaryRequest) GetMessage() []byte {
 }
 
 // RecoverSigner recovers the signer identity from the given request.
-func (r SetBeneficiaryRequest) RecoverSigner() (common.Address, error) {
+func (r SetBeneficiaryRequest) RecoverSigner() (Address, error) {
 	signature := r.GetSignatureBytesRaw()
 
 	err := ReformatSignatureVForRecovery(signature)
 	if err != nil {
-		return common.Address{}, err
+		return Address{}, err
 	}
 
 	recoveredAddress, err := RecoverAddress(r.GetMessage(), signature)
 	if err != nil {
-		return common.Address{}, err
+		return Address{}, err
 	}
 
 	return recoveredAddress, nil

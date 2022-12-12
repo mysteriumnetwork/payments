@@ -20,30 +20,30 @@ import (
 	"context"
 	"sync"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/mysteriumnetwork/payments/crypto"
 )
 
 // NonceTracker keeps track of nonces atomically.
 type NonceTracker struct {
 	client    client
-	nonces    map[common.Address]uint64
+	nonces    map[crypto.Address]uint64
 	nonceLock sync.Mutex
 }
 
 type client interface {
-	PendingNonceAt(ctx context.Context, account common.Address) (uint64, error)
+	PendingNonceAt(ctx context.Context, account crypto.Address) (uint64, error)
 }
 
 // NewNonceTracker returns a new nonce tracker.
 func NewNonceTracker(client client) *NonceTracker {
 	return &NonceTracker{
 		client: client,
-		nonces: make(map[common.Address]uint64),
+		nonces: make(map[crypto.Address]uint64),
 	}
 }
 
 // GetNonce returns an atomically increasing nonce for the account.
-func (nt *NonceTracker) GetNonce(ctx context.Context, account common.Address) (uint64, error) {
+func (nt *NonceTracker) GetNonce(ctx context.Context, account crypto.Address) (uint64, error) {
 	nt.nonceLock.Lock()
 	defer nt.nonceLock.Unlock()
 
@@ -63,7 +63,7 @@ func (nt *NonceTracker) GetNonce(ctx context.Context, account common.Address) (u
 }
 
 // ForceReloadNonce clears the nonce cache. This will force loading from BC next time.
-func (nt *NonceTracker) ForceReloadNonce(account common.Address) {
+func (nt *NonceTracker) ForceReloadNonce(account crypto.Address) {
 	nt.nonceLock.Lock()
 	defer nt.nonceLock.Unlock()
 	delete(nt.nonces, account)

@@ -25,6 +25,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/mysteriumnetwork/payments/crypto"
 	"github.com/pkg/errors"
 
 	"github.com/mysteriumnetwork/payments/bindings"
@@ -65,11 +66,11 @@ func NewWithDryRuns(bc BC, ethClient EthClientGetter) *WithDryRuns {
 }
 
 // GetEthBalance gets the current ethereum balance for the address.
-func (cwdr *WithDryRuns) GetEthBalance(address common.Address) (*big.Int, error) {
+func (cwdr *WithDryRuns) GetEthBalance(address crypto.Address) (*big.Int, error) {
 	return cwdr.bc.GetEthBalance(address)
 }
 
-func (cwdr *WithDryRuns) GetHermessAvailableBalance(hermesAddress common.Address) (*big.Int, error) {
+func (cwdr *WithDryRuns) GetHermessAvailableBalance(hermesAddress crypto.Address) (*big.Int, error) {
 	return cwdr.bc.GetHermessAvailableBalance(hermesAddress)
 }
 
@@ -160,97 +161,97 @@ func (cwdr *WithDryRuns) SettleAndRebalance(req SettleAndRebalanceRequest) (*typ
 }
 
 // GetHermesFee fetches the hermes fee from blockchain
-func (cwdr *WithDryRuns) GetHermesFee(hermesAddress common.Address) (uint16, error) {
+func (cwdr *WithDryRuns) GetHermesFee(hermesAddress crypto.Address) (uint16, error) {
 	return cwdr.bc.GetHermesFee(hermesAddress)
 }
 
 // GetHermesURL returns the thermes URL.
-func (cwdr *WithDryRuns) GetHermesURL(registryID, hermesID common.Address) (string, error) {
+func (cwdr *WithDryRuns) GetHermesURL(registryID, hermesID crypto.Address) (string, error) {
 	return cwdr.bc.GetHermesURL(registryID, hermesID)
 }
 
 // CalculateHermesFee fetches the hermes fee from blockchain
-func (cwdr *WithDryRuns) CalculateHermesFee(hermesAddress common.Address, value *big.Int) (*big.Int, error) {
+func (cwdr *WithDryRuns) CalculateHermesFee(hermesAddress crypto.Address, value *big.Int) (*big.Int, error) {
 	return cwdr.bc.CalculateHermesFee(hermesAddress, value)
 }
 
 // IsRegisteredAsProvider checks if the provider is registered with the hermes properly
-func (cwdr *WithDryRuns) IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck common.Address) (bool, error) {
+func (cwdr *WithDryRuns) IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck crypto.Address) (bool, error) {
 	return cwdr.bc.IsRegisteredAsProvider(hermesAddress, registryAddress, addressToCheck)
 }
 
 // GetProviderChannel returns the provider channel
-func (cwdr *WithDryRuns) GetProviderChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+func (cwdr *WithDryRuns) GetProviderChannel(hermesAddress crypto.Address, addressToCheck crypto.Address, pending bool) (ProviderChannel, error) {
 	return cwdr.bc.GetProviderChannel(hermesAddress, addressToCheck, pending)
 }
 
 // IsRegistered checks wether the given identity is registered or not
-func (cwdr *WithDryRuns) IsRegistered(registryAddress, addressToCheck common.Address) (bool, error) {
+func (cwdr *WithDryRuns) IsRegistered(registryAddress, addressToCheck crypto.Address) (bool, error) {
 	return cwdr.bc.IsRegistered(registryAddress, addressToCheck)
 }
 
 // SubscribeToPromiseSettledEvent subscribes to promise settled events
-func (cwdr *WithDryRuns) SubscribeToPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+func (cwdr *WithDryRuns) SubscribeToPromiseSettledEvent(providerID, hermesID crypto.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	return cwdr.bc.SubscribeToPromiseSettledEvent(providerID, hermesID)
 }
 
 // GetMystBalance returns the balance in myst
-func (cwdr *WithDryRuns) GetMystBalance(mystSCAddress, address common.Address) (*big.Int, error) {
+func (cwdr *WithDryRuns) GetMystBalance(mystSCAddress, address crypto.Address) (*big.Int, error) {
 	return cwdr.bc.GetMystBalance(mystSCAddress, address)
 }
 
 // SubscribeToConsumerBalanceEvent subscribes to the consumer balance change events
-func (cwdr *WithDryRuns) SubscribeToConsumerBalanceEvent(channel, mystSCAddress common.Address, timeout time.Duration) (chan *bindings.MystTokenTransfer, func(), error) {
+func (cwdr *WithDryRuns) SubscribeToConsumerBalanceEvent(channel, mystSCAddress crypto.Address, timeout time.Duration) (chan *bindings.MystTokenTransfer, func(), error) {
 	return cwdr.bc.SubscribeToConsumerBalanceEvent(channel, mystSCAddress, timeout)
 }
 
 // IsHermesRegistered checks if given hermes is registered and returns true or false.
-func (cwdr *WithDryRuns) IsHermesRegistered(registryAddress, acccountantID common.Address) (bool, error) {
+func (cwdr *WithDryRuns) IsHermesRegistered(registryAddress, acccountantID crypto.Address) (bool, error) {
 	return cwdr.bc.IsHermesRegistered(registryAddress, acccountantID)
 }
 
 // GetHermesOperator returns operator address of given hermes
-func (cwdr *WithDryRuns) GetHermesOperator(hermesID common.Address) (common.Address, error) {
+func (cwdr *WithDryRuns) GetHermesOperator(hermesID crypto.Address) (crypto.Address, error) {
 	return cwdr.bc.GetHermesOperator(hermesID)
 }
 
 // GetConsumerChannelsHermes returns the consumer channels hermes
-func (cwdr *WithDryRuns) GetConsumerChannelsHermes(channelAddress common.Address) (ConsumersHermes, error) {
+func (cwdr *WithDryRuns) GetConsumerChannelsHermes(channelAddress crypto.Address) (ConsumersHermes, error) {
 	return cwdr.bc.GetConsumerChannelsHermes(channelAddress)
 }
 
 // SubscribeToMystTokenTransfers subscribes to myst token transfers
-func (cwdr *WithDryRuns) SubscribeToMystTokenTransfers(mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error) {
+func (cwdr *WithDryRuns) SubscribeToMystTokenTransfers(mystSCAddress crypto.Address) (chan *bindings.MystTokenTransfer, func(), error) {
 	return cwdr.bc.SubscribeToMystTokenTransfers(mystSCAddress)
 }
 
 // GetConsumerChannelOperator returns the consumer channel operator/identity
-func (cwdr *WithDryRuns) GetConsumerChannelOperator(channelAddress common.Address) (common.Address, error) {
+func (cwdr *WithDryRuns) GetConsumerChannelOperator(channelAddress crypto.Address) (crypto.Address, error) {
 	return cwdr.bc.GetConsumerChannelOperator(channelAddress)
 }
 
 // GetConsumerChannel returns the consumer channel
-func (cwdr *WithDryRuns) GetConsumerChannel(addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error) {
+func (cwdr *WithDryRuns) GetConsumerChannel(addr crypto.Address, mystSCAddress crypto.Address) (ConsumerChannel, error) {
 	return cwdr.bc.GetConsumerChannel(addr, mystSCAddress)
 }
 
 // GetProviderChannelByID returns the given channel information
-func (cwdr *WithDryRuns) GetProviderChannelByID(acc common.Address, chID []byte) (ProviderChannel, error) {
+func (cwdr *WithDryRuns) GetProviderChannelByID(acc crypto.Address, chID []byte) (ProviderChannel, error) {
 	return cwdr.bc.GetProviderChannelByID(acc, chID)
 }
 
 // SubscribeToIdentityRegistrationEvents subscribes to identity registration events
-func (cwdr *WithDryRuns) SubscribeToIdentityRegistrationEvents(registryAddress common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
+func (cwdr *WithDryRuns) SubscribeToIdentityRegistrationEvents(registryAddress crypto.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
 	return cwdr.bc.SubscribeToIdentityRegistrationEvents(registryAddress)
 }
 
 // SubscribeToConsumerChannelBalanceUpdate subscribes to consumer channel balance update events
-func (cwdr *WithDryRuns) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error) {
+func (cwdr *WithDryRuns) SubscribeToConsumerChannelBalanceUpdate(mystSCAddress crypto.Address, channelAddresses []crypto.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error) {
 	return cwdr.bc.SubscribeToConsumerChannelBalanceUpdate(mystSCAddress, channelAddresses)
 }
 
 // SubscribeToPromiseSettledEventByChannelID subscribes to promise settled events
-func (cwdr *WithDryRuns) SubscribeToPromiseSettledEventByChannelID(hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+func (cwdr *WithDryRuns) SubscribeToPromiseSettledEventByChannelID(hermesID crypto.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	return cwdr.bc.SubscribeToPromiseSettledEventByChannelID(hermesID, providerAddresses)
 }
 
@@ -265,7 +266,7 @@ func (cwdr *WithDryRuns) BlockNumber() (uint64, error) {
 }
 
 // GetStakeThresholds returns the stake tresholds for the given hermes.
-func (cwdr *WithDryRuns) GetStakeThresholds(hermesID common.Address) (min, max *big.Int, err error) {
+func (cwdr *WithDryRuns) GetStakeThresholds(hermesID crypto.Address) (min, max *big.Int, err error) {
 	return cwdr.bc.GetStakeThresholds(hermesID)
 }
 
@@ -295,7 +296,7 @@ func (cwdr *WithDryRuns) PayAndSettle(req PayAndSettleRequest) (*types.Transacti
 	return cwdr.bc.PayAndSettle(req)
 }
 
-func (cwdr *WithDryRuns) GetBeneficiary(registryAddress, identity common.Address) (common.Address, error) {
+func (cwdr *WithDryRuns) GetBeneficiary(registryAddress, identity crypto.Address) (crypto.Address, error) {
 	return cwdr.bc.GetBeneficiary(registryAddress, identity)
 }
 
@@ -321,7 +322,7 @@ func (cwdr *WithDryRuns) IncreaseProviderStake(req ProviderStakeIncreaseRequest)
 	return cwdr.bc.IncreaseProviderStake(req)
 }
 
-func (cwdr *WithDryRuns) GetLastRegistryNonce(registry common.Address) (*big.Int, error) {
+func (cwdr *WithDryRuns) GetLastRegistryNonce(registry crypto.Address) (*big.Int, error) {
 	return cwdr.bc.GetLastRegistryNonce(registry)
 }
 
@@ -341,19 +342,19 @@ func (cwdr *WithDryRuns) SendTransaction(tx *types.Transaction) error {
 	return cwdr.bc.SendTransaction(tx)
 }
 
-func (cwdr *WithDryRuns) IsHermesActive(hermesID common.Address) (bool, error) {
+func (cwdr *WithDryRuns) IsHermesActive(hermesID crypto.Address) (bool, error) {
 	return cwdr.bc.IsHermesActive(hermesID)
 }
 
-func (cwdr *WithDryRuns) GetHermes(registryID, hermesID common.Address) (Hermes, error) {
+func (cwdr *WithDryRuns) GetHermes(registryID, hermesID crypto.Address) (Hermes, error) {
 	return cwdr.bc.GetHermes(registryID, hermesID)
 }
 
-func (cwdr *WithDryRuns) GetChannelImplementationByVersion(registryID common.Address, version *big.Int) (common.Address, error) {
+func (cwdr *WithDryRuns) GetChannelImplementationByVersion(registryID crypto.Address, version *big.Int) (crypto.Address, error) {
 	return cwdr.bc.GetChannelImplementationByVersion(registryID, version)
 }
 
-func (cwdr *WithDryRuns) IsChannelOpened(registryID, identity, hermesID common.Address) (bool, error) {
+func (cwdr *WithDryRuns) IsChannelOpened(registryID, identity, hermesID crypto.Address) (bool, error) {
 	return cwdr.bc.IsChannelOpened(registryID, identity, hermesID)
 }
 
@@ -361,7 +362,7 @@ func (cwdr *WithDryRuns) TransactionByHash(hash common.Hash) (*types.Transaction
 	return cwdr.bc.TransactionByHash(hash)
 }
 
-func (cwdr *WithDryRuns) RewarderTotalPayoutsFor(rewarderAddress common.Address, payoutsFor common.Address) (*big.Int, error) {
+func (cwdr *WithDryRuns) RewarderTotalPayoutsFor(rewarderAddress crypto.Address, payoutsFor crypto.Address) (*big.Int, error) {
 	return cwdr.bc.RewarderTotalPayoutsFor(rewarderAddress, payoutsFor)
 }
 
@@ -374,7 +375,7 @@ func (cwdr *WithDryRuns) RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Tran
 }
 
 // RewarderTotalClaimed is a free lookup in the blockchain for the total amount of claimed tokens in the blockchain.
-func (cwdr *WithDryRuns) RewarderTotalClaimed(rewarderAddress common.Address) (*big.Int, error) {
+func (cwdr *WithDryRuns) RewarderTotalClaimed(rewarderAddress crypto.Address) (*big.Int, error) {
 	return cwdr.bc.RewarderTotalClaimed(rewarderAddress)
 }
 
@@ -382,15 +383,15 @@ func (cwdr *WithDryRuns) CustodyTransferTokens(req CustodyTokensTransfer) (*type
 	return cwdr.bc.CustodyTransferTokens(req)
 }
 
-func (cwdr *WithDryRuns) GetProvidersWithdrawalChannel(hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
+func (cwdr *WithDryRuns) GetProvidersWithdrawalChannel(hermesAddress crypto.Address, addressToCheck crypto.Address, pending bool) (ProviderChannel, error) {
 	return cwdr.bc.GetProvidersWithdrawalChannel(hermesAddress, addressToCheck, pending)
 }
 
-func (cwdr *WithDryRuns) SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
+func (cwdr *WithDryRuns) SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID crypto.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
 	return cwdr.bc.SubscribeToWithdrawalPromiseSettledEvent(providerID, hermesID)
 }
 
-func (cwdr *WithDryRuns) FilterPromiseSettledEventByChannelID(from uint64, to *uint64, hermesID common.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error) {
+func (cwdr *WithDryRuns) FilterPromiseSettledEventByChannelID(from uint64, to *uint64, hermesID crypto.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error) {
 	return cwdr.bc.FilterPromiseSettledEventByChannelID(from, to, hermesID, providerAddresses)
 }
 
@@ -410,22 +411,22 @@ func (cwdr *WithDryRuns) TopperupperApproveAddresses(req TopperupperApproveAddre
 	return cwdr.bc.TopperupperApproveAddresses(req)
 }
 
-func (cwdr *WithDryRuns) TopperupperApprovedAddress(topperupperAddress common.Address, forAddress common.Address) (*ApprovedAddress, error) {
+func (cwdr *WithDryRuns) TopperupperApprovedAddress(topperupperAddress crypto.Address, forAddress crypto.Address) (*ApprovedAddress, error) {
 	return cwdr.bc.TopperupperApprovedAddress(topperupperAddress, forAddress)
 }
 
-func (cwdr *WithDryRuns) TopperupperNativeLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
+func (cwdr *WithDryRuns) TopperupperNativeLimits(topperupperAddress crypto.Address, forAddress crypto.Address) (*CurrentLimits, error) {
 	return cwdr.bc.TopperupperNativeLimits(topperupperAddress, forAddress)
 }
 
-func (cwdr *WithDryRuns) TopperupperTokenLimits(topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
+func (cwdr *WithDryRuns) TopperupperTokenLimits(topperupperAddress crypto.Address, forAddress crypto.Address) (*CurrentLimits, error) {
 	return cwdr.bc.TopperupperTokenLimits(topperupperAddress, forAddress)
 }
 
-func (cwdr *WithDryRuns) PendingNonceAt(account common.Address) (uint64, error) {
+func (cwdr *WithDryRuns) PendingNonceAt(account crypto.Address) (uint64, error) {
 	return cwdr.bc.PendingNonceAt(account)
 }
-func (cwdr *WithDryRuns) NonceAt(account common.Address, blockNum *big.Int) (uint64, error) {
+func (cwdr *WithDryRuns) NonceAt(account crypto.Address, blockNum *big.Int) (uint64, error) {
 	return cwdr.bc.NonceAt(account, blockNum)
 }
 
@@ -433,7 +434,7 @@ func (cwdr *WithDryRuns) MystTokenApprove(req MystApproveReq) (*types.Transactio
 	return cwdr.bc.MystTokenApprove(req)
 }
 
-func (cwdr *WithDryRuns) MystAllowance(mystTokenAddress, holder, spender common.Address) (*big.Int, error) {
+func (cwdr *WithDryRuns) MystAllowance(mystTokenAddress, holder, spender crypto.Address) (*big.Int, error) {
 	return cwdr.bc.MystAllowance(mystTokenAddress, holder, spender)
 }
 
@@ -441,15 +442,15 @@ func (cwdr *WithDryRuns) UniswapV3ExactInputSingle(req UniswapExactInputSingleRe
 	return cwdr.bc.UniswapV3ExactInputSingle(req)
 }
 
-func (cwdr *WithDryRuns) UniswapV3TokenPair(poolAddress common.Address) (*SwapTokenPair, error) {
+func (cwdr *WithDryRuns) UniswapV3TokenPair(poolAddress crypto.Address) (*SwapTokenPair, error) {
 	return cwdr.bc.UniswapV3TokenPair(poolAddress)
 }
 
-func (cwdr *WithDryRuns) UniswapV3PoolFee(poolAddress common.Address) (*big.Int, error) {
+func (cwdr *WithDryRuns) UniswapV3PoolFee(poolAddress crypto.Address) (*big.Int, error) {
 	return cwdr.bc.UniswapV3PoolFee(poolAddress)
 }
 
-func (cwdr *WithDryRuns) WMaticBalance(holder, wmaticAddress common.Address) (*big.Int, error) {
+func (cwdr *WithDryRuns) WMaticBalance(holder, wmaticAddress crypto.Address) (*big.Int, error) {
 	return cwdr.bc.WMaticBalance(holder, wmaticAddress)
 }
 
@@ -457,14 +458,14 @@ func (cwdr *WithDryRuns) WMaticWithdraw(req WMaticWithdrawReq) (*types.Transacti
 	return cwdr.bc.WMaticWithdraw(req)
 }
 
-func (cwdr *WithDryRuns) GetHermesRegistry(hermesID common.Address) (common.Address, error) {
+func (cwdr *WithDryRuns) GetHermesRegistry(hermesID crypto.Address) (crypto.Address, error) {
 	return cwdr.bc.GetHermesRegistry(hermesID)
 }
 
-func (cwdr *WithDryRuns) FilterHermesRegistered(from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryRegisteredHermes, error) {
+func (cwdr *WithDryRuns) FilterHermesRegistered(from uint64, to *uint64, registryID crypto.Address) ([]bindings.RegistryRegisteredHermes, error) {
 	return cwdr.bc.FilterHermesRegistered(from, to, registryID)
 }
 
-func (cwdr *WithDryRuns) FilterHermesURLUpdated(from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryHermesURLUpdated, error) {
+func (cwdr *WithDryRuns) FilterHermesURLUpdated(from uint64, to *uint64, registryID crypto.Address) ([]bindings.RegistryHermesURLUpdated, error) {
 	return cwdr.bc.FilterHermesURLUpdated(from, to, registryID)
 }
