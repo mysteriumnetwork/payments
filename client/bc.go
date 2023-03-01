@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 
@@ -87,6 +88,7 @@ type BC interface {
 	PendingNonceAt(account common.Address) (uint64, error)
 	NonceAt(account common.Address, blockNum *big.Int) (uint64, error)
 	EstimateGas(msg ethereum.CallMsg) (uint64, error)
+	MakeTransactOpts(ctx context.Context, rr *WriteRequest) (*bind.TransactOpts, error)
 
 	TransferMyst(req TransferRequest) (tx *types.Transaction, err error)
 	TransferEth(etr EthTransferRequest) (*types.Transaction, error)
