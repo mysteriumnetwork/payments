@@ -40,7 +40,7 @@ func NewMultichainBlockchainClient(clients map[int64]BC) *MultichainBlockchainCl
 
 var ErrUnknownChain = errors.New("unknown chain")
 
-func (mbc *MultichainBlockchainClient) getClientByChain(chainID int64) (BC, error) {
+func (mbc *MultichainBlockchainClient) GetClientByChain(chainID int64) (BC, error) {
 	if v, ok := mbc.clients[chainID]; ok {
 		return v, nil
 	}
@@ -57,7 +57,7 @@ func (mbc *MultichainBlockchainClient) GetSupportedChains() []int64 {
 }
 
 func (mbc *MultichainBlockchainClient) GetHermesFee(chainID int64, hermesAddress common.Address) (uint16, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return 0, err
 	}
@@ -66,7 +66,7 @@ func (mbc *MultichainBlockchainClient) GetHermesFee(chainID int64, hermesAddress
 }
 
 func (mbc *MultichainBlockchainClient) CalculateHermesFee(chainID int64, hermesAddress common.Address, value *big.Int) (*big.Int, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (mbc *MultichainBlockchainClient) CalculateHermesFee(chainID int64, hermesA
 }
 
 func (mbc *MultichainBlockchainClient) IsRegisteredAsProvider(chainID int64, hermesAddress, registryAddress, addressToCheck common.Address) (bool, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return false, err
 	}
@@ -84,7 +84,7 @@ func (mbc *MultichainBlockchainClient) IsRegisteredAsProvider(chainID int64, her
 }
 
 func (mbc *MultichainBlockchainClient) GetProviderChannel(chainID int64, hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return ProviderChannel{}, err
 	}
@@ -93,7 +93,7 @@ func (mbc *MultichainBlockchainClient) GetProviderChannel(chainID int64, hermesA
 }
 
 func (mbc *MultichainBlockchainClient) IsRegistered(chainID int64, registryAddress, addressToCheck common.Address) (bool, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return false, err
 	}
@@ -102,7 +102,7 @@ func (mbc *MultichainBlockchainClient) IsRegistered(chainID int64, registryAddre
 }
 
 func (mbc *MultichainBlockchainClient) SubscribeToPromiseSettledEvent(chainID int64, providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, func() {}, err
 	}
@@ -111,7 +111,7 @@ func (mbc *MultichainBlockchainClient) SubscribeToPromiseSettledEvent(chainID in
 }
 
 func (mbc *MultichainBlockchainClient) GetMystBalance(chainID int64, mystSCAddress, address common.Address) (*big.Int, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func (mbc *MultichainBlockchainClient) GetMystBalance(chainID int64, mystSCAddre
 }
 
 func (mbc *MultichainBlockchainClient) SubscribeToConsumerBalanceEvent(chainID int64, channel, mystSCAddress common.Address, timeout time.Duration) (chan *bindings.MystTokenTransfer, func(), error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, func() {}, err
 	}
@@ -129,7 +129,7 @@ func (mbc *MultichainBlockchainClient) SubscribeToConsumerBalanceEvent(chainID i
 }
 
 func (mbc *MultichainBlockchainClient) SubscribeToIdentityRegistrationEvents(chainID int64, registryAddress common.Address) (sink chan *bindings.RegistryRegisteredIdentity, cancel func(), err error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, func() {}, err
 	}
@@ -138,7 +138,7 @@ func (mbc *MultichainBlockchainClient) SubscribeToIdentityRegistrationEvents(cha
 }
 
 func (mbc *MultichainBlockchainClient) SuggestGasPrice(chainID int64) (*big.Int, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +146,7 @@ func (mbc *MultichainBlockchainClient) SuggestGasPrice(chainID int64) (*big.Int,
 }
 
 func (mbc *MultichainBlockchainClient) FilterPromiseSettledEventByChannelID(chainID int64, from uint64, to *uint64, hermesID common.Address, providerAddresses [][32]byte) ([]bindings.HermesImplementationPromiseSettled, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -155,7 +155,7 @@ func (mbc *MultichainBlockchainClient) FilterPromiseSettledEventByChannelID(chai
 }
 
 func (mbc *MultichainBlockchainClient) SubscribeToConsumerChannelBalanceUpdate(chainID int64, mystSCAddress common.Address, channelAddresses []common.Address) (sink chan *bindings.MystTokenTransfer, cancel func(), err error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, func() {}, err
 	}
@@ -163,7 +163,7 @@ func (mbc *MultichainBlockchainClient) SubscribeToConsumerChannelBalanceUpdate(c
 	return bc.SubscribeToConsumerChannelBalanceUpdate(mystSCAddress, channelAddresses)
 }
 func (mbc *MultichainBlockchainClient) SubscribeToPromiseSettledEventByChannelID(chainID int64, hermesID common.Address, providerAddresses [][32]byte) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, func() {}, err
 	}
@@ -172,7 +172,7 @@ func (mbc *MultichainBlockchainClient) SubscribeToPromiseSettledEventByChannelID
 }
 
 func (mbc *MultichainBlockchainClient) SubscribeToMystTokenTransfers(chainID int64, mystSCAddress common.Address) (chan *bindings.MystTokenTransfer, func(), error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, func() {}, err
 	}
@@ -181,7 +181,7 @@ func (mbc *MultichainBlockchainClient) SubscribeToMystTokenTransfers(chainID int
 }
 
 func (mbc *MultichainBlockchainClient) RegisterIdentity(chainID int64, rr RegistrationRequest) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -190,7 +190,7 @@ func (mbc *MultichainBlockchainClient) RegisterIdentity(chainID int64, rr Regist
 }
 
 func (mbc *MultichainBlockchainClient) OpenConsumerChannel(chainID int64, req OpenConsumerChannelRequest) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -199,7 +199,7 @@ func (mbc *MultichainBlockchainClient) OpenConsumerChannel(chainID int64, req Op
 }
 
 func (mbc *MultichainBlockchainClient) TransferMyst(chainID int64, req TransferRequest) (tx *types.Transaction, err error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -208,7 +208,7 @@ func (mbc *MultichainBlockchainClient) TransferMyst(chainID int64, req TransferR
 }
 
 func (mbc *MultichainBlockchainClient) IsHermesRegistered(chainID int64, registryAddress, hermesID common.Address) (bool, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return false, err
 	}
@@ -217,7 +217,7 @@ func (mbc *MultichainBlockchainClient) IsHermesRegistered(chainID int64, registr
 }
 
 func (mbc *MultichainBlockchainClient) GetHermesOperator(chainID int64, hermesID common.Address) (common.Address, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return common.Address{}, err
 	}
@@ -226,7 +226,7 @@ func (mbc *MultichainBlockchainClient) GetHermesOperator(chainID int64, hermesID
 }
 
 func (mbc *MultichainBlockchainClient) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(req.Promise.ChainID)
+	bc, err := mbc.GetClientByChain(req.Promise.ChainID)
 	if err != nil {
 		return nil, err
 	}
@@ -235,7 +235,7 @@ func (mbc *MultichainBlockchainClient) SettleAndRebalance(req SettleAndRebalance
 }
 
 func (mbc *MultichainBlockchainClient) GetLastRegistryNonce(chainID int64, registry common.Address) (*big.Int, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -243,7 +243,7 @@ func (mbc *MultichainBlockchainClient) GetLastRegistryNonce(chainID int64, regis
 }
 
 func (mbc *MultichainBlockchainClient) GetBeneficiary(chainID int64, registryAddress, identity common.Address) (common.Address, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return common.Address{}, err
 	}
@@ -252,7 +252,7 @@ func (mbc *MultichainBlockchainClient) GetBeneficiary(chainID int64, registryAdd
 }
 
 func (mbc *MultichainBlockchainClient) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(req.Promise.ChainID)
+	bc, err := mbc.GetClientByChain(req.Promise.ChainID)
 	if err != nil {
 		return nil, err
 	}
@@ -261,7 +261,7 @@ func (mbc *MultichainBlockchainClient) SettleWithBeneficiary(req SettleWithBenef
 }
 
 func (mbc *MultichainBlockchainClient) GetConsumerChannelsHermes(chainID int64, channelAddress common.Address) (ConsumersHermes, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return ConsumersHermes{}, err
 	}
@@ -270,7 +270,7 @@ func (mbc *MultichainBlockchainClient) GetConsumerChannelsHermes(chainID int64, 
 }
 
 func (mbc *MultichainBlockchainClient) GetConsumerChannelOperator(chainID int64, channelAddress common.Address) (common.Address, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return common.Address{}, err
 	}
@@ -279,7 +279,7 @@ func (mbc *MultichainBlockchainClient) GetConsumerChannelOperator(chainID int64,
 }
 
 func (mbc *MultichainBlockchainClient) GetProviderChannelByID(chainID int64, acc common.Address, chID []byte) (ProviderChannel, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return ProviderChannel{}, err
 	}
@@ -288,7 +288,7 @@ func (mbc *MultichainBlockchainClient) GetProviderChannelByID(chainID int64, acc
 }
 
 func (mbc *MultichainBlockchainClient) SettlePromise(req SettleRequest) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(req.Promise.ChainID)
+	bc, err := mbc.GetClientByChain(req.Promise.ChainID)
 	if err != nil {
 		return nil, err
 	}
@@ -298,7 +298,7 @@ func (mbc *MultichainBlockchainClient) SettlePromise(req SettleRequest) (*types.
 
 // BlockNumber returns the last known block number
 func (mbc *MultichainBlockchainClient) BlockNumber(chainID int64) (uint64, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return 0, err
 	}
@@ -308,7 +308,7 @@ func (mbc *MultichainBlockchainClient) BlockNumber(chainID int64) (uint64, error
 
 // NetworkID method is really not that useful, as chain id == networkid
 func (mbc *MultichainBlockchainClient) NetworkID(chainID int64) (*big.Int, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -317,7 +317,7 @@ func (mbc *MultichainBlockchainClient) NetworkID(chainID int64) (*big.Int, error
 }
 
 func (mbc *MultichainBlockchainClient) GetConsumerChannel(chainID int64, addr common.Address, mystSCAddress common.Address) (ConsumerChannel, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return ConsumerChannel{}, err
 	}
@@ -326,7 +326,7 @@ func (mbc *MultichainBlockchainClient) GetConsumerChannel(chainID int64, addr co
 }
 
 func (mbc *MultichainBlockchainClient) GetEthBalance(chainID int64, address common.Address) (*big.Int, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -335,7 +335,7 @@ func (mbc *MultichainBlockchainClient) GetEthBalance(chainID int64, address comm
 }
 
 func (mbc *MultichainBlockchainClient) TransactionReceipt(chainID int64, hash common.Hash) (*types.Receipt, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -343,7 +343,7 @@ func (mbc *MultichainBlockchainClient) TransactionReceipt(chainID int64, hash co
 }
 
 func (mbc *MultichainBlockchainClient) PendingNonceAt(chainID int64, account common.Address) (uint64, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return 0, err
 	}
@@ -351,7 +351,7 @@ func (mbc *MultichainBlockchainClient) PendingNonceAt(chainID int64, account com
 }
 
 func (mbc *MultichainBlockchainClient) NonceAt(chainID int64, account common.Address, blockNum *big.Int) (uint64, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return 0, err
 	}
@@ -359,7 +359,7 @@ func (mbc *MultichainBlockchainClient) NonceAt(chainID int64, account common.Add
 }
 
 func (mbc *MultichainBlockchainClient) TransferEth(chainID int64, etr EthTransferRequest) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -368,7 +368,7 @@ func (mbc *MultichainBlockchainClient) TransferEth(chainID int64, etr EthTransfe
 }
 
 func (mbc *MultichainBlockchainClient) GetHermessAvailableBalance(chainID int64, hermesAddress common.Address) (*big.Int, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -377,7 +377,7 @@ func (mbc *MultichainBlockchainClient) GetHermessAvailableBalance(chainID int64,
 }
 
 func (mbc *MultichainBlockchainClient) DecreaseProviderStake(chainID int64, req DecreaseProviderStakeRequest) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -386,7 +386,7 @@ func (mbc *MultichainBlockchainClient) DecreaseProviderStake(chainID int64, req 
 }
 
 func (mbc *MultichainBlockchainClient) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(req.Promise.ChainID)
+	bc, err := mbc.GetClientByChain(req.Promise.ChainID)
 	if err != nil {
 		return nil, err
 	}
@@ -395,7 +395,7 @@ func (mbc *MultichainBlockchainClient) SettleIntoStake(req SettleIntoStakeReques
 }
 
 func (mbc *MultichainBlockchainClient) IncreaseProviderStake(chainID int64, req ProviderStakeIncreaseRequest) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -404,7 +404,7 @@ func (mbc *MultichainBlockchainClient) IncreaseProviderStake(chainID int64, req 
 }
 
 func (mbc *MultichainBlockchainClient) GetHermesURL(chainID int64, registryID, hermesID common.Address) (string, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return "", err
 	}
@@ -414,7 +414,7 @@ func (mbc *MultichainBlockchainClient) GetHermesURL(chainID int64, registryID, h
 
 // GetStakeThresholds returns the stake tresholds for the given hermes.
 func (mbc *MultichainBlockchainClient) GetStakeThresholds(chainID int64, hermesID common.Address) (min, max *big.Int, err error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -423,7 +423,7 @@ func (mbc *MultichainBlockchainClient) GetStakeThresholds(chainID int64, hermesI
 }
 
 func (mbc *MultichainBlockchainClient) GetHermes(chainID int64, registryID, hermesID common.Address) (Hermes, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return Hermes{}, err
 	}
@@ -432,7 +432,7 @@ func (mbc *MultichainBlockchainClient) GetHermes(chainID int64, registryID, herm
 }
 
 func (mbc *MultichainBlockchainClient) GetChannelImplementationByVersion(chainID int64, registryID common.Address, version *big.Int) (common.Address, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return common.Address{}, err
 	}
@@ -441,7 +441,7 @@ func (mbc *MultichainBlockchainClient) GetChannelImplementationByVersion(chainID
 }
 
 func (mbc *MultichainBlockchainClient) IsChannelOpened(chainID int64, registryAddress, identity, hermesID common.Address) (bool, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return false, err
 	}
@@ -451,7 +451,7 @@ func (mbc *MultichainBlockchainClient) IsChannelOpened(chainID int64, registryAd
 
 // FilterLogs executes a filter query.
 func (mbc *MultichainBlockchainClient) FilterLogs(chainID int64, q ethereum.FilterQuery) ([]types.Log, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -461,7 +461,7 @@ func (mbc *MultichainBlockchainClient) FilterLogs(chainID int64, q ethereum.Filt
 // HeaderByNumber returns a block header from the current canonical chain. If number is
 // nil, the latest known header is returned.
 func (mbc *MultichainBlockchainClient) HeaderByNumber(chainID int64, number *big.Int) (*types.Header, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -469,7 +469,7 @@ func (mbc *MultichainBlockchainClient) HeaderByNumber(chainID int64, number *big
 }
 
 func (mbc *MultichainBlockchainClient) SendTransaction(chainID int64, tx *types.Transaction) error {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return err
 	}
@@ -477,7 +477,7 @@ func (mbc *MultichainBlockchainClient) SendTransaction(chainID int64, tx *types.
 }
 
 func (mbc *MultichainBlockchainClient) IsHermesActive(chainID int64, hermesID common.Address) (bool, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return false, err
 	}
@@ -485,7 +485,7 @@ func (mbc *MultichainBlockchainClient) IsHermesActive(chainID int64, hermesID co
 }
 
 func (mbc *MultichainBlockchainClient) PayAndSettle(chainID int64, psr PayAndSettleRequest) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -493,7 +493,7 @@ func (mbc *MultichainBlockchainClient) PayAndSettle(chainID int64, psr PayAndSet
 }
 
 func (mbc *MultichainBlockchainClient) TransactionByHash(chainID int64, hash common.Hash) (*types.Transaction, bool, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, false, err
 	}
@@ -501,7 +501,7 @@ func (mbc *MultichainBlockchainClient) TransactionByHash(chainID int64, hash com
 }
 
 func (mbc *MultichainBlockchainClient) RewarderTotalPayoutsFor(chainID int64, rewarderAddress common.Address, payoutsFor common.Address) (*big.Int, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -509,7 +509,7 @@ func (mbc *MultichainBlockchainClient) RewarderTotalPayoutsFor(chainID int64, re
 }
 
 func (mbc *MultichainBlockchainClient) RewarderAirDrop(chainID int64, req RewarderAirDrop) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -517,7 +517,7 @@ func (mbc *MultichainBlockchainClient) RewarderAirDrop(chainID int64, req Reward
 }
 
 func (mbc *MultichainBlockchainClient) RewarderUpdateRoot(chainID int64, req RewarderUpdateRoot) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -526,7 +526,7 @@ func (mbc *MultichainBlockchainClient) RewarderUpdateRoot(chainID int64, req Rew
 
 // RewarderTotalClaimed is a free lookup in the blockchain for the total amount of claimed tokens in the blockchain.
 func (mbc *MultichainBlockchainClient) RewarderTotalClaimed(chainID int64, rewarderAddress common.Address) (*big.Int, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -534,7 +534,7 @@ func (mbc *MultichainBlockchainClient) RewarderTotalClaimed(chainID int64, rewar
 }
 
 func (mbc *MultichainBlockchainClient) CustodyTransferTokens(chainID int64, req CustodyTokensTransfer) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -542,7 +542,7 @@ func (mbc *MultichainBlockchainClient) CustodyTransferTokens(chainID int64, req 
 }
 
 func (mbc *MultichainBlockchainClient) GetProvidersWithdrawalChannel(chainID int64, hermesAddress common.Address, addressToCheck common.Address, pending bool) (ProviderChannel, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return ProviderChannel{}, err
 	}
@@ -550,7 +550,7 @@ func (mbc *MultichainBlockchainClient) GetProvidersWithdrawalChannel(chainID int
 }
 
 func (mbc *MultichainBlockchainClient) SubscribeToWithdrawalPromiseSettledEvent(chainID int64, providerID, hermesID common.Address) (sink chan *bindings.HermesImplementationPromiseSettled, cancel func(), err error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, func() {}, err
 	}
@@ -558,7 +558,7 @@ func (mbc *MultichainBlockchainClient) SubscribeToWithdrawalPromiseSettledEvent(
 }
 
 func (mbc *MultichainBlockchainClient) TopperupperTopupToken(chainID int64, req TopperupperTopupTokenReq) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -566,7 +566,7 @@ func (mbc *MultichainBlockchainClient) TopperupperTopupToken(chainID int64, req 
 }
 
 func (mbc *MultichainBlockchainClient) TopperupperTopupNative(chainID int64, req TopperupperTopupNativeReq) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -574,7 +574,7 @@ func (mbc *MultichainBlockchainClient) TopperupperTopupNative(chainID int64, req
 }
 
 func (mbc *MultichainBlockchainClient) TopperupperSetManagers(chainID int64, req TopperupperModeratorsReq) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -582,7 +582,7 @@ func (mbc *MultichainBlockchainClient) TopperupperSetManagers(chainID int64, req
 }
 
 func (mbc *MultichainBlockchainClient) TopperupperApproveAddresses(chainID int64, req TopperupperApproveAddressesReq) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -590,7 +590,7 @@ func (mbc *MultichainBlockchainClient) TopperupperApproveAddresses(chainID int64
 }
 
 func (mbc *MultichainBlockchainClient) TopperupperApprovedAddress(chainID int64, topperupperAddress common.Address, forAddress common.Address) (*ApprovedAddress, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -598,7 +598,7 @@ func (mbc *MultichainBlockchainClient) TopperupperApprovedAddress(chainID int64,
 }
 
 func (mbc *MultichainBlockchainClient) TopperupperNativeLimits(chainID int64, topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -606,7 +606,7 @@ func (mbc *MultichainBlockchainClient) TopperupperNativeLimits(chainID int64, to
 }
 
 func (mbc *MultichainBlockchainClient) TopperupperTokenLimits(chainID int64, topperupperAddress common.Address, forAddress common.Address) (*CurrentLimits, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -614,7 +614,7 @@ func (mbc *MultichainBlockchainClient) TopperupperTokenLimits(chainID int64, top
 }
 
 func (mbc *MultichainBlockchainClient) MystTokenApprove(chainID int64, req MystApproveReq) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -622,7 +622,7 @@ func (mbc *MultichainBlockchainClient) MystTokenApprove(chainID int64, req MystA
 }
 
 func (mbc *MultichainBlockchainClient) MystAllowance(chainID int64, mystTokenAddress, holder, spender common.Address) (*big.Int, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -630,7 +630,7 @@ func (mbc *MultichainBlockchainClient) MystAllowance(chainID int64, mystTokenAdd
 }
 
 func (mbc *MultichainBlockchainClient) UniswapV3ExactInputSingle(chainID int64, req UniswapExactInputSingleReq) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -638,7 +638,7 @@ func (mbc *MultichainBlockchainClient) UniswapV3ExactInputSingle(chainID int64, 
 }
 
 func (mbc *MultichainBlockchainClient) UniswapV3TokenPair(chainID int64, poolAddress common.Address) (*SwapTokenPair, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -646,7 +646,7 @@ func (mbc *MultichainBlockchainClient) UniswapV3TokenPair(chainID int64, poolAdd
 }
 
 func (mbc *MultichainBlockchainClient) UniswapV3PoolFee(chainID int64, poolAddress common.Address) (*big.Int, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -654,7 +654,7 @@ func (mbc *MultichainBlockchainClient) UniswapV3PoolFee(chainID int64, poolAddre
 }
 
 func (mbc *MultichainBlockchainClient) WMaticBalance(chainID int64, holder, wmaticAddress common.Address) (*big.Int, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -662,7 +662,7 @@ func (mbc *MultichainBlockchainClient) WMaticBalance(chainID int64, holder, wmat
 }
 
 func (mbc *MultichainBlockchainClient) WMaticWithdraw(chainID int64, req WMaticWithdrawReq) (*types.Transaction, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -670,7 +670,7 @@ func (mbc *MultichainBlockchainClient) WMaticWithdraw(chainID int64, req WMaticW
 }
 
 func (mbc *MultichainBlockchainClient) GetHermesRegistry(chainID int64, hermesAddress common.Address) (common.Address, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return common.Address{}, err
 	}
@@ -678,7 +678,7 @@ func (mbc *MultichainBlockchainClient) GetHermesRegistry(chainID int64, hermesAd
 }
 
 func (mbc *MultichainBlockchainClient) FilterHermesRegistered(chainID int64, from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryRegisteredHermes, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -687,7 +687,7 @@ func (mbc *MultichainBlockchainClient) FilterHermesRegistered(chainID int64, fro
 }
 
 func (mbc *MultichainBlockchainClient) FilterHermesURLUpdated(chainID int64, from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryHermesURLUpdated, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return nil, err
 	}
@@ -696,7 +696,7 @@ func (mbc *MultichainBlockchainClient) FilterHermesURLUpdated(chainID int64, fro
 }
 
 func (mbc *MultichainBlockchainClient) EstimateGas(chainID int64, msg ethereum.CallMsg) (uint64, error) {
-	bc, err := mbc.getClientByChain(chainID)
+	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {
 		return 0, err
 	}
