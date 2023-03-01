@@ -139,7 +139,7 @@ func TestClient(t *testing.T) {
 				BaseFee:  big.NewInt(3),
 				Identity: address,
 			}
-			to, err := bc.makeTransactOpts(context.Background(), &wr)
+			to, err := bc.MakeTransactOpts(context.Background(), &wr)
 			assert.NoError(t, err)
 			assert.Equal(t, wr.GasTip, to.GasTipCap)
 			assert.Equal(t, big.NewInt(5), to.GasFeeCap)
@@ -164,7 +164,7 @@ func TestClient(t *testing.T) {
 				GasPrice: big.NewInt(2),
 				Identity: address,
 			}
-			to, err := bc.makeTransactOpts(context.Background(), &wr)
+			to, err := bc.MakeTransactOpts(context.Background(), &wr)
 			assert.NoError(t, err)
 			assert.Equal(t, wr.GasPrice, to.GasPrice)
 			assert.Equal(t, big.NewInt(2), to.Nonce)
