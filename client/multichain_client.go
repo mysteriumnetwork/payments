@@ -694,3 +694,12 @@ func (mbc *MultichainBlockchainClient) FilterHermesURLUpdated(chainID int64, fro
 
 	return bc.FilterHermesURLUpdated(from, to, registryID)
 }
+
+func (mbc *MultichainBlockchainClient) EstimateGas(chainID int64, msg ethereum.CallMsg) (uint64, error) {
+	bc, err := mbc.getClientByChain(chainID)
+	if err != nil {
+		return 0, err
+	}
+
+	return bc.EstimateGas(msg)
+}
