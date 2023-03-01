@@ -32,6 +32,8 @@ import (
 )
 
 type BC interface {
+	Client() EtherClient
+
 	CalculateHermesFee(hermesAddress common.Address, value *big.Int) (*big.Int, error)
 	IsHermesActive(hermesID common.Address) (bool, error)
 	IsHermesRegistered(registryAddress, acccountantID common.Address) (bool, error)
