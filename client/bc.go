@@ -84,6 +84,7 @@ type BC interface {
 	HeaderByNumber(number *big.Int) (*types.Header, error)
 	PendingNonceAt(account common.Address) (uint64, error)
 	NonceAt(account common.Address, blockNum *big.Int) (uint64, error)
+	EstimateGas(msg ethereum.CallMsg) (uint64, error)
 
 	TransferMyst(req TransferRequest) (tx *types.Transaction, err error)
 	TransferEth(etr EthTransferRequest) (*types.Transaction, error)

@@ -1876,3 +1876,9 @@ func (bc *Blockchain) FilterHermesURLUpdated(from uint64, to *uint64, registryID
 
 	return res, nil
 }
+
+func (bc *Blockchain) EstimateGas(msg ethereum.CallMsg) (uint64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+	return bc.ethClient.Client().EstimateGas(ctx, msg)
+}
