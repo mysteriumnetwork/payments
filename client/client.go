@@ -83,6 +83,7 @@ func NewBlockchainWithCustomNonceTracker(ethClient EthClientGetter, timeout time
 	}
 }
 
+// Client returns the underlying eth client
 func (bc *Blockchain) Client() EtherClient {
 	return bc.ethClient.Client()
 }

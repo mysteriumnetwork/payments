@@ -40,6 +40,7 @@ func NewMultichainBlockchainClient(clients map[int64]BC) *MultichainBlockchainCl
 
 var ErrUnknownChain = errors.New("unknown chain")
 
+// GetClientByChain returns blockchain client for given chain id
 func (mbc *MultichainBlockchainClient) GetClientByChain(chainID int64) (BC, error) {
 	if v, ok := mbc.clients[chainID]; ok {
 		return v, nil
