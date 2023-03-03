@@ -31,6 +31,7 @@ import (
 	"github.com/mysteriumnetwork/payments/bindings"
 	"github.com/mysteriumnetwork/payments/bindings/rewarder"
 	"github.com/mysteriumnetwork/payments/bindings/topperupper"
+	"github.com/mysteriumnetwork/payments/bindings/uniswapv2"
 	"github.com/mysteriumnetwork/payments/bindings/uniswapv3"
 	"github.com/mysteriumnetwork/payments/crypto"
 	"github.com/pkg/errors"
@@ -88,8 +89,8 @@ func (bc *Blockchain) Client() EtherClient {
 	return bc.ethClient.Client()
 }
 
-// MakeTransactOpts creates a new transact opts from the given request
-func (bc *Blockchain) MakeTransactOpts(ctx context.Context, rr *WriteRequest) (*bind.TransactOpts, error) {
+// makeTransactOpts creates a new transact opts from the given request
+func (bc *Blockchain) makeTransactOpts(ctx context.Context, rr *WriteRequest) (*bind.TransactOpts, error) {
 	if rr.Nonce == nil {
 		nonceUint, err := bc.getNonce(rr.Identity)
 		if err != nil {
@@ -434,7 +435,7 @@ func (bc *Blockchain) RegisterIdentity(rr RegistrationRequest) (*types.Transacti
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &rr.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &rr.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -481,7 +482,7 @@ func (bc *Blockchain) OpenConsumerChannel(req OpenConsumerChannelRequest) (*type
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -521,7 +522,7 @@ func (bc *Blockchain) PayAndSettle(psr PayAndSettleRequest) (*types.Transaction,
 	ctx, cancel := context.WithTimeout(parent, bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &psr.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &psr.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -569,7 +570,7 @@ func (bc *Blockchain) TransferMyst(req TransferRequest) (tx *types.Transaction, 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -622,7 +623,7 @@ func (bc *Blockchain) IncreaseProviderStake(req ProviderStakeIncreaseRequest) (*
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -674,7 +675,7 @@ func (bc *Blockchain) SettleIntoStake(req SettleIntoStakeRequest) (*types.Transa
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -726,7 +727,7 @@ func (bc *Blockchain) DecreaseProviderStake(req DecreaseProviderStakeRequest) (*
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	transactor, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	transactor, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, fmt.Errorf("could not get transactor: %w", err)
 	}
@@ -796,7 +797,7 @@ func (bc *Blockchain) SettleAndRebalance(req SettleAndRebalanceRequest) (*types.
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -970,7 +971,7 @@ func (bc *Blockchain) SettlePromise(req SettleRequest) (*types.Transaction, erro
 		req.Nonce = new(big.Int).SetUint64(nonce)
 	}
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 
@@ -1150,7 +1151,7 @@ func (bc *Blockchain) TransferEth(etr EthTransferRequest) (*types.Transaction, e
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &etr.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &etr.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1299,7 +1300,7 @@ func (bc *Blockchain) SettleWithBeneficiary(req SettleWithBeneficiaryRequest) (*
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1356,7 +1357,7 @@ func (bc *Blockchain) RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transac
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1385,7 +1386,7 @@ func (bc *Blockchain) RewarderAirDrop(req RewarderAirDrop) (*types.Transaction, 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1442,7 +1443,7 @@ func (bc *Blockchain) CustodyTransferTokens(req CustodyTokensTransfer) (*types.T
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1550,7 +1551,7 @@ func (bc *Blockchain) TopperupperApproveAddresses(req TopperupperApproveAddresse
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1579,7 +1580,7 @@ func (bc *Blockchain) TopperupperSetManagers(req TopperupperModeratorsReq) (*typ
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1606,7 +1607,7 @@ func (bc *Blockchain) TopperupperTopupNative(req TopperupperTopupNativeReq) (*ty
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1634,7 +1635,7 @@ func (bc *Blockchain) TopperupperTopupToken(req TopperupperTopupTokenReq) (*type
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1662,7 +1663,7 @@ func (bc *Blockchain) MystTokenApprove(req MystApproveReq) (*types.Transaction, 
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1716,7 +1717,7 @@ func (bc *Blockchain) UniswapV3ExactInputSingle(req UniswapExactInputSingleReq) 
 	ctx2, cancel2 := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel2()
 
-	to, err := bc.MakeTransactOpts(ctx2, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx2, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1827,7 +1828,7 @@ func (bc *Blockchain) WMaticWithdraw(req WMaticWithdrawReq) (*types.Transaction,
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 
-	to, err := bc.MakeTransactOpts(ctx, &req.WriteRequest)
+	to, err := bc.makeTransactOpts(ctx, &req.WriteRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1887,4 +1888,51 @@ func (bc *Blockchain) EstimateGas(msg ethereum.CallMsg) (uint64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 	return bc.ethClient.Client().EstimateGas(ctx, msg)
+}
+
+type SwapExactTokensForETHReq struct {
+	WriteRequest
+	SwapRouterAddress common.Address
+
+	TokenIn          common.Address
+	WETHAddress      common.Address
+	IntermediatePath []common.Address
+
+	Recipient       common.Address
+	DeadlineSeconds uint64
+
+	AmountIn         *big.Int
+	AmountOutMinimum *big.Int
+}
+
+func (bc *Blockchain) SwapExactTokensForETH(req SwapExactTokensForETHReq) (*types.Transaction, error) {
+	txer, err := uniswapv2.NewUniswapv2Transactor(req.SwapRouterAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx1, cancel1 := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel1()
+
+	b, err := bc.ethClient.Client().BlockByNumber(ctx1, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx2, cancel2 := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel2()
+
+	to, err := bc.makeTransactOpts(ctx2, &req.WriteRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	return txer.SwapExactTokensForETH(
+		to,
+		req.AmountIn,
+		req.AmountOutMinimum,
+		append(append([]common.Address{req.TokenIn}, req.IntermediatePath...), req.WETHAddress),
+		req.Recipient,
+		big.NewInt(0).SetUint64(b.Time()+req.DeadlineSeconds),
+	)
 }

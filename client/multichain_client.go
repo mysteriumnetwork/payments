@@ -704,3 +704,11 @@ func (mbc *MultichainBlockchainClient) EstimateGas(chainID int64, msg ethereum.C
 
 	return bc.EstimateGas(msg)
 }
+
+func (mbc *MultichainBlockchainClient) SwapExactTokensForETH(chainID int64, req SwapExactTokensForETHReq) (*types.Transaction, error) {
+	bc, err := mbc.GetClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.SwapExactTokensForETH(req)
+}
