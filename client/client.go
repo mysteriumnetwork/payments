@@ -31,6 +31,7 @@ import (
 	"github.com/mysteriumnetwork/payments/bindings"
 	"github.com/mysteriumnetwork/payments/bindings/rewarder"
 	"github.com/mysteriumnetwork/payments/bindings/topperupper"
+	"github.com/mysteriumnetwork/payments/bindings/uniswapv2"
 	"github.com/mysteriumnetwork/payments/bindings/uniswapv3"
 	"github.com/mysteriumnetwork/payments/crypto"
 	"github.com/pkg/errors"
@@ -83,6 +84,12 @@ func NewBlockchainWithCustomNonceTracker(ethClient EthClientGetter, timeout time
 	}
 }
 
+// Client returns the underlying eth client
+func (bc *Blockchain) Client() EtherClient {
+	return bc.ethClient.Client()
+}
+
+// makeTransactOpts creates a new transact opts from the given request
 func (bc *Blockchain) makeTransactOpts(ctx context.Context, rr *WriteRequest) (*bind.TransactOpts, error) {
 	if rr.Nonce == nil {
 		nonceUint, err := bc.getNonce(rr.Identity)
@@ -1881,4 +1888,51 @@ func (bc *Blockchain) EstimateGas(msg ethereum.CallMsg) (uint64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
 	defer cancel()
 	return bc.ethClient.Client().EstimateGas(ctx, msg)
+}
+
+type SwapExactTokensForETHReq struct {
+	WriteRequest
+	SwapRouterAddress common.Address
+
+	TokenIn          common.Address
+	WETHAddress      common.Address
+	IntermediatePath []common.Address
+
+	Recipient       common.Address
+	DeadlineSeconds uint64
+
+	AmountIn         *big.Int
+	AmountOutMinimum *big.Int
+}
+
+func (bc *Blockchain) SwapExactTokensForETH(req SwapExactTokensForETHReq) (*types.Transaction, error) {
+	txer, err := uniswapv2.NewUniswapv2Transactor(req.SwapRouterAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx1, cancel1 := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel1()
+
+	b, err := bc.ethClient.Client().BlockByNumber(ctx1, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx2, cancel2 := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel2()
+
+	to, err := bc.makeTransactOpts(ctx2, &req.WriteRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	return txer.SwapExactTokensForETH(
+		to,
+		req.AmountIn,
+		req.AmountOutMinimum,
+		append(append([]common.Address{req.TokenIn}, req.IntermediatePath...), req.WETHAddress),
+		req.Recipient,
+		big.NewInt(0).SetUint64(b.Time()+req.DeadlineSeconds),
+	)
 }

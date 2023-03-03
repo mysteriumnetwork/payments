@@ -32,6 +32,8 @@ import (
 )
 
 type BC interface {
+	Client() EtherClient
+
 	CalculateHermesFee(hermesAddress common.Address, value *big.Int) (*big.Int, error)
 	IsHermesActive(hermesID common.Address) (bool, error)
 	IsHermesRegistered(registryAddress, acccountantID common.Address) (bool, error)
@@ -118,6 +120,7 @@ type BC interface {
 	UniswapV3PoolFee(poolAddress common.Address) (*big.Int, error)
 	WMaticBalance(holder, wmaticAddress common.Address) (*big.Int, error)
 	WMaticWithdraw(req WMaticWithdrawReq) (*types.Transaction, error)
+	SwapExactTokensForETH(req SwapExactTokensForETHReq) (*types.Transaction, error)
 }
 
 // EtherClient interface implements all methods required for a EtherClient to work
