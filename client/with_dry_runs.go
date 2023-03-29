@@ -468,3 +468,15 @@ func (cwdr *WithDryRuns) FilterHermesRegistered(from uint64, to *uint64, registr
 func (cwdr *WithDryRuns) FilterHermesURLUpdated(from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryHermesURLUpdated, error) {
 	return cwdr.bc.FilterHermesURLUpdated(from, to, registryID)
 }
+
+func (cwdr *WithDryRuns) Client() EtherClient {
+	return cwdr.bc.Client()
+}
+
+func (cwdr *WithDryRuns) EstimateGas(msg ethereum.CallMsg) (uint64, error) {
+	return cwdr.bc.EstimateGas(msg)
+}
+
+func (cwdr *WithDryRuns) SwapExactTokensForETH(req SwapExactTokensForETHReq) (*types.Transaction, error) {
+	return cwdr.bc.SwapExactTokensForETH(req)
+}
