@@ -99,6 +99,8 @@ type BC interface {
 	RewarderAirDrop(req RewarderAirDrop) (*types.Transaction, error)
 	RewarderUpdateRoot(req RewarderUpdateRoot) (*types.Transaction, error)
 	RewarderTotalClaimed(rewarderAddress common.Address) (*big.Int, error)
+	RewarderLastRootBlock(rewarderAddress common.Address) (*big.Int, error)
+	RewarderClaimRoots(rewarderAddress common.Address, blockNumber *big.Int) ([]byte, error)
 	CustodyTransferTokens(req CustodyTokensTransfer) (*types.Transaction, error)
 
 	PayAndSettle(psr PayAndSettleRequest) (*types.Transaction, error)

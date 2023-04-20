@@ -534,6 +534,22 @@ func (mbc *MultichainBlockchainClient) RewarderTotalClaimed(chainID int64, rewar
 	return bc.RewarderTotalClaimed(rewarderAddress)
 }
 
+func (mbc *MultichainBlockchainClient) RewarderLastRootBlock(chainID int64, rewarderAddress common.Address) (*big.Int, error) {
+	bc, err := mbc.GetClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.RewarderLastRootBlock(rewarderAddress)
+}
+
+func (mbc *MultichainBlockchainClient) RewarderClaimRoots(chainID int64, rewarderAddress common.Address, blockNumber *big.Int) ([]byte, error) {
+	bc, err := mbc.GetClientByChain(chainID)
+	if err != nil {
+		return nil, err
+	}
+	return bc.RewarderClaimRoots(rewarderAddress, blockNumber)
+}
+
 func (mbc *MultichainBlockchainClient) CustodyTransferTokens(chainID int64, req CustodyTokensTransfer) (*types.Transaction, error) {
 	bc, err := mbc.GetClientByChain(chainID)
 	if err != nil {

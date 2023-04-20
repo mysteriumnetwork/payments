@@ -378,6 +378,14 @@ func (cwdr *WithDryRuns) RewarderTotalClaimed(rewarderAddress common.Address) (*
 	return cwdr.bc.RewarderTotalClaimed(rewarderAddress)
 }
 
+func (cwdr *WithDryRuns) RewarderLastRootBlock(rewarderAddress common.Address) (*big.Int, error) {
+	return cwdr.bc.RewarderLastRootBlock(rewarderAddress)
+}
+
+func (cwdr *WithDryRuns) RewarderClaimRoots(rewarderAddress common.Address, blockNumber *big.Int) ([]byte, error) {
+	return cwdr.bc.RewarderClaimRoots(rewarderAddress, blockNumber)
+}
+
 func (cwdr *WithDryRuns) CustodyTransferTokens(req CustodyTokensTransfer) (*types.Transaction, error) {
 	return cwdr.bc.CustodyTransferTokens(req)
 }
