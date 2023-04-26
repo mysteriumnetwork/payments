@@ -378,6 +378,14 @@ func (cwdr *WithDryRuns) RewarderTotalClaimed(rewarderAddress common.Address) (*
 	return cwdr.bc.RewarderTotalClaimed(rewarderAddress)
 }
 
+func (cwdr *WithDryRuns) RewarderLastRootBlock(rewarderAddress common.Address) (*big.Int, error) {
+	return cwdr.bc.RewarderLastRootBlock(rewarderAddress)
+}
+
+func (cwdr *WithDryRuns) RewarderClaimRoots(rewarderAddress common.Address, blockNumber *big.Int) ([]byte, error) {
+	return cwdr.bc.RewarderClaimRoots(rewarderAddress, blockNumber)
+}
+
 func (cwdr *WithDryRuns) CustodyTransferTokens(req CustodyTokensTransfer) (*types.Transaction, error) {
 	return cwdr.bc.CustodyTransferTokens(req)
 }
@@ -467,4 +475,16 @@ func (cwdr *WithDryRuns) FilterHermesRegistered(from uint64, to *uint64, registr
 
 func (cwdr *WithDryRuns) FilterHermesURLUpdated(from uint64, to *uint64, registryID common.Address) ([]bindings.RegistryHermesURLUpdated, error) {
 	return cwdr.bc.FilterHermesURLUpdated(from, to, registryID)
+}
+
+func (cwdr *WithDryRuns) Client() EtherClient {
+	return cwdr.bc.Client()
+}
+
+func (cwdr *WithDryRuns) EstimateGas(msg ethereum.CallMsg) (uint64, error) {
+	return cwdr.bc.EstimateGas(msg)
+}
+
+func (cwdr *WithDryRuns) SwapExactTokensForETH(req SwapExactTokensForETHReq) (*types.Transaction, error) {
+	return cwdr.bc.SwapExactTokensForETH(req)
 }

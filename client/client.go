@@ -1427,6 +1427,38 @@ func (bc *Blockchain) RewarderTotalClaimed(rewarderAddress common.Address) (*big
 	})
 }
 
+func (bc *Blockchain) RewarderLastRootBlock(rewarderAddress common.Address) (*big.Int, error) {
+	caller, err := rewarder.NewRewarderCaller(rewarderAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	return caller.LastRootBlock(&bind.CallOpts{
+		Context: ctx,
+	})
+}
+
+func (bc *Blockchain) RewarderClaimRoots(rewarderAddress common.Address, blockNumber *big.Int) ([]byte, error) {
+	caller, err := rewarder.NewRewarderCaller(rewarderAddress, bc.ethClient.Client())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), bc.bcTimeout)
+	defer cancel()
+
+	root, err := caller.ClaimRoots(&bind.CallOpts{
+		Context: ctx,
+	}, blockNumber)
+	if err != nil {
+		return nil, err
+	}
+	return root[:], nil
+}
+
 type CustodyTokensTransfer struct {
 	WriteRequest
 	CustodyAddress common.Address
