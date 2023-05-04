@@ -21,7 +21,7 @@ func (e *MultiManager) GetRateCacheWithFallback(coins []Coin, vsCurrencies []Cur
 	for _, provider := range e.apis {
 		res, err := provider.GetRateCacheWithFallback(coins, vsCurrencies)
 		if err != nil {
-			log.Err(err).Str("provider", provider.GetName()).Msg("requesting a rate from cache with fallback failed")
+			log.Error().Err(err).Str("provider", provider.GetName()).Msg("requesting a rate from cache with fallback failed")
 			continue
 		}
 
@@ -35,7 +35,7 @@ func (e *MultiManager) GetRate(coins []Coin, vsCurrencies []Currency) (PriceResp
 	for _, provider := range e.apis {
 		res, err := provider.GetRate(coins, vsCurrencies)
 		if err != nil {
-			log.Err(err).Str("provider", provider.GetName()).Msg("requesting a rate failed")
+			log.Error().Err(err).Str("provider", provider.GetName()).Msg("requesting a rate failed")
 			continue
 		}
 
@@ -49,7 +49,7 @@ func (e *MultiManager) GetRateCache(coins []Coin, vsCurrencies []Currency) (Pric
 	for _, provider := range e.apis {
 		res, err := provider.GetRateCache(coins, vsCurrencies)
 		if err != nil {
-			log.Err(err).Str("provider", provider.GetName()).Msg("requesting a rate from cache failed")
+			log.Error().Err(err).Str("provider", provider.GetName()).Msg("requesting a rate from cache failed")
 			continue
 		}
 
