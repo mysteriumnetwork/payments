@@ -75,7 +75,7 @@ func DefaultByBlockSize(cl SortableClient) {
 	}
 
 	if err := cl.ReorderClients(newOrder); err != nil {
-		log.Err(err).Msg("failed to re-order the RPC client slice")
+		log.Error().Err(err).Msg("failed to re-order the RPC client slice")
 	}
 }
 
@@ -103,7 +103,7 @@ func DefaultByAvailability(not client.Notification, clients SortableClient) {
 
 		newOrder := append(currentOrder[:i], currentOrder[i+1:]...)
 		if err := clients.ReorderClients(append(newOrder, address)); err != nil {
-			log.Err(err).Msg("failed to re-order the RPC client slice")
+			log.Error().Err(err).Msg("failed to re-order the RPC client slice")
 		}
 
 		return
