@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"math/big"
 	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -19,4 +20,34 @@ func DeployErc721(opts *bind.TransactOpts, backend bind.ContractBackend, name st
 		return address, fmt.Errorf("failed to deploy erc721 token: %w", err)
 	}
 	return address, nil
+}
+
+func TransferErc721(opts *bind.TransactOpts, backend bind.ContractBackend, tokenAddress, to common.Address, tokenId *big.Int, timeout time.Duration) error {
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+	opts.Context = ctx
+	erc721Transactor, err := bindings.NewErc721(tokenAddress, backend)
+	if err != nil {
+		return fmt.Errorf("failed to create erc721 transactor: %w", err)
+	}
+	_, err = erc721Transactor.TransferFrom(opts, opts.From, to, tokenId)
+	if err != nil {
+		return fmt.Errorf("failed to transfer erc721 token: %w", err)
+	}
+	return nil
+}
+
+func MintErc721(opts *bind.TransactOpts, backend bind.ContractBackend, tokenAddress, to common.Address, tokenId *big.Int, timeout time.Duration) error {
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+	opts.Context = ctx
+	erc721Transactor, err := bindings.NewErc721(tokenAddress, backend)
+	if err != nil {
+		return fmt.Errorf("failed to create erc721 transactor: %w", err)
+	}
+	_, err = erc721Transactor.Mint(opts, to, tokenId)
+	if err != nil {
+		return fmt.Errorf("failed to mint erc721 token: %w", err)
+	}
+	return nil
 }

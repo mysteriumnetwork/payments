@@ -21,3 +21,18 @@ func DeployErc20(opts *bind.TransactOpts, backend bind.ContractBackend, name str
 	}
 	return address, nil
 }
+
+func TransferErc20(opts *bind.TransactOpts, backend bind.ContractBackend, tokenAddress, to common.Address, amount *big.Int, timeout time.Duration) error {
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+	opts.Context = ctx
+	erc20Transactor, err := bindings.NewErc20Transactor(tokenAddress, backend)
+	if err != nil {
+		return fmt.Errorf("failed to create erc20 transactor: %w", err)
+	}
+	_, err = erc20Transactor.Transfer(opts, to, amount)
+	if err != nil {
+		return fmt.Errorf("failed to transfer erc20 token: %w", err)
+	}
+	return nil
+}
