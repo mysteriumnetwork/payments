@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/rawdb"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -159,7 +160,8 @@ type ExitParams struct {
 func getReceiptProof(client *ethclient.Client, stateSyncTxHash []byte, receipt *types.Receipt, block *types.Block, timeout time.Duration) (ReceiptProof, error) {
 	db := memorydb.New()
 	defer db.Close()
-	tr, err := trie.New(common.Hash{}, trie.NewDatabase(memorydb.New()))
+
+	tr, err := trie.New(trie.TrieID(common.Hash{}), trie.NewDatabase(rawdb.NewMemoryDatabase(), trie.HashDefaults))
 	if err != nil {
 		return ReceiptProof{}, err
 	}
@@ -192,7 +194,7 @@ func getReceiptProof(client *ethclient.Client, stateSyncTxHash []byte, receipt *
 
 		receiptsToPaths[hex.EncodeToString(bts)] = path
 
-		err = tr.TryUpdate(path, bts)
+		err = tr.Update(path, bts)
 		if err != nil {
 			return ReceiptProof{}, err
 		}
@@ -204,7 +206,7 @@ func getReceiptProof(client *ethclient.Client, stateSyncTxHash []byte, receipt *
 	}
 
 	proofer := NewProofer()
-	err = tr.Prove(encodedIndex, 0, proofer)
+	err = tr.Prove(encodedIndex, proofer)
 	if err != nil {
 		return ReceiptProof{}, err
 	}

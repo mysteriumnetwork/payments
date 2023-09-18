@@ -1,10 +1,11 @@
 package gas
 
 import (
-	"github.com/ethereum/go-ethereum/consensus/misc"
+	"math/big"
+
+	"github.com/ethereum/go-ethereum/consensus/misc/eip1559"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/params"
-	"math/big"
 )
 
 type NodeStation struct {
@@ -33,7 +34,7 @@ func (n *NodeStation) GetGasPrices() (*GasPrices, error) {
 		return nil, err
 	}
 	config := params.MainnetChainConfig
-	baseFee := misc.CalcBaseFee(config, header)
+	baseFee := eip1559.CalcBaseFee(config, header)
 
 	return &GasPrices{
 		SafeLow: suggestGasPrice,
