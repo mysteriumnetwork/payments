@@ -105,7 +105,7 @@ func TestMultiChainAddressKeeper(t *testing.T) {
 			chainId := int64(1)
 			addr := common.HexToAddress("0x50")
 			key := mcap.chCacheKey(chainId, addr)
-			assert.Equal(t, fmt.Sprintf("%d|%s", chainId, addr.Hash()), key)
+			assert.Equal(t, fmt.Sprintf("%d|%s", chainId, addr.Hex()), key)
 
 			_, ok := mcap.chCacheGet(chainId, addr)
 			assert.False(t, ok)
