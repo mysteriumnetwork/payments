@@ -193,7 +193,7 @@ func (mcak *MultiChainAddressProvider) chCacheGet(chainID int64, hermes common.A
 }
 
 func (mcak *MultiChainAddressKeeper) chCacheKey(chainID int64, hermes common.Address) string {
-	return fmt.Sprintf("%d|%s", chainID, hermes.Hash())
+	return fmt.Sprintf("%d|%s", chainID, hermes.Hex())
 }
 
 // GetHermesChannelAddress will calculate a channel address for an identity and hermes using the channel
