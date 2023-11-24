@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"crypto/ecdsa"
 	"fmt"
 	"math/big"
@@ -150,4 +151,70 @@ func DeployHermesWithDependencies(opts *bind.TransactOpts, backend bind.Contract
 		BaseContractAddresses: baseContractAddresses,
 		HermesAddress:         hermesAddress,
 	}, nil
+}
+
+func DeployHermes(opts *bind.TransactOpts, backend bind.ContractBackend, timeout time.Duration, baseContractAddresses BaseContractAddresses, registerHermesOpts RegisterHermesOpts) (HermesWithDependenciesContractAddresses, error) {
+	err := MintTokens(opts, baseContractAddresses.TokenV2Address, backend, timeout, opts.From, registerHermesOpts.HermesStake)
+	if err != nil {
+		return HermesWithDependenciesContractAddresses{}, fmt.Errorf("failed to mint tokens: %w", err)
+	}
+	err = RegisterHermes(opts, baseContractAddresses.RegistryAddress, backend, timeout,
+		registerHermesOpts.Operator,
+		registerHermesOpts.HermesStake,
+		registerHermesOpts.HermesFee,
+		registerHermesOpts.MinChannelStake,
+		registerHermesOpts.MaxChannelStake,
+		registerHermesOpts.Url)
+	if err != nil {
+		return HermesWithDependenciesContractAddresses{}, fmt.Errorf("failed to register hermes: %w", err)
+	}
+
+	registryCaller, err := bindings.NewRegistry(baseContractAddresses.RegistryAddress, backend)
+	if err != nil {
+		return HermesWithDependenciesContractAddresses{}, fmt.Errorf("failed to create registry caller: %w", err)
+	}
+	lastImplVersion, err := registryCaller.GetLastImplVer(nil)
+	if err != nil {
+		return HermesWithDependenciesContractAddresses{}, fmt.Errorf("failed to get last impl version: %w", err)
+	}
+	hermesAddress, err := registryCaller.GetHermesAddress(nil, registerHermesOpts.Operator, lastImplVersion)
+	if err != nil {
+		return HermesWithDependenciesContractAddresses{}, fmt.Errorf("failed to get hermes address: %w", err)
+	}
+
+	return HermesWithDependenciesContractAddresses{
+		BaseContractAddresses: baseContractAddresses,
+		HermesAddress:         hermesAddress,
+	}, nil
+}
+
+func TransferEth(opts *bind.TransactOpts, backend bind.ContractBackend, chainID *big.Int, to common.Address, value *big.Int, timeout time.Duration) error {
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	nonce, err := backend.PendingNonceAt(ctx, opts.From)
+	if err != nil {
+		return fmt.Errorf("failed to get nonce: %w", err)
+	}
+	gasFeeCap, err := backend.SuggestGasPrice(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get gas price: %w", err)
+	}
+	tx := types.NewTx(&types.DynamicFeeTx{
+		Nonce:     nonce,
+		ChainID:   chainID,
+		To:        &to,
+		Value:     value,
+		Gas:       21000,
+		GasFeeCap: gasFeeCap,
+	})
+	signedTx, err := opts.Signer(opts.From, tx)
+	if err != nil {
+		return fmt.Errorf("failed to sign transaction: %w", err)
+	}
+	err = backend.SendTransaction(ctx, signedTx)
+	if err != nil {
+		return fmt.Errorf("failed to send transaction: %w", err)
+	}
+	return nil
 }
