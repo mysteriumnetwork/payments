@@ -151,3 +151,38 @@ func DeployHermesWithDependencies(opts *bind.TransactOpts, backend bind.Contract
 		HermesAddress:         hermesAddress,
 	}, nil
 }
+
+func DeployHermes(opts *bind.TransactOpts, backend bind.ContractBackend, timeout time.Duration, baseContractAddresses BaseContractAddresses, registerHermesOpts RegisterHermesOpts) (HermesWithDependenciesContractAddresses, error) {
+	err := MintTokens(opts, baseContractAddresses.TokenV2Address, backend, timeout, opts.From, registerHermesOpts.HermesStake)
+	if err != nil {
+		return HermesWithDependenciesContractAddresses{}, fmt.Errorf("failed to mint tokens: %w", err)
+	}
+	err = RegisterHermes(opts, baseContractAddresses.RegistryAddress, backend, timeout,
+		registerHermesOpts.Operator,
+		registerHermesOpts.HermesStake,
+		registerHermesOpts.HermesFee,
+		registerHermesOpts.MinChannelStake,
+		registerHermesOpts.MaxChannelStake,
+		registerHermesOpts.Url)
+	if err != nil {
+		return HermesWithDependenciesContractAddresses{}, fmt.Errorf("failed to register hermes: %w", err)
+	}
+
+	registryCaller, err := bindings.NewRegistry(baseContractAddresses.RegistryAddress, backend)
+	if err != nil {
+		return HermesWithDependenciesContractAddresses{}, fmt.Errorf("failed to create registry caller: %w", err)
+	}
+	lastImplVersion, err := registryCaller.GetLastImplVer(nil)
+	if err != nil {
+		return HermesWithDependenciesContractAddresses{}, fmt.Errorf("failed to get last impl version: %w", err)
+	}
+	hermesAddress, err := registryCaller.GetHermesAddress(nil, registerHermesOpts.Operator, lastImplVersion)
+	if err != nil {
+		return HermesWithDependenciesContractAddresses{}, fmt.Errorf("failed to get hermes address: %w", err)
+	}
+
+	return HermesWithDependenciesContractAddresses{
+		BaseContractAddresses: baseContractAddresses,
+		HermesAddress:         hermesAddress,
+	}, nil
+}
