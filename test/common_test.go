@@ -9,8 +9,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/magefile/mage/sh"
+	"github.com/mysteriumnetwork/payments/units"
+	"github.com/stretchr/testify/assert"
 )
 
 var client *ethclient.Client
@@ -28,6 +31,27 @@ func TestMain(m *testing.M) {
 	code := m.Run()
 	once.Do(func() { teardownCompose() })
 	os.Exit(code)
+}
+
+func TestTransferEth(t *testing.T) {
+	address, privateKey, err := GetKeyPair(privateKey0)
+	assert.NoError(t, err)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	chainID, err := client.ChainID(ctx)
+	assert.NoError(t, err)
+
+	t.Run("transfer", func(t *testing.T) {
+		to := common.HexToAddress("0x123452222222")
+		value := units.FloatEthToBigIntWei(1)
+		err := TransferEth(GetTransactOpts(address, privateKey, chainID), client, chainID, to, value, 10*time.Second)
+		assert.NoError(t, err)
+
+		balance, err := client.BalanceAt(context.Background(), to, nil)
+		assert.NoError(t, err)
+		assert.Equal(t, balance.String(), value.String())
+	})
 }
 
 func startCompose() error {

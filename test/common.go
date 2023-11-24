@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"crypto/ecdsa"
 	"fmt"
 	"math/big"
@@ -185,4 +186,35 @@ func DeployHermes(opts *bind.TransactOpts, backend bind.ContractBackend, timeout
 		BaseContractAddresses: baseContractAddresses,
 		HermesAddress:         hermesAddress,
 	}, nil
+}
+
+func TransferEth(opts *bind.TransactOpts, backend bind.ContractBackend, chainID *big.Int, to common.Address, value *big.Int, timeout time.Duration) error {
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	nonce, err := backend.PendingNonceAt(ctx, opts.From)
+	if err != nil {
+		return fmt.Errorf("failed to get nonce: %w", err)
+	}
+	gasFeeCap, err := backend.SuggestGasPrice(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get gas price: %w", err)
+	}
+	tx := types.NewTx(&types.DynamicFeeTx{
+		Nonce:     nonce,
+		ChainID:   chainID,
+		To:        &to,
+		Value:     value,
+		Gas:       21000,
+		GasFeeCap: gasFeeCap,
+	})
+	signedTx, err := opts.Signer(opts.From, tx)
+	if err != nil {
+		return fmt.Errorf("failed to sign transaction: %w", err)
+	}
+	err = backend.SendTransaction(ctx, signedTx)
+	if err != nil {
+		return fmt.Errorf("failed to send transaction: %w", err)
+	}
+	return nil
 }
