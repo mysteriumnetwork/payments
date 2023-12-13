@@ -12,7 +12,7 @@ import (
 
 // DefaultMaticStationURI is the default gas station URL that can be used in matic gas station.
 // Default URL is for mainnet of matic gas station service.
-const DefaultMaticStationURI = "https://gasstation-mainnet.matic.network/v2"
+const DefaultMaticStationURI = "https://gasstation.polygon.technology/v2"
 
 // MaticStation represents matic gas station api.
 type MaticStation struct {
