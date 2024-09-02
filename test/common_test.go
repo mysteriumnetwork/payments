@@ -55,7 +55,7 @@ func TestTransferEth(t *testing.T) {
 }
 
 func startCompose() error {
-	_, err := sh.Output("docker-compose", "-f", "docker-compose.yml", "up", "-d")
+	_, err := sh.Output("docker", "compose", "-f", "docker-compose.yml", "up", "-d")
 	if err != nil {
 		return err
 	}
@@ -63,7 +63,7 @@ func startCompose() error {
 }
 
 func teardownCompose() (string, error) {
-	return sh.Output("docker-compose", "-f", "docker-compose.yml", "down")
+	return sh.Output("docker", "compose", "-f", "docker-compose.yml", "down")
 }
 
 func waitForGanache() error {
