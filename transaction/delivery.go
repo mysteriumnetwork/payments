@@ -23,7 +23,7 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/mysteriumnetwork/payments/client"
+	"github.com/mysteriumnetwork/payments/v3/client"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"

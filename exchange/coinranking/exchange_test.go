@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mysteriumnetwork/payments/exchange"
+	"github.com/mysteriumnetwork/payments/v3/exchange"
 	"github.com/stretchr/testify/assert"
 )
 

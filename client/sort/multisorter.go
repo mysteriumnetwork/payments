@@ -21,7 +21,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/mysteriumnetwork/payments/client"
+	"github.com/mysteriumnetwork/payments/v3/client"
 )
 
 // MultiClientSorter is able to sort multiclient according to provided funcs.

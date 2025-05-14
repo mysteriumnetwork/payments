@@ -23,7 +23,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/mysteriumnetwork/payments/client"
+	"github.com/mysteriumnetwork/payments/v3/client"
 	"github.com/rs/zerolog/log"
 )
 

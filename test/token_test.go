@@ -7,8 +7,8 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/mysteriumnetwork/payments/bindings"
-	"github.com/mysteriumnetwork/payments/units"
+	"github.com/mysteriumnetwork/payments/v3/bindings"
+	"github.com/mysteriumnetwork/payments/v3/units"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mysteriumnetwork/payments/transaction/gas"
+	"github.com/mysteriumnetwork/payments/v3/transaction/gas"
 )
 
 type GasTracker struct {

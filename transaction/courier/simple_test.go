@@ -12,8 +12,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/mysteriumnetwork/payments/client"
-	"github.com/mysteriumnetwork/payments/transaction"
+	"github.com/mysteriumnetwork/payments/v3/client"
+	"github.com/mysteriumnetwork/payments/v3/transaction"
 	"github.com/stretchr/testify/assert"
 )
 

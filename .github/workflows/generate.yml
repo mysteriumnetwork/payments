@@ -17,4 +17,4 @@ jobs:
       with:
         go-version: 1.24.2
     - name: Generate
-      run: go run mage.go -v Generate
+      run: make generate

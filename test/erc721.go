@@ -8,7 +8,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/mysteriumnetwork/payments/bindings"
+	"github.com/mysteriumnetwork/payments/v3/bindings"
 )
 
 func DeployErc721(opts *bind.TransactOpts, backend bind.ContractBackend, name string, symbol string, timeout time.Duration) (common.Address, error) {

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mysteriumnetwork/payments/units"
+	"github.com/mysteriumnetwork/payments/v3/units"
 	"github.com/rs/zerolog/log"
 )
 

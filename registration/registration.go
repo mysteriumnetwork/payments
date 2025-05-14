@@ -23,7 +23,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 
-	"github.com/mysteriumnetwork/payments/crypto"
+	"github.com/mysteriumnetwork/payments/v3/crypto"
 )
 
 // Request represent a request to register
