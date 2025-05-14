@@ -28,7 +28,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 
-	"github.com/mysteriumnetwork/payments/bindings"
+	"github.com/mysteriumnetwork/payments/v3/bindings"
 )
 
 type BC interface {

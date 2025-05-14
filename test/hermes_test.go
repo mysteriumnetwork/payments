@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/mysteriumnetwork/payments/bindings"
+	"github.com/mysteriumnetwork/payments/v3/bindings"
 	"github.com/stretchr/testify/assert"
 )
 

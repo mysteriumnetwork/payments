@@ -25,7 +25,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/pkg/errors"
 
-	"github.com/mysteriumnetwork/payments/bindings"
+	"github.com/mysteriumnetwork/payments/v3/bindings"
 )
 
 type MultichainBlockchainClient struct {

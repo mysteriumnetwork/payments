@@ -1,6 +1,6 @@
-module github.com/mysteriumnetwork/payments
+module github.com/mysteriumnetwork/payments/v3
 
-go 1.20
+go 1.24.2
 
 require (
 	github.com/ethereum/go-ethereum v1.13.5

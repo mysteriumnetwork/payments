@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/mysteriumnetwork/payments/units"
+	"github.com/mysteriumnetwork/payments/v3/units"
 )
 
 // DefaultMaticStationURI is the default gas station URL that can be used in matic gas station.

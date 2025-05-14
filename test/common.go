@@ -11,7 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/mysteriumnetwork/payments/bindings"
+	"github.com/mysteriumnetwork/payments/v3/bindings"
 )
 
 func GetKeyPair(privateKeyString string) (common.Address, *ecdsa.PrivateKey, error) {

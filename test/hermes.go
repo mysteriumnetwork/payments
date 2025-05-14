@@ -10,8 +10,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/mysteriumnetwork/payments/bindings"
-	pc "github.com/mysteriumnetwork/payments/crypto"
+	"github.com/mysteriumnetwork/payments/v3/bindings"
+	pc "github.com/mysteriumnetwork/payments/v3/crypto"
 )
 
 func DeployHermesImplementation(opts *bind.TransactOpts, backend bind.ContractBackend, timeout time.Duration) (common.Address, error) {

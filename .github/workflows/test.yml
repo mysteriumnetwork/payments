@@ -19,4 +19,4 @@ jobs:
     - name: Build
       run: go build -v ./...
     - name: Test
-      run: go run mage.go -v Test
+      run: make test
