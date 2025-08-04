@@ -7,39 +7,28 @@ import (
 	"math/big"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/mysteriumnetwork/payments/v3/units"
 	"github.com/rs/zerolog/log"
 )
 
-// DefaultPolygonscanEndpointURI the default polygonscan api endpoint.
-const DefaultPolygonscanEndpointURI = "https://api.polygonscan.com/"
-
 // PolygonscanStation represents the polygonscan api to retrive polygonscan prices.
 type PolygonscanStation struct {
-	apiKey      string
-	endpointURI string
-	upperBound  *big.Int
+	apiConfig  EtherscanApiConfig
+	upperBound *big.Int
 
 	client *http.Client
 }
 
 // NewPolygonscanStation returns a new instance of polygonscan api for polygonscan price checks.
-func NewPolygonscanStation(timeout time.Duration, apiKey, endpointURI string, upperBound *big.Int) *PolygonscanStation {
-	endpoint := endpointURI
-	if !strings.HasSuffix(endpoint, "/") {
-		endpoint += "/"
-	}
-
+func NewPolygonscanStation(timeout time.Duration, apiConfig EtherscanApiConfig, upperBound *big.Int) *PolygonscanStation {
 	return &PolygonscanStation{
 		client: &http.Client{
 			Timeout: timeout,
 		},
-		endpointURI: endpoint,
-		upperBound:  upperBound,
-		apiKey:      apiKey,
+		upperBound: upperBound,
+		apiConfig:  apiConfig,
 	}
 }
 
@@ -75,11 +64,11 @@ func (esa *PolygonscanStation) GetGasPrices() (*GasPrices, error) {
 }
 
 func (esa *PolygonscanStation) request() (*polygonscanGasPriceResponse, error) {
-	if esa.apiKey == "" {
+	if esa.apiConfig.ApiKey == "" {
 		log.Warn().Msg("no API key set, rate is limited")
 	}
 
-	response, err := esa.client.Get(fmt.Sprintf("%v%v%v", esa.endpointURI, "api?module=gastracker&action=gasoracle&apikey=", esa.apiKey))
+	response, err := esa.client.Get(fmt.Sprintf("%vapi?chainid=%d&apikey=%s&module=gastracker&action=gasoracle", esa.apiConfig.URL, esa.apiConfig.ChainID, esa.apiConfig.ApiKey))
 	if err != nil {
 		return nil, err
 	}
