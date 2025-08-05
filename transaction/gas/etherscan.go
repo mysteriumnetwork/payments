@@ -7,39 +7,28 @@ import (
 	"math/big"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/mysteriumnetwork/payments/v3/units"
 	"github.com/rs/zerolog/log"
 )
 
-// DefaultEtherscanEndpointURI the default etherscan api endpoint.
-const DefaultEtherscanEndpointURI = "https://api.etherscan.io/"
-
 // EtherscanStation represents the etherscan api to retrive gas prices.
 type EtherscanStation struct {
-	apiKey      string
-	endpointURI string
-	upperBound  *big.Int
+	apiConfig  EtherscanApiConfig
+	upperBound *big.Int
 
 	client *http.Client
 }
 
 // NewEtherscanStation returns a new instance of etherscan api for gas price checks.
-func NewEtherscanStation(timeout time.Duration, apiKey, endpointURI string, upperBound *big.Int) *EtherscanStation {
-	endpoint := endpointURI
-	if !strings.HasSuffix(endpoint, "/") {
-		endpoint += "/"
-	}
-
+func NewEtherscanStation(timeout time.Duration, apiConfig EtherscanApiConfig, upperBound *big.Int) *EtherscanStation {
 	return &EtherscanStation{
 		client: &http.Client{
 			Timeout: timeout,
 		},
-		endpointURI: endpoint,
-		upperBound:  upperBound,
-		apiKey:      apiKey,
+		upperBound: upperBound,
+		apiConfig:  apiConfig,
 	}
 }
 
@@ -75,11 +64,11 @@ func (esa *EtherscanStation) GetGasPrices() (*GasPrices, error) {
 }
 
 func (esa *EtherscanStation) request() (*etherscanGasPriceResponse, error) {
-	if esa.apiKey == "" {
+	if esa.apiConfig.ApiKey == "" {
 		log.Warn().Msg("no API key set, rate is limited")
 	}
 
-	response, err := esa.client.Get(fmt.Sprintf("%v%v%v", esa.endpointURI, "api?module=gastracker&action=gasoracle&apikey=", esa.apiKey))
+	response, err := esa.client.Get(fmt.Sprintf("%vapi?chainid=%d&apikey=%s&module=gastracker&action=gasoracle", esa.apiConfig.URL, esa.apiConfig.ChainID, esa.apiConfig.ApiKey))
 	if err != nil {
 		return nil, err
 	}

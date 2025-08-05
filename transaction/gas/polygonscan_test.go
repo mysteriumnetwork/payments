@@ -18,7 +18,7 @@ func TestPolygonscan(t *testing.T) {
 	defer m.stop()
 
 	var oneGwei int64 = 1000000000
-	es := NewPolygonscanStation(time.Second, "", "http://localhost:8184", big.NewInt(200*oneGwei))
+	es := NewPolygonscanStation(time.Second, NewMustEtherscanApiUrl("http://localhost:8184", 1, "fake"), big.NewInt(200*oneGwei))
 
 	t.Run("get gas", func(t *testing.T) {
 		m.setResponse(GasPrices{

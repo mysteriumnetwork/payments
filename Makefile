@@ -12,4 +12,6 @@ generate-matic:
 
 .PHONY: test
 test:
-	go test --short -race -cover ./...
+	#go test --short -race -cover ./...
+	go install gotest.tools/gotestsum@latest
+	$(shell go env GOPATH)/bin/gotestsum --format testname

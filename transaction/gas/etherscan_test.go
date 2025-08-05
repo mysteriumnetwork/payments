@@ -2,6 +2,7 @@ package gas
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/require"
 	"math/big"
 	"net/http"
 	"testing"
@@ -9,7 +10,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mysteriumnetwork/payments/v3/units"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestEtherscan(t *testing.T) {
@@ -18,7 +18,7 @@ func TestEtherscan(t *testing.T) {
 	defer m.stop()
 
 	var oneGwei int64 = 1000000000
-	es := NewEtherscanStation(time.Second, "", "http://localhost:8182", big.NewInt(200*oneGwei))
+	es := NewEtherscanStation(time.Second, NewMustEtherscanApiUrl("http://localhost:8182", 1, "fake"), big.NewInt(200*oneGwei))
 
 	t.Run("get gas", func(t *testing.T) {
 		m.setResponse(GasPrices{
@@ -28,13 +28,13 @@ func TestEtherscan(t *testing.T) {
 			Fast:    big.NewInt(25 * oneGwei),
 		})
 		gp, err := es.GetGasPrices()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
-		assert.Equal(t, big.NewInt(30*oneGwei), gp.BaseFee)
-		assert.Equal(t, big.NewInt(10*oneGwei), gp.SafeLow)
-		assert.Equal(t, big.NewInt(20*oneGwei), gp.Average)
-		assert.Equal(t, big.NewInt(25*oneGwei), gp.Fast)
-		assert.Equal(t, 1, m.Calls)
+		require.Equal(t, big.NewInt(30*oneGwei), gp.BaseFee)
+		require.Equal(t, big.NewInt(10*oneGwei), gp.SafeLow)
+		require.Equal(t, big.NewInt(20*oneGwei), gp.Average)
+		require.Equal(t, big.NewInt(25*oneGwei), gp.Fast)
+		require.Equal(t, 1, m.Calls)
 
 		m.setResponse(GasPrices{
 			BaseFee: big.NewInt(50 * oneGwei),
@@ -43,14 +43,14 @@ func TestEtherscan(t *testing.T) {
 			Fast:    big.NewInt(220 * oneGwei),
 		})
 		gp, err = es.GetGasPrices()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
-		assert.Equal(t, big.NewInt(50*oneGwei), gp.BaseFee)
-		assert.Equal(t, big.NewInt(150*oneGwei), gp.SafeLow)
-		assert.Equal(t, big.NewInt(190*oneGwei), gp.Average)
+		require.Equal(t, big.NewInt(50*oneGwei), gp.BaseFee)
+		require.Equal(t, big.NewInt(150*oneGwei), gp.SafeLow)
+		require.Equal(t, big.NewInt(190*oneGwei), gp.Average)
 		//uppperbound
-		assert.Equal(t, big.NewInt(200*oneGwei), gp.Fast)
-		assert.Equal(t, 2, m.Calls)
+		require.Equal(t, big.NewInt(200*oneGwei), gp.Fast)
+		require.Equal(t, 2, m.Calls)
 
 		m.reset()
 	})
@@ -60,7 +60,7 @@ func TestEtherscan(t *testing.T) {
 			c.AbortWithStatus(http.StatusInternalServerError)
 		})
 		_, err := es.GetGasPrices()
-		assert.Error(t, err)
+		require.Error(t, err)
 
 		m.reset()
 	})
