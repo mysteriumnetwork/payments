@@ -53,9 +53,5 @@ func (api EtherscanApiConfig) Validate() error {
 		return errors.New("chain_id can't be 0")
 	}
 
-	if api.ApiKey == "" {
-		return errors.New("api_key can't be empty")
-
-	}
 	return nil
 }
