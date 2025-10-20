@@ -21,7 +21,7 @@ type API struct {
 }
 
 const DefaultGeckoURI = "https://api.coingecko.com/api/v3"
-
+const MigratedMaticPolTokenId = "polygon-ecosystem-token"
 const name = "coingecko"
 
 // NewAPI returns a new gecko client.
@@ -63,7 +63,8 @@ func (g *API) GetRateCacheWithFallback(coins []exchange.Coin, vsCurrencies []exc
 }
 
 func (g *API) GetRate(coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
-	path := fmt.Sprintf("simple/price?ids=%v&vs_currencies=%v", exchange.CoinsJoin(coins), exchange.CurrenciesJoin(vsCurrencies))
+	translatedTokenIds := strings.Replace(exchange.CoinsJoin(coins), string(exchange.CoinMATIC), MigratedMaticPolTokenId, 1)
+	path := fmt.Sprintf("simple/price?ids=%v&vs_currencies=%v", translatedTokenIds, exchange.CurrenciesJoin(vsCurrencies))
 	url := fmt.Sprintf("%v%v", g.baseURI, path)
 	resp, err := g.client.Get(url)
 	if err != nil {
@@ -78,6 +79,12 @@ func (g *API) GetRate(coins []exchange.Coin, vsCurrencies []exchange.Currency) (
 	var res exchange.PriceResponse
 	if err = json.NewDecoder(resp.Body).Decode(&res); err != nil {
 		return exchange.PriceResponse{}, err
+	}
+
+	// backwards compatibility
+	_, ok := res[MigratedMaticPolTokenId]
+	if ok {
+		res[exchange.CoinMATIC] = res[MigratedMaticPolTokenId]
 	}
 
 	// Convert keys to ones that node understands.
