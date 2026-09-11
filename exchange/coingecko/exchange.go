@@ -1,6 +1,7 @@
 package coingecko
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -12,6 +13,8 @@ import (
 	"github.com/mysteriumnetwork/payments/v3/exchange"
 	"github.com/patrickmn/go-cache"
 )
+
+var _ exchange.API = (*API)(nil)
 
 // API can be used to check exchange prices between different currencies using coingecko.
 type API struct {
@@ -53,16 +56,16 @@ func (g *API) GetName() string {
 
 // GetRateCacheWithFallback will try to get price from cache, if it can't find it, will try
 // to look it up and save it to cache for later use.
-func (g *API) GetRateCacheWithFallback(coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
-	pc, err := g.GetRateCache(coins, vsCurrencies)
+func (g *API) GetRateCacheWithFallback(ctx context.Context, coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
+	pc, err := g.GetRateCache(ctx, coins, vsCurrencies)
 	if err == nil {
 		return pc, nil
 	}
 
-	return g.GetRate(coins, vsCurrencies)
+	return g.GetRate(ctx, coins, vsCurrencies)
 }
 
-func (g *API) GetRate(coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
+func (g *API) GetRate(ctx context.Context, coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
 	translatedTokenIds := strings.Replace(exchange.CoinsJoin(coins), string(exchange.CoinMATIC), MigratedMaticPolTokenId, 1)
 	path := fmt.Sprintf("simple/price?ids=%v&vs_currencies=%v", translatedTokenIds, exchange.CurrenciesJoin(vsCurrencies))
 	url := fmt.Sprintf("%v%v", g.baseURI, path)
@@ -103,7 +106,7 @@ func (g *API) GetRate(coins []exchange.Coin, vsCurrencies []exchange.Currency) (
 
 // GetRateCache given coins and vsCurrencies returns latest response received from gecko for these values.
 // Order of these values is important, they must match the ones given to GetCoinPriceInUSD()
-func (g *API) GetRateCache(coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
+func (g *API) GetRateCache(ctx context.Context, coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
 	key := g.cachePriceKey(coins, vsCurrencies)
 
 	obj, ok := g.cache.Get(key)

@@ -24,14 +24,14 @@ func TestExchange(t *testing.T) {
 				exchange.CurrencyUSD: 1500,
 			},
 		})
-		rates, err := api.GetRate([]exchange.Coin{exchange.CoinETH}, []exchange.Currency{exchange.CurrencyUSD})
+		rates, err := api.GetRate(t.Context(), []exchange.Coin{exchange.CoinETH}, []exchange.Currency{exchange.CurrencyUSD})
 		assert.NoError(t, err)
 		assert.Equal(t, 1500., rates[exchange.CoinETH][exchange.CurrencyUSD])
 		assert.Len(t, rates, 1)
 		assert.Len(t, rates[exchange.CoinETH], 1)
 		assert.Equal(t, 1, mockApi.Calls)
 
-		rates, err = api.GetRate([]exchange.Coin{exchange.CoinETH}, []exchange.Currency{exchange.CurrencyUSD})
+		rates, err = api.GetRate(t.Context(), []exchange.Coin{exchange.CoinETH}, []exchange.Currency{exchange.CurrencyUSD})
 		assert.NoError(t, err)
 		assert.Equal(t, 1500., rates[exchange.CoinETH][exchange.CurrencyUSD])
 		assert.Equal(t, 2, mockApi.Calls)
@@ -42,14 +42,14 @@ func TestExchange(t *testing.T) {
 			mockApi.setHandler(func(c *gin.Context) {
 				c.JSON(http.StatusAccepted, nil)
 			})
-			_, err = api.GetRate([]exchange.Coin{exchange.CoinETH}, []exchange.Currency{exchange.CurrencyUSD})
+			_, err = api.GetRate(t.Context(), []exchange.Coin{exchange.CoinETH}, []exchange.Currency{exchange.CurrencyUSD})
 			assert.Error(t, err)
 			mockApi.reset()
 
 			mockApi.setHandler(func(c *gin.Context) {
 				c.JSON(http.StatusOK, "{badjson: hi}")
 			})
-			_, err = api.GetRate([]exchange.Coin{exchange.CoinETH}, []exchange.Currency{exchange.CurrencyUSD})
+			_, err = api.GetRate(t.Context(), []exchange.Coin{exchange.CoinETH}, []exchange.Currency{exchange.CurrencyUSD})
 			assert.Error(t, err)
 			mockApi.reset()
 
@@ -58,7 +58,7 @@ func TestExchange(t *testing.T) {
 					exchange.CurrencyUSD: 1500,
 				},
 			})
-			rates, err = api.GetRate([]exchange.Coin{exchange.CoinETH}, []exchange.Currency{exchange.CurrencyUSD})
+			rates, err = api.GetRate(t.Context(), []exchange.Coin{exchange.CoinETH}, []exchange.Currency{exchange.CurrencyUSD})
 			assert.NoError(t, err)
 			assert.Len(t, rates, 1)
 			assert.Len(t, rates[exchange.CoinETH], 0)
@@ -106,14 +106,14 @@ func TestExchange(t *testing.T) {
 					exchange.CurrencyGBP: 3,
 				},
 			})
-			rates, err := api.GetRate([]exchange.Coin{exchange.CoinMYST}, []exchange.Currency{exchange.CurrencyGBP})
+			rates, err := api.GetRate(t.Context(), []exchange.Coin{exchange.CoinMYST}, []exchange.Currency{exchange.CurrencyGBP})
 			assert.NoError(t, err)
 			assert.Equal(t, 3., rates[exchange.CoinMYST][exchange.CurrencyGBP])
 			assert.Len(t, rates, 1)
 			assert.Len(t, rates[exchange.CoinMYST], 1)
 			assert.Equal(t, 1, mockApi.Calls)
 
-			rates, err = api.GetRateCache([]exchange.Coin{exchange.CoinMYST}, []exchange.Currency{exchange.CurrencyGBP})
+			rates, err = api.GetRateCache(t.Context(), []exchange.Coin{exchange.CoinMYST}, []exchange.Currency{exchange.CurrencyGBP})
 			assert.NoError(t, err)
 			assert.Equal(t, 3., rates[exchange.CoinMYST][exchange.CurrencyGBP])
 			assert.Len(t, rates, 1)
@@ -123,7 +123,7 @@ func TestExchange(t *testing.T) {
 
 			//wait for cache to expire
 			time.Sleep(201 * time.Millisecond)
-			_, err = api.GetRateCache([]exchange.Coin{exchange.CoinMYST}, []exchange.Currency{exchange.CurrencyGBP})
+			_, err = api.GetRateCache(t.Context(), []exchange.Coin{exchange.CoinMYST}, []exchange.Currency{exchange.CurrencyGBP})
 			assert.Error(t, err)
 
 			mockApi.reset()
