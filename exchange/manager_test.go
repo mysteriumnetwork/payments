@@ -1,6 +1,7 @@
 package exchange
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -26,7 +27,7 @@ func TestManager(t *testing.T) {
 	manager := NewMultiManager([]API{mockApi, mockApi2})
 
 	t.Run("get rate", func(t *testing.T) {
-		res, err := manager.GetRate([]Coin{CoinETH}, []Currency{CurrencyUSD})
+		res, err := manager.GetRate(t.Context(), []Coin{CoinETH}, []Currency{CurrencyUSD})
 		assert.NoError(t, err)
 		assert.Equal(t, 1., res[CoinETH][CurrencyUSD])
 		assert.Equal(t, 1, mockApi.Calls["GetRate"])
@@ -37,7 +38,7 @@ func TestManager(t *testing.T) {
 		assert.Equal(t, 0, mockApi2.Calls["GetRateCache"])
 		resetApis()
 
-		res, err = manager.GetRate([]Coin{CoinBTC}, []Currency{CurrencyUSD})
+		res, err = manager.GetRate(t.Context(), []Coin{CoinBTC}, []Currency{CurrencyUSD})
 		assert.NoError(t, err)
 		assert.Equal(t, 2., res[CoinBTC][CurrencyUSD])
 		assert.Equal(t, 1, mockApi.Calls["GetRate"])
@@ -48,7 +49,7 @@ func TestManager(t *testing.T) {
 		assert.Equal(t, 0, mockApi2.Calls["GetRateCache"])
 		resetApis()
 
-		_, err = manager.GetRate([]Coin{CoinMATIC}, []Currency{CurrencyUSD})
+		_, err = manager.GetRate(t.Context(), []Coin{CoinMATIC}, []Currency{CurrencyUSD})
 		assert.Error(t, err)
 		assert.Equal(t, 1, mockApi.Calls["GetRate"])
 		assert.Equal(t, 0, mockApi.Calls["GetRateCacheWithFallback"])
@@ -60,7 +61,7 @@ func TestManager(t *testing.T) {
 	})
 
 	t.Run("get rate with fallback", func(t *testing.T) {
-		res, err := manager.GetRateCacheWithFallback([]Coin{CoinETH}, []Currency{CurrencyUSD})
+		res, err := manager.GetRateCacheWithFallback(t.Context(), []Coin{CoinETH}, []Currency{CurrencyUSD})
 		assert.NoError(t, err)
 		assert.Equal(t, 1., res[CoinETH][CurrencyUSD])
 		assert.Equal(t, 0, mockApi.Calls["GetRate"])
@@ -71,7 +72,7 @@ func TestManager(t *testing.T) {
 		assert.Equal(t, 0, mockApi2.Calls["GetRateCache"])
 		resetApis()
 
-		res, err = manager.GetRateCacheWithFallback([]Coin{CoinBTC}, []Currency{CurrencyUSD})
+		res, err = manager.GetRateCacheWithFallback(t.Context(), []Coin{CoinBTC}, []Currency{CurrencyUSD})
 		assert.NoError(t, err)
 		assert.Equal(t, 2., res[CoinBTC][CurrencyUSD])
 		assert.Equal(t, 0, mockApi.Calls["GetRate"])
@@ -82,7 +83,7 @@ func TestManager(t *testing.T) {
 		assert.Equal(t, 0, mockApi2.Calls["GetRateCache"])
 		resetApis()
 
-		_, err = manager.GetRateCacheWithFallback([]Coin{CoinMATIC}, []Currency{CurrencyUSD})
+		_, err = manager.GetRateCacheWithFallback(t.Context(), []Coin{CoinMATIC}, []Currency{CurrencyUSD})
 		assert.Error(t, err)
 		assert.Equal(t, 0, mockApi.Calls["GetRate"])
 		assert.Equal(t, 1, mockApi.Calls["GetRateCacheWithFallback"])
@@ -94,7 +95,7 @@ func TestManager(t *testing.T) {
 	})
 
 	t.Run("get rate cache", func(t *testing.T) {
-		res, err := manager.GetRateCache([]Coin{CoinETH}, []Currency{CurrencyUSD})
+		res, err := manager.GetRateCache(t.Context(), []Coin{CoinETH}, []Currency{CurrencyUSD})
 		assert.NoError(t, err)
 		assert.Equal(t, 1., res[CoinETH][CurrencyUSD])
 		assert.Equal(t, 0, mockApi.Calls["GetRate"])
@@ -105,7 +106,7 @@ func TestManager(t *testing.T) {
 		assert.Equal(t, 0, mockApi2.Calls["GetRateCache"])
 		resetApis()
 
-		res, err = manager.GetRateCache([]Coin{CoinBTC}, []Currency{CurrencyUSD})
+		res, err = manager.GetRateCache(t.Context(), []Coin{CoinBTC}, []Currency{CurrencyUSD})
 		assert.NoError(t, err)
 		assert.Equal(t, 2., res[CoinBTC][CurrencyUSD])
 		assert.Equal(t, 0, mockApi.Calls["GetRate"])
@@ -116,7 +117,7 @@ func TestManager(t *testing.T) {
 		assert.Equal(t, 1, mockApi2.Calls["GetRateCache"])
 		resetApis()
 
-		_, err = manager.GetRateCache([]Coin{CoinMATIC}, []Currency{CurrencyUSD})
+		_, err = manager.GetRateCache(t.Context(), []Coin{CoinMATIC}, []Currency{CurrencyUSD})
 		assert.Error(t, err)
 		assert.Equal(t, 0, mockApi.Calls["GetRate"])
 		assert.Equal(t, 0, mockApi.Calls["GetRateCacheWithFallback"])
@@ -144,15 +145,15 @@ func newMockApi(response PriceResponse) *mockApi {
 }
 
 // GetRateCacheWithFallback returns a rate from the default response.
-func (m *mockApi) GetRateCacheWithFallback(coins []Coin, vsCurrencies []Currency) (PriceResponse, error) {
-	res, err := m.GetRate(coins, vsCurrencies)
+func (m *mockApi) GetRateCacheWithFallback(ctx context.Context, coins []Coin, vsCurrencies []Currency) (PriceResponse, error) {
+	res, err := m.GetRate(ctx, coins, vsCurrencies)
 	m.Calls["GetRateCacheWithFallback"]++
 	m.Calls["GetRate"]--
 	return res, err
 }
 
 // GetRate returns a rate from the default response.
-func (m *mockApi) GetRate(coins []Coin, vsCurrencies []Currency) (PriceResponse, error) {
+func (m *mockApi) GetRate(ctx context.Context, coins []Coin, vsCurrencies []Currency) (PriceResponse, error) {
 	m.Calls["GetRate"]++
 	if m.ReturnError != nil {
 		return nil, m.ReturnError
@@ -179,8 +180,8 @@ func (m *mockApi) GetRate(coins []Coin, vsCurrencies []Currency) (PriceResponse,
 }
 
 // GetRateCache returns a rate from the default response.
-func (m *mockApi) GetRateCache(coins []Coin, vsCurrencies []Currency) (PriceResponse, error) {
-	res, err := m.GetRate(coins, vsCurrencies)
+func (m *mockApi) GetRateCache(ctx context.Context, coins []Coin, vsCurrencies []Currency) (PriceResponse, error) {
+	res, err := m.GetRate(ctx, coins, vsCurrencies)
 	m.Calls["GetRateCache"]++
 	m.Calls["GetRate"]--
 	return res, err
