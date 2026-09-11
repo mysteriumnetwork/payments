@@ -1,6 +1,7 @@
 package coinranking
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -110,7 +111,7 @@ func (cr *API) GetName() string {
 	return name
 }
 
-func (cr *API) GetRateCacheWithFallback(coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
+func (cr *API) GetRateCacheWithFallback(ctx context.Context, coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
 	pc, err := cr.GetRateCache(coins, vsCurrencies)
 	if err == nil {
 		return pc, nil

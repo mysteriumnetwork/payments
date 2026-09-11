@@ -73,14 +73,14 @@ func TestExchange(t *testing.T) {
 					exchange.CurrencyDAI: 10,
 				},
 			})
-			rates, err := api.GetRateCacheWithFallback([]exchange.Coin{exchange.CoinMATIC}, []exchange.Currency{exchange.CurrencyDAI})
+			rates, err := api.GetRateCacheWithFallback(t.Context(), []exchange.Coin{exchange.CoinMATIC}, []exchange.Currency{exchange.CurrencyDAI})
 			assert.NoError(t, err)
 			assert.Equal(t, 10., rates[exchange.CoinMATIC][exchange.CurrencyDAI])
 			assert.Len(t, rates, 1)
 			assert.Len(t, rates[exchange.CoinMATIC], 1)
 			assert.Equal(t, 1, mockApi.Calls)
 
-			rates, err = api.GetRateCacheWithFallback([]exchange.Coin{exchange.CoinMATIC}, []exchange.Currency{exchange.CurrencyDAI})
+			rates, err = api.GetRateCacheWithFallback(t.Context(), []exchange.Coin{exchange.CoinMATIC}, []exchange.Currency{exchange.CurrencyDAI})
 			assert.NoError(t, err)
 			assert.Equal(t, 10., rates[exchange.CoinMATIC][exchange.CurrencyDAI])
 			assert.Len(t, rates, 1)
@@ -90,7 +90,7 @@ func TestExchange(t *testing.T) {
 
 			//wait for cache to expire
 			time.Sleep(201 * time.Millisecond)
-			rates, err = api.GetRateCacheWithFallback([]exchange.Coin{exchange.CoinMATIC}, []exchange.Currency{exchange.CurrencyDAI})
+			rates, err = api.GetRateCacheWithFallback(t.Context(), []exchange.Coin{exchange.CoinMATIC}, []exchange.Currency{exchange.CurrencyDAI})
 			assert.NoError(t, err)
 			assert.Equal(t, 10., rates[exchange.CoinMATIC][exchange.CurrencyDAI])
 			assert.Len(t, rates, 1)
