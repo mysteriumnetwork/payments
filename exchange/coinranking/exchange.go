@@ -16,6 +16,8 @@ import (
 	"github.com/patrickmn/go-cache"
 )
 
+var _ exchange.API = (*API)(nil)
+
 // API represents a Coinranking REST API client.
 type API struct {
 	baseURI     string
@@ -112,15 +114,15 @@ func (cr *API) GetName() string {
 }
 
 func (cr *API) GetRateCacheWithFallback(ctx context.Context, coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
-	pc, err := cr.GetRateCache(coins, vsCurrencies)
+	pc, err := cr.GetRateCache(ctx, coins, vsCurrencies)
 	if err == nil {
 		return pc, nil
 	}
 
-	return cr.GetRate(coins, vsCurrencies)
+	return cr.GetRate(ctx, coins, vsCurrencies)
 }
 
-func (cr *API) GetRate(coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
+func (cr *API) GetRate(ctx context.Context, coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
 	r := make(exchange.PriceResponse)
 	uiids := []string{}
 	// create map for each coin and add coin uuid to array
@@ -199,7 +201,7 @@ func (cr *API) GetRate(coins []exchange.Coin, vsCurrencies []exchange.Currency) 
 
 // GetRateCache given coins and vsCurrencies returns latest response received from gecko for these values.
 // Order of these values is important, they must match the ones given to GetCoinPriceInUSD()
-func (cr *API) GetRateCache(coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
+func (cr *API) GetRateCache(ctx context.Context, coins []exchange.Coin, vsCurrencies []exchange.Currency) (exchange.PriceResponse, error) {
 	key := cr.cachePriceKey(coins, vsCurrencies)
 
 	obj, ok := cr.cache.Get(key)
