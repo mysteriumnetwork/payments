@@ -73,7 +73,7 @@ type coinResponse struct {
 var currencyToUuid = map[exchange.Currency]string{
 	exchange.CurrencyETH:   "razxDUgYGNAdQ",
 	exchange.CurrencyMYST:  "C5Hx25DA3vp8h",
-	exchange.CurrencyMATIC: "uW2tk-ILY0ii",
+	exchange.CurrencyMATIC: "iDZ0tG-wI",
 	exchange.CurrencyUSD:   "yhjMzLPhuIDl",
 	exchange.CurrencyEUR:   "5k-_VTxqtCEI",
 	exchange.CurrencyBTC:   "Qwsogvtv82FCd",
@@ -87,7 +87,7 @@ var currencyToUuid = map[exchange.Currency]string{
 var uuidToCurrencyMap = map[string]exchange.Currency{
 	"razxDUgYGNAdQ": exchange.CurrencyETH,
 	"C5Hx25DA3vp8h": exchange.CurrencyMYST,
-	"uW2tk-ILY0ii":  exchange.CurrencyMATIC,
+	"iDZ0tG-wI":     exchange.CurrencyMATIC,
 	"yhjMzLPhuIDl":  exchange.CurrencyUSD,
 	"5k-_VTxqtCEI":  exchange.CurrencyEUR,
 	"Qwsogvtv82FCd": exchange.CurrencyBTC,
