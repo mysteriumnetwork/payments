@@ -69,6 +69,7 @@ const (
 	// DeliveryStateDelivered is state for transaction that have been delivered
 	// and we will no longer track it.
 	DeliveryStateDelivered = "delivered"
+	DeliveryStateReverted  = "reverted"
 )
 
 var ErrNoTrasactionExists = errors.New("transaction doesn't exist")
