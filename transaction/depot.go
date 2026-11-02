@@ -23,6 +23,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 )
@@ -46,6 +47,9 @@ type Depot struct {
 
 	logFn   func(error)
 	metrics DepotMetricsExporter
+
+	receipts     DepotReceiptChecker
+	receiptGrace time.Duration
 
 	once sync.Once
 	stop chan struct{}
@@ -119,6 +123,10 @@ type DepotNonceTracker interface {
 
 	// GetConfirmedNonce returns the latest nonce that has been confirmed in the blockchain.
 	GetConfirmedNonce(chainID int64, account common.Address) (uint64, error)
+}
+
+type DepotReceiptChecker interface {
+	TransactionReceipt(chainID int64, hash common.Hash) (*types.Receipt, error)
 }
 
 var ErrImpossibleToDeliver = errors.New("impossible to deliver")
@@ -210,6 +218,11 @@ func (d *Depot) AttachLogger(fn func(err error)) {
 // for state changes in the depot.
 func (d *Depot) AttachMetricsReporter(m DepotMetricsExporter) {
 	d.metrics = m
+}
+
+func (d *Depot) AttachReceiptChecker(rc DepotReceiptChecker, notFoundGrace time.Duration) {
+	d.receipts = rc
+	d.receiptGrace = notFoundGrace
 }
 
 func (d *Depot) workerExists(req DeliveryRequest) bool {
@@ -310,6 +323,18 @@ func (d *Depot) handleTracking(td Delivery) error {
 	if currentNonce > td.Nonce {
 		if td.State == DeliveryStateWaiting {
 			return fmt.Errorf("refusing to confirm transaction as it was never sent from our side: %q", td.UniqueID)
+		}
+
+		reverted, err := d.isReverted(td)
+		if err != nil {
+			return err
+		}
+		if reverted {
+			if _, err := d.markDeliveryAsReverted(td); err != nil {
+				return fmt.Errorf("failed to mark delivery as reverted: %w", err)
+			}
+			d.log(fmt.Errorf("transaction %q was mined but reverted", td.UniqueID))
+			return nil
 		}
 
 		td, err = d.markDeliveryAsDelivered(td)
@@ -469,6 +494,41 @@ func (d *Depot) markDeliveryAsPacking(td Delivery) (Delivery, error) {
 	td.UpdateUTC = time.Now().UTC()
 	if err := d.storage.UpsertDeliveryRequest(td); err != nil {
 		return td, fmt.Errorf("failed to mark delivery as packing: %w", err)
+	}
+
+	return td, nil
+}
+
+func (d *Depot) isReverted(td Delivery) (bool, error) {
+	if d.receipts == nil {
+		return false, nil
+	}
+
+	tx, err := td.GetLastTransaction()
+	if err != nil {
+		if errors.Is(err, ErrNoTrasactionExists) {
+			return false, nil
+		}
+		return false, fmt.Errorf("failed to read sent transaction for %q: %w", td.UniqueID, err)
+	}
+
+	receipt, err := d.receipts.TransactionReceipt(td.ChainID, tx.Hash())
+	if err != nil {
+		if errors.Is(err, ethereum.NotFound) && time.Since(td.UpdateUTC) >= d.receiptGrace {
+			d.log(fmt.Errorf("no receipt for %q tx %s, assuming delivered", td.UniqueID, tx.Hash().Hex()))
+			return false, nil
+		}
+		return false, fmt.Errorf("failed to get receipt for %q tx %s: %w", td.UniqueID, tx.Hash().Hex(), err)
+	}
+
+	return receipt.Status == types.ReceiptStatusFailed, nil
+}
+
+func (d *Depot) markDeliveryAsReverted(td Delivery) (Delivery, error) {
+	td.State = DeliveryStateReverted
+	td.UpdateUTC = time.Now().UTC()
+	if err := d.storage.UpsertDeliveryRequest(td); err != nil {
+		return td, fmt.Errorf("failed to mark delivery as reverted: %w", err)
 	}
 
 	return td, nil
